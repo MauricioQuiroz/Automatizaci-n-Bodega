@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WMS Lite · Bodega Farmacia</title>
+    <title>WMS Lite · MultiBodega</title>
     <!-- Librerías para decodificar EAN-13, GS1-128, DataMatrix, etc. -->
     <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.2/umd/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.1/umd/index.min.js"></script>
@@ -71,7 +71,22 @@
             gap: 10px;
         }
         header h1 { font-weight: 600; font-size: 1.4rem; letter-spacing: -0.5px; }
-        header .user-info { display: flex; align-items: center; gap: 15px; font-size: 0.9rem; flex-wrap: wrap; }
+        header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+        header .user-info select {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: none;
+            background: #1e293b;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+        }
         header .user-info .btn { background: #334155; color: white; border: none; padding: 6px 16px; border-radius: 8px; cursor: pointer; font-weight: 500; transition: 0.15s; }
         header .user-info .btn:hover { background: #475569; }
         /* -------- NAV -------- */
@@ -117,6 +132,51 @@
         .badge-operario { background: #dbeafe; color: #1e40af; }
         .badge-master { background: #dbeafe; color: #1e40af; }
         .badge-comercial { background: #fef3c7; color: #92400e; }
+        .badge-bodega {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: white;
+        }
+        .badge-farmacos { background: #2563eb; }
+        .badge-insumos { background: #16a34a; }
+        .badge-economato { background: #f59e0b; color: #0f172a; }
+        /* -------- ALERTAS ESPECIALES (FÁRMACOS) -------- */
+        .alert-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin: 2px 4px 2px 0;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+        .alert-tag-cold { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
+        .alert-tag-controlled { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+        .alert-tag-lrs { background: #f3e8ff; color: #6b21a8; border-color: #d8b4fe; }
+        .alert-tag-pm { background: #ccfbf1; color: #0f766e; border-color: #5eead4; }
+        .alert-tag-icon { font-size: 0.7rem; }
+        .alert-bar {
+            background: #fefce8;
+            border-left: 4px solid #eab308;
+            padding: 8px 14px;
+            border-radius: 8px;
+            margin: 8px 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            border: 1px solid #fde68a;
+        }
+        .alert-bar-warning { background: #fef2f2; border-left-color: #dc2626; border-color: #fecaca; }
+        .alert-bar-info { background: #eff6ff; border-left-color: #2563eb; border-color: #bfdbfe; }
         .btn {
             padding: 5px 14px;
             border: none;
@@ -144,12 +204,19 @@
         .flex { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
         .mt-2 { margin-top: 12px; }
         .mb-2 { margin-bottom: 12px; }
-        input, select { padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.9rem; background: white; min-height: 38px; }
+        input, select { padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.9rem; background: white; min-height: 38px; width: 100%; max-width: 100%; }
         input:focus, select:focus { outline: 2px solid #2563eb; outline-offset: 1px; }
         .search-box { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
         /* -------- MAPA -------- */
-        .map-container { position: relative; max-width: 100%; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; background: #f1f5f9; }
-        .map-container img { width: 100%; height: auto; display: block; }
+        .map-container {
+            position: relative;
+            max-width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            background: #f1f5f9;
+        }
+        .map-container img { width: 100%; height: auto; display: block; pointer-events: none; user-select: none; }
         .map-overlay {
             position: absolute;
             top: 0; left: 0;
@@ -159,28 +226,73 @@
             grid-template-rows: repeat(6, 1fr);
             pointer-events: none;
         }
-        .map-overlay .zone {
+        .map-cell {
             pointer-events: auto;
-            background: rgba(37, 99, 235, 0.08);
-            border: 1px solid rgba(37, 99, 235, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 0.7rem;
-            color: #2563eb;
+            font-size: 0.6rem;
+            color: #1e293b;
+            text-shadow: 0 1px 3px rgba(255,255,255,0.8);
             cursor: pointer;
-            transition: 0.2s;
-            text-shadow: 0 1px 2px white;
-            text-align: center;
-            padding: 2px;
+            transition: all 0.2s ease;
+            position: relative;
+            background: rgba(37, 99, 235, 0.05);
         }
-        .map-overlay .zone:hover { background: rgba(37, 99, 235, 0.25); transform: scale(1.03); z-index: 2; }
-        .map-overlay .zone.occupied { background: rgba(22, 163, 74, 0.15); border-color: rgba(22, 163, 74, 0.3); color: #15803d; }
-        .map-overlay .zone.highlighted { background: rgba(34, 197, 94, 0.6) !important; border: 3px solid #16a34a !important; color: #0f172a !important; z-index: 3; animation: pulse 1.2s infinite; transform: scale(1.04); }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(22, 163, 74, 0); } 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); } }
-        .map-overlay .zone .sub { font-size: 0.5rem; font-weight: 400; opacity: 0.8; display: block; }
+        .map-cell:hover { transform: scale(1.05); z-index: 5; box-shadow: 0 0 15px rgba(0,0,0,0.2); border-color: rgba(0,0,0,0.3); }
+        .map-cell .cell-label { font-size: 0.5rem; font-weight: 400; opacity: 0.6; pointer-events: none; }
+        .map-cell.occupied { background: rgba(22, 163, 74, 0.15); }
+        .map-cell.has-alert::after {
+            content: '⚠️';
+            position: absolute;
+            top: 1px;
+            right: 2px;
+            font-size: 0.5rem;
+            opacity: 0.9;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+        }
+        .map-cell.highlight-search { background: rgba(37, 99, 235, 0.8) !important; border: 3px solid #1d4ed8 !important; color: white !important; text-shadow: 0 1px 4px rgba(0,0,0,0.5); z-index: 10; animation: pulse-blue 1.2s infinite; }
+        .map-cell.highlight-putaway { background: rgba(22, 163, 74, 0.8) !important; border: 3px solid #15803d !important; color: white !important; text-shadow: 0 1px 4px rgba(0,0,0,0.5); z-index: 10; animation: pulse-green 1.2s infinite; }
+        .map-cell.highlight-origin { background: rgba(220, 38, 38, 0.8) !important; border: 3px solid #b91c1c !important; color: white !important; text-shadow: 0 1px 4px rgba(0,0,0,0.5); z-index: 10; animation: pulse-red 1.2s infinite; }
+        .map-cell.highlight-destiny { background: rgba(245, 158, 11, 0.8) !important; border: 3px solid #d97706 !important; color: white !important; text-shadow: 0 1px 4px rgba(0,0,0,0.5); z-index: 10; animation: pulse-orange 1.2s infinite; }
+        .map-cell .tooltip {
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 8px);
+            background: #0f172a;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            white-space: nowrap;
+            font-weight: 600;
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 20;
+        }
+        .map-cell:hover .tooltip { display: block; }
+        .map-cell .tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: #0f172a; }
+        .map-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 10px 0 5px;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            font-size: 0.75rem;
+            align-items: center;
+        }
+        .map-legend .legend-item { display: flex; align-items: center; gap: 6px; }
+        .map-legend .color-box { width: 18px; height: 18px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.1); }
+        @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(37, 99, 235, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); } }
+        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(22, 163, 74, 0); } 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); } }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(220, 38, 38, 0); } 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); } }
+        @keyframes pulse-orange { 0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); } }
         /* -------- MODAL -------- */
         .modal {
             display: none;
@@ -221,14 +333,17 @@
             body { padding: 10px; }
             header { flex-direction: column; align-items: stretch; gap: 8px; }
             header h1 { font-size: 1.2rem; text-align: center; }
-            header .user-info { justify-content: center; }
+            header .user-info { justify-content: center; flex-direction: column; gap: 5px; }
+            header .user-info select { width: 100%; }
             nav button { padding: 10px 12px; font-size: 0.75rem; flex: 1 1 auto; }
             .tab-content { padding: 12px; }
             .card-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
             .modal-content { padding: 18px; max-width: 95%; }
             .result-card h4 { flex-direction: column; align-items: flex-start; }
-            .map-overlay .zone { font-size: 0.5rem; }
-            .map-overlay .zone .sub { font-size: 0.4rem; }
+            .map-cell { font-size: 0.4rem; }
+            .map-cell .cell-label { font-size: 0.35rem; }
+            .map-legend { font-size: 0.6rem; gap: 8px; }
+            .alert-tag { font-size: 0.5rem; padding: 1px 6px; }
         }
         @media (max-width: 480px) {
             .card-grid { grid-template-columns: 1fr; }
@@ -266,8 +381,14 @@
     <div class="app" id="app" style="display:none;">
         <!-- HEADER -->
         <header>
-            <h1>📦 WMS Lite · Bodega</h1>
+            <h1>📦 WMS Lite · MultiBodega</h1>
             <div class="user-info">
+                <select id="warehouseSelect" onchange="cambiarBodega()">
+                    <option value="TODAS">🏢 Todas las Bodegas</option>
+                    <option value="Farmacos">💊 Fármacos</option>
+                    <option value="Insumos">🧪 Insumos Clínicos</option>
+                    <option value="Economato">📦 Economato</option>
+                </select>
                 <span id="currentUserDisplay">👤 Usuario: Admin</span>
                 <button class="btn" onclick="logout()">🚪 Salir</button>
             </div>
@@ -301,10 +422,10 @@
             </div>
         </div>
 
-        <!-- ============ TAB BUSCADOR DE UBICACIÓN ============ -->
+        <!-- ============ TAB BUSCADOR ============ -->
         <div id="tab-buscador" class="tab-content">
             <h3>🔎 Buscador de ubicación</h3>
-            <p style="color: #64748b; margin-bottom: 10px; font-size:0.9rem;">Busca por código interno, glosa (descripción) o GTIN/EAN. Admite búsquedas parciales.</p>
+            <p style="color: #64748b; margin-bottom: 10px; font-size:0.9rem;">Busca por código interno, glosa o GTIN/EAN. Admite búsquedas parciales.</p>
             <div class="flex mb-2">
                 <input type="text" id="searchUbicacion" placeholder="Escribe código, glosa o GTIN..." style="flex:2; min-width:160px;" oninput="buscarUbicacion()">
                 <button class="btn btn-success" onclick="abrirLectorGTINBusqueda()">📷 Escanear GTIN</button>
@@ -318,11 +439,19 @@
         <!-- ============ TAB MAPA ============ -->
         <div id="tab-mapa" class="tab-content">
             <h3>📍 Mapa interactivo de la bodega</h3>
-            <p style="color: #64748b; margin-bottom: 8px; font-size:0.9rem;">Haz clic en una zona para ver sus productos. Busca un producto para resaltar su ubicación exacta.</p>
+            <p style="color: #64748b; margin-bottom: 8px; font-size:0.9rem;">Haz clic en una celda para ver los productos en esa zona. Los colores indican acciones activas.</p>
+            <!-- Leyenda -->
+            <div class="map-legend">
+                <span class="legend-item"><span class="color-box" style="background:#2563eb;"></span> Búsqueda</span>
+                <span class="legend-item"><span class="color-box" style="background:#16a34a;"></span> Almacenamiento</span>
+                <span class="legend-item"><span class="color-box" style="background:#dc2626;"></span> Origen (Reubicación)</span>
+                <span class="legend-item"><span class="color-box" style="background:#f59e0b;"></span> Destino (Reubicación)</span>
+                <span class="legend-item"><span class="color-box" style="background:rgba(22,163,74,0.15); border-color:#15803d;"></span> Ocupado</span>
+            </div>
             <div class="flex mb-2">
                 <input type="text" id="mapProductSearch" placeholder="Buscar producto por código (ej: 01-001-216-026)" style="flex:1; min-width:140px;">
                 <button class="btn btn-primary" onclick="buscarProductoEnMapa()">🔍 Buscar</button>
-                <button class="btn btn-outline" onclick="renderMapa(); document.getElementById('mapProducts').innerHTML='<p class=\'empty-state\'>Selecciona una zona o busca un producto.</p>';">🧹 Limpiar</button>
+                <button class="btn btn-outline" onclick="limpiarMapa()">🧹 Limpiar</button>
             </div>
             <div class="map-container" id="mapContainer">
                 <img id="mapImage" src="https://via.placeholder.com/1200x600?text=Layout+Bodega+Farmacia" alt="Layout de bodega">
@@ -330,7 +459,7 @@
             </div>
             <div id="mapProductList" class="mt-2">
                 <h4>📌 Productos en zona seleccionada</h4>
-                <div id="mapProducts"><p class="empty-state">Selecciona una zona o busca un producto.</p></div>
+                <div id="mapProducts"><p class="empty-state">Selecciona una celda o busca un producto.</p></div>
             </div>
         </div>
 
@@ -344,7 +473,7 @@
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Código</th><th>Glosa</th><th>Ubicaciones</th><th>Acciones</th></tr></thead>
+                    <thead><tr><th>Código</th><th>Glosa</th><th>Bodega</th><th>Alertas</th><th>Ubicaciones</th><th>Acciones</th></tr></thead>
                     <tbody id="inventarioBody"></tbody>
                 </table>
             </div>
@@ -358,7 +487,7 @@
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Fecha</th><th>Producto</th><th>Desde</th><th>Hacia</th><th>Usuario</th></tr></thead>
+                    <thead><tr><th>Fecha</th><th>Producto</th><th>Bodega</th><th>Desde</th><th>Hacia</th><th>Usuario</th></tr></thead>
                     <tbody id="historialBody"></tbody>
                 </table>
             </div>
@@ -421,14 +550,65 @@
         // ============================================================
         //  CONSTANTES Y CLAVES DE STORAGE
         // ============================================================
-        const STORAGE_KEY_PRODUCTS = 'wms_products_v2';
-        const STORAGE_KEY_MOVEMENTS = 'wms_movements';
+        const STORAGE_KEY_PRODUCTS = 'wms_products_v4';
+        const STORAGE_KEY_MOVEMENTS = 'wms_movements_v4';
         const STORAGE_KEY_USERS = 'wms_users';
         const STORAGE_KEY_CONFIG = 'wms_config';
         const STORAGE_KEY_SESSION = 'wms_session_user';
 
+        let currentWarehouse = 'TODAS';
+        let selectedZona = null;
+
         // ============================================================
-        //  INICIALIZACIÓN DE DATOS DE EJEMPLO (con múltiples ubicaciones)
+        //  CONFIGURACIÓN DE ALERTAS PARA FÁRMACOS
+        // ============================================================
+        const ALERT_CONFIG = {
+            'Cámara de Frío': { 
+                class: 'alert-tag-cold', 
+                icon: '🧊', 
+                message: 'Requiere cadena de frío (2-8°C)',
+                description: 'Producto termolábil. Mantener en cámara de frío.'
+            },
+            'Fármaco Controlado': { 
+                class: 'alert-tag-controlled', 
+                icon: '⚠️', 
+                message: 'Medicamento controlado - Seguimiento especial',
+                description: 'Requiere registro de dispensación y doble firma.'
+            },
+            'Ley Ricarte Soto (LRS)': { 
+                class: 'alert-tag-lrs', 
+                icon: '📋', 
+                message: 'Ley Ricarte Soto - Alto costo',
+                description: 'Requiere autorización especial y registro de paciente.'
+            },
+            'Programa Ministerial (PM)': { 
+                class: 'alert-tag-pm', 
+                icon: '🏛️', 
+                message: 'Programa Ministerial - Seguimiento especial',
+                description: 'Requiere registro en programa ministerial y seguimiento.'
+            }
+        };
+
+        function getProductAlertsHTML(product) {
+            if (!product.tags || product.tags.length === 0) return '';
+            return product.tags.map(tag => {
+                const config = ALERT_CONFIG[tag];
+                if (!config) return '';
+                return `<span class="alert-tag ${config.class}"><span class="alert-tag-icon">${config.icon}</span> ${tag}</span>`;
+            }).join('');
+        }
+
+        function getProductAlertMessages(product) {
+            if (!product.tags || product.tags.length === 0) return [];
+            return product.tags.map(tag => {
+                const config = ALERT_CONFIG[tag];
+                if (!config) return null;
+                return `${config.icon} ${config.description}`;
+            }).filter(Boolean);
+        }
+
+        // ============================================================
+        //  INICIALIZACIÓN DE DATOS DE EJEMPLO (CON TAGS)
         // ============================================================
         function initData() {
             if (!localStorage.getItem(STORAGE_KEY_USERS)) {
@@ -441,106 +621,103 @@
             }
             if (!localStorage.getItem(STORAGE_KEY_PRODUCTS)) {
                 const sampleProducts = [
+                    // ===== BODEGA DE FÁRMACOS (CON ALERTAS) =====
                     { 
                         codigo: '01-001-216-026', 
                         gtin: '7801234567890',
                         glosa: 'METRONIDAZOL 500 MG/100 ML SOL INY FA 100 ML', 
+                        bodega: 'Farmacos',
+                        tags: ['Ley Ricarte Soto (LRS)'],
                         ubicaciones: [
                             { tipo: 'master', ubicacion: 'ZONA_A_1', zona: 'A' },
                             { tipo: 'comercial', ubicacion: 'FS3_A1', zona: 'G' }
                         ]
                     },
                     { 
-                        codigo: '01-001-218-004', 
-                        gtin: '7801234567891',
-                        glosa: 'AMINOACIDO ADULTO 10% SOL INY FA 500 ML', 
+                        codigo: '01-001-212-024', 
+                        gtin: '7801234567999',
+                        glosa: 'FENTANILO 0,5 MG/10 ML SOL INY AM 10 ML', 
+                        bodega: 'Farmacos',
+                        tags: ['Fármaco Controlado', 'Cámara de Frío'],
                         ubicaciones: [
-                            { tipo: 'master', ubicacion: 'ZONA_A_2', zona: 'A' }
+                            { tipo: 'master', ubicacion: 'ZONA_C_2', zona: 'C' },
+                            { tipo: 'comercial', ubicacion: 'FS1_B2', zona: 'G' }
                         ]
                     },
                     { 
-                        codigo: '01-001-214-054', 
-                        gtin: '7801234567892',
-                        glosa: 'MESALAZINA 500 MG CM', 
+                        codigo: '01-001-230-001', 
+                        gtin: '7801234567901',
+                        glosa: 'ANFOTERICINA-B LIPOSOMAL FA 50 MG POLV LIOF', 
+                        bodega: 'Farmacos',
+                        tags: ['Cámara de Frío', 'Ley Ricarte Soto (LRS)'],
                         ubicaciones: [
-                            { tipo: 'master', ubicacion: 'ZONA_B_3', zona: 'B' },
-                            { tipo: 'comercial', ubicacion: 'ANAQUEL_5_B3', zona: 'F' }
+                            { tipo: 'master', ubicacion: 'ZONA_D_1', zona: 'D' }
                         ]
                     },
                     { 
-                        codigo: '01-001-216-060', 
-                        gtin: '7801234567893',
-                        glosa: 'HEPARINA 25.000 UI/5 ML SOL INY FA 5 ML', 
+                        codigo: '01-001-221-005', 
+                        gtin: '7801234567902',
+                        glosa: 'PM ENTECAVIR 0,5 MG CM', 
+                        bodega: 'Farmacos',
+                        tags: ['Programa Ministerial (PM)'],
                         ubicaciones: [
-                            { tipo: 'master', ubicacion: 'ZONA_B_4', zona: 'B' }
+                            { tipo: 'master', ubicacion: 'ZONA_E_2', zona: 'E' },
+                            { tipo: 'comercial', ubicacion: 'ANAQUEL_1_A3', zona: 'F' }
                         ]
                     },
+                    // Producto sin alertas (normal)
                     { 
                         codigo: '01-001-213-076', 
                         gtin: '7801234567894',
                         glosa: 'DEXAMETASONA 4 MG/ML SOL INY AM 1 ML', 
+                        bodega: 'Farmacos',
+                        tags: [],
                         ubicaciones: [
                             { tipo: 'master', ubicacion: 'ZONA_C_1', zona: 'C' },
                             { tipo: 'comercial', ubicacion: 'FS1_C3', zona: 'G' }
                         ]
                     },
+                    // ===== BODEGA DE INSUMOS CLÍNICOS =====
                     { 
-                        codigo: '01-001-214-071', 
-                        gtin: '7801234567895',
-                        glosa: 'CALCIO CARBONATO 500 MG CM-CP', 
+                        codigo: '02-001-003-050', 
+                        gtin: '7801234567100',
+                        glosa: 'TORULA GASA GRANEL (Insumo Clínico)', 
+                        bodega: 'Insumos',
+                        tags: [],
                         ubicaciones: [
-                            { tipo: 'master', ubicacion: 'ZONA_C_2', zona: 'C' }
+                            { tipo: 'master', ubicacion: 'ZONA_B_2', zona: 'B' },
+                            { tipo: 'comercial', ubicacion: 'ANAQUEL_3_A1', zona: 'F' }
                         ]
                     },
                     { 
-                        codigo: '01-001-214-0251', 
-                        gtin: '7801234567896',
-                        glosa: 'APIXABAN 5 MG CM', 
+                        codigo: '02-001-005-021', 
+                        gtin: '7801234567101',
+                        glosa: 'MASCARILLA FACIAL N-2 P/AMBU', 
+                        bodega: 'Insumos',
+                        tags: [],
                         ubicaciones: [
-                            { tipo: 'master', ubicacion: 'ZONA_D_1', zona: 'D' },
-                            { tipo: 'comercial', ubicacion: 'FS4_B4', zona: 'G' }
+                            { tipo: 'master', ubicacion: 'ZONA_C_4', zona: 'C' }
+                        ]
+                    },
+                    // ===== BODEGA ECONOMATO =====
+                    { 
+                        codigo: '02-002-001-038', 
+                        gtin: '7801234567200',
+                        glosa: 'TONER BROTHER 2140 (Oficina)', 
+                        bodega: 'Economato',
+                        tags: [],
+                        ubicaciones: [
+                            { tipo: 'master', ubicacion: 'ZONA_E_3', zona: 'E' }
                         ]
                     },
                     { 
-                        codigo: '01-001-214-040', 
-                        gtin: '7801234567897',
-                        glosa: 'ATORVASTATINA 20 MG CM-CM REC', 
+                        codigo: '02-002-002-067', 
+                        gtin: '7801234567202',
+                        glosa: 'PAPEL RONEO B OFICIO (Oficina)', 
+                        bodega: 'Economato',
+                        tags: [],
                         ubicaciones: [
-                            { tipo: 'master', ubicacion: 'ZONA_D_3', zona: 'D' }
-                        ]
-                    },
-                    { 
-                        codigo: '01-001-214-070', 
-                        gtin: '7801234567898',
-                        glosa: 'TIAMAZOL 10 MG CM-REC', 
-                        ubicaciones: [
-                            { tipo: 'master', ubicacion: 'ZONA_E_1', zona: 'E' },
-                            { tipo: 'comercial', ubicacion: 'FS7_A3', zona: 'G' }
-                        ]
-                    },
-                    { 
-                        codigo: '01-001-219-068', 
-                        gtin: '7801234567899',
-                        glosa: 'TAMOXIFENO 20 MG CM', 
-                        ubicaciones: [
-                            { tipo: 'master', ubicacion: 'ZONA_E_4', zona: 'E' }
-                        ]
-                    },
-                    { 
-                        codigo: '01-001-218-014', 
-                        gtin: '7801234567800',
-                        glosa: 'GLUCOSA 10% SOL INY COLAP 500 ML', 
-                        ubicaciones: [
-                            { tipo: 'master', ubicacion: 'ZONA_I_1', zona: 'I' }
-                        ]
-                    },
-                    { 
-                        codigo: '01-001-221-0042', 
-                        gtin: '7801234567801',
-                        glosa: 'DOLUTEGRAVIR 50 MG CM REC', 
-                        ubicaciones: [
-                            { tipo: 'master', ubicacion: 'ZONA_I_4', zona: 'I' },
-                            { tipo: 'comercial', ubicacion: 'FS7_D4', zona: 'G' }
+                            { tipo: 'master', ubicacion: 'ZONA_I_3', zona: 'I' }
                         ]
                     },
                 ];
@@ -548,10 +725,10 @@
             }
             if (!localStorage.getItem(STORAGE_KEY_MOVEMENTS)) {
                 const sampleMov = [
-                    { fecha: '2025-03-10 14:23:15', codigo: '01-001-216-026', desde: 'RECEPCION_INICIAL', hacia: 'ZONA_A_1', usuario: 'Admin' },
-                    { fecha: '2025-03-11 09:15:40', codigo: '01-001-216-026', desde: 'ZONA_A_1', hacia: 'FS3_A1', usuario: 'Supervisor' },
-                    { fecha: '2025-03-12 11:02:30', codigo: '01-001-214-054', desde: 'RECEPCION_INICIAL', hacia: 'ZONA_B_3', usuario: 'Operario' },
-                    { fecha: '2025-03-13 16:45:10', codigo: '01-001-218-004', desde: 'RECEPCION_INICIAL', hacia: 'ZONA_A_2', usuario: 'Operario' },
+                    { fecha: '2025-03-10 14:23:15', codigo: '01-001-216-026', bodega: 'Farmacos', desde: 'RECEPCION_INICIAL', hacia: 'ZONA_A_1', usuario: 'Admin' },
+                    { fecha: '2025-03-11 09:15:40', codigo: '02-001-003-050', bodega: 'Insumos', desde: 'RECEPCION_INICIAL', hacia: 'ZONA_B_2', usuario: 'Supervisor' },
+                    { fecha: '2025-03-12 11:02:30', codigo: '02-002-001-038', bodega: 'Economato', desde: 'RECEPCION_INICIAL', hacia: 'ZONA_E_3', usuario: 'Operario' },
+                    { fecha: '2025-03-13 16:45:10', codigo: '01-001-212-024', bodega: 'Farmacos', desde: 'RECEPCION_INICIAL', hacia: 'ZONA_C_2', usuario: 'Supervisor' },
                 ];
                 localStorage.setItem(STORAGE_KEY_MOVEMENTS, JSON.stringify(sampleMov));
             }
@@ -567,10 +744,30 @@
         // ============================================================
         //  FUNCIONES DE ACCESO A DATOS
         // ============================================================
-        function getProducts() { return JSON.parse(localStorage.getItem(STORAGE_KEY_PRODUCTS) || '[]'); }
-        function setProducts(p) { localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(p)); }
-        function getMovements() { return JSON.parse(localStorage.getItem(STORAGE_KEY_MOVEMENTS) || '[]'); }
-        function setMovements(m) { localStorage.setItem(STORAGE_KEY_MOVEMENTS, JSON.stringify(m)); }
+        function getAllProducts() { 
+            return JSON.parse(localStorage.getItem(STORAGE_KEY_PRODUCTS) || '[]'); 
+        }
+        function setProducts(p) { 
+            localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(p)); 
+        }
+        function getProducts() {
+            const all = getAllProducts();
+            if (currentWarehouse === 'TODAS') return all;
+            return all.filter(p => p.bodega === currentWarehouse);
+        }
+
+        function getAllMovements() { 
+            return JSON.parse(localStorage.getItem(STORAGE_KEY_MOVEMENTS) || '[]'); 
+        }
+        function setMovements(m) { 
+            localStorage.setItem(STORAGE_KEY_MOVEMENTS, JSON.stringify(m)); 
+        }
+        function getMovements() {
+            const all = getAllMovements();
+            if (currentWarehouse === 'TODAS') return all;
+            return all.filter(m => m.bodega === currentWarehouse);
+        }
+
         function getUsers() { return JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]'); }
         function setUsers(u) { localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(u)); }
         function getConfig() { return JSON.parse(localStorage.getItem(STORAGE_KEY_CONFIG) || '{}'); }
@@ -638,9 +835,18 @@
         // ============================================================
         //  RENDERIZADO DE UI
         // ============================================================
+        function cambiarBodega() {
+            const sel = document.getElementById('warehouseSelect');
+            currentWarehouse = sel.value;
+            renderAll();
+        }
+
         function actualizarUI() {
             const user = getCurrentUser();
             document.getElementById('currentUserDisplay').textContent = user ? `👤 Usuario: ${user.nombre} (${user.perfil})` : '👤 Invitado';
+            const sel = document.getElementById('warehouseSelect');
+            if (sel.value !== currentWarehouse) sel.value = currentWarehouse;
+            
             renderDashboard();
             renderInventario();
             renderHistorial();
@@ -679,46 +885,163 @@
         }
 
         // ----- MAPA -----
-        function renderMapa(highlightZone = null) {
+        function parseUbicacionToGrid(ubicacion, zonaDefault) {
+            let zone = zonaDefault || 'A';
+            let level = 1;
+            const matchNum = ubicacion.match(/_(\d+)$/);
+            if (matchNum) level = parseInt(matchNum[1]);
+            if (!zonaDefault) {
+                const matchZone = ubicacion.match(/ZONA_([A-J])/);
+                if (matchZone) zone = matchZone[1];
+            } else {
+                zone = zonaDefault;
+            }
+            const col = 'ABCDEFGHIJ'.indexOf(zone);
+            const row = Math.min(level - 1, 5);
+            return { col, row, zone, level };
+        }
+
+        function getCellElement(col, row) {
+            const zone = 'ABCDEFGHIJ'[col];
+            const level = row + 1;
+            return document.getElementById(`cell-${zone}-${level}`);
+        }
+
+        function limpiarMapa() {
+            document.querySelectorAll('.map-cell').forEach(cell => {
+                cell.className = 'map-cell';
+                const zone = cell.dataset.zone;
+                const products = getProducts();
+                const hasProduct = products.some(p => p.ubicaciones.some(u => u.zona === zone));
+                if (hasProduct) cell.classList.add('occupied');
+                // Verificar si tiene alertas para mostrar ícono
+                const hasAlert = products.some(p => p.ubicaciones.some(u => u.zona === zone) && p.tags && p.tags.length > 0);
+                if (hasAlert) cell.classList.add('has-alert');
+            });
+            selectedZona = null;
+            document.getElementById('mapProducts').innerHTML = '<p class="empty-state">Selecciona una celda o busca un producto.</p>';
+            document.getElementById('mapProductSearch').value = '';
+        }
+
+        function highlightUbicacion(ubicacion, zona, tipo) {
+            const { col, row } = parseUbicacionToGrid(ubicacion, zona);
+            if (col < 0 || col > 9 || row < 0 || row > 5) return;
+            const cell = getCellElement(col, row);
+            if (!cell) return;
+            document.querySelectorAll('.map-cell').forEach(c => {
+                c.classList.remove('highlight-search', 'highlight-putaway', 'highlight-origin', 'highlight-destiny');
+            });
+            const classMap = {
+                'search': 'highlight-search',
+                'putaway': 'highlight-putaway',
+                'origin': 'highlight-origin',
+                'destiny': 'highlight-destiny'
+            };
+            cell.classList.add(classMap[tipo] || 'highlight-search');
+            let tooltip = cell.querySelector('.tooltip');
+            if (!tooltip) {
+                tooltip = document.createElement('div');
+                tooltip.className = 'tooltip';
+                cell.appendChild(tooltip);
+            }
+            const tipoLabel = {
+                'search': '🔍 Búsqueda',
+                'putaway': '📦 Almacenado',
+                'origin': '🔄 Origen',
+                'destiny': '🔄 Destino'
+            };
+            const alerts = getProductAlertMessagesForUbicacion(ubicacion);
+            const alertText = alerts.length > 0 ? ' ⚠️ ' + alerts.join(' | ') : '';
+            tooltip.textContent = `${tipoLabel[tipo] || '📍'}: ${ubicacion}${alertText}`;
+        }
+
+        function getProductAlertMessagesForUbicacion(ubicacion) {
+            const products = getProducts();
+            const prod = products.find(p => p.ubicaciones.some(u => u.ubicacion === ubicacion));
+            if (!prod) return [];
+            return getProductAlertMessages(prod);
+        }
+
+        function renderMapa() {
             const config = getConfig();
             document.getElementById('mapImage').src = config.mapImage || 'https://via.placeholder.com/1200x600?text=Layout+Bodega+Farmacia';
             
             const overlay = document.getElementById('mapOverlay');
-            const zonas = ['A','B','C','D','E','F','G','H','I','J'];
+            overlay.innerHTML = '';
             const products = getProducts();
+            
             const zoneCount = {};
-            products.forEach(p => p.ubicaciones.forEach(u => {
-                if (u.zona) zoneCount[u.zona] = (zoneCount[u.zona] || 0) + 1;
-            }));
+            const zoneAlerts = {};
+            products.forEach(p => {
+                p.ubicaciones.forEach(u => {
+                    if (u.zona) {
+                        zoneCount[u.zona] = (zoneCount[u.zona] || 0) + 1;
+                        if (p.tags && p.tags.length > 0) {
+                            zoneAlerts[u.zona] = true;
+                        }
+                    }
+                });
+            });
 
-            overlay.innerHTML = zonas.map(z => {
-                const isHighlighted = (z === highlightZone);
-                const classes = `zone ${zoneCount[z] ? 'occupied' : ''} ${isHighlighted ? 'highlighted' : ''}`;
-                return `<div class="${classes}" data-zona="${z}" onclick="filtrarPorZona('${z}')">
-                    Zona ${z}
-                    <span class="sub">${zoneCount[z] || 0}</span>
-                    ${isHighlighted ? '📍' : ''}
-                </div>`;
-            }).join('');
+            for (let col = 0; col < 10; col++) {
+                for (let row = 0; row < 6; row++) {
+                    const zone = 'ABCDEFGHIJ'[col];
+                    const level = row + 1;
+                    const cell = document.createElement('div');
+                    cell.className = 'map-cell';
+                    if (zoneCount[zone] > 0) cell.classList.add('occupied');
+                    if (zoneAlerts[zone]) cell.classList.add('has-alert');
+                    cell.dataset.col = col;
+                    cell.dataset.row = row;
+                    cell.dataset.zone = zone;
+                    cell.id = `cell-${zone}-${level}`;
+                    
+                    const label = document.createElement('span');
+                    label.className = 'cell-label';
+                    label.textContent = `${zone}${level}`;
+                    cell.appendChild(label);
+                    
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'tooltip';
+                    tooltip.textContent = `Zona ${zone} - Nivel ${level} (${zoneCount[zone] || 0} productos)`;
+                    cell.appendChild(tooltip);
+                    
+                    cell.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const zona = this.dataset.zone;
+                        filtrarPorZona(zona);
+                        document.querySelectorAll('.map-cell').forEach(c => {
+                            c.classList.remove('highlight-search', 'highlight-putaway', 'highlight-origin', 'highlight-destiny');
+                        });
+                    });
+                    
+                    overlay.appendChild(cell);
+                }
+            }
         }
 
         function filtrarPorZona(zona) {
+            selectedZona = zona;
             const products = getProducts();
             const filtrados = products.filter(p => p.ubicaciones.some(u => u.zona === zona));
             const container = document.getElementById('mapProducts');
             if (filtrados.length === 0) {
                 container.innerHTML = '<p class="empty-state">No hay productos en esta zona.</p>';
             } else {
-                container.innerHTML = `<ul style="list-style:none; display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:8px; margin-top:8px;">
+                container.innerHTML = `<ul style="list-style:none; display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px; margin-top:8px;">
                     ${filtrados.map(p => `
                         <li style="background:#f8fafc; padding:10px; border-radius:10px; border:1px solid #e2e8f0;">
-                            <strong>${p.codigo}</strong><br>
-                            ${p.glosa}<br>
+                            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:4px; margin-bottom:4px;">
+                                <strong>${p.codigo}</strong>
+                                ${getProductAlertsHTML(p)}
+                            </div>
+                            <div>${p.glosa}</div>
                             <span style="color:#64748b;font-size:0.75rem;">📍 ${p.ubicaciones.map(u => u.ubicacion).join(', ')}</span>
                         </li>
                     `).join('')}
                 </ul>`;
             }
+            document.getElementById('mapProductList').scrollIntoView({ behavior: 'smooth' });
         }
 
         function buscarProductoEnMapa() {
@@ -726,34 +1049,46 @@
             if (!codigo) { alert('Ingresa un código de producto.'); return; }
             const products = getProducts();
             const prod = products.find(p => p.codigo === codigo);
-            if (!prod) { alert(`Producto "${codigo}" no encontrado.`); return; }
+            if (!prod) { alert(`Producto "${codigo}" no encontrado en la bodega seleccionada.`); return; }
             if (!prod.ubicaciones || prod.ubicaciones.length === 0) {
                 alert(`El producto "${codigo}" no tiene ubicaciones asignadas.`);
                 return;
             }
-            const zona = prod.ubicaciones[0].zona;
-            if (zona) {
-                renderMapa(zona);
-                const container = document.getElementById('mapProducts');
-                container.innerHTML = `<ul style="list-style:none; display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:8px; margin-top:8px;">
-                    ${prod.ubicaciones.map(u => `
-                        <li style="background:#dbeafe; padding:10px; border-radius:10px; border:2px solid #2563eb;">
-                            <strong>${prod.codigo}</strong> 🎯<br>
-                            ${prod.glosa}<br>
-                            <span style="color:#64748b;font-size:0.75rem;">📍 ${u.ubicacion} (${u.tipo})</span>
-                        </li>
-                    `).join('')}
-                </ul>`;
-                document.getElementById('mapProductList').scrollIntoView({ behavior: 'smooth' });
-            }
+            
+            document.querySelectorAll('.map-cell').forEach(c => {
+                c.classList.remove('highlight-search', 'highlight-putaway', 'highlight-origin', 'highlight-destiny');
+            });
+            
+            prod.ubicaciones.forEach(u => {
+                highlightUbicacion(u.ubicacion, u.zona, 'search');
+            });
+            
+            const container = document.getElementById('mapProducts');
+            container.innerHTML = `<ul style="list-style:none; display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px; margin-top:8px;">
+                ${prod.ubicaciones.map(u => `
+                    <li style="background:#dbeafe; padding:10px; border-radius:10px; border:2px solid #2563eb;">
+                        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:4px; margin-bottom:4px;">
+                            <strong>${prod.codigo}</strong> 🎯
+                            ${getProductAlertsHTML(prod)}
+                        </div>
+                        <div>${prod.glosa}</div>
+                        <span style="color:#64748b;font-size:0.75rem;">📍 ${u.ubicacion} (${u.tipo})</span>
+                    </li>
+                `).join('')}
+            </ul>`;
+            document.getElementById('mapProductList').scrollIntoView({ behavior: 'smooth' });
         }
 
         // ============================================================
-        //  NUEVO BUSCADOR DE UBICACIÓN (GLOSA, CÓDIGO, GTIN)
+        //  BUSCADOR DE UBICACIÓN
         // ============================================================
         function buscarUbicacion() {
             const query = document.getElementById('searchUbicacion').value.trim().toLowerCase();
             const container = document.getElementById('resultadosBusqueda');
+            
+            document.querySelectorAll('.map-cell').forEach(c => {
+                c.classList.remove('highlight-search', 'highlight-putaway', 'highlight-origin', 'highlight-destiny');
+            });
             
             if (!query) {
                 container.innerHTML = '<p class="empty-state">Introduce un término de búsqueda para comenzar.</p>';
@@ -774,8 +1109,14 @@
                 return;
             }
 
+            if (resultados.length > 0 && resultados[0].ubicaciones.length > 0) {
+                const u = resultados[0].ubicaciones[0];
+                highlightUbicacion(u.ubicacion, u.zona, 'search');
+            }
+
             container.innerHTML = `<p style="margin-bottom:10px; color:#64748b; font-size:0.9rem;">Se encontraron ${resultados.length} producto(s):</p>`;
             container.innerHTML += resultados.map(p => {
+                const alertBadges = getProductAlertsHTML(p);
                 let ubicacionesHtml = p.ubicaciones.map(u => 
                     `<span class="location-badge ${u.tipo === 'master' ? 'location-master' : 'location-comercial'}">${u.tipo.toUpperCase()}</span> 
                      <strong>${u.ubicacion}</strong> (Zona ${u.zona})`
@@ -785,9 +1126,13 @@
                     ubicacionesHtml = '<span style="color:#94a3b8;">Sin ubicaciones asignadas</span>';
                 }
 
+                const bodegaClass = p.bodega === 'Farmacos' ? 'badge-farmacos' : p.bodega === 'Insumos' ? 'badge-insumos' : 'badge-economato';
+
                 return `<div class="result-card">
                     <h4>
                         <span>${p.codigo}</span>
+                        <span class="badge-bodega ${bodegaClass}">${p.bodega}</span>
+                        ${alertBadges}
                         <span style="font-weight:400; font-size:0.75rem; color:#64748b;">GTIN: ${p.gtin || 'N/A'}</span>
                         <button class="btn btn-primary btn-sm" onclick="reubicarProducto('${p.codigo}')" style="margin-left:auto;" ${hasPermission('escritura') ? '' : 'disabled'}>🔄 Reubicar</button>
                     </h4>
@@ -801,7 +1146,7 @@
         }
 
         // ============================================================
-        //  LECTOR DE GTIN / EAN (Integrado en el buscador)
+        //  LECTOR DE GTIN / EAN
         // ============================================================
         let zxingReader = null;
         let zxingActive = false;
@@ -809,10 +1154,11 @@
         function abrirLectorGTINBusqueda() {
             mostrarModal('Escanear GTIN / EAN', `
                 <p>Escanea el código de barras del producto (EAN-13, GS1-128 o DataMatrix) para buscarlo.</p>
-                <div id="zxing-reader" style="width:100%; max-width:320px; margin:10px auto; border-radius:12px; overflow:hidden; background:#0f172a; display:none;"></div>
+                <div id="zxing-reader" style="width:100%; max-width:400px; margin:10px auto; border-radius:12px; overflow:hidden; background:#0f172a; min-height:200px; display:none;"></div>
+                <div id="zxing-status" style="color:#64748b; font-size:0.9rem; text-align:center; margin:8px 0;"></div>
                 <div class="flex" style="justify-content:center; margin-top:10px;">
-                    <button class="btn btn-primary" onclick="iniciarLectorZXing()">📷 Cámara</button>
-                    <button class="btn btn-warning" onclick="document.getElementById('gtinImageInput').click()">🖼️ Imagen</button>
+                    <button class="btn btn-primary" onclick="iniciarLectorZXing()">📷 Usar cámara</button>
+                    <button class="btn btn-warning" onclick="document.getElementById('gtinImageInput').click()">🖼️ Subir imagen</button>
                     <input type="file" id="gtinImageInput" accept="image/*" style="display:none" onchange="leerGTINDesdeImagen(this.files[0])">
                 </div>
                 <p style="color:#64748b; font-size:0.8rem; margin-top:10px;">O escribe el GTIN/EAN manualmente:</p>
@@ -831,61 +1177,95 @@
 
         function iniciarLectorZXing() {
             const container = document.getElementById('zxing-reader');
+            const status = document.getElementById('zxing-status');
             if (!container) return;
             container.style.display = 'block';
-            
+            status.textContent = '🔍 Iniciando cámara...';
             if (zxingReader) {
                 zxingReader.stop().then(() => {
                     zxingReader = null;
-                    iniciarZXing(container);
-                }).catch(() => iniciarZXing(container));
+                    iniciarZXing(container, status);
+                }).catch(() => {
+                    zxingReader = null;
+                    iniciarZXing(container, status);
+                });
             } else {
-                iniciarZXing(container);
+                iniciarZXing(container, status);
             }
         }
 
-        async function iniciarZXing(container) {
+        async function iniciarZXing(container, status) {
             try {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    status.textContent = '❌ Tu navegador no soporta la cámara. Usa "Subir imagen".';
+                    container.style.display = 'none';
+                    return;
+                }
                 const codeReader = new ZXing.BrowserMultiFormatReader();
                 zxingReader = codeReader;
                 zxingActive = true;
-
                 const videoInputDevices = await codeReader.listVideoInputDevices();
-                let selectedDeviceId = videoInputDevices[0]?.deviceId;
-                const rearCamera = videoInputDevices.find(d => d.label.toLowerCase().includes('back') || d.label.toLowerCase().includes('trasera'));
-                if (rearCamera) selectedDeviceId = rearCamera.deviceId;
-
-                if (!selectedDeviceId) {
-                    alert('No se encontró ninguna cámara.');
+                if (videoInputDevices.length === 0) {
+                    status.textContent = '❌ No se encontró ninguna cámara. Usa "Subir imagen".';
                     container.style.display = 'none';
                     zxingActive = false;
                     return;
                 }
-
-                await codeReader.decodeFromVideoDevice(selectedDeviceId, container, (result, error) => {
-                    if (result) {
-                        const textoDecodificado = result.getText();
-                        manejarLecturaGTIN(textoDecodificado);
-                        if (zxingReader) {
-                            zxingReader.stop().then(() => {
-                                zxingReader = null;
-                                container.style.display = 'none';
-                                zxingActive = false;
-                                cerrarModal();
-                            });
+                let selectedDeviceId = videoInputDevices[0].deviceId;
+                const rearCamera = videoInputDevices.find(d => 
+                    d.label.toLowerCase().includes('back') || 
+                    d.label.toLowerCase().includes('trasera') ||
+                    d.label.toLowerCase().includes('environment')
+                );
+                if (rearCamera) selectedDeviceId = rearCamera.deviceId;
+                status.textContent = '📷 Cámara activa. Apunta al código de barras.';
+                await codeReader.decodeFromVideoDevice(
+                    selectedDeviceId,
+                    container,
+                    (result, error) => {
+                        if (result) {
+                            const textoDecodificado = result.getText();
+                            status.textContent = '✅ Código detectado: ' + textoDecodificado;
+                            manejarLecturaGTIN(textoDecodificado);
+                            if (zxingReader) {
+                                zxingReader.stop().then(() => {
+                                    zxingReader = null;
+                                    container.style.display = 'none';
+                                    zxingActive = false;
+                                    status.textContent = '';
+                                    cerrarModal();
+                                });
+                            }
+                        }
+                        if (error && !error.includes('NotFoundException') && !error.includes('FormatException')) {
+                            console.warn('Error de escaneo:', error);
+                            if (error.message && error.message.includes('Permission denied')) {
+                                status.textContent = '❌ Permiso de cámara denegado. Reintenta y acepta el permiso.';
+                            }
                         }
                     }
-                    if (error && !error.includes('NotFoundException')) {}
-                });
+                );
             } catch (err) {
-                alert('No se pudo acceder a la cámara. Usa HTTPS o sube una imagen.');
+                console.error('Error al iniciar ZXing:', err);
+                let msg = 'No se pudo acceder a la cámara. ';
+                if (err.message && err.message.includes('Permission denied')) {
+                    msg += 'Permiso denegado. Reintenta y acepta el permiso.';
+                } else if (err.message && err.message.includes('NotFoundError')) {
+                    msg += 'No se encontró ninguna cámara. Usa "Subir imagen".';
+                } else {
+                    msg += 'Asegúrate de usar HTTPS y permitir el acceso a la cámara.';
+                }
+                status.textContent = '❌ ' + msg;
                 container.style.display = 'none';
                 zxingActive = false;
+                zxingReader = null;
             }
         }
 
         function leerGTINDesdeImagen(file) {
             if (!file) return;
+            const status = document.getElementById('zxing-status');
+            if (status) status.textContent = '📤 Procesando imagen...';
             const reader = new FileReader();
             reader.onload = async function(event) {
                 try {
@@ -895,15 +1275,22 @@
                             const codeReader = new ZXing.BrowserMultiFormatReader();
                             const result = await codeReader.decodeFromImageElement(img);
                             if (result) {
+                                if (status) status.textContent = '✅ Código detectado en imagen.';
                                 manejarLecturaGTIN(result.getText());
                                 cerrarModal();
+                            } else {
+                                if (status) status.textContent = '❌ No se detectó ningún código en la imagen.';
+                                alert('No se pudo leer ningún código en la imagen.');
                             }
                         } catch (err) {
+                            console.error('Error al decodificar imagen:', err);
+                            if (status) status.textContent = '❌ Error al leer la imagen.';
                             alert('No se pudo leer ningún código en la imagen.');
                         }
                     };
                     img.src = event.target.result;
                 } catch (err) {
+                    console.error('Error al cargar la imagen:', err);
                     alert('Error al procesar la imagen.');
                 }
             };
@@ -924,7 +1311,7 @@
                 if (numeros) gtin = numeros[0];
             }
             if (!gtin || gtin.length < 13) {
-                alert('Código GTIN/EAN no válido.');
+                alert('Código GTIN/EAN no válido. Debe tener 13 o 14 dígitos.');
                 return;
             }
             document.getElementById('searchUbicacion').value = gtin;
@@ -939,15 +1326,21 @@
                     zxingActive = false;
                     const container = document.getElementById('zxing-reader');
                     if (container) container.style.display = 'none';
+                    const status = document.getElementById('zxing-status');
+                    if (status) status.textContent = '';
                 }).catch(() => {
                     zxingReader = null;
                     zxingActive = false;
+                    const container = document.getElementById('zxing-reader');
+                    if (container) container.style.display = 'none';
+                    const status = document.getElementById('zxing-status');
+                    if (status) status.textContent = '';
                 });
             }
         }
 
         // ============================================================
-        //  INVENTARIO (con múltiples ubicaciones)
+        //  INVENTARIO (CON ALERTAS)
         // ============================================================
         function renderInventario() {
             const search = document.getElementById('searchInventario').value.toLowerCase();
@@ -956,10 +1349,14 @@
                 p.codigo.toLowerCase().includes(search) || p.glosa.toLowerCase().includes(search)
             );
             const tbody = document.getElementById('inventarioBody');
-            tbody.innerHTML = filtered.map(p => `
-                <tr>
+            tbody.innerHTML = filtered.map(p => {
+                const bodegaClass = p.bodega === 'Farmacos' ? 'badge-farmacos' : p.bodega === 'Insumos' ? 'badge-insumos' : 'badge-economato';
+                const alertBadges = getProductAlertsHTML(p);
+                return `<tr>
                     <td><strong>${p.codigo}</strong></td>
                     <td>${p.glosa}</td>
+                    <td><span class="badge-bodega ${bodegaClass}">${p.bodega}</span></td>
+                    <td>${alertBadges || '<span style="color:#94a3b8; font-size:0.6rem;">Sin alertas</span>'}</td>
                     <td style="font-size:0.8rem;">
                         ${p.ubicaciones.map(u => 
                             `<span class="location-badge ${u.tipo === 'master' ? 'location-master' : 'location-comercial'}">${u.tipo.toUpperCase()}</span> ${u.ubicacion}`
@@ -970,8 +1367,8 @@
                         <button class="btn btn-warning btn-sm" onclick="verHistorial('${p.codigo}')">📜</button>
                         <button class="btn btn-danger btn-sm" onclick="eliminarProducto('${p.codigo}')" ${hasPermission('administracion') ? '' : 'disabled'}>🗑️</button>
                     </td>
-                </tr>
-            `).join('') || '<tr><td colspan="4" class="empty-state">No hay productos</td></tr>';
+                </tr>`;
+            }).join('') || '<tr><td colspan="6" class="empty-state">No hay productos</td></tr>';
         }
 
         function agregarProducto() {
@@ -983,6 +1380,19 @@
                 <input id="modalGtin" placeholder="7801234567890">
                 <label>Glosa</label>
                 <input id="modalGlosa" placeholder="Descripción del producto">
+                <label>Bodega</label>
+                <select id="modalBodega">
+                    <option value="Farmacos">💊 Fármacos</option>
+                    <option value="Insumos">🧪 Insumos Clínicos</option>
+                    <option value="Economato">📦 Economato</option>
+                </select>
+                <label>Alertas (separadas por coma)</label>
+                <select id="modalTags" multiple style="height:auto; min-height:60px;">
+                    <option value="Cámara de Frío">🧊 Cámara de Frío</option>
+                    <option value="Fármaco Controlado">⚠️ Fármaco Controlado</option>
+                    <option value="Ley Ricarte Soto (LRS)">📋 Ley Ricarte Soto (LRS)</option>
+                    <option value="Programa Ministerial (PM)">🏛️ Programa Ministerial (PM)</option>
+                </select>
                 <label>Ubicación Master (Pallet/Rack)</label>
                 <input id="modalUbicMaster" placeholder="ZONA_A_1">
                 <label>Ubicación Comercial (Anaquel/Full Space)</label>
@@ -991,10 +1401,13 @@
                 const codigo = document.getElementById('modalCodigo').value.trim();
                 const gtin = document.getElementById('modalGtin').value.trim();
                 const glosa = document.getElementById('modalGlosa').value.trim();
+                const bodega = document.getElementById('modalBodega').value;
+                const tagsSelect = document.getElementById('modalTags');
+                const tags = Array.from(tagsSelect.selectedOptions).map(opt => opt.value);
                 const master = document.getElementById('modalUbicMaster').value.trim();
                 const comercial = document.getElementById('modalUbicComercial').value.trim();
                 if (!codigo || !glosa) { alert('Código y glosa son obligatorios'); return false; }
-                const products = getProducts();
+                const products = getAllProducts();
                 if (products.find(p => p.codigo === codigo)) { alert('El código ya existe.'); return false; }
                 const ubicaciones = [];
                 if (master) {
@@ -1005,24 +1418,23 @@
                     const zona = comercial.match(/ZONA_([A-J])/)?.[1] || '';
                     ubicaciones.push({ tipo: 'comercial', ubicacion: comercial, zona });
                 }
-                products.push({ codigo, gtin, glosa, ubicaciones });
+                products.push({ codigo, gtin, glosa, bodega, tags, ubicaciones });
                 setProducts(products);
-                const mov = getMovements();
-                mov.push({ fecha: new Date().toLocaleString(), codigo, desde: 'ALTA_INICIAL', hacia: master || comercial || 'SIN_UBICACION', usuario: getCurrentUser().nombre });
+                const mov = getAllMovements();
+                mov.push({ fecha: new Date().toLocaleString(), codigo, bodega, desde: 'ALTA_INICIAL', hacia: master || comercial || 'SIN_UBICACION', usuario: getCurrentUser().nombre });
                 setMovements(mov);
                 renderAll();
                 cerrarModal();
             });
         }
 
-        // ----- REUBICACIÓN CON SOPORTE PARA MÚLTIPLES UBICACIONES -----
+        // ----- REUBICACIÓN CON ALERTAS EN EL MODAL -----
         let html5QrCode = null;
 
         function escaneoQR() {
             const readerContainer = document.getElementById('qr-reader');
             if (!readerContainer) return;
             readerContainer.style.display = 'block';
-
             if (html5QrCode) {
                 html5QrCode.stop().then(() => {
                     html5QrCode.clear();
@@ -1042,6 +1454,20 @@
                     const input = document.getElementById('modalNuevaUbic');
                     if (input) {
                         input.value = decodedText;
+                        const codigo = document.getElementById('modalCodigoReubicacion')?.value;
+                        if (codigo) {
+                            const products = getAllProducts();
+                            const prod = products.find(p => p.codigo === codigo);
+                            if (prod) {
+                                const tipo = document.getElementById('modalTipoUbicacion')?.value || 'master';
+                                const ubicacionObj = prod.ubicaciones.find(u => u.tipo === tipo);
+                                if (ubicacionObj) {
+                                    highlightUbicacion(decodedText, ubicacionObj.zona, 'destiny');
+                                } else if (prod.ubicaciones.length > 0) {
+                                    highlightUbicacion(decodedText, prod.ubicaciones[0].zona, 'destiny');
+                                }
+                            }
+                        }
                         input.style.borderColor = '#16a34a';
                         input.style.backgroundColor = '#f0fdf4';
                         setTimeout(() => {
@@ -1064,17 +1490,32 @@
 
         function reubicarProducto(codigo) {
             if (!hasPermission('escritura')) { alert('No tienes permisos para reubicar.'); return; }
-            const products = getProducts();
+            const products = getAllProducts();
             const prod = products.find(p => p.codigo === codigo);
             if (!prod) return;
 
+            const alertMessages = getProductAlertMessages(prod);
+            let alertHtml = '';
+            if (alertMessages.length > 0) {
+                alertHtml = `<div class="alert-bar alert-bar-warning" style="border-left-color: #dc2626; background: #fef2f2;">
+                    <span style="font-weight:700; color:#b91c1c;">⚠️ ALERTAS DE SEGURIDAD</span>
+                    <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                        ${alertMessages.map(msg => `<span style="background:#fee2e2; padding:2px 10px; border-radius:12px; font-size:0.75rem; color:#b91c1c;">${msg}</span>`).join('')}
+                    </div>
+                </div>`;
+            }
+
+            const codigoHidden = `<input type="hidden" id="modalCodigoReubicacion" value="${codigo}">`;
             const ubicacionesActuales = prod.ubicaciones.map(u => `${u.tipo}: ${u.ubicacion}`).join('\n') || 'Ninguna';
+
             mostrarModal('Reubicar producto', `
+                ${codigoHidden}
+                ${alertHtml}
                 <p><strong>${prod.codigo}</strong> - ${prod.glosa}</p>
                 <label>Ubicaciones actuales</label>
                 <textarea rows="2" readonly style="width:100%; background:#f1f5f9; border:none; padding:8px; border-radius:8px;">${ubicacionesActuales}</textarea>
                 <label>Tipo de ubicación a reubicar</label>
-                <select id="modalTipoUbicacion">
+                <select id="modalTipoUbicacion" onchange="actualizarMapaOrigen()">
                     <option value="master">Master (Pallet/Rack)</option>
                     <option value="comercial">Comercial (Anaquel/Full Space)</option>
                 </select>
@@ -1084,14 +1525,13 @@
                     <button type="button" class="btn btn-primary" onclick="escaneoQR()">📷 QR</button>
                 </div>
                 <div id="qr-reader" class="qr-reader-container"></div>
+                <p style="font-size:0.75rem; color:#64748b; margin-top:6px;">🔴 Origen en rojo | 🟠 Destino en naranja (al escanear/escribir)</p>
             `, () => {
                 const tipo = document.getElementById('modalTipoUbicacion').value;
                 const nueva = document.getElementById('modalNuevaUbic').value.trim();
                 if (!nueva) { alert('Debes indicar una ubicación.'); return false; }
-                
                 const zona = nueva.match(/ZONA_([A-J])/)?.[1] || '';
                 const desde = prod.ubicaciones.find(u => u.tipo === tipo)?.ubicacion || 'SIN_UBICACION';
-                
                 const idx = prod.ubicaciones.findIndex(u => u.tipo === tipo);
                 if (idx !== -1) {
                     prod.ubicaciones[idx] = { tipo, ubicacion: nueva, zona };
@@ -1099,22 +1539,44 @@
                     prod.ubicaciones.push({ tipo, ubicacion: nueva, zona });
                 }
                 setProducts(products);
-
-                const mov = getMovements();
-                mov.push({ fecha: new Date().toLocaleString(), codigo, desde, hacia: nueva, usuario: getCurrentUser().nombre });
+                const mov = getAllMovements();
+                mov.push({ fecha: new Date().toLocaleString(), codigo, bodega: prod.bodega, desde, hacia: nueva, usuario: getCurrentUser().nombre });
                 setMovements(mov);
+                
+                highlightUbicacion(nueva, zona, 'putaway');
+                document.querySelectorAll('.map-cell.highlight-origin').forEach(c => c.classList.remove('highlight-origin'));
                 
                 renderAll();
                 cerrarModal();
             });
+            
+            setTimeout(() => {
+                actualizarMapaOrigen();
+            }, 200);
+        }
+
+        function actualizarMapaOrigen() {
+            const codigo = document.getElementById('modalCodigoReubicacion')?.value;
+            if (!codigo) return;
+            const products = getAllProducts();
+            const prod = products.find(p => p.codigo === codigo);
+            if (!prod) return;
+            const tipo = document.getElementById('modalTipoUbicacion').value;
+            const ubicacionObj = prod.ubicaciones.find(u => u.tipo === tipo);
+            if (ubicacionObj) {
+                document.querySelectorAll('.map-cell').forEach(c => {
+                    c.classList.remove('highlight-origin');
+                });
+                highlightUbicacion(ubicacionObj.ubicacion, ubicacionObj.zona, 'origin');
+            }
         }
 
         function verHistorial(codigo) {
             const mov = getMovements().filter(m => m.codigo === codigo);
-            if (mov.length === 0) { alert('No hay movimientos para este producto.'); return; }
-            let html = `<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Desde</th><th>Hacia</th><th>Usuario</th></tr></thead><tbody>`;
+            if (mov.length === 0) { alert('No hay movimientos para este producto en la bodega seleccionada.'); return; }
+            let html = `<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Bodega</th><th>Desde</th><th>Hacia</th><th>Usuario</th></tr></thead><tbody>`;
             mov.forEach(m => {
-                html += `<tr><td>${m.fecha}</td><td>${m.desde || '-'}</td><td>${m.hacia || '-'}</td><td>${m.usuario || 'Sistema'}</td></tr>`;
+                html += `<tr><td>${m.fecha}</td><td><span class="badge-bodega badge-farmacos">${m.bodega}</span></td><td>${m.desde || '-'}</td><td>${m.hacia || '-'}</td><td>${m.usuario || 'Sistema'}</td></tr>`;
             });
             html += `</tbody></table></div>`;
             mostrarModal(`Historial de ${codigo}`, html, null, true);
@@ -1123,7 +1585,7 @@
         function eliminarProducto(codigo) {
             if (!hasPermission('administracion')) { alert('No tienes permisos de administración.'); return; }
             if (!confirm(`¿Eliminar producto ${codigo}?`)) return;
-            let products = getProducts();
+            let products = getAllProducts();
             products = products.filter(p => p.codigo !== codigo);
             setProducts(products);
             renderAll();
@@ -1139,17 +1601,20 @@
                 <tr>
                     <td>${m.fecha}</td>
                     <td><strong>${m.codigo}</strong></td>
+                    <td><span class="badge-bodega ${m.bodega === 'Farmacos' ? 'badge-farmacos' : m.bodega === 'Insumos' ? 'badge-insumos' : 'badge-economato'}">${m.bodega}</span></td>
                     <td>${m.desde || '-'}</td>
                     <td>${m.hacia || '-'}</td>
                     <td>${m.usuario || 'Sistema'}</td>
                 </tr>
-            `).join('') || '<tr><td colspan="5" class="empty-state">No hay movimientos</td></tr>';
+            `).join('') || '<tr><td colspan="6" class="empty-state">No hay movimientos</td></tr>';
         }
 
         function limpiarHistorial() {
             if (!hasPermission('administracion')) { alert('No tienes permisos para limpiar el historial.'); return; }
-            if (!confirm('¿Eliminar todo el historial?')) return;
-            setMovements([]);
+            if (!confirm('¿Eliminar todo el historial de la bodega seleccionada?')) return;
+            const all = getAllMovements();
+            const filtered = all.filter(m => m.bodega !== currentWarehouse && currentWarehouse !== 'TODAS');
+            setMovements(currentWarehouse === 'TODAS' ? [] : filtered);
             renderAll();
         }
 
@@ -1276,15 +1741,15 @@
         // ----- EXPORTAR / IMPORTAR / RESET -----
         function exportarDatos() {
             const data = {
-                products: getProducts(),
-                movements: getMovements(),
+                products: getAllProducts(),
+                movements: getAllMovements(),
                 users: getUsers(),
                 config: getConfig()
             };
             const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = 'wms_backup.json';
+            a.download = 'wms_backup_multibodega.json';
             a.click();
         }
 
@@ -1354,6 +1819,9 @@
             }
             detenerLectorZXing();
             modalCallback = null;
+            document.querySelectorAll('.map-cell').forEach(c => {
+                c.classList.remove('highlight-origin', 'highlight-destiny', 'highlight-putaway');
+            });
         }
 
         function ejecutarModal() {
@@ -1375,7 +1843,14 @@
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                 const target = document.getElementById(`tab-${tabId}`);
                 if (target) target.classList.add('active');
-                if (tabId === 'mapa') renderMapa();
+                if (tabId === 'mapa') {
+                    renderMapa();
+                    setTimeout(() => {
+                        document.querySelectorAll('.map-cell').forEach(c => {
+                            c.classList.remove('highlight-search', 'highlight-putaway', 'highlight-origin', 'highlight-destiny');
+                        });
+                    }, 100);
+                }
                 if (tabId === 'buscador') buscarUbicacion();
             });
         });
@@ -1397,7 +1872,7 @@
             if (e.key === 'Enter') handleLogin();
         });
 
-        console.log('✅ WMS Lite con buscador avanzado, múltiples ubicaciones y diseño responsive cargado.');
+        console.log('✅ WMS Lite con alertas para Fármacos Controlados, Cámara de Frío, LRS y PM cargado.');
     </script>
 </body>
 </html>
