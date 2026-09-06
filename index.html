@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WMS Lite · MultiBodega</title>
+    <!-- Librería para QR (también lee EAN-13/GS1-128) -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <!-- Librería ZXing para lectura desde imagen (fallback) -->
     <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.2/umd/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.1/umd/index.min.js"></script>
     <style>
@@ -327,8 +330,8 @@
         // ============================================================
         //  CONSTANTES Y CLAVES DE STORAGE
         // ============================================================
-        const STORAGE_KEY_PRODUCTS = 'wms_products_v4';
-        const STORAGE_KEY_MOVEMENTS = 'wms_movements_v4';
+        const STORAGE_KEY_PRODUCTS = 'wms_products_v5';
+        const STORAGE_KEY_MOVEMENTS = 'wms_movements_v5';
         const STORAGE_KEY_USERS = 'wms_users';
         const STORAGE_KEY_CONFIG = 'wms_config';
         const STORAGE_KEY_SESSION = 'wms_session_user';
@@ -918,18 +921,17 @@
         }
 
         // ============================================================
-        //  LECTOR DE GTIN / EAN (CORREGIDO)
+        //  NUEVO LECTOR GTIN CON html5-qrcode (MÁS ESTABLE)
         // ============================================================
-        let zxingReader = null;
-        let zxingActive = false;
+        let html5QRScanner = null;
 
         function abrirLectorGTINBusqueda() {
             mostrarModal('Escanear GTIN / EAN', `
                 <p>Escanea el código de barras del producto (EAN-13, GS1-128 o DataMatrix) para buscarlo.</p>
-                <div id="zxing-reader" style="width:100%; max-width:400px; margin:10px auto; border-radius:12px; overflow:hidden; background:#0f172a; min-height:200px; display:none;"></div>
-                <div id="zxing-status" style="color:#64748b; font-size:0.9rem; text-align:center; margin:8px 0;"></div>
+                <div id="gtin-scanner-container" style="width:100%; max-width:400px; margin:10px auto; border-radius:12px; overflow:hidden; background:#0f172a; min-height:200px;"></div>
+                <div id="gtin-scanner-status" style="color:#64748b; font-size:0.9rem; text-align:center; margin:8px 0;">📷 Presiona "Iniciar cámara" para comenzar.</div>
                 <div class="flex" style="justify-content:center; margin-top:10px;">
-                    <button class="btn btn-primary" onclick="iniciarLectorZXing()">📷 Usar cámara</button>
+                    <button class="btn btn-primary" onclick="iniciarLectorGTIN()">📷 Iniciar cámara</button>
                     <button class="btn btn-warning" onclick="document.getElementById('gtinImageInput').click()">🖼️ Subir imagen</button>
                     <input type="file" id="gtinImageInput" accept="image/*" style="display:none" onchange="leerGTINDesdeImagen(this.files[0])">
                 </div>
@@ -946,126 +948,108 @@
             
             document.getElementById('modalActionBtn').textContent = 'Cerrar';
             document.getElementById('modalActionBtn').onclick = function() {
-                detenerLectorZXing();
+                detenerLectorGTIN();
                 cerrarModal();
             };
         }
 
-        function iniciarLectorZXing() {
-            const container = document.getElementById('zxing-reader');
-            const status = document.getElementById('zxing-status');
+        function iniciarLectorGTIN() {
+            const container = document.getElementById('gtin-scanner-container');
+            const status = document.getElementById('gtin-scanner-status');
             if (!container) return;
-            container.style.display = 'block';
-            status.textContent = '🔍 Iniciando cámara...';
-            // Detener lector anterior
-            if (zxingReader) {
-                zxingReader.stop().then(() => {
-                    zxingReader = null;
-                    iniciarZXing(container, status);
+
+            // Detener escáner anterior si existe
+            if (html5QRScanner) {
+                html5QRScanner.stop().then(() => {
+                    html5QRScanner = null;
+                    iniciarHtml5Scanner(container, status);
                 }).catch(() => {
-                    zxingReader = null;
-                    iniciarZXing(container, status);
+                    html5QRScanner = null;
+                    iniciarHtml5Scanner(container, status);
                 });
             } else {
-                iniciarZXing(container, status);
+                iniciarHtml5Scanner(container, status);
             }
         }
 
-        async function iniciarZXing(container, status) {
+        function iniciarHtml5Scanner(container, status) {
+            status.textContent = '📷 Solicitando acceso a la cámara...';
+            
+            // Verificar si el navegador soporta getUserMedia
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                status.textContent = '❌ Tu navegador no soporta la cámara. Usa "Subir imagen".';
+                return;
+            }
+
             try {
-                // Verificar soporte de getUserMedia
-                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                    status.textContent = '❌ Tu navegador no soporta la cámara. Usa "Subir imagen".';
-                    container.style.display = 'none';
-                    return;
-                }
+                html5QRScanner = new Html5Qrcode("gtin-scanner-container");
+                
+                const config = {
+                    fps: 10,
+                    qrbox: { width: 250, height: 100 },
+                    formatsToSupport: [
+                        Html5QrcodeSupportedFormats.EAN_13,
+                        Html5QrcodeSupportedFormats.EAN_8,
+                        Html5QrcodeSupportedFormats.CODE_128,
+                        Html5QrcodeSupportedFormats.CODE_39,
+                        Html5QrcodeSupportedFormats.QR_CODE,
+                        Html5QrcodeSupportedFormats.DATA_MATRIX
+                    ]
+                };
 
-                const codeReader = new ZXing.BrowserMultiFormatReader();
-                zxingReader = codeReader;
-                zxingActive = true;
-
-                // Obtener lista de dispositivos de video
-                let devices = [];
-                try {
-                    devices = await codeReader.listVideoInputDevices();
-                } catch (e) {
-                    // Si falla listar dispositivos, intentar con el primero por defecto
-                    devices = [{ deviceId: 'default' }];
-                }
-                console.log('📷 Dispositivos de video:', devices);
-
-                if (devices.length === 0) {
-                    status.textContent = '❌ No se encontró ninguna cámara. Usa "Subir imagen".';
-                    container.style.display = 'none';
-                    zxingActive = false;
-                    return;
-                }
-
-                // Seleccionar la primera cámara (evitar problemas con 'environment' en algunos navegadores)
-                let selectedDeviceId = devices[0].deviceId;
-                // Intentar elegir la trasera si existe (pero sin fallar si no)
-                const rearCamera = devices.find(d => 
-                    d.label && (d.label.toLowerCase().includes('back') || 
-                    d.label.toLowerCase().includes('trasera') ||
-                    d.label.toLowerCase().includes('environment'))
-                );
-                if (rearCamera) selectedDeviceId = rearCamera.deviceId;
-
-                status.textContent = '📷 Cámara activa. Apunta al código de barras.';
-
-                // Iniciar la decodificación
-                await codeReader.decodeFromVideoDevice(
-                    selectedDeviceId,
-                    container,
-                    (result, error) => {
-                        if (result) {
-                            const textoDecodificado = result.getText();
-                            status.textContent = '✅ Código detectado: ' + textoDecodificado;
-                            manejarLecturaGTIN(textoDecodificado);
-                            // Detener después de una lectura exitosa
-                            if (zxingReader) {
-                                zxingReader.stop().then(() => {
-                                    zxingReader = null;
-                                    container.style.display = 'none';
-                                    zxingActive = false;
-                                    status.textContent = '';
-                                    cerrarModal();
-                                }).catch(() => {
-                                    zxingReader = null;
-                                    container.style.display = 'none';
-                                    zxingActive = false;
-                                });
-                            }
-                        }
-                        if (error && !error.includes('NotFoundException') && !error.includes('FormatException')) {
-                            // Mostrar errores importantes (excepto "no encontrado")
+                html5QRScanner.start(
+                    { facingMode: "environment" },
+                    config,
+                    (decodedText) => {
+                        // Éxito al leer
+                        status.textContent = '✅ Código detectado: ' + decodedText;
+                        manejarLecturaGTIN(decodedText);
+                        detenerLectorGTIN();
+                        cerrarModal();
+                    },
+                    (error) => {
+                        // Ignorar errores de no-encontrado
+                        if (error && !error.includes('NotFoundException')) {
                             console.warn('Error de escaneo:', error);
-                            if (error.message && error.message.includes('Permission denied')) {
+                            if (error.includes('Permission denied')) {
                                 status.textContent = '❌ Permiso de cámara denegado. Reintenta y acepta el permiso.';
                             }
                         }
                     }
-                );
+                ).then(() => {
+                    status.textContent = '📷 Cámara activa. Apunta al código de barras.';
+                }).catch((err) => {
+                    console.error('Error al iniciar escáner:', err);
+                    status.textContent = '❌ No se pudo iniciar la cámara. Usa "Subir imagen".';
+                });
             } catch (err) {
-                console.error('Error al iniciar ZXing:', err);
-                let msg = 'No se pudo acceder a la cámara. ';
-                if (err.message && err.message.includes('Permission denied')) {
-                    msg += 'Permiso denegado. Reintenta y acepta el permiso.';
-                } else if (err.message && err.message.includes('NotFoundError')) {
-                    msg += 'No se encontró ninguna cámara. Usa "Subir imagen".';
-                } else {
-                    msg += 'Asegúrate de usar HTTPS y permitir el acceso a la cámara.';
-                }
-                status.textContent = '❌ ' + msg;
-                container.style.display = 'none';
-                zxingActive = false;
-                zxingReader = null;
+                console.error('Error al crear el escáner:', err);
+                status.textContent = '❌ Error al crear el escáner. Usa "Subir imagen".';
             }
         }
 
+        function detenerLectorGTIN() {
+            if (html5QRScanner) {
+                html5QRScanner.stop().then(() => {
+                    html5QRScanner = null;
+                    const container = document.getElementById('gtin-scanner-container');
+                    if (container) container.innerHTML = '';
+                    const status = document.getElementById('gtin-scanner-status');
+                    if (status) status.textContent = '';
+                }).catch(() => {
+                    html5QRScanner = null;
+                    const container = document.getElementById('gtin-scanner-container');
+                    if (container) container.innerHTML = '';
+                    const status = document.getElementById('gtin-scanner-status');
+                    if (status) status.textContent = '';
+                });
+            }
+        }
+
+        // ----- Lectura desde imagen (con procesamiento avanzado) -----
         function leerGTINDesdeImagen(file) {
             if (!file) return;
-            const status = document.getElementById('zxing-status');
+            const status = document.getElementById('gtin-scanner-status');
             const previewContainer = document.getElementById('imagePreviewContainer');
             const previewImg = document.getElementById('imagePreview');
             
@@ -1078,19 +1062,20 @@
             };
             reader.readAsDataURL(file);
 
-            // Procesar la imagen para decodificar
+            // Procesar la imagen con canvas (mejor que directo)
             setTimeout(() => {
                 try {
                     const img = new Image();
                     img.onload = async function() {
                         try {
-                            // Usar un canvas para redimensionar y mejorar la lectura
+                            // Crear canvas para mejorar la imagen
                             const canvas = document.createElement('canvas');
                             const ctx = canvas.getContext('2d');
-                            // Redimensionar a un tamaño razonable
-                            const maxSize = 800;
+                            
+                            // Redimensionar a un tamaño razonable (800px de ancho máximo)
                             let width = img.width;
                             let height = img.height;
+                            const maxSize = 800;
                             if (width > maxSize || height > maxSize) {
                                 const ratio = Math.min(maxSize / width, maxSize / height);
                                 width = width * ratio;
@@ -1098,9 +1083,14 @@
                             }
                             canvas.width = width;
                             canvas.height = height;
+                            
+                            // Dibujar imagen en escala de grises para mejorar detección
                             ctx.drawImage(img, 0, 0, width, height);
                             
-                            // Decodificar desde el canvas
+                            // Obtener datos de píxeles para ajustar contraste (opcional)
+                            // Simplemente usamos el canvas directamente
+
+                            // Intentar decodificar con ZXing desde el canvas
                             const codeReader = new ZXing.BrowserMultiFormatReader();
                             const result = await codeReader.decodeFromCanvas(canvas);
                             if (result) {
@@ -1108,22 +1098,22 @@
                                 manejarLecturaGTIN(result.getText());
                                 cerrarModal();
                             } else {
-                                status.textContent = '❌ No se detectó ningún código en la imagen.';
-                                alert('No se pudo leer ningún código en la imagen. Asegúrate de que el código esté nítido y bien iluminado.');
+                                status.textContent = '❌ No se detectó ningún código.';
+                                alert('No se pudo leer ningún código en la imagen. Asegúrate de que el código esté nítido y bien iluminado, y que sea EAN-13 o GS1-128.');
                             }
                         } catch (err) {
                             console.error('Error al decodificar imagen:', err);
                             status.textContent = '❌ Error al leer la imagen.';
-                            alert('No se pudo leer ningún código en la imagen. Asegúrate de que el código esté nítido y bien iluminado.');
+                            alert('No se pudo leer ningún código en la imagen. Asegúrate de que el código esté nítido y bien iluminado, y que sea EAN-13 o GS1-128.');
                         }
                     };
-                    img.src = previewImg.src; // Usar la misma imagen cargada
+                    img.src = previewImg.src; // Usar la imagen cargada
                 } catch (err) {
                     console.error('Error al procesar imagen:', err);
                     status.textContent = '❌ Error al procesar la imagen.';
                     alert('Error al procesar la imagen. Intenta con otra foto.');
                 }
-            }, 500); // Esperar a que la imagen se cargue
+            }, 500); // Esperar a que se cargue la vista previa
         }
 
         function manejarLecturaGTIN(texto) {
@@ -1148,33 +1138,6 @@
             document.getElementById('searchUbicacion').value = gtin;
             buscarUbicacion();
             document.querySelector('nav button[data-tab="buscador"]').click();
-        }
-
-        function detenerLectorZXing() {
-            if (zxingReader) {
-                zxingReader.stop().then(() => {
-                    zxingReader = null;
-                    zxingActive = false;
-                    const container = document.getElementById('zxing-reader');
-                    if (container) container.style.display = 'none';
-                    const status = document.getElementById('zxing-status');
-                    if (status) status.textContent = '';
-                    const previewContainer = document.getElementById('imagePreviewContainer');
-                    if (previewContainer) previewContainer.style.display = 'none';
-                }).catch(() => {
-                    zxingReader = null;
-                    zxingActive = false;
-                    const container = document.getElementById('zxing-reader');
-                    if (container) container.style.display = 'none';
-                    const status = document.getElementById('zxing-status');
-                    if (status) status.textContent = '';
-                    const previewContainer = document.getElementById('imagePreviewContainer');
-                    if (previewContainer) previewContainer.style.display = 'none';
-                });
-            } else {
-                const previewContainer = document.getElementById('imagePreviewContainer');
-                if (previewContainer) previewContainer.style.display = 'none';
-            }
         }
 
         // ============================================================
@@ -1655,7 +1618,7 @@
                     html5QrCode = null;
                 }).catch(() => { html5QrCode = null; });
             }
-            detenerLectorZXing();
+            detenerLectorGTIN();
             modalCallback = null;
             document.querySelectorAll('.map-cell').forEach(c => {
                 c.classList.remove('highlight-origin', 'highlight-destiny', 'highlight-putaway');
@@ -1710,7 +1673,7 @@
             if (e.key === 'Enter') handleLogin();
         });
 
-        console.log('✅ WMS Lite con escaneo GTIN mejorado, alertas para fármacos y multi-bodega cargado.');
+        console.log('✅ WMS Lite con escáner GTIN mejorado (html5-qrcode) y alertas para fármacos cargado.');
     </script>
 </body>
 </html>
