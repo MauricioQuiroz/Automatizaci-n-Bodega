@@ -41,6 +41,7 @@
         #loginModal input:focus { outline:none; border-color:var(--primary); }
         #loginModal .btn { width:100%; margin-top:16px; padding:12px; font-size:1rem; border-radius:10px; }
         .login-error { color:var(--danger); font-size:0.85rem; margin-top:8px; display:none; }
+        .forgot-link { display:block; margin-top:10px; font-size:0.75rem; color:var(--primary); cursor:pointer; text-decoration:underline; font-weight:600; }
 
         /* HEADER */
         header { background: #0f172a; color: var(--white); padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
@@ -164,6 +165,7 @@
             <input type="password" id="loginPass" placeholder="••••••••">
             <div id="loginError" class="login-error">Usuario o contraseña incorrectos.</div>
             <button class="btn btn-primary" onclick="handleLogin()">Ingresar</button>
+            <span class="forgot-link" onclick="abrirModalRecuperarPass()">¿Olvidaste tu contraseña?</span>
         </div>
     </div>
 
@@ -332,15 +334,15 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- SCRIPT PRINCIPAL CON LECTOR QR INTEGRADO -->
+    <!-- SCRIPT PRINCIPAL OPTIMIZADO -->
     <script>
-        const STORAGE_KEY = 'wms_hsjd_full_data_v7';
+        const STORAGE_KEY = 'wms_hsjd_full_data_v8';
 
         const DEFAULT_DATA = {
             users: [
-                { id: 1, nombre: 'Admin', perfil: 'admin', password: 'admin', permisos: ['lectura','escritura','administracion','carga','descarga'] },
-                { id: 2, nombre: 'Supervisor', perfil: 'supervisor', password: '1234', permisos: ['lectura','escritura','carga','descarga'] },
-                { id: 3, nombre: 'Operario', perfil: 'operario', password: '1234', permisos: ['lectura','escritura'] },
+                { id: 1, nombre: 'Admin', perfil: 'admin', password: 'admin', permisos: ['lectura', 'escritura', 'administracion', 'carga', 'descarga'] },
+                { id: 2, nombre: 'Supervisor', perfil: 'supervisor', password: '1234', permisos: ['lectura', 'escritura', 'carga', 'descarga'] },
+                { id: 3, nombre: 'Operario', perfil: 'operario', password: '1234', permisos: ['lectura', 'escritura'] },
                 { id: 4, nombre: 'Invitado', perfil: 'invitado', password: '1234', permisos: ['lectura'] }
             ],
             warehouses: [
@@ -353,6 +355,13 @@
             ],
             movements: [],
             layouts: {}
+        };
+
+        const PERFILES_CONFIG = {
+            admin: ['lectura', 'escritura', 'administracion', 'carga', 'descarga'],
+            supervisor: ['lectura', 'escritura', 'carga', 'descarga'],
+            operario: ['lectura', 'escritura'],
+            invitado: ['lectura']
         };
 
         function getDB() {
@@ -419,6 +428,31 @@
             } else {
                 document.getElementById('loginError').style.display = 'block';
             }
+        }
+
+        function abrirModalRecuperarPass() {
+            mostrarModal('🔑 Restablecer Contraseña', `
+                <p style="font-size:0.8rem; color:#64748b; margin-bottom:8px;">Ingresa tu nombre de usuario para establecer una nueva contraseña de acceso.</p>
+                <label>Nombre de Usuario</label>
+                <input id="recUser" placeholder="Tu usuario exacto">
+                <label style="margin-top:6px;">Nueva Contraseña</label>
+                <input id="recPass" type="password" placeholder="Nueva contraseña">
+            `);
+            modalActionBtn.textContent = 'Actualizar Contraseña';
+            modalCallback = () => {
+                const uName = document.getElementById('recUser').value.trim();
+                const nPass = document.getElementById('recPass').value.trim();
+                if(!uName || !nPass) return alert('Completa todos los campos');
+
+                const db = getDB();
+                const usr = db.users.find(x => x.nombre.toLowerCase() === uName.toLowerCase());
+                if(!usr) return alert('No se encontró un usuario con ese nombre.');
+
+                usr.password = nPass;
+                saveDB(db);
+                cerrarModal();
+                mostrarToast('✅ Contraseña actualizada con éxito. Ya puedes iniciar sesión.');
+            };
         }
 
         function logout() {
@@ -756,9 +790,7 @@
         }
 
         function procesarTextoQR(texto) {
-            // Soporta formatos estándar o texto libre estructurado del QR (Ej: "[Pallet] Zona G - Anaquel 7, A4" o JSON)
             try {
-                // Intentar interpretar si es JSON estructurado
                 const parsed = JSON.parse(texto);
                 if(parsed.zona) document.getElementById(document.getElementById('mZona') ? 'mZona' : 'nuevoZona').value = parsed.zona;
                 if(parsed.tipo) document.getElementById(document.getElementById('mTipo') ? 'mTipo' : 'nuevoTipo').value = parsed.tipo;
@@ -768,10 +800,7 @@
                 return;
             } catch(e) {}
 
-            // Parseo inteligente por expresiones regulares si es texto plano
             const txt = texto.toLowerCase();
-            
-            // Detectar Tipo
             if(txt.includes('pallet') || txt.includes('caja máster')) {
                 const sel = document.getElementById('mTipo') || document.getElementById('nuevoTipo');
                 if(sel) sel.value = 'Pallet';
@@ -780,7 +809,6 @@
                 if(sel) sel.value = 'Full Space';
             }
 
-            // Detectar Zona (Busca letra de A a J tras la palabra zona o al inicio)
             const matchZona = texto.match(/zona\s*([a-j])/i) || texto.match(/z([a-j])/i);
             if(matchZona) {
                 const zonaVal = matchZona[1].toUpperCase();
@@ -788,7 +816,6 @@
                 if(selZona) selZona.value = zonaVal;
             }
 
-            // Detectar Anaquel / Rack / Altura (Busca número tras anaquel o rack)
             const matchAnaq = texto.match(/anaquel\s*(\d+)/i) || texto.match(/rack\s*(\d+)/i) || texto.match(/alt[u|i]ra\s*(\d+)/i);
             if(matchAnaq) {
                 const anaqVal = matchAnaq[1];
@@ -796,7 +823,6 @@
                 if(inputAnaq) inputAnaq.value = anaqVal;
             }
 
-            // Detectar Posición (Busca patrón tipo A4, B1, etc.)
             const matchPos = texto.match(/pos[i|c][i|o]n\s*([a-z0-9]+)/i) || texto.match(/,\s*([a-z]\d+)/i);
             if(matchPos) {
                 const posVal = matchPos[1].toUpperCase();
@@ -917,7 +943,10 @@
                     <td>${u.nombre}</td>
                     <td><span class="badge badge-${u.perfil}">${u.perfil}</span></td>
                     <td>${u.permisos.join(', ')}</td>
-                    <td>${isAdmin && u.id !== 1 ? `<button class="btn btn-danger btn-xs" onclick="eliminarUsuario(${u.id})">🗑️</button>` : 'Principal'}</td>
+                    <td>
+                        ${isAdmin ? `<button class="btn btn-primary btn-xs" onclick="editarUsuarioModal(${u.id})">✏️ Editar</button>` : ''}
+                        ${isAdmin && u.id !== 1 ? `<button class="btn btn-danger btn-xs" onclick="eliminarUsuario(${u.id})">🗑️</button>` : ''}
+                    </td>
                 </tr>
             `).join('');
         }
@@ -925,22 +954,25 @@
         function mostrarModalUsuario() {
             mostrarModal('➕ Nuevo Usuario', `
                 <div class="form-grid">
-                    <div class="full-width"><label>Nombre</label><input id="uNombre" placeholder="Nombre"></div>
+                    <div class="full-width"><label>Nombre</label><input id="uNombre" placeholder="Nombre de usuario"></div>
                     <div class="full-width"><label>Contraseña</label><input id="uPass" type="password" placeholder="Contraseña"></div>
-                    <div><label>Perfil</label><select id="uPerfil"><option value="admin">Admin</option><option value="supervisor">Supervisor</option><option value="operario">Operario</option><option value="invitado">Invitado</option></select></div>
-                    <div><label>Permisos</label><input id="uPerm" value="lectura, escritura"></div>
+                    <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarSelectPermisos()"><option value="admin">Admin</option><option value="supervisor">Supervisor</option><option value="operario">Operario</option><option value="invitado">Invitado</option></select></div>
+                    <div class="full-width"><label>Permisos (Automáticos según perfil)</label><select id="uPermisosSelect"><option value="">Cargando permisos...</option></select></div>
                 </div>
             `);
+            actualizarSelectPermisos();
             modalCallback = () => {
                 const nombre = document.getElementById('uNombre').value.trim();
                 const pass = document.getElementById('uPass').value.trim();
                 const perfil = document.getElementById('uPerfil').value;
-                const perm = document.getElementById('uPerm').value.split(',').map(s=>s.trim());
-                if(!nombre || !pass) return alert('Completa los campos');
+                const permisos = PERFILES_CONFIG[perfil] || ['lectura'];
+                if(!nombre || !pass) return alert('Completa los campos obligatorios');
 
                 const db = getDB();
+                if(db.users.some(x => x.nombre.toLowerCase() === nombre.toLowerCase())) return alert('Ya existe un usuario con ese nombre.');
+
                 const newId = db.users.length > 0 ? Math.max(...db.users.map(x=>x.id))+1 : 1;
-                db.users.push({ id: newId, nombre, password: pass, perfil, permisos: perm });
+                db.users.push({ id: newId, nombre, password: pass, perfil, permisos });
                 saveDB(db);
                 renderAll();
                 cerrarModal();
@@ -948,12 +980,63 @@
             };
         }
 
+        function editarUsuarioModal(id) {
+            const db = getDB();
+            const u = db.users.find(x => x.id === id);
+            if(!u) return;
+
+            mostrarModal('✏️ Editar Usuario / Perfil', `
+                <div class="form-grid">
+                    <div class="full-width"><label>Nombre</label><input id="uNombre" value="${u.nombre}"></div>
+                    <div class="full-width"><label>Nueva Contraseña (dejar en blanco para mantener la actual)</label><input id="uPass" type="password" placeholder="••••••••"></div>
+                    <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarSelectPermisos()"><option value="admin" ${u.perfil==='admin'?'selected':''}>Admin</option><option value="supervisor" ${u.perfil==='supervisor'?'selected':''}>Supervisor</option><option value="operario" ${u.perfil==='operario'?'selected':''}>Operario</option><option value="invitado" ${u.perfil==='invitado'?'selected':''}>Invitado</option></select></div>
+                    <div class="full-width"><label>Permisos (Automáticos según perfil)</label><select id="uPermisosSelect"></select></div>
+                </div>
+            `);
+            actualizarSelectPermisos();
+            modalCallback = () => {
+                const nombre = document.getElementById('uNombre').value.trim();
+                const pass = document.getElementById('uPass').value.trim();
+                const perfil = document.getElementById('uPerfil').value;
+                const permisos = PERFILES_CONFIG[perfil] || ['lectura'];
+                if(!nombre) return alert('El nombre no puede estar vacío');
+
+                u.nombre = nombre;
+                if(pass) u.password = pass;
+                u.perfil = perfil;
+                u.permisos = permisos;
+
+                saveDB(db);
+                renderAll();
+                cerrarModal();
+                mostrarToast('✅ Perfil de usuario actualizado');
+            };
+        }
+
+        function actualizarSelectPermisos() {
+            const perfilSel = document.getElementById('uPerfil');
+            const permSel = document.getElementById('uPermisosSelect');
+            if(!perfilSel || !permSel) return;
+
+            const perfil = perfilSel.value;
+            const permisosAsignados = PERFILES_CONFIG[perfil] || [];
+            
+            permSel.innerHTML = '';
+            permisosAsignados.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p;
+                opt.textContent = `✓ ${p.toUpperCase()} (Habilitado para ${perfil})`;
+                permSel.appendChild(opt);
+            });
+        }
+
         function eliminarUsuario(id) {
-            if(!confirm('¿Eliminar usuario?')) return;
+            if(!confirm('¿Estás seguro de eliminar este usuario?')) return;
             const db = getDB();
             db.users = db.users.filter(u => u.id !== id);
             saveDB(db);
             renderAll();
+            mostrarToast('🗑️ Usuario eliminado');
         }
 
         function renderBodegas() {
