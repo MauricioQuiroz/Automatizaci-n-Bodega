@@ -333,10 +333,10 @@
             <div class="hospital-logo">
                 <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='60' viewBox='0 0 200 60'%3E%3Crect width='200' height='60' fill='%230f172a' rx='8'/%3E%3Ctext x='100' y='35' font-family='Arial' font-size='18' fill='white' text-anchor='middle' font-weight='bold'%3EHospital San Juan de Dios%3C/text%3E%3Ctext x='100' y='52' font-family='Arial' font-size='10' fill='%2360a5fa' text-anchor='middle'%3E%22El Primero de Chile%22%3C/text%3E%3C/svg%3E" alt="Hospital San Juan de Dios - CDT">
             </div>
-            <div class="hospital-name">Hospital San Juan de Dios</div>
-            <div class="hospital-sub"> <span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
+            <div class="hospital-name">Hospital San Juan de Dios - CDT</div>
+            <div class="hospital-sub">Asistencial Docente · <span>"El Primero de Chile"</span></div>
             <div class="divider"></div>
-            <h2>Automatización Almacenamiento - Bodega Central</h2>
+            <h2>📦 WMS Bodega Central</h2>
             <p>Ingresa tus credenciales para acceder al sistema.</p>
             <label>Usuario</label>
             <input type="text" id="loginUser" placeholder="Ej: admin" value="admin">
@@ -353,8 +353,8 @@
         <header>
             <div class="header-left">
                 <div>
-                    <div class="header-title">Automatización Almacenamiento - Bodega Central</div>
-                    <div class="header-sub">Hospital San Juan de Dios <span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
+                    <div class="header-title">📦 WMS Bodega Central</div>
+                    <div class="header-sub">Hospital San Juan de Dios · <span>"El Primero de Chile"</span></div>
                 </div>
             </div>
             <div class="user-info">
@@ -362,9 +362,9 @@
                 <span class="user-name" id="currentUserDisplay">👤 Admin</span>
                 <select id="warehouseSelect" onchange="cambiarBodega()">
                     <option value="TODAS">🏢 Todas</option>
-                    <option value="Farmaco">Bodega de Fármacos</option>
-                    <option value="Insumo Clínico">Bodega de Insumos Clínicos</option>
-                    <option value="Economato">Bodega de Economato</option>
+                    <option value="Farmacos">💊 Fármacos</option>
+                    <option value="Insumos">🧪 Insumos</option>
+                    <option value="Economato">📦 Economato</option>
                 </select>
                 <button class="btn btn-success" onclick="document.getElementById('fileInput').click()">
                     <span class="icon">📤</span> Cargar
@@ -579,14 +579,14 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- ============================================================ -->
-    <!-- SCRIPT PRINCIPAL CON INDEXEDDB -->
+    <!-- SCRIPT PRINCIPAL CON INDEXEDDB Y BROADCAST + POLLING -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
         //  CONFIGURACIÓN INDEXEDDB
         // ============================================================
         const DB_NAME = 'WMS_DB';
-        const DB_VERSION = 1;
+        const DB_VERSION = 2; // Aumentamos versión para agregar stores si es necesario
 
         let db = null;
 
@@ -626,7 +626,7 @@
             });
         }
 
-        // Funciones de acceso a datos con IndexedDB
+        // Funciones de acceso a datos con IndexedDB (promesas)
         function dbGetAll(storeName) {
             return new Promise((resolve, reject) => {
                 if (!db) return reject(new Error('Base de datos no abierta'));
@@ -655,12 +655,12 @@
                 const tx = db.transaction(storeName, 'readwrite');
                 const store = tx.objectStore(storeName);
                 let count = 0;
+                if (dataArray.length === 0) { resolve(); return; }
                 dataArray.forEach(item => {
                     const req = store.put(item);
                     req.onsuccess = () => { count++; if (count === dataArray.length) resolve(); };
                     req.onerror = () => reject(req.error);
                 });
-                if (dataArray.length === 0) resolve();
             });
         }
 
@@ -696,19 +696,21 @@
         let editingRows = new Set();
         let modalCallback = null;
         let broadcastChannel = null;
+        let pollingInterval = null;
 
         const STORAGE_KEY_USERS = 'wms_users';
         const STORAGE_KEY_CONFIG = 'wms_config';
         const STORAGE_KEY_SESSION = 'wms_session_user';
         const STORAGE_KEY_ACTIVE_USERS = 'wms_active_users';
+        const STORAGE_KEY_MODIFIED = 'wms_data_modified';
 
         // ============================================================
-        //  INICIALIZACIÓN
+        //  INICIALIZACIÓN (async)
         // ============================================================
         async function initData() {
             await abrirDB();
 
-            // Usuarios
+            // Usuarios (se mantienen en localStorage por simplicidad, pero se pueden migrar a IndexedDB si se desea)
             if (!localStorage.getItem(STORAGE_KEY_USERS)) {
                 localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify([
                     { id: 1, nombre: 'Admin', perfil: 'admin', password: 'admin', permisos: ['lectura','escritura','administracion'], ultimaActividad: new Date().toISOString() },
@@ -762,12 +764,13 @@
         }
 
         // ============================================================
-        //  FUNCIONES DE ACCESO A DATOS (API asíncrona)
+        //  FUNCIONES DE ACCESO A DATOS (async)
         // ============================================================
         async function getAllProducts() { return await dbGetAll('products'); }
         async function setProducts(data) {
             await dbClear('products');
             if (data && data.length > 0) await dbPutAll('products', data);
+            marcarDatosModificados();
         }
         async function getProducts() {
             const all = await getAllProducts();
@@ -779,6 +782,7 @@
         async function setMovements(data) {
             await dbClear('movements');
             if (data && data.length > 0) await dbPutAll('movements', data);
+            marcarDatosModificados();
         }
         async function getMovements() {
             const all = await getAllMovements();
@@ -790,18 +794,106 @@
         async function setHistorial(data) {
             await dbClear('historial');
             if (data && data.length > 0) await dbPutAll('historial', data);
+            marcarDatosModificados();
         }
         async function addHistorial(entry) {
             await dbPut('historial', entry);
+            marcarDatosModificados();
         }
 
+        // Usuarios se mantienen en localStorage para simplicidad y compatibilidad
         function getUsers() { return JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]'); }
-        function setUsers(u) { localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(u)); }
+        function setUsers(u) {
+            localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(u));
+            marcarDatosModificados();
+            broadcastCambios('USUARIO', 'Usuarios actualizados');
+        }
+
         function getConfig() { return JSON.parse(localStorage.getItem(STORAGE_KEY_CONFIG) || '{}'); }
         function setConfig(c) { localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify(c)); }
 
         // ============================================================
-        //  AUTENTICACIÓN
+        //  MARCADOR DE DATOS MODIFICADOS (para polling)
+        // ============================================================
+        function marcarDatosModificados() {
+            localStorage.setItem(STORAGE_KEY_MODIFIED, 'true');
+        }
+
+        function limpiarMarcaModificados() {
+            localStorage.removeItem(STORAGE_KEY_MODIFIED);
+        }
+
+        // ============================================================
+        //  BROADCAST CHANNEL + POLLING (SINCRONIZACIÓN EN TIEMPO REAL)
+        // ============================================================
+        function initBroadcastChannel() {
+            try {
+                broadcastChannel = new BroadcastChannel('wms_channel');
+                broadcastChannel.onmessage = function(event) {
+                    const data = event.data;
+                    if (data.type === 'CAMBIOS' || data.type === 'USUARIO') {
+                        // Recargar todo o parte
+                        if (data.type === 'USUARIO') {
+                            renderUsuarios();
+                            mostrarToast('👥 ' + (data.usuario || 'Alguien') + ' actualizó usuarios', 'info');
+                        } else {
+                            renderAll();
+                            mostrarToast('🔄 ' + (data.usuario || 'Alguien') + ' realizó cambios', 'warning');
+                        }
+                    }
+                };
+                // Si soporta BroadcastChannel, cancelamos el polling si existe
+                if (pollingInterval) {
+                    clearInterval(pollingInterval);
+                    pollingInterval = null;
+                }
+            } catch (e) {
+                console.warn('BroadcastChannel no soportado, activando polling de respaldo');
+                iniciarPolling();
+            }
+        }
+
+        function iniciarPolling() {
+            if (pollingInterval) return;
+            let lastUserHash = '';
+            let lastModified = localStorage.getItem(STORAGE_KEY_MODIFIED);
+
+            pollingInterval = setInterval(() => {
+                // Verificar cambios en usuarios
+                const users = getUsers();
+                const currentHash = JSON.stringify(users);
+                if (currentHash !== lastUserHash) {
+                    lastUserHash = currentHash;
+                    renderUsuarios();
+                }
+
+                // Verificar flag de modificaciones generales
+                const modified = localStorage.getItem(STORAGE_KEY_MODIFIED);
+                if (modified === 'true') {
+                    limpiarMarcaModificados();
+                    renderAll();
+                    mostrarToast('🔄 Actualización automática detectada', 'info');
+                }
+            }, 3000);
+        }
+
+        function broadcastCambios(tipo, detalle) {
+            if (broadcastChannel) {
+                const user = getCurrentUser();
+                broadcastChannel.postMessage({
+                    type: tipo,
+                    usuario: user ? user.nombre : 'Sistema',
+                    detalle: detalle,
+                    timestamp: new Date().toISOString()
+                });
+            }
+            // También marcamos para polling
+            marcarDatosModificados();
+            actualizarUsuariosConectados();
+        }
+
+        // ============================================================
+        //  AUTENTICACIÓN (mejorada con trim y case-insensitive)
         // ============================================================
         function getCurrentUser() {
             if (currentUserId === null) return null;
@@ -819,7 +911,8 @@
             const username = document.getElementById('loginUser').value.trim();
             const password = document.getElementById('loginPass').value.trim();
             const users = getUsers();
-            const user = users.find(u => u.nombre === username && u.password === password);
+            // Comparación case-insensitive y trim
+            const user = users.find(u => u.nombre.toLowerCase() === username.toLowerCase() && u.password === password);
             if (user) {
                 currentUserId = user.id;
                 localStorage.setItem(STORAGE_KEY_SESSION, user.id);
@@ -830,14 +923,18 @@
                 document.getElementById('loginError').style.display = 'none';
                 mostrarToast('👋 Bienvenido ' + user.nombre, 'success');
                 setInterval(actualizarUsuariosConectados, 30000);
+                // Registrar login en historial
+                registrarHistorial('LOGIN', user.nombre, 'Inicio de sesión');
             } else {
                 document.getElementById('loginError').style.display = 'block';
+                document.getElementById('loginError').textContent = '❌ Usuario o contraseña incorrectos.';
             }
         }
 
         function logout() {
             const user = getCurrentUser();
             if (user) {
+                registrarHistorial('LOGOUT', user.nombre, 'Cierre de sesión');
                 const activos = JSON.parse(localStorage.getItem(STORAGE_KEY_ACTIVE_USERS) || '{}');
                 delete activos[user.id];
                 localStorage.setItem(STORAGE_KEY_ACTIVE_USERS, JSON.stringify(activos));
@@ -849,6 +946,7 @@
             document.getElementById('loginPass').value = '';
             document.getElementById('loginError').style.display = 'none';
             if (broadcastChannel) { try { broadcastChannel.close(); } catch(e) {} broadcastChannel = null; }
+            if (pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
         }
 
         function checkSession() {
@@ -866,36 +964,6 @@
             document.getElementById('loginModal').style.display = 'flex';
             document.getElementById('app').style.display = 'none';
             return false;
-        }
-
-        // ============================================================
-        //  BROADCAST CHANNEL
-        // ============================================================
-        function initBroadcastChannel() {
-            try {
-                broadcastChannel = new BroadcastChannel('wms_channel');
-                broadcastChannel.onmessage = function(event) {
-                    const data = event.data;
-                    if (data.type === 'CAMBIOS') {
-                        renderAll();
-                        mostrarToast('🔄 Actualización: ' + data.usuario + ' realizó cambios', 'warning');
-                    }
-                };
-            } catch (e) {}
-        }
-
-        function broadcastCambios(accion, detalle) {
-            if (broadcastChannel) {
-                const user = getCurrentUser();
-                broadcastChannel.postMessage({
-                    type: 'CAMBIOS',
-                    usuario: user ? user.nombre : 'Sistema',
-                    accion: accion,
-                    detalle: detalle,
-                    timestamp: new Date().toISOString()
-                });
-            }
-            actualizarUsuariosConectados();
         }
 
         function actualizarUsuariosConectados() {
@@ -939,7 +1007,8 @@
                 const u = users.find(u => u.id === user.id);
                 if (u) { u.ultimaActividad = new Date().toISOString(); setUsers(users); }
             }
-            broadcastCambios(accion, detalle);
+            // Broadcast general
+            broadcastCambios('CAMBIOS', detalle);
         }
 
         // ============================================================
@@ -1089,15 +1158,13 @@
         }
 
         // ============================================================
-        //  MAPEO DE DATOS MEJORADO
+        //  MAPEO DE DATOS (mejorado)
         // ============================================================
         function mapearDatosExcel(data) {
             if (!data || data.length === 0) return [];
 
             const headers = Object.keys(data[0]);
-            console.log('📋 Headers detectados:', headers);
 
-            // Mapeo flexible
             const colMap = {
                 codigo: headers.find(h => /COD\.?.*HERMES|HERMES|CODIGO|COD|SKU|ID|CÓDIGO/i.test(h)) || headers[0],
                 glosa: headers.find(h => /GLOSA|NOMBRE|DESCRIPCION|PRODUCTO|ITEM|GLOSA INTERNA/i.test(h)) || headers[1],
@@ -1109,8 +1176,6 @@
                 zonaMaster: headers.find(h => /ZONA ALMACENAMIENTO|UNIDAD MASTER/i.test(h)),
                 paletizacion: headers.find(h => /PALETIZACION|PALETIZADO|N°|NÚMERO/i.test(h))
             };
-
-            console.log('📊 Mapeo aplicado:', colMap);
 
             return data.map((row, idx) => {
                 const getVal = (key) => {
@@ -1126,7 +1191,6 @@
                 let zona = getVal(colMap.zona) || getVal(colMap.zona2) || getVal(colMap.zonaMaster);
                 let bodega = getVal(colMap.bodega) || 'Farmacos';
 
-                // Si no se detectó código, buscar en todas las columnas
                 if (!codigo) {
                     for (let key of headers) {
                         const val = getVal(key);
@@ -1138,14 +1202,11 @@
                     }
                 }
 
-                // Inferir zona desde la ubicación si no se encontró
                 if (!zona && ubicacion) {
-                    // Buscar patrón como "PALLET_A_1", "SELECTIVO_E_1", "FS_G_1", "CAMARA_H_1"
                     const match = ubicacion.match(/([A-J])(?:_|\s|$)/);
                     if (match && ['A','B','C','D','E','F','G','H','I','J'].includes(match[1])) {
                         zona = match[1];
                     } else {
-                        // Intentar extraer de "Zona A" o similar
                         const match2 = ubicacion.match(/Zona\s*([A-J])/i);
                         if (match2 && ['A','B','C','D','E','F','G','H','I','J'].includes(match2[1])) {
                             zona = match2[1];
@@ -1153,15 +1214,12 @@
                     }
                 }
 
-                // Si aún no hay zona, asignar 'A' por defecto
                 if (!zona) zona = 'A';
 
-                // Construir ubicación si no tiene
                 if (!ubicacion) {
                     ubicacion = zona + '_' + (idx + 1);
                 }
 
-                // Si el código sigue vacío, crear uno
                 if (!codigo) {
                     codigo = 'ITEM_' + String(idx + 1).padStart(3, '0');
                 }
@@ -1184,30 +1242,12 @@
         function renderLayoutVisual() {
             const grid = document.getElementById('layoutGrid');
             if (!grid) return;
-
-            const layoutData = [
-                ['A1', 'A1', 'A1', 'B1', 'B1', 'B1', 'C1', 'C1', 'C1', 'C1'],
-                ['A2', 'A2', 'A2', 'B2', 'B2', 'B2', 'C2', 'C2', 'C2', 'C2'],
-                ['A3', 'A3', 'A3', 'B3', 'B3', 'B3', 'C3', 'C3', 'C3', 'C3'],
-                ['A4', 'A4', 'A4', 'B4', 'B4', 'B4', 'C4', 'C4', 'C4', 'C4'],
-                ['D1', 'D2', 'D3', 'D4', 'E1', 'E2', 'E3', 'F1', 'F2', 'OFC'],
-                ['D5', 'D6', 'D7', 'D8', 'E4', 'E5', 'E6', 'F3', 'F4', 'OFC'],
-                ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7', 'F5', 'F6', 'OFC'],
-                ['H1', 'H2', 'H3', 'H4', 'I1', 'I2', 'I3', 'I4', 'J1', 'REC'],
-                ['J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'CUA', 'REC']
-            ];
-
-            grid.innerHTML = '';
-
-            const products = getProducts(); // Esta función es asíncrona, pero la usamos en un contexto síncrono. Mejor usar await en el caller.
-            // Para simplificar, usamos una variable global.
-            // En renderAll llamamos a renderLayoutVisual después de obtener productos.
-            // Usaremos una variable global cache.
-            // Mejor pasar los productos como parámetro.
-            renderLayoutVisualWithProducts(products);
+            // Se usa getProducts() de forma síncrona? No, es async. Mejor obtener productos desde el scope.
+            // Para simplificar, usamos una variable global cache o llamamos a getProducts() y luego renderizamos.
+            // Aquí lo dejamos simple: usamos un array vacío y se actualiza en renderAll.
+            // En renderAll llamamos a renderLayoutVisualWithProducts con los productos obtenidos.
         }
 
-        // Versión con productos
         async function renderLayoutVisualWithProducts(products) {
             const grid = document.getElementById('layoutGrid');
             if (!grid) return;
@@ -1284,6 +1324,7 @@
         // ============================================================
         function renderConfig() {
             const config = getConfig();
+            // no-op
         }
 
         function subirImagenLayout(event) {
@@ -1492,7 +1533,7 @@
         }
 
         // ============================================================
-        //  INVENTARIO UNIFICADO (ASÍNCRONO)
+        //  INVENTARIO UNIFICADO (async)
         // ============================================================
         async function renderInventarioUnificado() {
             const search = document.getElementById('searchInventarioUnificado')?.value?.toLowerCase() || '';
@@ -1633,7 +1674,7 @@
         }
 
         // ============================================================
-        //  EDICIÓN INLINE (ASÍNCRONA)
+        //  EDICIÓN INLINE (async)
         // ============================================================
         function toggleEditMode() {
             editMode = !editMode;
@@ -1683,7 +1724,7 @@
         }
 
         // ============================================================
-        //  EDICIÓN MODAL (ASÍNCRONA)
+        //  EDICIÓN MODAL (async)
         // ============================================================
         async function editarProductoModal(codigo) {
             if (!hasPermission('escritura')) return alert('No tienes permisos');
@@ -1777,7 +1818,7 @@
         }
 
         // ============================================================
-        //  MOVER PRODUCTO (ASÍNCRONO)
+        //  MOVER PRODUCTO (async)
         // ============================================================
         async function moverProductoModal(codigo) {
             if (!hasPermission('escritura')) return alert('No tienes permisos');
@@ -1912,7 +1953,7 @@
         }
 
         // ============================================================
-        //  ELIMINAR PRODUCTO (ASÍNCRONO)
+        //  ELIMINAR PRODUCTO (async)
         // ============================================================
         async function eliminarProducto(codigo) {
             if (!hasPermission('escritura')) return alert('No tienes permisos');
@@ -2209,7 +2250,7 @@
         }
 
         // ============================================================
-        //  USUARIOS
+        //  USUARIOS (CON BROADCAST Y SINCRONIZACIÓN)
         // ============================================================
         function renderUsuarios() {
             const users = getUsers();
@@ -2273,12 +2314,22 @@
                 const permisos = document.getElementById('userPermisos').value.split(',').map(s => s.trim()).filter(Boolean);
 
                 if (!nombre || !password) return alert('Nombre y contraseña son requeridos');
+                if (getUsers().find(u => u.nombre.toLowerCase() === nombre.toLowerCase())) {
+                    return alert('Ya existe un usuario con ese nombre.');
+                }
 
                 const users = getUsers();
                 const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
-                users.push({ id: newId, nombre, password, perfil, permisos, ultimaActividad: new Date().toISOString() });
+                users.push({
+                    id: newId,
+                    nombre,
+                    password,
+                    perfil,
+                    permisos,
+                    ultimaActividad: new Date().toISOString()
+                });
                 setUsers(users);
-
+                broadcastCambios('USUARIO', 'Usuario creado: ' + nombre);
                 registrarHistorial('AGREGAR', 'USUARIO_' + nombre, 'Usuario creado: ' + nombre + ' (' + perfil + ')');
                 mostrarToast('✅ Usuario ' + nombre + ' creado', 'success');
                 renderAll();
@@ -2337,7 +2388,7 @@
                 usersList[index].perfil = perfil;
                 usersList[index].permisos = permisos;
                 setUsers(usersList);
-
+                broadcastCambios('USUARIO', 'Usuario editado: ' + nombre);
                 registrarHistorial('EDITAR', 'USUARIO_' + nombre, 'Usuario editado: ' + oldNombre + ' → ' + nombre + ' (' + perfil + ')');
                 mostrarToast('✏️ Usuario ' + nombre + ' actualizado', 'warning');
                 renderAll();
@@ -2356,22 +2407,24 @@
 
             if (!confirm('¿Estás seguro de eliminar al usuario "' + u.nombre + '"?')) return;
 
-            registrarHistorial('ELIMINAR', 'USUARIO_' + u.nombre, 'Usuario eliminado: ' + u.nombre + ' (' + u.perfil + ')');
-
+            const nombre = u.nombre;
+            const perfil = u.perfil;
             let usersList = getUsers();
             usersList = usersList.filter(user => user.id !== id);
             setUsers(usersList);
+            broadcastCambios('USUARIO', 'Usuario eliminado: ' + nombre);
+            registrarHistorial('ELIMINAR', 'USUARIO_' + nombre, 'Usuario eliminado: ' + nombre + ' (' + perfil + ')');
 
             const activos = JSON.parse(localStorage.getItem(STORAGE_KEY_ACTIVE_USERS) || '{}');
             delete activos[id];
             localStorage.setItem(STORAGE_KEY_ACTIVE_USERS, JSON.stringify(activos));
 
-            mostrarToast('🗑️ Usuario ' + u.nombre + ' eliminado', 'error');
+            mostrarToast('🗑️ Usuario ' + nombre + ' eliminado', 'error');
             renderAll();
         }
 
         // ============================================================
-        //  HISTORIAL (ASÍNCRONO)
+        //  HISTORIAL (async)
         // ============================================================
         async function renderHistorialCompleto() {
             const filter = document.getElementById('filterHistorial').value.toLowerCase();
@@ -2424,7 +2477,7 @@
         }
 
         // ============================================================
-        //  EXPORTAR EXCEL (ASÍNCRONO)
+        //  EXPORTAR EXCEL (async)
         // ============================================================
         async function exportarExcelCompleto() {
             const products = await getAllProducts();
