@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Automatización Almacenamiento - Bodega Central</title>
+    <title>WMS - Bodega Central</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.2/umd/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.1/umd/index.min.js"></script>
@@ -21,13 +21,8 @@
             --danger-hover: #b91c1c;
             --purple: #7c3aed;
             --purple-hover: #6d28d9;
-            --orange: #ea580c;
-            --orange-hover: #c2410c;
             --gray: #6b7280;
             --gray-hover: #4b5563;
-            --silver: #9ca3af;
-            --silver-light: #d1d5db;
-            --silver-dark: #6b7280;
             --white: #ffffff;
             --shadow: 0 1px 3px rgba(0,0,0,0.1);
             --shadow-lg: 0 10px 30px rgba(0,0,0,0.15);
@@ -42,18 +37,16 @@
         /* LOGIN */
         #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:16px; }
         #loginModal .login-box { background:var(--white); padding:30px 32px; border-radius:24px; max-width:400px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.3); animation:fadeIn 0.3s ease; text-align:center; }
-        #loginModal .login-box .hospital-logo { margin-bottom:10px; }
-        #loginModal .login-box .hospital-logo img { max-width:160px; height:auto; border-radius:12px; background:var(--white); padding:6px 12px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
-        #loginModal .login-box .hospital-name { font-size:1.1rem; font-weight:700; color:#0f172a; letter-spacing:-0.3px; }
-        #loginModal .login-box .hospital-sub { font-size:0.75rem; color:#64748b; margin-bottom:14px; font-weight:500; }
-        #loginModal .login-box .hospital-sub span { color:var(--primary); }
-        #loginModal .login-box .divider { width:60px; height:3px; background:var(--primary); margin:8px auto 14px; border-radius:4px; }
-        #loginModal h2 { margin-bottom:4px; font-size:1.3rem; color:#0f172a; }
-        #loginModal p { color:#64748b; margin-bottom:18px; font-size:0.9rem; }
+        #loginModal .login-box .hospital-name { font-size:1.3rem; font-weight:700; color:#0f172a; letter-spacing:-0.3px; }
+        #loginModal .login-box .hospital-sub { font-size:0.75rem; color:#64748b; margin-bottom:4px; font-weight:500; }
+        #loginModal .login-box .designer-credit { font-size:0.8rem; color:var(--primary); font-weight:600; margin:2px 0 12px 0; letter-spacing:-0.2px; }
+        #loginModal .login-box .divider { width:60px; height:3px; background:var(--primary); margin:6px auto 12px; border-radius:4px; }
+        #loginModal h2 { margin-bottom:0; font-size:1.1rem; color:#0f172a; }
+        #loginModal p { color:#64748b; margin-bottom:12px; font-size:0.85rem; }
         #loginModal label { display:block; font-weight:600; margin:10px 0 4px; font-size:0.8rem; text-align:left; color:#334155; }
         #loginModal input { width:100%; padding:12px 14px; border:2px solid #d1d5db; border-radius:10px; font-size:0.95rem; transition:var(--transition); }
         #loginModal input:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(79,70,229,0.15); }
-        #loginModal .btn { width:100%; margin-top:16px; padding:12px; font-size:1rem; border-radius:10px; }
+        #loginModal .btn { width:100%; margin-top:16px; padding:12px; font-size:1rem; border-radius:10px; display:flex; align-items:center; justify-content:center; text-align:center; }
         .login-error { color:var(--danger); font-size:0.85rem; margin-top:8px; display:none; text-align:center; }
         @keyframes fadeIn { from { opacity:0.4; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 
@@ -74,8 +67,6 @@
         header .user-info .btn-purple { background:var(--purple); }
         header .user-info .btn-purple:hover { background:var(--purple-hover); }
         header .user-info .user-name { color:#94a3b8; font-size:0.65rem; }
-        header .user-info .online-indicator { display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e; margin-right:4px; animation:pulse 1.5s ease-in-out infinite; }
-        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
 
         /* NAV */
         nav { display:flex; background:#f8fafc; border-bottom:1px solid #e2e8f0; flex-wrap:nowrap; overflow-x:auto; padding:0 6px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
@@ -84,7 +75,6 @@
         nav button .nav-icon { font-size:0.9rem; }
         nav button:hover { color:#0f172a; background:#f1f5f9; }
         nav button.active { color:var(--primary); border-bottom-color:var(--primary); }
-        nav button .badge-nav { background:var(--primary); color:var(--white); font-size:0.5rem; padding:1px 6px; border-radius:10px; margin-left:4px; }
 
         /* TABS */
         .tab-content { display:none; padding:14px; animation:fadeIn 0.3s ease; }
@@ -104,33 +94,26 @@
         table { width:100%; border-collapse:collapse; font-size:0.75rem; min-width:650px; }
         th { background:#f1f5f9; text-align:left; padding:8px 10px; font-weight:600; color:#334155; white-space:nowrap; position:sticky; top:0; z-index:10; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.3px; }
         td { padding:6px 8px; border-bottom:1px solid #e2e8f0; vertical-align:middle; }
-        tr:hover td { background:#f8fafc; }
-        tr.row-editing td { background:var(--primary-light) !important; }
 
         /* BADGES */
         .badge { display:inline-block; padding:2px 8px; border-radius:50px; font-size:0.6rem; font-weight:600; }
         .badge-admin { background:#fee2e2; color:#b91c1c; }
         .badge-supervisor { background:#fef3c7; color:#92400e; }
         .badge-operario { background:#dbeafe; color:#1e40af; }
-        .badge-bodega { display:inline-block; padding:2px 8px; border-radius:6px; font-size:0.5rem; font-weight:700; color:var(--white); }
-        .badge-farmacos { background:#2563eb; }
-        .badge-insumos { background:var(--success); }
-        .badge-economato { background:var(--warning); color:#0f172a; }
-        .badge-estado { display:inline-block; padding:2px 8px; border-radius:10px; font-size:0.5rem; font-weight:600; }
-        .badge-recepcion { background:#fef3c7; color:#92400e; }
-        .badge-almacenado { background:#dcfce7; color:#166534; }
+        .badge-activa { background:#dcfce7; color:#166534; }
+        .badge-inactiva { background:#fee2e2; color:#b91c1c; }
 
-        .zone-tag { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.55rem; font-weight:700; }
-        .zone-tag-A { background:#2563eb; color:white; }
-        .zone-tag-B { background:#16a34a; color:white; }
+        .zone-tag { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.55rem; font-weight:700; color:white; }
+        .zone-tag-A { background:#2563eb; }
+        .zone-tag-B { background:#16a34a; }
         .zone-tag-C { background:#f59e0b; color:#0f172a; }
-        .zone-tag-D { background:#8b5cf6; color:white; }
-        .zone-tag-E { background:#ec4899; color:white; }
-        .zone-tag-F { background:#f43f5e; color:white; }
-        .zone-tag-G { background:#06b6d4; color:white; }
-        .zone-tag-H { background:#3b82f6; color:white; }
-        .zone-tag-I { background:#fb923c; color:white; }
-        .zone-tag-J { background:#8b5cf6; color:white; }
+        .zone-tag-D { background:#8b5cf6; }
+        .zone-tag-E { background:#ec4899; }
+        .zone-tag-F { background:#f43f5e; }
+        .zone-tag-G { background:#06b6d4; }
+        .zone-tag-H { background:#3b82f6; }
+        .zone-tag-I { background:#fb923c; }
+        .zone-tag-J { background:#8b5cf6; }
 
         .ubicacion-tag { font-family:monospace; font-size:0.65rem; background:#f1f5f9; padding:2px 6px; border-radius:4px; }
 
@@ -147,14 +130,11 @@
         .btn-danger:hover { background:var(--danger-hover); transform:translateY(-1px); box-shadow:0 4px 12px rgba(220,38,38,0.3); }
         .btn-purple { background:var(--purple); }
         .btn-purple:hover { background:var(--purple-hover); transform:translateY(-1px); box-shadow:0 4px 12px rgba(124,58,237,0.3); }
-        .btn-orange { background:var(--orange); }
-        .btn-orange:hover { background:var(--orange-hover); transform:translateY(-1px); box-shadow:0 4px 12px rgba(234,88,12,0.3); }
         .btn-outline { background:transparent; border:2px solid var(--gray); color:var(--gray); }
         .btn-outline:hover { background:var(--gray); color:var(--white); transform:translateY(-1px); }
         .btn-sm { padding:3px 8px; font-size:0.6rem; }
         .btn-sm .icon { font-size:0.7rem; }
         .btn-xs { padding:2px 6px; font-size:0.5rem; }
-        .btn-xs .icon { font-size:0.6rem; }
 
         /* TOOLBAR */
         .toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:10px 14px; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; margin-bottom:10px; }
@@ -166,33 +146,18 @@
         .filter-select { padding:6px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.75rem; background:var(--white); cursor:pointer; transition:var(--transition); min-width:80px; }
         .filter-select:focus { outline:none; border-color:var(--primary); }
 
-        /* FILTROS DE COLUMNA */
-        .filter-row { display:flex; flex-wrap:wrap; gap:6px; padding:6px 10px; background:#f8fafc; border-bottom:1px solid #e2e8f0; }
-        .filter-row input { padding:4px 8px; border:1px solid #d1d5db; border-radius:4px; font-size:0.65rem; min-width:80px; flex:1; background:white; }
-        .filter-row input:focus { outline:2px solid var(--primary); outline-offset:1px; }
-        .filter-row .filter-label { font-size:0.6rem; color:#64748b; font-weight:600; display:flex; align-items:center; gap:4px; }
-
-        /* ACCIONES EN FILAS */
-        .actions-cell { display:flex; gap:3px; flex-wrap:wrap; min-width:100px; }
-
-        /* EDICIÓN INLINE */
-        .edit-field { border:2px solid transparent; border-radius:4px; padding:3px 6px; background:transparent; transition:var(--transition); width:100%; font-size:0.7rem; font-family:inherit; color:inherit; }
-        .edit-field:hover { background:#f1f5f9; }
-        .edit-field:focus { border-color:var(--primary); background:var(--white); outline:none; box-shadow:0 0 0 3px rgba(79,70,229,0.1); }
-        .edit-field-select { padding:3px 6px; border:2px solid transparent; border-radius:4px; font-size:0.7rem; background:transparent; transition:var(--transition); width:100%; }
-        .edit-field-select:focus { border-color:var(--primary); background:var(--white); outline:none; box-shadow:0 0 0 3px rgba(79,70,229,0.1); }
-
         /* MODAL */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.5); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:1500; padding:16px; }
         .modal.active { display:flex; }
         .modal-content { background:var(--white); border-radius:20px; padding:20px; max-width:600px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); animation:fadeIn 0.25s ease; }
         .modal-content h3 { margin-bottom:10px; font-size:1rem; display:flex; align-items:center; gap:8px; }
-        .modal-content .flex { margin-top:14px; justify-content:flex-end; gap:8px; }
+        .modal-content .flex { margin-top:14px; display:flex; justify-content:flex-end; gap:8px; }
         .modal-content label { display:block; margin:8px 0 3px; font-weight:600; font-size:0.75rem; color:#475569; }
         .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:8px 12px; border:2px solid #d1d5db; border-radius:8px; font-size:0.85rem; transition:var(--transition); font-family:inherit; }
         .modal-content input:focus, .modal-content select:focus, .modal-content textarea:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(79,70,229,0.15); }
         .modal-content .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
         .modal-content .form-grid .full-width { grid-column:1/-1; }
+        .modal-content .layout-preview { width:100%; max-height:300px; object-fit:contain; border-radius:8px; border:1px solid #e2e8f0; margin-top:8px; }
 
         /* LAYOUT */
         .layout-container { width:100%; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; overflow:hidden; padding:16px; }
@@ -219,7 +184,6 @@
         .layout-legend .legend-item { display:flex; align-items:center; gap:5px; }
         .layout-legend .color-box { width:14px; height:14px; border-radius:3px; border:1px solid rgba(0,0,0,0.1); }
         .layout-legend .dot { width:8px; height:8px; border-radius:50%; background:#22c55e; display:inline-block; }
-        .layout-image { width:100%; height:auto; display:block; border-radius:var(--radius-sm); }
 
         /* TOAST */
         .toast-container { position:fixed; bottom:16px; right:16px; z-index:9999; display:flex; flex-direction:column; gap:6px; max-width:300px; width:100%; }
@@ -233,16 +197,10 @@
         .toast-close { background:none; border:none; color:#94a3b8; cursor:pointer; font-size:1rem; margin-left:auto; padding:0 4px; }
         .toast-close:hover { color:var(--white); }
 
-        /* BULK ACTIONS */
-        #bulkActions { display:none; padding:6px 12px; background:var(--primary-light); border-radius:var(--radius-sm); margin-bottom:8px; align-items:center; gap:8px; flex-wrap:wrap; }
-        #bulkActions .selected-count { font-weight:600; font-size:0.8rem; }
-
         .empty-state { color:#94a3b8; text-align:center; padding:30px 16px; font-size:0.85rem; }
         .empty-state .empty-icon { font-size:2.5rem; display:block; margin-bottom:10px; }
 
-        /* ============================================================
-           FOOTER - PIE DE PÁGINA (ESTILO PLATEADO)
-           ============================================================ */
+        /* FOOTER */
         .app-footer {
             background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
             border-top: 1px solid #cbd5e1;
@@ -253,62 +211,16 @@
             flex-wrap: wrap;
             gap: 8px;
             font-size: 0.65rem;
-            color: var(--silver-dark);
+            color: #6b7280;
         }
-        .app-footer .footer-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .app-footer .footer-left .footer-brand {
-            font-weight: 700;
-            color: #475569;
-            letter-spacing: -0.3px;
-        }
-        .app-footer .footer-left .footer-brand span {
-            color: var(--primary);
-        }
-        .app-footer .footer-left .footer-divider {
-            width: 1px;
-            height: 20px;
-            background: #cbd5e1;
-        }
-        .app-footer .footer-left .footer-info {
-            color: #64748b;
-            font-weight: 400;
-        }
-        .app-footer .footer-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            color: #94a3b8;
-            font-size: 0.6rem;
-        }
-        .app-footer .footer-right .footer-badge {
-            background: var(--silver-light);
-            color: var(--silver-dark);
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 0.55rem;
-        }
-        .app-footer .footer-right .footer-contact {
-            color: #94a3b8;
-        }
-        .app-footer .footer-right .footer-contact strong {
-            color: #475569;
-        }
+        .app-footer .footer-left { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+        .app-footer .footer-left .footer-brand { font-weight:700; color:#475569; letter-spacing:-0.3px; }
+        .app-footer .footer-left .footer-brand span { color:var(--primary); }
+        .app-footer .footer-left .footer-divider { width:1px; height:20px; background:#cbd5e1; }
+        .app-footer .footer-left .footer-info { color:#64748b; font-weight:400; }
+        .app-footer .footer-right { display:flex; align-items:center; gap:12px; flex-wrap:wrap; color:#94a3b8; font-size:0.6rem; }
 
         /* RESPONSIVE */
-        @media (max-width:1024px) { 
-            .tab-content { padding:10px; } 
-            .card-grid { grid-template-columns:repeat(auto-fit, minmax(90px,1fr)); } 
-            .modal-content { max-width:95%; padding:16px; } 
-            .layout-grid { min-height:350px; } 
-            .app-footer { padding:10px 16px; font-size:0.6rem; }
-        }
         @media (max-width:768px) {
             body { padding:6px; }
             .app { border-radius:10px; }
@@ -318,135 +230,52 @@
             header .header-left .header-sub { font-size:0.5rem; text-align:center; }
             header .user-info { justify-content:center; flex-wrap:wrap; }
             header .user-info .btn { font-size:0.55rem; padding:3px 6px; }
-            header .user-info .btn .icon { font-size:0.6rem; }
-            nav button { padding:8px 8px; font-size:0.6rem; }
-            nav button .nav-icon { font-size:0.75rem; }
             .tab-content { padding:8px; }
             .card-grid { grid-template-columns:1fr 1fr; gap:6px; }
             .card { padding:6px 10px; }
             .card .number { font-size:1.2rem; }
-            .card .label { font-size:0.55rem; }
-            .card .card-icon { font-size:1rem; }
             .table-container { max-height:45vh; }
             table { font-size:0.65rem; min-width:500px; }
-            th { padding:4px 6px; font-size:0.55rem; }
-            td { padding:4px 6px; }
             .toolbar { flex-direction:column; align-items:stretch; gap:6px; padding:8px 10px; }
-            .toolbar-left, .toolbar-right { justify-content:center; flex-wrap:wrap; }
-            .toolbar .search-input input { min-width:100%; font-size:0.75rem; padding:4px 8px 4px 28px; }
-            .filter-row input { font-size:0.55rem; min-width:60px; padding:3px 5px; }
             .modal-content { padding:14px; max-width:100%; margin:8px; border-radius:14px; }
             .modal-content .form-grid { grid-template-columns:1fr; }
-            .actions-cell { min-width:70px; gap:2px; }
-            .actions-cell .btn { padding:2px 5px; font-size:0.5rem; }
-            .actions-cell .btn .icon { font-size:0.55rem; }
-            .qr-grid { grid-template-columns:repeat(auto-fill, minmax(90px,1fr)); }
-            .qr-card canvas { width:60px; height:60px; }
-            #bulkActions { padding:4px 10px; gap:4px; }
-            #bulkActions .selected-count { font-size:0.7rem; }
-            .layout-container { padding:8px; }
             .layout-grid { min-height:250px; gap:2px; padding:2px; }
             .layout-cell { min-height:30px; font-size:0.4rem; }
             .layout-cell .cell-zone { font-size:0.5rem; }
-            .layout-cell .cell-level { font-size:0.35rem; }
-            .layout-cell .cell-label { font-size:0.3rem; }
-            .layout-legend { font-size:0.5rem; padding:6px 10px; gap:8px; }
-            .layout-legend .color-box { width:10px; height:10px; }
-            .toast-container { bottom:8px; right:8px; left:8px; max-width:100%; }
-            .toast { font-size:0.7rem; padding:8px 12px; }
-            #loginModal .login-box { padding:16px; margin:10px; }
-            .app-footer { 
-                flex-direction:column; 
-                align-items:center; 
-                text-align:center; 
-                padding:10px 14px; 
-                gap:6px;
-                font-size:0.55rem;
-            }
-            .app-footer .footer-left { justify-content:center; }
+            .app-footer { flex-direction:column; align-items:center; text-align:center; padding:10px 14px; gap:6px; font-size:0.55rem; }
             .app-footer .footer-left .footer-divider { display:none; }
             .app-footer .footer-right { justify-content:center; }
         }
         @media (max-width:480px) {
             body { padding:4px; }
-            .app { border-radius:6px; }
-            header .header-left .header-title { font-size:0.7rem; }
-            nav button { padding:6px 6px; font-size:0.5rem; }
-            nav button .nav-icon { font-size:0.65rem; }
             .card-grid { grid-template-columns:1fr 1fr; gap:4px; }
-            .card { padding:4px 6px; }
             .card .number { font-size:1rem; }
-            .card .label { font-size:0.5rem; }
-            .card .card-icon { font-size:0.8rem; }
             table { font-size:0.55rem; min-width:400px; }
-            th { padding:3px 4px; font-size:0.5rem; }
-            td { padding:3px 4px; }
-            .btn { font-size:0.55rem; padding:3px 6px; }
-            .btn .icon { font-size:0.6rem; }
-            .btn-sm { font-size:0.5rem; padding:2px 5px; }
-            .btn-sm .icon { font-size:0.55rem; }
-            .modal-content { padding:10px; }
-            .modal-content h3 { font-size:0.85rem; }
-            .modal-content label { font-size:0.65rem; }
-            .modal-content input, .modal-content select { font-size:0.75rem; padding:6px 8px; }
-            .filter-select { font-size:0.65rem; padding:3px 6px; min-width:60px; }
-            .filter-row input { font-size:0.5rem; min-width:50px; padding:2px 4px; }
             .layout-grid { min-height:180px; gap:1px; padding:1px; }
-            .layout-cell { min-height:22px; font-size:0.3rem; border-radius:2px; }
+            .layout-cell { min-height:22px; font-size:0.3rem; }
             .layout-cell .cell-zone { font-size:0.4rem; }
-            .layout-cell .cell-level { font-size:0.25rem; }
-            .layout-cell .cell-label { display:none; }
-            .layout-legend { font-size:0.45rem; padding:4px 8px; gap:4px; }
-            .layout-legend .color-box { width:8px; height:8px; }
-            .app-footer { 
-                font-size:0.5rem; 
-                padding:8px 10px; 
-            }
-            .app-footer .footer-right .footer-badge { font-size:0.45rem; padding:1px 6px; }
         }
 
         ::-webkit-scrollbar { width:5px; height:5px; }
         ::-webkit-scrollbar-track { background:#f1f5f9; border-radius:4px; }
         ::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:4px; }
         ::-webkit-scrollbar-thumb:hover { background:#94a3b8; }
-
-        @media print {
-            body { background:white; padding:0; }
-            .app { box-shadow:none; border-radius:0; }
-            header, nav, .toolbar, .btn, .no-print { display:none !important; }
-            .tab-content { display:block !important; padding:8px; }
-            .table-container { max-height:none; overflow:visible; }
-            .qr-grid { page-break-inside:avoid; }
-            .qr-card { break-inside:avoid; border:1px solid #ddd; }
-            .layout-grid { break-inside:avoid; }
-            .app-footer { 
-                position:fixed; 
-                bottom:0; 
-                left:0; 
-                right:0; 
-                border-top:1px solid #ccc; 
-                background:#f8fafc;
-                padding:6px 16px;
-            }
-        }
     </style>
 </head>
 <body>
     <!-- LOGIN -->
     <div id="loginModal">
         <div class="login-box">
-            <div class="hospital-logo">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='60' viewBox='0 0 200 60'%3E%3Crect width='200' height='60' fill='%230f172a' rx='8'/%3E%3Ctext x='100' y='35' font-family='Arial' font-size='18' fill='white' text-anchor='middle' font-weight='bold'%3EHospital San Juan de Dios%3C/text%3E%3Ctext x='100' y='52' font-family='Arial' font-size='10' fill='%2360a5fa' text-anchor='middle'%3E%22El Primero de Chile%22%3C/text%3E%3C/svg%3E" alt="Hospital San Juan de Dios - CDT">
-            </div>
             <div class="hospital-name">Hospital San Juan de Dios</div>
-            <div class="hospital-sub">Unidad de Bodega de Abastecimiento · <span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
+            <div class="hospital-sub">Unidad de Bodega de Abastecimiento</div>
             <div class="divider"></div>
             <h2>Automatización Almacenamiento - Bodega Central</h2>
+            <p class="designer-credit">"Diseñado por Mauricio Quiroz Ayala"</p>
             <p>Ingresa tus credenciales para acceder al sistema.</p>
             <label>Usuario</label>
-            <input type="text" id="loginUser" placeholder="Ej: admin" value="admin">
+            <input type="text" id="loginUser" placeholder="Ingresa tu usuario">
             <label>Contraseña</label>
-            <input type="password" id="loginPass" placeholder="••••••••" value="admin" onkeydown="if(event.key==='Enter') handleLogin()">
+            <input type="password" id="loginPass" placeholder="Ingresa tu contraseña" onkeydown="if(event.key==='Enter') handleLogin()">
             <div id="loginError" class="login-error">Usuario o contraseña incorrectos.</div>
             <button class="btn btn-primary" onclick="handleLogin()">Ingresar</button>
         </div>
@@ -458,31 +287,24 @@
         <header>
             <div class="header-left">
                 <div>
-                    <div class="header-title">Automatización Almacenamiento - Bodega Central</div>
+                    <div class="header-title">WMS - Bodega Central</div>
                     <div class="header-sub">Hospital San Juan de Dios · <span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
                 </div>
             </div>
             <div class="user-info">
-                <span class="online-indicator"></span>
                 <span class="user-name" id="currentUserDisplay">👤 Admin</span>
-                <select id="warehouseSelect" onchange="cambiarBodega()">
-                    <option value="TODAS">🏢 Todas</option>
-                    <option value="Farmacos">Bodega de Fármacos</option>
-                    <option value="Insumos">Bodega de Insumos Clínicos</option>
-                    <option value="Economato">Bodega de Economato</option>
-                </select>
                 <button class="btn btn-success" onclick="document.getElementById('fileInput').click()">
-                    <span class="icon">📤</span> Cargar
+                    <span class="icon">📤</span> Cargar Archivo Excel
                 </button>
                 <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event)">
                 <button class="btn btn-warning" onclick="exportarExcelCompleto()">
-                    <span class="icon">📥</span> Exportar
+                    <span class="icon">📥</span> Descargar Archivo Excel
                 </button>
                 <button class="btn btn-purple" onclick="generarTodosQR()">
-                    <span class="icon">📱</span> QR
+                    <span class="icon">📱</span> Generar QR
                 </button>
                 <button class="btn" onclick="logout()">
-                    <span class="icon">🚪</span>
+                    <span class="icon">🚪</span> Salir
                 </button>
             </div>
         </header>
@@ -490,7 +312,8 @@
         <!-- NAV -->
         <nav id="mainNav">
             <button class="active" data-tab="dashboard"><span class="nav-icon">📊</span> Dashboard</button>
-            <button data-tab="inventario"><span class="nav-icon">📦</span> Inventario <span class="badge-nav" id="inventoryBadge">0</span></button>
+            <button data-tab="inventario"><span class="nav-icon">📦</span> Inventario</button>
+            <button data-tab="bodegas"><span class="nav-icon">🏢</span> Bodegas</button>
             <button data-tab="layout"><span class="nav-icon">🗺️</span> Layout</button>
             <button data-tab="movimientos"><span class="nav-icon">🔄</span> Movimientos</button>
             <button data-tab="usuarios"><span class="nav-icon">👥</span> Usuarios</button>
@@ -501,10 +324,10 @@
         <div id="tab-dashboard" class="tab-content active">
             <div class="card-grid">
                 <div class="card"><span class="card-icon">📦</span><div class="number" id="totalProductos">0</div><div class="label">Total productos</div></div>
+                <div class="card"><span class="card-icon">🏢</span><div class="number" id="totalBodegas">0</div><div class="label">Bodegas activas</div></div>
                 <div class="card"><span class="card-icon">📍</span><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones ocupadas</div></div>
                 <div class="card"><span class="card-icon">🔄</span><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos totales</div></div>
                 <div class="card"><span class="card-icon">👥</span><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios activos</div></div>
-                <div class="card"><span class="card-icon">🟢</span><div class="number" id="usuariosConectados">0</div><div class="label">Conectados ahora</div></div>
             </div>
             <h3 style="font-size:0.9rem; margin-bottom:6px;">📋 Últimos movimientos</h3>
             <div class="table-wrap">
@@ -515,7 +338,7 @@
             </div>
         </div>
 
-        <!-- INVENTARIO CON FILTROS -->
+        <!-- INVENTARIO -->
         <div id="tab-inventario" class="tab-content">
             <div class="toolbar">
                 <div class="toolbar-left">
@@ -525,56 +348,22 @@
                     <button class="btn btn-orange btn-sm" onclick="abrirModalAlmacenamiento()">
                         <span class="icon">📥</span> Recepción → Almacenar
                     </button>
-                    <button class="btn btn-warning btn-sm" onclick="exportarSeleccionados()">
-                        <span class="icon">📥</span> Exportar
-                    </button>
                 </div>
                 <div class="toolbar-right">
                     <div class="search-input">
                         <span class="search-icon">🔍</span>
-                        <input type="text" id="searchInventarioUnificado" placeholder="Buscar..." oninput="renderInventarioUnificado()">
+                        <input type="text" id="searchInventario" placeholder="Buscar..." oninput="renderInventario()">
                     </div>
-                    <select class="filter-select" id="filterZona" onchange="renderInventarioUnificado()">
-                        <option value="TODAS">🌐 Todas</option>
-                        <option value="A">A - Palletizado Doble Altura</option>
-                        <option value="B">B - Palletizado Doble Altura</option>
-                        <option value="C">C - Palletizado Pasillo</option>
-                        <option value="D">D - VNA</option>
-                        <option value="E">E - Selectivo</option>
-                        <option value="F">F - Anaquel</option>
-                        <option value="G">G - Full Space</option>
-                        <option value="H">H - Cámara Frío</option>
-                        <option value="I">I - Inyectables</option>
-                        <option value="J">J - Mezclas</option>
+                    <select class="filter-select" id="filterBodegaInv" onchange="renderInventario()">
+                        <option value="TODAS">🏢 Todas</option>
                     </select>
                 </div>
-            </div>
-
-            <!-- FILTROS POR COLUMNA -->
-            <div class="filter-row">
-                <span class="filter-label">📌 Filtros:</span>
-                <input type="text" id="filterCodigo" placeholder="Código" oninput="renderInventarioUnificado()">
-                <input type="text" id="filterGTIN" placeholder="GTIN" oninput="renderInventarioUnificado()">
-                <input type="text" id="filterGlosa" placeholder="Glosa" oninput="renderInventarioUnificado()">
-                <input type="text" id="filterBodega" placeholder="Bodega" oninput="renderInventarioUnificado()">
-                <input type="text" id="filterUbicacion" placeholder="Ubicación" oninput="renderInventarioUnificado()">
-                <input type="text" id="filterEstado" placeholder="Estado" oninput="renderInventarioUnificado()">
-                <button class="btn btn-outline btn-xs" onclick="limpiarFiltros()">🧹 Limpiar</button>
-            </div>
-
-            <div id="bulkActions">
-                <span class="selected-count" id="selectedCount">0 seleccionados</span>
-                <button class="btn btn-purple btn-sm" onclick="generarQRSeleccionados()"><span class="icon">📱</span> QR</button>
-                <button class="btn btn-warning btn-sm" onclick="moverSeleccionados()"><span class="icon">🔄</span> Mover</button>
-                <button class="btn btn-danger btn-sm" onclick="eliminarSeleccionados()"><span class="icon">🗑️</span> Eliminar</button>
-                <button class="btn btn-outline btn-sm" onclick="deseleccionarTodos()"><span class="icon">✖️</span></button>
             </div>
 
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
-                            <th style="width:25px;"><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"></th>
                             <th>Código</th>
                             <th>GTIN</th>
                             <th>Glosa</th>
@@ -585,52 +374,64 @@
                             <th style="min-width:100px;">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="inventarioUnificadoBody"></tbody>
+                    <tbody id="inventarioBody"></tbody>
                 </table>
             </div>
+        </div>
 
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-top:8px; padding:6px 12px; background:#f8fafc; border-radius:var(--radius-sm); border:1px solid #e2e8f0; font-size:0.7rem; color:#64748b;">
-                <span id="inventorySummary">0 productos</span>
-                <span>💡 Haz clic en <strong>Editar</strong> para modificar campos</span>
+        <!-- BODEGAS (MANTENEDOR) -->
+        <div id="tab-bodegas" class="tab-content">
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
+                <button class="btn btn-primary" onclick="mostrarModalBodega()"><span class="icon">➕</span> Nueva Bodega</button>
+                <button class="btn btn-outline" onclick="renderBodegas()"><span class="icon">🔄</span> Actualizar</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Código</th>
+                            <th>Descripción</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th>Layout</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bodegasBody"></tbody>
+                </table>
             </div>
         </div>
 
         <!-- LAYOUT -->
         <div id="tab-layout" class="tab-content">
-            <h3 style="font-size:0.95rem; margin-bottom:8px;">🗺️ Plano de la bodega</h3>
-            <p style="color:#64748b; margin-bottom:10px; font-size:0.8rem;">Visualiza la distribución de las zonas en tu bodega.</p>
-
-            <div class="layout-legend">
-                <span class="legend-item"><span class="color-box" style="background:#2563eb;"></span> A - Palletizado Doble Altura</span>
-                <span class="legend-item"><span class="color-box" style="background:#16a34a;"></span> B - Palletizado Doble Altura</span>
-                <span class="legend-item"><span class="color-box" style="background:#f59e0b;"></span> C - Palletizado Pasillo</span>
-                <span class="legend-item"><span class="color-box" style="background:#8b5cf6;"></span> D - VNA</span>
-                <span class="legend-item"><span class="color-box" style="background:#ec4899;"></span> E - Selectivo</span>
-                <span class="legend-item"><span class="color-box" style="background:#f43f5e;"></span> F - Anaquel</span>
-                <span class="legend-item"><span class="color-box" style="background:#06b6d4;"></span> G - Full Space</span>
-                <span class="legend-item"><span class="color-box" style="background:#3b82f6;"></span> H - Cámara Frío</span>
-                <span class="legend-item"><span class="color-box" style="background:#fb923c;"></span> I - Inyectables</span>
-                <span class="legend-item"><span class="color-box" style="background:#8b5cf6;"></span> J - Mezclas</span>
-                <span class="legend-item"><span class="color-box" style="background:#94a3b8;"></span> Oficinas</span>
-                <span class="legend-item"><span class="dot"></span> Ocupado</span>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
+                <select id="layoutBodegaSelect" onchange="renderLayout()" style="padding:6px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.75rem; background:white;">
+                    <option value="">Seleccionar bodega...</option>
+                </select>
+                <button class="btn btn-primary btn-sm" onclick="mostrarModalLayout()"><span class="icon">🖼️</span> Subir Layout</button>
             </div>
 
-            <div class="layout-container">
-                <img id="mapImage" class="layout-image" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='700' viewBox='0 0 1200 700'%3E%3Crect width='1200' height='700' fill='%23f1f5f9'/%3E%3Ctext x='600' y='340' font-family='Arial' font-size='36' fill='%2394a3b8' text-anchor='middle'%3E🗺️ Layout de Bodega%3C/text%3E%3Ctext x='600' y='390' font-family='Arial' font-size='18' fill='%23cbd5e1' text-anchor='middle'%3ESubir imagen en Configuración%3C/text%3E%3C/svg%3E" alt="Layout de bodega">
-                <div class="layout-grid" id="layoutGrid"></div>
-            </div>
-
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:8px; margin-top:12px; padding:12px; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; font-size:0.65rem;">
-                <div><strong style="color:#2563eb;">Zona A:</strong> Palletizado Doble Altura</div>
-                <div><strong style="color:#16a34a;">Zona B:</strong> Palletizado Doble Altura</div>
-                <div><strong style="color:#f59e0b;">Zona C:</strong> Palletizado Pasillo</div>
-                <div><strong style="color:#8b5cf6;">Zona D:</strong> VNA (Pasillo Estrecho)</div>
-                <div><strong style="color:#ec4899;">Zona E:</strong> Almacenamiento Selectivo</div>
-                <div><strong style="color:#f43f5e;">Zona F:</strong> Anaquel (PM, DAC, LRS, JARABES)</div>
-                <div><strong style="color:#06b6d4;">Zona G:</strong> Full Space (Inyectables/Comprimidos)</div>
-                <div><strong style="color:#3b82f6;">Zona H:</strong> Cámara de Frío</div>
-                <div><strong style="color:#fb923c;">Zona I:</strong> Palletizado (Inyectables/Insumos)</div>
-                <div><strong style="color:#8b5cf6;">Zona J:</strong> Bodega Mezclas</div>
+            <div id="layoutVisualContainer">
+                <div class="layout-legend">
+                    <span class="legend-item"><span class="color-box" style="background:#2563eb;"></span> A - Palletizado Doble Altura</span>
+                    <span class="legend-item"><span class="color-box" style="background:#16a34a;"></span> B - Palletizado Doble Altura</span>
+                    <span class="legend-item"><span class="color-box" style="background:#f59e0b;"></span> C - Palletizado Pasillo</span>
+                    <span class="legend-item"><span class="color-box" style="background:#8b5cf6;"></span> D - VNA</span>
+                    <span class="legend-item"><span class="color-box" style="background:#ec4899;"></span> E - Selectivo</span>
+                    <span class="legend-item"><span class="color-box" style="background:#f43f5e;"></span> F - Anaquel</span>
+                    <span class="legend-item"><span class="color-box" style="background:#06b6d4;"></span> G - Full Space</span>
+                    <span class="legend-item"><span class="color-box" style="background:#3b82f6;"></span> H - Cámara Frío</span>
+                    <span class="legend-item"><span class="color-box" style="background:#fb923c;"></span> I - Inyectables</span>
+                    <span class="legend-item"><span class="color-box" style="background:#8b5cf6;"></span> J - Mezclas</span>
+                    <span class="legend-item"><span class="color-box" style="background:#94a3b8;"></span> Oficinas</span>
+                    <span class="legend-item"><span class="dot"></span> Ocupado</span>
+                </div>
+                <div class="layout-container">
+                    <img id="layoutImage" class="layout-preview" style="width:100%; max-height:400px; object-fit:contain; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:10px; display:none;" alt="Layout de bodega">
+                    <div class="layout-grid" id="layoutGrid"></div>
+                </div>
             </div>
         </div>
 
@@ -638,21 +439,12 @@
         <div id="tab-movimientos" class="tab-content">
             <h3 style="font-size:0.9rem; margin-bottom:6px;">📜 Historial de cambios</h3>
             <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
-                <input type="text" id="filterHistorial" placeholder="🔍 Filtrar..." style="flex:1; min-width:120px; padding:6px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.8rem;" oninput="renderHistorialCompleto()">
-                <select id="filterHistorialAccion" onchange="renderHistorialCompleto()" style="padding:6px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.75rem; background:white; max-width:130px;">
-                    <option value="TODAS">📋 Todas</option>
-                    <option value="AGREGAR">➕ Agregar</option>
-                    <option value="EDITAR">✏️ Editar</option>
-                    <option value="ELIMINAR">🗑️ Eliminar</option>
-                    <option value="MOVIMIENTO">🔄 Movimiento</option>
-                    <option value="ALMACENAR">📥 Almacenar</option>
-                </select>
-                <button class="btn btn-danger btn-sm" onclick="limpiarHistorialCompleto()"><span class="icon">🗑️</span> Limpiar</button>
+                <input type="text" id="filterHistorial" placeholder="🔍 Filtrar..." style="flex:1; min-width:120px; padding:6px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.8rem;" oninput="renderHistorial()">
             </div>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Producto</th><th>Detalle</th></tr></thead>
-                    <tbody id="historialCompletoBody"></tbody>
+                    <tbody id="historialBody"></tbody>
                 </table>
             </div>
         </div>
@@ -675,12 +467,7 @@
         <div id="tab-config" class="tab-content">
             <h3>⚙️ Configuración</h3>
             <div style="max-width:600px;">
-                <div style="margin-bottom:10px;">
-                    <label style="font-weight:600; font-size:0.8rem; display:block; margin-bottom:4px;"><strong>📐 Sube tu imagen del layout</strong></label>
-                    <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="width:100%; padding:6px; border:2px solid #d1d5db; border-radius:var(--radius-sm);">
-                    <p style="font-size:0.65rem; color:#64748b; margin-top:3px;">Reemplaza la imagen de referencia por tu plano real de la bodega.</p>
-                </div>
-                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;">
                     <button class="btn btn-primary" onclick="resetData()"><span class="icon">🔄</span> Reiniciar</button>
                     <button class="btn btn-warning" onclick="exportarDatos()"><span class="icon">📤</span> Exportar JSON</button>
                     <button class="btn btn-success" onclick="document.getElementById('importFile').click()"><span class="icon">📥</span> Importar JSON</button>
@@ -689,9 +476,7 @@
             </div>
         </div>
 
-        <!-- ============================================================ -->
-        <!-- FOOTER - PIE DE PÁGINA (ESTILO PLATEADO) -->
-        <!-- ============================================================ -->
+        <!-- FOOTER -->
         <div class="app-footer">
             <div class="footer-left">
                 <span class="footer-brand">📦 <span>WMS</span> Bodega Central</span>
@@ -701,12 +486,7 @@
                 <span class="footer-info">Actualizado: Agosto 2026 · Santiago, Chile</span>
             </div>
             <div class="footer-right">
-                <span class="footer-badge">✦ Optimización Cadena de Suministro</span>
-                <span class="footer-badge">✦ Estándares Globales</span>
-                <span class="footer-badge">✦ Trazabilidad Sanitaria</span>
-                <span class="footer-contact">
-                    <strong>Mauricio Leonardo Quiroz Ayala</strong> · 📱 +56 9 5105 3930
-                </span>
+                <span>Mauricio Leonardo Quiroz Ayala · +56 9 5105 3930</span>
             </div>
         </div>
     </div>
@@ -726,373 +506,163 @@
     <!-- TOAST -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- ============================================================ -->
-    <!-- SCRIPT PRINCIPAL -->
-    <!-- ============================================================ -->
+    <!-- SCRIPTS -->
     <script>
         // ============================================================
-        //  FUNCIÓN PARA OBTENER HORA DE CHILE
+        // CONFIGURACIÓN INDEXEDDB
         // ============================================================
-        function getFechaHoraChile() {
-            const now = new Date();
-            const options = {
-                timeZone: 'America/Santiago',
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false
-            };
-            const formatter = new Intl.DateTimeFormat('es-CL', options);
-            const parts = formatter.formatToParts(now);
-            const fecha = parts.filter(p => p.type !== 'literal').map(p => p.value);
-            return `${fecha[2]}-${fecha[1]}-${fecha[0]} ${fecha[3]}:${fecha[4]}:${fecha[5]}`;
-        }
-
-        // ============================================================
-        //  CONFIGURACIÓN INDEXEDDB
-        // ============================================================
-        const DB_NAME = 'WMS_DB';
-        const DB_VERSION = 2;
-
+        const DB_NAME = 'WMS_DB_V2';
+        const DB_VERSION = 3;
         let db = null;
+        let currentUser = null;
+        let editMode = false;
+        let modalCallback = null;
+
+        function getFechaChile() {
+            const now = new Date();
+            const opts = { timeZone: 'America/Santiago', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            const parts = new Intl.DateTimeFormat('es-CL', opts).formatToParts(now);
+            const f = parts.filter(p => p.type !== 'literal').map(p => p.value);
+            return `${f[2]}-${f[1]}-${f[0]} ${f[3]}:${f[4]}:${f[5]}`;
+        }
 
         function abrirDB() {
             return new Promise((resolve, reject) => {
                 const request = indexedDB.open(DB_NAME, DB_VERSION);
-                request.onupgradeneeded = function(event) {
-                    const db = event.target.result;
+                request.onupgradeneeded = function(e) {
+                    const db = e.target.result;
                     if (!db.objectStoreNames.contains('products')) {
                         const store = db.createObjectStore('products', { keyPath: 'codigo' });
                         store.createIndex('bodega', 'bodega', { unique: false });
-                        store.createIndex('zona', 'zona', { unique: false });
-                        store.createIndex('ubicacion', 'ubicacion', { unique: false });
                     }
                     if (!db.objectStoreNames.contains('movements')) {
-                        const store = db.createObjectStore('movements', { keyPath: 'id', autoIncrement: true });
-                        store.createIndex('codigo', 'codigo', { unique: false });
-                        store.createIndex('fecha', 'fecha', { unique: false });
+                        db.createObjectStore('movements', { keyPath: 'id', autoIncrement: true });
                     }
                     if (!db.objectStoreNames.contains('historial')) {
                         db.createObjectStore('historial', { keyPath: 'id', autoIncrement: true });
                     }
+                    if (!db.objectStoreNames.contains('bodegas')) {
+                        const store = db.createObjectStore('bodegas', { keyPath: 'id', autoIncrement: true });
+                        store.createIndex('codigo', 'codigo', { unique: true });
+                    }
                     if (!db.objectStoreNames.contains('users')) {
-                        db.createObjectStore('users', { keyPath: 'id' });
-                    }
-                    if (!db.objectStoreNames.contains('config')) {
-                        db.createObjectStore('config', { keyPath: 'key' });
+                        db.createObjectStore('users', { keyPath: 'id', autoIncrement: true });
                     }
                 };
-                request.onsuccess = function(event) {
-                    db = event.target.result;
-                    resolve(db);
-                };
-                request.onerror = function(event) {
-                    reject(event.target.error);
-                };
+                request.onsuccess = function(e) { db = e.target.result; resolve(db); };
+                request.onerror = function(e) { reject(e.target.error); };
             });
         }
 
-        function dbGetAll(storeName) {
+        function dbGetAll(store) {
             return new Promise((resolve, reject) => {
-                if (!db) return reject(new Error('Base de datos no abierta'));
-                const tx = db.transaction(storeName, 'readonly');
-                const store = tx.objectStore(storeName);
-                const request = store.getAll();
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
+                if (!db) return reject('DB no abierta');
+                const tx = db.transaction(store, 'readonly');
+                const req = tx.objectStore(store).getAll();
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
             });
         }
 
-        function dbPut(storeName, data) {
+        function dbPut(store, data) {
             return new Promise((resolve, reject) => {
-                if (!db) return reject(new Error('Base de datos no abierta'));
-                const tx = db.transaction(storeName, 'readwrite');
-                const store = tx.objectStore(storeName);
-                const request = store.put(data);
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
+                if (!db) return reject('DB no abierta');
+                const tx = db.transaction(store, 'readwrite');
+                const req = tx.objectStore(store).put(data);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
             });
         }
 
-        function dbPutAll(storeName, dataArray) {
+        function dbPutAll(store, data) {
             return new Promise((resolve, reject) => {
-                if (!db) return reject(new Error('Base de datos no abierta'));
-                const tx = db.transaction(storeName, 'readwrite');
-                const store = tx.objectStore(storeName);
+                if (!db) return reject('DB no abierta');
+                const tx = db.transaction(store, 'readwrite');
+                const storeObj = tx.objectStore(store);
                 let count = 0;
-                if (dataArray.length === 0) { resolve(); return; }
-                dataArray.forEach(item => {
-                    const req = store.put(item);
-                    req.onsuccess = () => { count++; if (count === dataArray.length) resolve(); };
+                if (data.length === 0) { resolve(); return; }
+                data.forEach(item => {
+                    const req = storeObj.put(item);
+                    req.onsuccess = () => { count++; if (count === data.length) resolve(); };
                     req.onerror = () => reject(req.error);
                 });
             });
         }
 
-        function dbDelete(storeName, key) {
+        function dbDelete(store, key) {
             return new Promise((resolve, reject) => {
-                if (!db) return reject(new Error('Base de datos no abierta'));
-                const tx = db.transaction(storeName, 'readwrite');
-                const store = tx.objectStore(storeName);
-                const request = store.delete(key);
-                request.onsuccess = () => resolve();
-                request.onerror = () => reject(request.error);
+                if (!db) return reject('DB no abierta');
+                const tx = db.transaction(store, 'readwrite');
+                const req = tx.objectStore(store).delete(key);
+                req.onsuccess = () => resolve();
+                req.onerror = () => reject(req.error);
             });
         }
 
-        function dbClear(storeName) {
+        function dbClear(store) {
             return new Promise((resolve, reject) => {
-                if (!db) return reject(new Error('Base de datos no abierta'));
-                const tx = db.transaction(storeName, 'readwrite');
-                const store = tx.objectStore(storeName);
-                const request = store.clear();
-                request.onsuccess = () => resolve();
-                request.onerror = () => reject(request.error);
+                if (!db) return reject('DB no abierta');
+                const tx = db.transaction(store, 'readwrite');
+                const req = tx.objectStore(store).clear();
+                req.onsuccess = () => resolve();
+                req.onerror = () => reject(req.error);
             });
         }
 
         // ============================================================
-        //  VARIABLES GLOBALES
-        // ============================================================
-        let currentWarehouse = 'TODAS';
-        let currentUserId = null;
-        let editMode = false;
-        let selectedRows = new Set();
-        let editingRows = new Set();
-        let modalCallback = null;
-        let broadcastChannel = null;
-        let pollingInterval = null;
-
-        const STORAGE_KEY_USERS = 'wms_users';
-        const STORAGE_KEY_CONFIG = 'wms_config';
-        const STORAGE_KEY_SESSION = 'wms_session_user';
-        const STORAGE_KEY_ACTIVE_USERS = 'wms_active_users';
-        const STORAGE_KEY_MODIFIED = 'wms_data_modified';
-
-        // ============================================================
-        //  ZONAS CON COLORES
-        // ============================================================
-        const ZONE_COLORS = {
-            'A': { bg: '#2563eb', text: 'white', label: 'Palletizado Doble Altura' },
-            'B': { bg: '#16a34a', text: 'white', label: 'Palletizado Doble Altura' },
-            'C': { bg: '#f59e0b', text: '#0f172a', label: 'Palletizado Pasillo' },
-            'D': { bg: '#8b5cf6', text: 'white', label: 'VNA' },
-            'E': { bg: '#ec4899', text: 'white', label: 'Selectivo' },
-            'F': { bg: '#f43f5e', text: 'white', label: 'Anaquel' },
-            'G': { bg: '#06b6d4', text: 'white', label: 'Full Space' },
-            'H': { bg: '#3b82f6', text: 'white', label: 'Cámara Frío' },
-            'I': { bg: '#fb923c', text: 'white', label: 'Inyectables' },
-            'J': { bg: '#8b5cf6', text: 'white', label: 'Mezclas' }
-        };
-
-        // ============================================================
-        //  INICIALIZACIÓN
+        // DATOS POR DEFECTO
         // ============================================================
         async function initData() {
             await abrirDB();
 
-            if (!localStorage.getItem(STORAGE_KEY_USERS)) {
-                localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify([
-                    { id: 1, nombre: 'Admin', perfil: 'Admin', password: 'admin', permisos: ['lectura','escritura','administracion'], ultimaActividad: getFechaHoraChile() },
-                    { id: 2, nombre: 'Supervisor', perfil: 'supervisor', password: '1234', permisos: ['lectura','escritura'], ultimaActividad: getFechaHoraChile() },
-                    { id: 3, nombre: 'Operario', perfil: 'operario', password: '1234', permisos: ['lectura'], ultimaActividad: getFechaHoraChile() }
-                ]));
+            let bodegas = await dbGetAll('bodegas');
+            if (bodegas.length === 0) {
+                await dbPutAll('bodegas', [
+                    { nombre: 'Bodega de Fármacos', codigo: 'FARM', descripcion: 'Medicamentos y fármacos', tipo: 'Fármacos', estado: 'activa', layout: '' },
+                    { nombre: 'Bodega de Insumos Clínicos', codigo: 'INSU', descripcion: 'Insumos clínicos y material médico', tipo: 'Insumos', estado: 'activa', layout: '' },
+                    { nombre: 'Bodega de Economato', codigo: 'ECON', descripcion: 'Productos de economato y oficina', tipo: 'Economato', estado: 'activa', layout: '' }
+                ]);
             }
 
-            if (!localStorage.getItem(STORAGE_KEY_CONFIG)) {
-                localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify({ mapImage: '' }));
+            let users = await dbGetAll('users');
+            if (users.length === 0) {
+                await dbPutAll('users', [
+                    { nombre: 'Admin', perfil: 'admin', password: 'admin', permisos: ['lectura','escritura','administracion'], ultimaActividad: getFechaChile() },
+                    { nombre: 'Supervisor', perfil: 'supervisor', password: '1234', permisos: ['lectura','escritura'], ultimaActividad: getFechaChile() },
+                    { nombre: 'Operario', perfil: 'operario', password: '1234', permisos: ['lectura'], ultimaActividad: getFechaChile() }
+                ]);
             }
 
-            const products = await dbGetAll('products');
+            let products = await dbGetAll('products');
             if (products.length === 0) {
-                const sample = [
-                    { codigo: '01-001-216-026', gtin: '7801234567890', glosa: 'METRONIDAZOL 500 MG/100 ML', bodega: 'Farmacos', ubicaciones: [{ tipo: 'master', ubicacion: 'PALLET_A_1', zona: 'A' }], estado: 'almacenado' },
-                    { codigo: '01-001-212-024', gtin: '7801234567999', glosa: 'FENTANILO 0,5 MG/10 ML', bodega: 'Farmacos', ubicaciones: [{ tipo: 'master', ubicacion: 'PALLET_C_2', zona: 'C' }], estado: 'almacenado' },
-                    { codigo: '01-001-213-076', gtin: '7801234567894', glosa: 'DEXAMETASONA 4 MG/ML SOL INY', bodega: 'Farmacos', ubicaciones: [{ tipo: 'master', ubicacion: 'SELECTIVO_E_1', zona: 'E' }], estado: 'almacenado' }
-                ];
-                await dbPutAll('products', sample);
+                await dbPutAll('products', [
+                    { codigo: '01-001-216-026', gtin: '7801234567890', glosa: 'METRONIDAZOL 500 MG/100 ML', bodega: 'FARM', ubicacion: 'PALLET_A_1', zona: 'A', estado: 'almacenado' },
+                    { codigo: '01-001-212-024', gtin: '7801234567999', glosa: 'FENTANILO 0,5 MG/10 ML', bodega: 'FARM', ubicacion: 'PALLET_C_2', zona: 'C', estado: 'almacenado' }
+                ]);
             }
 
-            const movements = await dbGetAll('movements');
+            let movements = await dbGetAll('movements');
             if (movements.length === 0) {
-                await dbPut('movements', {
-                    fecha: getFechaHoraChile(),
-                    codigo: '01-001-216-026',
-                    bodega: 'Farmacos',
-                    desde: 'RECEPCION',
-                    hacia: 'PALLET_A_1',
-                    usuario: 'Admin',
-                    tipo: 'ALMACENAR'
-                });
-            }
-
-            const historial = await dbGetAll('historial');
-            if (historial.length === 0) {
-                await dbPut('historial', {
-                    fecha: getFechaHoraChile(),
-                    usuario: 'Sistema',
-                    accion: 'INICIO',
-                    codigo: 'SISTEMA',
-                    detalle: 'Base de datos inicializada',
-                    perfil: 'sistema'
-                });
+                await dbPut('movements', { fecha: getFechaChile(), codigo: 'SISTEMA', desde: '-', hacia: '-', usuario: 'Sistema', tipo: 'INICIO' });
             }
         }
 
         // ============================================================
-        //  FUNCIONES DE ACCESO A DATOS
+        // AUTENTICACIÓN
         // ============================================================
-        async function getAllProducts() { return await dbGetAll('products'); }
-        async function setProducts(data) {
-            await dbClear('products');
-            if (data && data.length > 0) await dbPutAll('products', data);
-            marcarDatosModificados();
-        }
-        async function getProducts() {
-            const all = await getAllProducts();
-            if (currentWarehouse === 'TODAS') return all;
-            return all.filter(p => p.bodega === currentWarehouse);
-        }
-
-        async function getAllMovements() { return await dbGetAll('movements'); }
-        async function setMovements(data) {
-            await dbClear('movements');
-            if (data && data.length > 0) await dbPutAll('movements', data);
-            marcarDatosModificados();
-        }
-        async function getMovements() {
-            const all = await getAllMovements();
-            if (currentWarehouse === 'TODAS') return all;
-            return all.filter(m => m.bodega === currentWarehouse);
-        }
-
-        async function getAllHistorial() { return await dbGetAll('historial'); }
-        async function setHistorial(data) {
-            await dbClear('historial');
-            if (data && data.length > 0) await dbPutAll('historial', data);
-            marcarDatosModificados();
-        }
-        async function addHistorial(entry) {
-            await dbPut('historial', entry);
-            marcarDatosModificados();
-        }
-
-        function getUsers() { return JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]'); }
-        function setUsers(u) {
-            localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(u));
-            marcarDatosModificados();
-            broadcastCambios('USUARIO', 'Usuarios actualizados');
-        }
-
-        function getConfig() { return JSON.parse(localStorage.getItem(STORAGE_KEY_CONFIG) || '{}'); }
-        function setConfig(c) { localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify(c)); }
-
-        function marcarDatosModificados() {
-            localStorage.setItem(STORAGE_KEY_MODIFIED, 'true');
-        }
-
-        function limpiarMarcaModificados() {
-            localStorage.removeItem(STORAGE_KEY_MODIFIED);
-        }
-
-        // ============================================================
-        //  BROADCAST CHANNEL + POLLING
-        // ============================================================
-        function initBroadcastChannel() {
-            try {
-                broadcastChannel = new BroadcastChannel('wms_channel');
-                broadcastChannel.onmessage = function(event) {
-                    const data = event.data;
-                    if (data.type === 'CAMBIOS' || data.type === 'USUARIO') {
-                        if (data.type === 'USUARIO') {
-                            renderUsuarios();
-                            mostrarToast('👥 ' + (data.usuario || 'Alguien') + ' actualizó usuarios', 'info');
-                        } else {
-                            renderAll();
-                            mostrarToast('🔄 ' + (data.usuario || 'Alguien') + ' realizó cambios', 'warning');
-                        }
-                    }
-                };
-                if (pollingInterval) {
-                    clearInterval(pollingInterval);
-                    pollingInterval = null;
-                }
-            } catch (e) {
-                console.warn('BroadcastChannel no soportado, activando polling de respaldo');
-                iniciarPolling();
-            }
-        }
-
-        function iniciarPolling() {
-            if (pollingInterval) return;
-            let lastUserHash = '';
-            let lastModified = localStorage.getItem(STORAGE_KEY_MODIFIED);
-
-            pollingInterval = setInterval(() => {
-                const users = getUsers();
-                const currentHash = JSON.stringify(users);
-                if (currentHash !== lastUserHash) {
-                    lastUserHash = currentHash;
-                    renderUsuarios();
-                }
-
-                const modified = localStorage.getItem(STORAGE_KEY_MODIFIED);
-                if (modified === 'true') {
-                    limpiarMarcaModificados();
-                    renderAll();
-                    mostrarToast('🔄 Actualización automática detectada', 'info');
-                }
-            }, 3000);
-        }
-
-        function broadcastCambios(tipo, detalle) {
-            if (broadcastChannel) {
-                const user = getCurrentUser();
-                broadcastChannel.postMessage({
-                    type: tipo,
-                    usuario: user ? user.nombre : 'Sistema',
-                    detalle: detalle,
-                    timestamp: getFechaHoraChile()
-                });
-            }
-            marcarDatosModificados();
-            actualizarUsuariosConectados();
-        }
-
-        // ============================================================
-        //  AUTENTICACIÓN
-        // ============================================================
-        function getCurrentUser() {
-            if (currentUserId === null) return null;
-            const users = getUsers();
-            return users.find(u => u.id === currentUserId) || null;
-        }
-
-        function hasPermission(perm) {
-            const user = getCurrentUser();
-            if (!user) return false;
-            return user.permisos.includes(perm) || user.permisos.includes('administracion');
-        }
-
-        function handleLogin() {
+        async function handleLogin() {
             const username = document.getElementById('loginUser').value.trim();
             const password = document.getElementById('loginPass').value.trim();
-            const users = getUsers();
+            const users = await dbGetAll('users');
             const user = users.find(u => u.nombre.toLowerCase() === username.toLowerCase() && u.password === password);
             if (user) {
-                currentUserId = user.id;
-                localStorage.setItem(STORAGE_KEY_SESSION, user.id);
+                currentUser = user;
                 document.getElementById('loginModal').style.display = 'none';
                 document.getElementById('app').style.display = 'block';
-                initBroadcastChannel();
-                renderAll();
                 document.getElementById('loginError').style.display = 'none';
+                document.getElementById('currentUserDisplay').textContent = '👤 ' + user.nombre + ' (' + user.perfil + ')';
+                renderAll();
                 mostrarToast('👋 Bienvenido ' + user.nombre, 'success');
-                setInterval(actualizarUsuariosConectados, 30000);
-                registrarHistorial('LOGIN', user.nombre, 'Inicio de sesión');
             } else {
                 document.getElementById('loginError').style.display = 'block';
                 document.getElementById('loginError').textContent = '❌ Usuario o contraseña incorrectos.';
@@ -1100,88 +670,20 @@
         }
 
         function logout() {
-            const user = getCurrentUser();
-            if (user) {
-                registrarHistorial('LOGOUT', user.nombre, 'Cierre de sesión');
-                const activos = JSON.parse(localStorage.getItem(STORAGE_KEY_ACTIVE_USERS) || '{}');
-                delete activos[user.id];
-                localStorage.setItem(STORAGE_KEY_ACTIVE_USERS, JSON.stringify(activos));
-            }
-            currentUserId = null;
-            localStorage.removeItem(STORAGE_KEY_SESSION);
+            currentUser = null;
             document.getElementById('app').style.display = 'none';
             document.getElementById('loginModal').style.display = 'flex';
             document.getElementById('loginPass').value = '';
             document.getElementById('loginError').style.display = 'none';
-            if (broadcastChannel) { try { broadcastChannel.close(); } catch(e) {} broadcastChannel = null; }
-            if (pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
         }
 
-        function checkSession() {
-            const savedId = localStorage.getItem(STORAGE_KEY_SESSION);
-            if (savedId) {
-                const users = getUsers();
-                if (users.find(u => u.id === parseInt(savedId))) {
-                    currentUserId = parseInt(savedId);
-                    document.getElementById('loginModal').style.display = 'none';
-                    document.getElementById('app').style.display = 'block';
-                    initBroadcastChannel();
-                    return true;
-                }
-            }
-            document.getElementById('loginModal').style.display = 'flex';
-            document.getElementById('app').style.display = 'none';
-            return false;
-        }
-
-        function actualizarUsuariosConectados() {
-            const user = getCurrentUser();
-            if (user) {
-                const activos = JSON.parse(localStorage.getItem(STORAGE_KEY_ACTIVE_USERS) || '{}');
-                activos[user.id] = { nombre: user.nombre, ultimaActividad: getFechaHoraChile() };
-                localStorage.setItem(STORAGE_KEY_ACTIVE_USERS, JSON.stringify(activos));
-            }
-            const activos = JSON.parse(localStorage.getItem(STORAGE_KEY_ACTIVE_USERS) || '{}');
-            const ahora = new Date();
-            const ahoraChile = getFechaHoraChile();
-            const activosRecientes = {};
-            Object.keys(activos).forEach(id => {
-                const fecha = new Date(activos[id].ultimaActividad);
-                const diff = (new Date() - fecha) / 1000 / 60;
-                if (diff < 5) {
-                    activosRecientes[id] = activos[id];
-                }
-            });
-            localStorage.setItem(STORAGE_KEY_ACTIVE_USERS, JSON.stringify(activosRecientes));
-            document.getElementById('usuariosConectados').textContent = Object.keys(activosRecientes).length;
+        function hasPermission(perm) {
+            if (!currentUser) return false;
+            return currentUser.permisos.includes(perm) || currentUser.permisos.includes('administracion');
         }
 
         // ============================================================
-        //  HISTORIAL
-        // ============================================================
-        async function registrarHistorial(accion, codigo, detalle, bodega = null) {
-            const user = getCurrentUser();
-            const entry = {
-                fecha: getFechaHoraChile(),
-                usuario: user ? user.nombre : 'Sistema',
-                accion: accion,
-                codigo: codigo,
-                bodega: bodega || '',
-                detalle: detalle,
-                perfil: user ? user.perfil : 'sistema'
-            };
-            await addHistorial(entry);
-
-            if (user) {
-                const users = getUsers();
-                const u = users.find(u => u.id === user.id);
-                if (u) { u.ultimaActividad = getFechaHoraChile(); setUsers(users); }
-            }
-            broadcastCambios('CAMBIOS', detalle);
-        }
-
-        // ============================================================
-        //  TOAST
+        // TOAST
         // ============================================================
         function mostrarToast(mensaje, tipo = 'info') {
             const container = document.getElementById('toastContainer');
@@ -1202,46 +704,43 @@
         }
 
         // ============================================================
-        //  RENDER PRINCIPAL
+        // RENDER PRINCIPAL
         // ============================================================
-        function cambiarBodega() {
-            const sel = document.getElementById('warehouseSelect');
-            currentWarehouse = sel.value;
-            renderAll();
-        }
-
         async function renderAll() {
-            const user = getCurrentUser();
-            document.getElementById('currentUserDisplay').textContent = user ? '👤 ' + user.nombre + ' (' + user.perfil + ')' : '👤 Invitado';
-            const sel = document.getElementById('warehouseSelect');
-            if (sel.value !== currentWarehouse) sel.value = currentWarehouse;
-
             await renderDashboard();
-            await renderInventarioUnificado();
-            renderLayoutVisual();
-            await renderHistorialCompleto();
-            renderUsuarios();
-            renderConfig();
-            actualizarUsuariosConectados();
+            await renderInventario();
+            await renderBodegas();
+            await renderLayout();
+            await renderHistorial();
+            await renderUsuarios();
+            actualizarSelectBodegas();
+        }
 
-            const products = await getProducts();
-            document.getElementById('inventoryBadge').textContent = products.length;
+        function actualizarSelectBodegas() {
+            const selectInv = document.getElementById('filterBodegaInv');
+            const selectLayout = document.getElementById('layoutBodegaSelect');
+            dbGetAll('bodegas').then(bodegas => {
+                const opts = bodegas.filter(b => b.estado === 'activa').map(b => `<option value="${b.codigo}">${b.nombre}</option>`).join('');
+                selectInv.innerHTML = `<option value="TODAS">🏢 Todas</option>${opts}`;
+                selectLayout.innerHTML = `<option value="">Seleccionar bodega...</option>${opts}`;
+            });
         }
 
         // ============================================================
-        //  DASHBOARD
+        // DASHBOARD
         // ============================================================
         async function renderDashboard() {
-            const products = await getProducts();
-            const movements = await getMovements();
-            const users = getUsers();
+            const products = await dbGetAll('products');
+            const bodegas = await dbGetAll('bodegas');
+            const movements = await dbGetAll('movements');
+            const users = await dbGetAll('users');
+
             document.getElementById('totalProductos').textContent = products.length;
-            const ubicaciones = new Set();
-            products.forEach(p => p.ubicaciones.forEach(u => ubicaciones.add(u.ubicacion)));
+            document.getElementById('totalBodegas').textContent = bodegas.filter(b => b.estado === 'activa').length;
+            const ubicaciones = new Set(products.map(p => p.ubicacion));
             document.getElementById('totalUbicaciones').textContent = ubicaciones.size;
             document.getElementById('totalMovimientos').textContent = movements.length;
             document.getElementById('totalUsuarios').textContent = users.length;
-            actualizarUsuariosConectados();
 
             const tbody = document.getElementById('ultimosMovimientos');
             const recent = movements.slice(-5).reverse();
@@ -1255,168 +754,276 @@
         }
 
         // ============================================================
-        //  CARGA DE EXCEL
+        // INVENTARIO
         // ============================================================
-        function cargarExcel(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        async function renderInventario() {
+            const search = document.getElementById('searchInventario').value.toLowerCase();
+            const filterBodega = document.getElementById('filterBodegaInv').value;
+            let products = await dbGetAll('products');
 
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
+            if (filterBodega !== 'TODAS') {
+                products = products.filter(p => p.bodega === filterBodega);
+            }
+            if (search) {
+                products = products.filter(p =>
+                    p.codigo.toLowerCase().includes(search) ||
+                    p.glosa.toLowerCase().includes(search) ||
+                    p.gtin.includes(search)
+                );
+            }
 
-                    let totalItems = 0;
-                    const allProducts = await getAllProducts();
+            const tbody = document.getElementById('inventarioBody');
+            const bodegas = await dbGetAll('bodegas');
+            const bodegaMap = {};
+            bodegas.forEach(b => bodegaMap[b.codigo] = b.nombre);
 
-                    workbook.SheetNames.forEach(name => {
-                        const sheet = workbook.Sheets[name];
-                        const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-                        if (json.length > 0) {
-                            const mappedData = mapearDatosExcel(json);
-                            if (mappedData.length > 0) {
-                                mappedData.forEach(item => {
-                                    const existing = allProducts.find(p => p.codigo === item.codigo);
-                                    if (existing) {
-                                        if (item.ubicacion) {
-                                            const master = existing.ubicaciones.find(u => u.tipo === 'master');
-                                            if (master) {
-                                                master.ubicacion = item.ubicacion;
-                                                master.zona = item.zona || master.zona;
-                                            } else {
-                                                existing.ubicaciones.push({ tipo: 'master', ubicacion: item.ubicacion, zona: item.zona || 'A' });
-                                            }
-                                        }
-                                        if (item.gtin) existing.gtin = item.gtin;
-                                        if (item.bodega) existing.bodega = item.bodega;
-                                        if (item.glosa) existing.glosa = item.glosa;
-                                        existing.estado = 'almacenado';
-                                    } else {
-                                        const ubicaciones = [];
-                                        if (item.ubicacion) {
-                                            ubicaciones.push({ tipo: 'master', ubicacion: item.ubicacion, zona: item.zona || 'A' });
-                                        }
-                                        allProducts.push({
-                                            codigo: item.codigo,
-                                            gtin: item.gtin || '',
-                                            glosa: item.glosa || item.codigo,
-                                            bodega: item.bodega || 'Farmacos',
-                                            tags: [],
-                                            ubicaciones: ubicaciones,
-                                            estado: 'almacenado'
-                                        });
-                                    }
-                                    totalItems++;
-                                });
-                            }
-                        }
-                    });
+            tbody.innerHTML = products.map(p => `
+                <tr>
+                    <td><strong>${p.codigo}</strong></td>
+                    <td>${p.gtin || '-'}</td>
+                    <td>${p.glosa}</td>
+                    <td><span class="badge badge-activa">${bodegaMap[p.bodega] || p.bodega}</span></td>
+                    <td><span class="ubicacion-tag">${p.ubicacion || '-'}</span></td>
+                    <td><span class="zone-tag zone-tag-${p.zona || 'A'}">${p.zona || 'A'}</span></td>
+                    <td><span class="badge badge-activa">${p.estado || 'almacenado'}</span></td>
+                    <td>
+                        <div class="actions-cell" style="display:flex; gap:3px; flex-wrap:wrap;">
+                            <button class="btn btn-primary btn-xs" onclick="editarProducto('${p.codigo}')"><span class="icon">✏️</span></button>
+                            <button class="btn btn-danger btn-xs" onclick="eliminarProducto('${p.codigo}')"><span class="icon">🗑️</span></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('') || '<tr><td colspan="8" class="empty-state"><span class="empty-icon">📭</span>No hay productos</td></tr>';
+        }
 
-                    await setProducts(allProducts);
+        function toggleEditMode() {
+            editMode = !editMode;
+            document.getElementById('editModeLabel').textContent = editMode ? 'Modo edición' : 'Editar';
+            renderInventario();
+        }
+
+        // ============================================================
+        // BODEGAS (MANTENEDOR)
+        // ============================================================
+        async function renderBodegas() {
+            const bodegas = await dbGetAll('bodegas');
+            const tbody = document.getElementById('bodegasBody');
+            tbody.innerHTML = bodegas.map(b => `
+                <tr>
+                    <td>${b.id}</td>
+                    <td><strong>${b.nombre}</strong></td>
+                    <td><span class="ubicacion-tag">${b.codigo}</span></td>
+                    <td>${b.descripcion || '-'}</td>
+                    <td>${b.tipo || '-'}</td>
+                    <td><span class="badge ${b.estado === 'activa' ? 'badge-activa' : 'badge-inactiva'}">${b.estado || 'activa'}</span></td>
+                    <td>${b.layout ? '✅' : '❌'}</td>
+                    <td>
+                        <div style="display:flex; gap:3px; flex-wrap:wrap;">
+                            <button class="btn btn-primary btn-xs" onclick="editarBodega(${b.id})"><span class="icon">✏️</span></button>
+                            <button class="btn btn-warning btn-xs" onclick="toggleBodegaEstado(${b.id})"><span class="icon">${b.estado === 'activa' ? '⏸️' : '▶️'}</span></button>
+                            <button class="btn btn-danger btn-xs" onclick="eliminarBodega(${b.id})"><span class="icon">🗑️</span></button>
+                            <button class="btn btn-purple btn-xs" onclick="subirLayoutBodega(${b.id})"><span class="icon">🖼️</span></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('') || '<tr><td colspan="8" class="empty-state"><span class="empty-icon">🏢</span>No hay bodegas registradas</td></tr>';
+        }
+
+        function mostrarModalBodega(data = null) {
+            const isEdit = !!data;
+            const title = isEdit ? '✏️ Editar Bodega' : '➕ Nueva Bodega';
+            const action = isEdit ? 'Actualizar' : 'Crear';
+
+            const body = `
+                <div class="form-grid">
+                    <div class="full-width">
+                        <label>Nombre de la bodega *</label>
+                        <input id="bodegaNombre" value="${data?.nombre || ''}" placeholder="Ej: Bodega de Fármacos">
+                    </div>
+                    <div>
+                        <label>Código *</label>
+                        <input id="bodegaCodigo" value="${data?.codigo || ''}" placeholder="Ej: FARM" ${isEdit ? 'readonly' : ''}>
+                    </div>
+                    <div>
+                        <label>Tipo</label>
+                        <input id="bodegaTipo" value="${data?.tipo || ''}" placeholder="Ej: Fármacos, Insumos, Economato">
+                    </div>
+                    <div class="full-width">
+                        <label>Descripción</label>
+                        <textarea id="bodegaDescripcion" rows="2" placeholder="Descripción de la bodega">${data?.descripcion || ''}</textarea>
+                    </div>
+                    <div>
+                        <label>Estado</label>
+                        <select id="bodegaEstado">
+                            <option value="activa" ${data?.estado === 'activa' ? 'selected' : ''}>Activa</option>
+                            <option value="inactiva" ${data?.estado === 'inactiva' ? 'selected' : ''}>Inactiva</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Layout actual</label>
+                        <div style="font-size:0.7rem; color:#64748b; padding:4px 0;">${data?.layout ? '✅ Imagen cargada' : '❌ Sin layout'}</div>
+                    </div>
+                </div>
+            `;
+
+            mostrarModal(title, body);
+            modalCallback = async () => {
+                const nombre = document.getElementById('bodegaNombre').value.trim();
+                const codigo = document.getElementById('bodegaCodigo').value.trim().toUpperCase();
+                const tipo = document.getElementById('bodegaTipo').value.trim();
+                const descripcion = document.getElementById('bodegaDescripcion').value.trim();
+                const estado = document.getElementById('bodegaEstado').value;
+
+                if (!nombre) return alert('El nombre es requerido');
+                if (!codigo) return alert('El código es requerido');
+
+                const bodegas = await dbGetAll('bodegas');
+
+                if (!isEdit) {
+                    if (bodegas.find(b => b.codigo === codigo)) {
+                        return alert('Ya existe una bodega con ese código');
+                    }
+                    await dbPut('bodegas', { nombre, codigo, tipo, descripcion, estado, layout: '' });
+                    mostrarToast('✅ Bodega creada: ' + nombre, 'success');
+                } else {
+                    const b = bodegas.find(b => b.id === data.id);
+                    if (b) {
+                        b.nombre = nombre;
+                        b.tipo = tipo;
+                        b.descripcion = descripcion;
+                        b.estado = estado;
+                        await dbPut('bodegas', b);
+                        mostrarToast('✅ Bodega actualizada: ' + nombre, 'success');
+                    }
+                }
+                renderAll();
+                cerrarModal();
+            };
+            document.getElementById('modalActionBtn').textContent = action;
+        }
+
+        function editarBodega(id) {
+            dbGetAll('bodegas').then(bodegas => {
+                const b = bodegas.find(b => b.id === id);
+                if (b) mostrarModalBodega(b);
+            });
+        }
+
+        async function toggleBodegaEstado(id) {
+            const bodegas = await dbGetAll('bodegas');
+            const b = bodegas.find(b => b.id === id);
+            if (b) {
+                b.estado = b.estado === 'activa' ? 'inactiva' : 'activa';
+                await dbPut('bodegas', b);
+                mostrarToast(`Bodega ${b.estado === 'activa' ? 'activada' : 'desactivada'}`, 'info');
+                renderAll();
+            }
+        }
+
+        async function eliminarBodega(id) {
+            if (!confirm('¿Eliminar esta bodega?')) return;
+            await dbDelete('bodegas', id);
+            mostrarToast('Bodega eliminada', 'warning');
+            renderAll();
+        }
+
+        // ============================================================
+        // LAYOUT
+        // ============================================================
+        function mostrarModalLayout(bodegaId = null) {
+            const body = `
+                <div class="form-grid">
+                    <div class="full-width">
+                        <label>Bodega</label>
+                        <select id="layoutBodegaModal">
+                            <option value="">Seleccionar...</option>
+                        </select>
+                    </div>
+                    <div class="full-width">
+                        <label>Imagen del layout</label>
+                        <input type="file" id="layoutFileInput" accept="image/*">
+                        <div id="layoutPreviewContainer" style="margin-top:8px;"></div>
+                    </div>
+                </div>
+            `;
+
+            mostrarModal('🖼️ Subir Layout de Bodega', body);
+            document.getElementById('modalActionBtn').textContent = 'Subir';
+
+            dbGetAll('bodegas').then(bodegas => {
+                const select = document.getElementById('layoutBodegaModal');
+                const opts = bodegas.filter(b => b.estado === 'activa').map(b =>
+                    `<option value="${b.id}" ${b.id === bodegaId ? 'selected' : ''}>${b.nombre}</option>`
+                ).join('');
+                select.innerHTML = opts;
+            });
+
+            document.getElementById('layoutFileInput').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        const container = document.getElementById('layoutPreviewContainer');
+                        container.innerHTML = `<img src="${ev.target.result}" style="max-width:100%; max-height:200px; border-radius:8px; border:1px solid #e2e8f0;">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            modalCallback = async () => {
+                const bodegaId = parseInt(document.getElementById('layoutBodegaModal').value);
+                const fileInput = document.getElementById('layoutFileInput');
+                const file = fileInput.files[0];
+
+                if (!bodegaId) return alert('Selecciona una bodega');
+                if (!file) return alert('Selecciona una imagen');
+
+                const reader = new FileReader();
+                const imgData = await new Promise((resolve) => {
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(file);
+                });
+
+                const bodegas = await dbGetAll('bodegas');
+                const b = bodegas.find(b => b.id === bodegaId);
+                if (b) {
+                    b.layout = imgData;
+                    await dbPut('bodegas', b);
+                    mostrarToast('✅ Layout actualizado para ' + b.nombre, 'success');
                     renderAll();
-                    document.getElementById('fileInput').value = '';
-                    await registrarHistorial('AGREGAR', 'EXCEL_IMPORT', 'Archivo importado: ' + file.name + ' (' + totalItems + ' productos)');
-                    mostrarToast('✅ Archivo cargado: ' + totalItems + ' productos de ' + file.name, 'success');
-                } catch (error) {
-                    alert('❌ Error al leer el archivo: ' + error.message);
-                    console.error(error);
+                    cerrarModal();
                 }
             };
-            reader.readAsArrayBuffer(file);
         }
 
-        // ============================================================
-        //  MAPEO DE DATOS
-        // ============================================================
-        function mapearDatosExcel(data) {
-            if (!data || data.length === 0) return [];
-
-            const headers = Object.keys(data[0]);
-
-            const colMap = {
-                codigo: headers.find(h => /COD\.?.*HERMES|HERMES|CODIGO|COD|SKU|ID|CÓDIGO/i.test(h)) || headers[0],
-                glosa: headers.find(h => /GLOSA|NOMBRE|DESCRIPCION|PRODUCTO|ITEM|GLOSA INTERNA/i.test(h)) || headers[1],
-                gtin: headers.find(h => /GTIN|EAN|EAN13|BARRA/i.test(h)),
-                ubicacion: headers.find(h => /UBICACION|UBICACIÓN|POSICION|RACK|LOCATION/i.test(h)),
-                zona: headers.find(h => /ZONA|ZONA.*ALMACENAMIENTO|PASILLO|AREA/i.test(h)),
-                bodega: headers.find(h => /BODEGA|ALMACEN|WAREHOUSE|SUB BODEGA/i.test(h)),
-                zona2: headers.find(h => h.toUpperCase().includes('ZONA')),
-                zonaMaster: headers.find(h => /ZONA ALMACENAMIENTO|UNIDAD MASTER/i.test(h)),
-                paletizacion: headers.find(h => /PALETIZACION|PALETIZADO|N°|NÚMERO/i.test(h))
-            };
-
-            return data.map((row, idx) => {
-                const getVal = (key) => {
-                    if (!key) return '';
-                    const val = row[key];
-                    return val !== undefined && val !== null ? String(val).trim() : '';
-                };
-
-                let codigo = getVal(colMap.codigo);
-                let glosa = getVal(colMap.glosa);
-                let gtin = getVal(colMap.gtin);
-                let ubicacion = getVal(colMap.ubicacion);
-                let zona = getVal(colMap.zona) || getVal(colMap.zona2) || getVal(colMap.zonaMaster);
-                let bodega = getVal(colMap.bodega) || 'Farmacos';
-
-                if (!codigo) {
-                    for (let key of headers) {
-                        const val = getVal(key);
-                        if (/^[0-9]{2}-[0-9]{3}-[0-9]{3}-[0-9]{3}/.test(val) ||
-                            /^[0-9]{2}-[0-9]{3}-[0-9]{3}/.test(val)) {
-                            codigo = val;
-                            break;
-                        }
-                    }
-                }
-
-                if (!zona && ubicacion) {
-                    const match = ubicacion.match(/([A-J])(?:_|\s|$)/);
-                    if (match && ['A','B','C','D','E','F','G','H','I','J'].includes(match[1])) {
-                        zona = match[1];
-                    } else {
-                        const match2 = ubicacion.match(/Zona\s*([A-J])/i);
-                        if (match2 && ['A','B','C','D','E','F','G','H','I','J'].includes(match2[1])) {
-                            zona = match2[1];
-                        }
-                    }
-                }
-
-                if (!zona) zona = 'A';
-
-                if (!ubicacion) {
-                    ubicacion = zona + '_' + (idx + 1);
-                }
-
-                if (!codigo) {
-                    codigo = 'ITEM_' + String(idx + 1).padStart(3, '0');
-                }
-
-                return {
-                    codigo: codigo,
-                    glosa: glosa || 'Sin descripción',
-                    gtin: gtin || '',
-                    ubicacion: ubicacion,
-                    zona: zona,
-                    bodega: bodega,
-                    estado: 'almacenado'
-                };
-            }).filter(item => item.codigo && item.codigo !== '');
+        function subirLayoutBodega(id) {
+            mostrarModalLayout(id);
         }
 
-        // ============================================================
-        //  LAYOUT VISUAL
-        // ============================================================
-        function renderLayoutVisual() {
+        async function renderLayout() {
+            const select = document.getElementById('layoutBodegaSelect');
+            const bodegaId = select.value;
             const grid = document.getElementById('layoutGrid');
-            if (!grid) return;
-            // Se renderiza con datos de productos
-        }
+            const img = document.getElementById('layoutImage');
 
-        async function renderLayoutVisualWithProducts(products) {
-            const grid = document.getElementById('layoutGrid');
-            if (!grid) return;
+            if (!bodegaId) {
+                grid.innerHTML = '<div class="empty-state"><span class="empty-icon">🗺️</span>Selecciona una bodega para ver su layout</div>';
+                img.style.display = 'none';
+                return;
+            }
+
+            const bodegas = await dbGetAll('bodegas');
+            const bodega = bodegas.find(b => b.id === parseInt(bodegaId));
+
+            if (bodega?.layout) {
+                img.src = bodega.layout;
+                img.style.display = 'block';
+            } else {
+                img.style.display = 'none';
+            }
+
+            const products = await dbGetAll('products');
+            const productosBodega = products.filter(p => p.bodega === bodega?.codigo);
 
             const layoutData = [
                 ['A1', 'A1', 'A1', 'B1', 'B1', 'B1', 'C1', 'C1', 'C1', 'C1'],
@@ -1433,14 +1040,10 @@
             grid.innerHTML = '';
 
             const zonasOcupadas = new Set();
-            products.forEach(p => {
-                p.ubicaciones.forEach(u => {
-                    if (u.zona) zonasOcupadas.add(u.zona);
-                });
-            });
+            productosBodega.forEach(p => { if (p.zona) zonasOcupadas.add(p.zona); });
 
-            layoutData.forEach((row) => {
-                row.forEach((cell) => {
+            layoutData.forEach(row => {
+                row.forEach(cell => {
                     const div = document.createElement('div');
                     div.className = 'layout-cell';
 
@@ -1486,200 +1089,585 @@
         }
 
         // ============================================================
-        //  CONFIG
+        // MODAL GENÉRICO
         // ============================================================
-        function renderConfig() {
-            const config = getConfig();
-            const mapImage = document.getElementById('mapImage');
-            if (mapImage && config.mapImage) {
-                mapImage.src = config.mapImage;
-            } else if (mapImage) {
-                mapImage.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='700' viewBox='0 0 1200 700'%3E%3Crect width='1200' height='700' fill='%23f1f5f9'/%3E%3Ctext x='600' y='340' font-family='Arial' font-size='36' fill='%2394a3b8' text-anchor='middle'%3E🗺️ Layout de Bodega%3C/text%3E%3Ctext x='600' y='390' font-family='Arial' font-size='18' fill='%23cbd5e1' text-anchor='middle'%3ESubir imagen en Configuración%3C/text%3E%3C/svg%3E";
-            }
+        function mostrarModal(title, bodyHtml) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalBody').innerHTML = bodyHtml;
+            document.getElementById('modal').classList.add('active');
         }
 
-        function subirImagenLayout(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const config = getConfig();
-                config.mapImage = e.target.result;
-                setConfig(config);
-                const mapImage = document.getElementById('mapImage');
-                if (mapImage) mapImage.src = config.mapImage;
-                mostrarToast('✅ Imagen del layout actualizada', 'success');
-                registrarHistorial('EDITAR', 'LAYOUT', 'Imagen del layout actualizada');
-            };
-            reader.readAsDataURL(file);
+        function cerrarModal() {
+            document.getElementById('modal').classList.remove('active');
+            modalCallback = null;
+        }
+
+        function ejecutarModal() {
+            if (modalCallback) modalCallback();
         }
 
         // ============================================================
-        //  MODAL ALMACENAMIENTO
+        // PRODUCTOS - CRUD
+        // ============================================================
+        function editarProducto(codigo) {
+            dbGetAll('products').then(products => {
+                const p = products.find(p => p.codigo === codigo);
+                if (!p) return;
+
+                const body = `
+                    <div class="form-grid">
+                        <div class="full-width">
+                            <label>Código</label>
+                            <input id="editCodigo" value="${p.codigo}" readonly>
+                        </div>
+                        <div class="full-width">
+                            <label>Glosa</label>
+                            <input id="editGlosa" value="${p.glosa}">
+                        </div>
+                        <div>
+                            <label>GTIN</label>
+                            <input id="editGtin" value="${p.gtin || ''}">
+                        </div>
+                        <div>
+                            <label>Bodega</label>
+                            <select id="editBodega"></select>
+                        </div>
+                        <div>
+                            <label>Ubicación</label>
+                            <input id="editUbicacion" value="${p.ubicacion || ''}">
+                        </div>
+                        <div>
+                            <label>Zona</label>
+                            <select id="editZona">
+                                ${'ABCDEFGHIJ'.split('').map(z => `<option value="${z}" ${p.zona === z ? 'selected' : ''}>${z}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="full-width">
+                            <label>Estado</label>
+                            <select id="editEstado">
+                                <option value="almacenado" ${p.estado === 'almacenado' ? 'selected' : ''}>Almacenado</option>
+                                <option value="recepcion" ${p.estado === 'recepcion' ? 'selected' : ''}>Recepción</option>
+                                <option value="despachado" ${p.estado === 'despachado' ? 'selected' : ''}>Despachado</option>
+                            </select>
+                        </div>
+                    </div>
+                `;
+
+                mostrarModal('✏️ Editar Producto', body);
+
+                dbGetAll('bodegas').then(bodegas => {
+                    const select = document.getElementById('editBodega');
+                    select.innerHTML = bodegas.filter(b => b.estado === 'activa').map(b =>
+                        `<option value="${b.codigo}" ${p.bodega === b.codigo ? 'selected' : ''}>${b.nombre}</option>`
+                    ).join('');
+                });
+
+                modalCallback = async () => {
+                    const glosa = document.getElementById('editGlosa').value.trim();
+                    const gtin = document.getElementById('editGtin').value.trim();
+                    const bodega = document.getElementById('editBodega').value;
+                    const ubicacion = document.getElementById('editUbicacion').value.trim();
+                    const zona = document.getElementById('editZona').value;
+                    const estado = document.getElementById('editEstado').value;
+
+                    if (!glosa) return alert('La glosa es requerida');
+
+                    const products = await dbGetAll('products');
+                    const existing = products.find(pr => pr.codigo === codigo);
+                    if (existing) {
+                        existing.glosa = glosa;
+                        existing.gtin = gtin;
+                        existing.bodega = bodega;
+                        existing.ubicacion = ubicacion;
+                        existing.zona = zona;
+                        existing.estado = estado;
+                        await dbPut('products', existing);
+                        mostrarToast('✅ Producto actualizado', 'success');
+                        renderAll();
+                        cerrarModal();
+                    }
+                };
+                document.getElementById('modalActionBtn').textContent = 'Actualizar';
+            });
+        }
+
+        async function eliminarProducto(codigo) {
+            if (!confirm('¿Eliminar producto ' + codigo + '?')) return;
+            await dbDelete('products', codigo);
+            mostrarToast('Producto eliminado', 'warning');
+            renderAll();
+        }
+
+        // ============================================================
+        // ALMACENAMIENTO
         // ============================================================
         function abrirModalAlmacenamiento() {
-            mostrarModal('📥 Recepción y Almacenamiento', `
-                <p style="color:#64748b; font-size:0.85rem; margin-bottom:12px;">Registra un producto desde recepción a su ubicación final en la bodega.</p>
+            const body = `
                 <div class="form-grid">
                     <div class="full-width">
                         <label>Código del producto</label>
-                        <input id="almacenarCodigo" placeholder="Ej: 01-001-216-026" list="productosList">
-                        <datalist id="productosList">
-                            ${getProducts().map(p => `<option value="${p.codigo}">${p.codigo} - ${p.glosa}</option>`).join('')}
-                        </datalist>
+                        <input id="almCodigo" placeholder="Ej: 01-001-216-026">
                     </div>
                     <div class="full-width">
-                        <label>Glosa / Descripción</label>
-                        <input id="almacenarGlosa" placeholder="Nombre del producto">
+                        <label>Glosa</label>
+                        <input id="almGlosa" placeholder="Nombre del producto">
                     </div>
                     <div>
-                        <label>GTIN / EAN</label>
-                        <input id="almacenarGTIN" placeholder="7801234567890">
+                        <label>GTIN</label>
+                        <input id="almGtin" placeholder="7801234567890">
                     </div>
                     <div>
                         <label>Bodega</label>
-                        <select id="almacenarBodega">
-                            <option value="Farmacos">💊 Fármacos</option>
-                            <option value="Insumos">🧪 Insumos</option>
-                            <option value="Economato">📦 Economato</option>
-                        </select>
+                        <select id="almBodega"></select>
                     </div>
                     <div>
-                        <label>Ubicación destino</label>
-                        <input id="almacenarUbicacion" placeholder="Ej: PALLET_A_1">
+                        <label>Ubicación</label>
+                        <input id="almUbicacion" placeholder="Ej: PALLET_A_1">
                     </div>
                     <div>
                         <label>Zona</label>
-                        <select id="almacenarZona">
-                            <option value="A">A - Palletizado Doble Altura</option>
-                            <option value="B">B - Palletizado Doble Altura</option>
-                            <option value="C">C - Palletizado Pasillo</option>
-                            <option value="D">D - VNA</option>
-                            <option value="E">E - Selectivo</option>
-                            <option value="F">F - Anaquel</option>
-                            <option value="G">G - Full Space</option>
-                            <option value="H">H - Cámara Frío</option>
-                            <option value="I">I - Inyectables</option>
-                            <option value="J">J - Mezclas</option>
+                        <select id="almZona">
+                            ${'ABCDEFGHIJ'.split('').map(z => `<option value="${z}">${z}</option>`).join('')}
                         </select>
                     </div>
-                    <div class="full-width" style="display:flex; gap:8px; align-items:center;">
-                        <button class="btn btn-success btn-sm" onclick="escanearUbicacionAlmacenar()" type="button">
-                            <span class="icon">📷</span> Escanear QR
-                        </button>
-                        <span style="font-size:0.7rem; color:#64748b;">Escanear código QR de la ubicación</span>
-                    </div>
-                    <div id="scannerAlmacenarContainer" style="display:none; grid-column:1/-1;">
-                        <div id="scannerAlmacenar" style="width:100%; max-width:300px; margin:0 auto; border-radius:8px; overflow:hidden; background:#0f172a; min-height:150px;"></div>
-                        <div id="scannerAlmacenarStatus" style="color:#64748b; font-size:0.8rem; text-align:center; margin:4px 0;"></div>
-                        <button class="btn btn-danger btn-sm" onclick="detenerScannerAlmacenar()" type="button">⏹️ Detener</button>
-                    </div>
                 </div>
-                <div style="margin-top:12px; padding:10px; background:#fef3c7; border-radius:8px; font-size:0.75rem; color:#92400e;">
-                    ℹ️ El producto se registrará desde <strong>RECEPCIÓN</strong> hacia la ubicación indicada.
-                </div>
-            `, true);
+            `;
 
-            document.getElementById('almacenarCodigo').addEventListener('input', function() {
-                const codigo = this.value.trim();
-                const products = getProducts();
-                const found = products.find(p => p.codigo === codigo);
-                if (found) {
-                    document.getElementById('almacenarGlosa').value = found.glosa;
-                    document.getElementById('almacenarGTIN').value = found.gtin || '';
-                    document.getElementById('almacenarBodega').value = found.bodega;
-                    if (found.ubicaciones.length > 0) {
-                        document.getElementById('almacenarUbicacion').value = found.ubicaciones[0].ubicacion || '';
-                        document.getElementById('almacenarZona').value = found.ubicaciones[0].zona || 'A';
-                    }
-                }
+            mostrarModal('📥 Recepción → Almacenar', body);
+            document.getElementById('modalActionBtn').textContent = '📥 Almacenar';
+
+            dbGetAll('bodegas').then(bodegas => {
+                const select = document.getElementById('almBodega');
+                select.innerHTML = bodegas.filter(b => b.estado === 'activa').map(b =>
+                    `<option value="${b.codigo}">${b.nombre}</option>`
+                ).join('');
             });
 
             modalCallback = async () => {
-                const codigo = document.getElementById('almacenarCodigo').value.trim();
-                const glosa = document.getElementById('almacenarGlosa').value.trim();
-                const gtin = document.getElementById('almacenarGTIN').value.trim();
-                const bodega = document.getElementById('almacenarBodega').value;
-                const ubicacion = document.getElementById('almacenarUbicacion').value.trim();
-                const zona = document.getElementById('almacenarZona').value;
+                const codigo = document.getElementById('almCodigo').value.trim();
+                const glosa = document.getElementById('almGlosa').value.trim();
+                const gtin = document.getElementById('almGtin').value.trim();
+                const bodega = document.getElementById('almBodega').value;
+                const ubicacion = document.getElementById('almUbicacion').value.trim();
+                const zona = document.getElementById('almZona').value;
 
-                if (!codigo) return alert('El código del producto es requerido');
-                if (!ubicacion) return alert('La ubicación destino es requerida');
+                if (!codigo) return alert('El código es requerido');
+                if (!ubicacion) return alert('La ubicación es requerida');
 
-                const products = await getAllProducts();
+                const products = await dbGetAll('products');
                 let existing = products.find(p => p.codigo === codigo);
 
                 if (existing) {
-                    if (existing.ubicaciones.length > 0) {
-                        existing.ubicaciones[0].ubicacion = ubicacion;
-                        existing.ubicaciones[0].zona = zona;
-                    } else {
-                        existing.ubicaciones.push({ tipo: 'master', ubicacion: ubicacion, zona: zona });
-                    }
+                    existing.ubicacion = ubicacion;
+                    existing.zona = zona;
+                    existing.bodega = bodega;
                     existing.estado = 'almacenado';
-                    if (gtin) existing.gtin = gtin;
                     if (glosa) existing.glosa = glosa;
-                    if (bodega) existing.bodega = bodega;
+                    if (gtin) existing.gtin = gtin;
+                    await dbPut('products', existing);
                 } else {
-                    products.push({
-                        codigo: codigo,
+                    await dbPut('products', {
+                        codigo,
                         gtin: gtin || '',
                         glosa: glosa || codigo,
-                        bodega: bodega || 'Farmacos',
-                        tags: [],
-                        ubicaciones: [{ tipo: 'master', ubicacion: ubicacion, zona: zona }],
+                        bodega,
+                        ubicacion,
+                        zona,
                         estado: 'almacenado'
                     });
                 }
 
-                await setProducts(products);
-
-                const movements = await getAllMovements();
-                const user = getCurrentUser();
-                movements.push({
-                    fecha: getFechaHoraChile(),
-                    codigo: codigo,
-                    bodega: bodega,
+                await dbPut('movements', {
+                    fecha: getFechaChile(),
+                    codigo,
                     desde: 'RECEPCION',
                     hacia: ubicacion,
-                    usuario: user ? user.nombre : 'Sistema',
+                    usuario: currentUser?.nombre || 'Sistema',
                     tipo: 'ALMACENAR'
                 });
-                await setMovements(movements);
 
-                await registrarHistorial('ALMACENAR', codigo, 'Producto almacenado desde RECEPCIÓN → ' + ubicacion + ' (' + zona + ')', bodega);
-                mostrarToast('📥 Producto ' + codigo + ' almacenado en ' + ubicacion, 'success');
+                mostrarToast('📥 Producto almacenado en ' + ubicacion, 'success');
                 renderAll();
                 cerrarModal();
             };
-            document.getElementById('modalActionBtn').textContent = '📥 Almacenar';
         }
 
         // ============================================================
-        //  ESCANER PARA ALMACENAR
+        // HISTORIAL
         // ============================================================
-        let scannerAlmacenar = null;
+        async function renderHistorial() {
+            const filter = document.getElementById('filterHistorial').value.toLowerCase();
+            const historial = await dbGetAll('historial');
 
-        function escanearUbicacionAlmacenar() {
-            const container = document.getElementById('scannerAlmacenarContainer');
-            const status = document.getElementById('scannerAlmacenarStatus');
-            if (!container) return;
+            const filtered = filter ? historial.filter(h =>
+                h.codigo?.toLowerCase().includes(filter) ||
+                h.detalle?.toLowerCase().includes(filter) ||
+                h.usuario?.toLowerCase().includes(filter)
+            ) : historial;
 
-            container.style.display = 'block';
-            status.textContent = '📷 Iniciando escáner...';
+            const tbody = document.getElementById('historialBody');
+            tbody.innerHTML = filtered.slice(-50).reverse().map(h => `
+                <tr>
+                    <td style="font-size:0.65rem; color:#64748b;">${h.fecha}</td>
+                    <td>${h.usuario || 'Sistema'}</td>
+                    <td><span class="badge badge-activa">${h.accion || '-'}</span></td>
+                    <td><strong>${h.codigo || '-'}</strong></td>
+                    <td>${h.detalle || '-'}</td>
+                </tr>
+            `).join('') || '<tr><td colspan="5" class="empty-state">No hay historial</td></tr>';
+        }
 
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                status.textContent = '❌ Tu navegador no soporta la cámara.';
-                return;
-            }
+        // ============================================================
+        // USUARIOS
+        // ============================================================
+        async function renderUsuarios() {
+            const users = await dbGetAll('users');
+            const tbody = document.getElementById('usuariosBody');
+            tbody.innerHTML = users.map(u => `
+                <tr>
+                    <td>${u.id}</td>
+                    <td><strong>${u.nombre}</strong></td>
+                    <td><span class="badge badge-${u.perfil}">${u.perfil}</span></td>
+                    <td>${(u.permisos || []).join(', ')}</td>
+                    <td style="font-size:0.65rem; color:#64748b;">${u.ultimaActividad || '-'}</td>
+                    <td>
+                        <div style="display:flex; gap:3px; flex-wrap:wrap;">
+                            <button class="btn btn-primary btn-xs" onclick="editarUsuario(${u.id})"><span class="icon">✏️</span></button>
+                            <button class="btn btn-danger btn-xs" onclick="eliminarUsuario(${u.id})"><span class="icon">🗑️</span></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('') || '<tr><td colspan="6" class="empty-state">No hay usuarios</td></tr>';
+        }
 
-            try {
-                if (typeof Html5Qrcode !== 'undefined') {
-                    scannerAlmacenar = new Html5Qrcode("scannerAlmacenar");
-                    scannerAlmacenar.start(
-                        { facingMode: "environment" },
-                        { fps: 10, qrbox: { width: 200, height: 100 } },
-                        (decodedText) => {
-                            status.textContent = '✅ Ubicación detectada: ' + decodedText;
-                            document.getElementById('almacenarUbicacion').value = decodedText;
-                            detenerScannerAlmacenar
+        function mostrarModalUsuario(data = null) {
+            const isEdit = !!data;
+            const title = isEdit ? '✏️ Editar Usuario' : '➕ Nuevo Usuario';
+            const action = isEdit ? 'Actualizar' : 'Crear';
+
+            const body = `
+                <div class="form-grid">
+                    <div class="full-width">
+                        <label>Nombre *</label>
+                        <input id="userNombre" value="${data?.nombre || ''}" placeholder="Nombre de usuario">
+                    </div>
+                    <div>
+                        <label>Contraseña</label>
+                        <input id="userPassword" type="password" value="${data?.password || ''}" placeholder="••••••••">
+                    </div>
+                    <div>
+                        <label>Perfil</label>
+                        <select id="userPerfil">
+                            <option value="admin" ${data?.perfil === 'admin' ? 'selected' : ''}>Admin</option>
+                            <option value="supervisor" ${data?.perfil === 'supervisor' ? 'selected' : ''}>Supervisor</option>
+                            <option value="operario" ${data?.perfil === 'operario' ? 'selected' : ''}>Operario</option>
+                        </select>
+                    </div>
+                    <div class="full-width">
+                        <label>Permisos</label>
+                        <div style="display:flex; gap:10px; flex-wrap:wrap; padding:4px 0;">
+                            <label><input type="checkbox" id="permLectura" ${data?.permisos?.includes('lectura') ? 'checked' : ''}> Lectura</label>
+                            <label><input type="checkbox" id="permEscritura" ${data?.permisos?.includes('escritura') ? 'checked' : ''}> Escritura</label>
+                            <label><input type="checkbox" id="permAdministracion" ${data?.permisos?.includes('administracion') ? 'checked' : ''}> Administración</label>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            mostrarModal(title, body);
+            modalCallback = async () => {
+                const nombre = document.getElementById('userNombre').value.trim();
+                const password = document.getElementById('userPassword').value;
+                const perfil = document.getElementById('userPerfil').value;
+                const permisos = [];
+                if (document.getElementById('permLectura').checked) permisos.push('lectura');
+                if (document.getElementById('permEscritura').checked) permisos.push('escritura');
+                if (document.getElementById('permAdministracion').checked) permisos.push('administracion');
+
+                if (!nombre) return alert('El nombre es requerido');
+
+                const users = await dbGetAll('users');
+
+                if (!isEdit) {
+                    if (users.find(u => u.nombre.toLowerCase() === nombre.toLowerCase())) {
+                        return alert('Ya existe un usuario con ese nombre');
+                    }
+                    await dbPut('users', { nombre, password: password || '1234', perfil, permisos, ultimaActividad: getFechaChile() });
+                    mostrarToast('✅ Usuario creado: ' + nombre, 'success');
+                } else {
+                    const u = users.find(u => u.id === data.id);
+                    if (u) {
+                        u.nombre = nombre;
+                        if (password) u.password = password;
+                        u.perfil = perfil;
+                        u.permisos = permisos;
+                        await dbPut('users', u);
+                        mostrarToast('✅ Usuario actualizado: ' + nombre, 'success');
+                    }
+                }
+                renderAll();
+                cerrarModal();
+            };
+            document.getElementById('modalActionBtn').textContent = action;
+        }
+
+        function editarUsuario(id) {
+            dbGetAll('users').then(users => {
+                const u = users.find(u => u.id === id);
+                if (u) mostrarModalUsuario(u);
+            });
+        }
+
+        async function eliminarUsuario(id) {
+            if (!confirm('¿Eliminar este usuario?')) return;
+            await dbDelete('users', id);
+            mostrarToast('Usuario eliminado', 'warning');
+            renderAll();
+        }
+
+        // ============================================================
+        // EXCEL
+        // ============================================================
+        function cargarExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const json = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+
+                    let count = 0;
+                    const products = await dbGetAll('products');
+
+                    json.forEach(row => {
+                        const codigo = String(row['Código'] || row['CODIGO'] || row['SKU'] || '').trim();
+                        if (!codigo) return;
+
+                        const existing = products.find(p => p.codigo === codigo);
+                        const item = {
+                            codigo,
+                            gtin: String(row['GTIN'] || row['EAN'] || '').trim(),
+                            glosa: String(row['Glosa'] || row['NOMBRE'] || row['DESCRIPCION'] || codigo).trim(),
+                            bodega: String(row['Bodega'] || 'FARM').trim(),
+                            ubicacion: String(row['Ubicación'] || row['UBICACION'] || '').trim(),
+                            zona: String(row['Zona'] || 'A').trim().toUpperCase(),
+                            estado: 'almacenado'
+                        };
+
+                        if (existing) {
+                            Object.assign(existing, item);
+                        } else {
+                            products.push(item);
+                        }
+                        count++;
+                    });
+
+                    await dbClear('products');
+                    await dbPutAll('products', products);
+                    mostrarToast('✅ Cargados ' + count + ' productos', 'success');
+                    renderAll();
+                } catch (error) {
+                    alert('❌ Error al leer el archivo: ' + error.message);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+            event.target.value = '';
+        }
+
+        function exportarExcelCompleto() {
+            dbGetAll('products').then(products => {
+                const data = products.map(p => ({
+                    'Código': p.codigo,
+                    'GTIN': p.gtin || '',
+                    'Glosa': p.glosa,
+                    'Bodega': p.bodega,
+                    'Ubicación': p.ubicacion || '',
+                    'Zona': p.zona || '',
+                    'Estado': p.estado || 'almacenado'
+                }));
+
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.json_to_sheet(data);
+                XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
+                XLSX.writeFile(wb, 'inventario_bodega.xlsx');
+                mostrarToast('📥 Excel descargado', 'success');
+            });
+        }
+
+        // ============================================================
+        // QR
+        // ============================================================
+        function generarTodosQR() {
+            dbGetAll('products').then(products => {
+                const ubicaciones = [...new Set(products.map(p => p.ubicacion).filter(Boolean))];
+                if (ubicaciones.length === 0) {
+                    mostrarToast('No hay ubicaciones para generar QR', 'warning');
+                    return;
+                }
+
+                let html = `<h3>📱 Códigos QR de Ubicaciones</h3><div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:12px; margin-top:10px;">`;
+
+                ubicaciones.forEach(ubic => {
+                    html += `
+                        <div style="background:#f8fafc; border-radius:8px; padding:12px; text-align:center; border:1px solid #e2e8f0;">
+                            <div style="font-weight:700; font-size:0.7rem; margin-bottom:6px;">${ubic}</div>
+                            <div id="qr_${ubic.replace(/[^a-zA-Z0-9]/g, '_')}" style="display:flex; justify-content:center;"></div>
+                        </div>
+                    `;
+                });
+
+                html += '</div>';
+
+                mostrarModal('📱 Códigos QR de Ubicaciones', html);
+
+                ubicaciones.forEach(ubic => {
+                    const id = `qr_${ubic.replace(/[^a-zA-Z0-9]/g, '_')}`;
+                    const container = document.getElementById(id);
+                    if (container) {
+                        const img = document.createElement('img');
+                        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(ubic)}`;
+                        img.style.width = '100px';
+                        img.style.height = '100px';
+                        img.alt = ubic;
+                        container.appendChild(img);
+                    }
+                });
+
+                document.getElementById('modalActionBtn').style.display = 'none';
+                const closeBtn = document.querySelector('#modal .flex .btn-outline');
+                closeBtn.textContent = 'Cerrar';
+                const oldClick = closeBtn.onclick;
+                closeBtn.onclick = function() {
+                    cerrarModal();
+                    document.getElementById('modalActionBtn').style.display = 'inline-flex';
+                    closeBtn.textContent = 'Cancelar';
+                    closeBtn.onclick = oldClick;
+                };
+            });
+        }
+
+        // ============================================================
+        // CONFIG
+        // ============================================================
+        async function resetData() {
+            if (!confirm('¿Reiniciar todos los datos? Esta acción no se puede deshacer.')) return;
+            await dbClear('products');
+            await dbClear('movements');
+            await dbClear('historial');
+            await dbClear('bodegas');
+            await dbClear('users');
+            await initData();
+            mostrarToast('🔄 Datos reiniciados', 'info');
+            renderAll();
+        }
+
+        async function exportarDatos() {
+            const data = {
+                bodegas: await dbGetAll('bodegas'),
+                products: await dbGetAll('products'),
+                movements: await dbGetAll('movements'),
+                users: await dbGetAll('users'),
+                exportDate: getFechaChile()
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'wms_backup_' + new Date().toISOString().slice(0,10) + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            mostrarToast('📤 Datos exportados', 'success');
+        }
+
+        function cargarImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.bodegas) await dbClear('bodegas');
+                    if (data.products) await dbClear('products');
+                    if (data.movements) await dbClear('movements');
+                    if (data.users) await dbClear('users');
+
+                    if (data.bodegas) await dbPutAll('bodegas', data.bodegas);
+                    if (data.products) await dbPutAll('products', data.products);
+                    if (data.movements) await dbPutAll('movements', data.movements);
+                    if (data.users) await dbPutAll('users', data.users);
+
+                    mostrarToast('✅ Datos importados correctamente', 'success');
+                    renderAll();
+                } catch (error) {
+                    alert('❌ Error al importar: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // ============================================================
+        // NAVEGACIÓN
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('#mainNav button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('#mainNav button').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const tab = this.dataset.tab;
+                    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                    document.getElementById('tab-' + tab).classList.add('active');
+                });
+            });
+        });
+
+        // ============================================================
+        // INICIO
+        // ============================================================
+        async function init() {
+            await initData();
+            document.getElementById('loginModal').style.display = 'flex';
+            document.getElementById('app').style.display = 'none';
+        }
+
+        init();
+
+        // Exponer funciones globales
+        window.handleLogin = handleLogin;
+        window.logout = logout;
+        window.cargarExcel = cargarExcel;
+        window.exportarExcelCompleto = exportarExcelCompleto;
+        window.generarTodosQR = generarTodosQR;
+        window.mostrarModalBodega = mostrarModalBodega;
+        window.editarBodega = editarBodega;
+        window.toggleBodegaEstado = toggleBodegaEstado;
+        window.eliminarBodega = eliminarBodega;
+        window.subirLayoutBodega = subirLayoutBodega;
+        window.mostrarModalLayout = mostrarModalLayout;
+        window.mostrarModalUsuario = mostrarModalUsuario;
+        window.editarUsuario = editarUsuario;
+        window.eliminarUsuario = eliminarUsuario;
+        window.abrirModalAlmacenamiento = abrirModalAlmacenamiento;
+        window.editarProducto = editarProducto;
+        window.eliminarProducto = eliminarProducto;
+        window.renderAll = renderAll;
+        window.renderBodegas = renderBodegas;
+        window.renderInventario = renderInventario;
+        window.renderLayout = renderLayout;
+        window.renderHistorial = renderHistorial;
+        window.renderUsuarios = renderUsuarios;
+        window.toggleEditMode = toggleEditMode;
+        window.resetData = resetData;
+        window.exportarDatos = exportarDatos;
+        window.cargarImport = cargarImport;
+        window.mostrarToast = mostrarToast;
+        window.cerrarModal = cerrarModal;
+        window.ejecutarModal = ejecutarModal;
+        window.getFechaChile = getFechaChile;
+    </script>
+</body>
+</html>
