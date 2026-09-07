@@ -8,9 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.2/umd/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.1/umd/index.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
             --primary: #4f46e5;
@@ -246,93 +243,6 @@
 
         /* BODEGAS */
         .bodega-color { display:inline-block; width:16px; height:16px; border-radius:4px; border:1px solid rgba(0,0,0,0.1); vertical-align:middle; margin-right:4px; }
-
-        /* RESPONSIVE */
-        @media (max-width:1024px) { .tab-content { padding:10px; } .card-grid { grid-template-columns:repeat(auto-fit, minmax(90px,1fr)); } .modal-content { max-width:95%; padding:16px; } .layout-grid { min-height:350px; } }
-        @media (max-width:768px) {
-            body { padding:6px; }
-            .app { border-radius:10px; }
-            header { flex-direction:column; align-items:stretch; gap:4px; padding:6px 12px; }
-            header .header-left { justify-content:center; flex-wrap:wrap; }
-            header .header-left .header-title { font-size:0.8rem; text-align:center; }
-            header .header-left .header-sub { font-size:0.5rem; text-align:center; }
-            header .user-info { justify-content:center; flex-wrap:wrap; }
-            header .user-info .btn { font-size:0.55rem; padding:3px 6px; }
-            header .user-info .btn .icon { font-size:0.6rem; }
-            nav button { padding:8px 8px; font-size:0.6rem; }
-            nav button .nav-icon { font-size:0.75rem; }
-            .tab-content { padding:8px; }
-            .card-grid { grid-template-columns:1fr 1fr; gap:6px; }
-            .card { padding:6px 10px; }
-            .card .number { font-size:1.2rem; }
-            .card .label { font-size:0.55rem; }
-            .card .card-icon { font-size:1rem; }
-            .table-container { max-height:45vh; }
-            table { font-size:0.65rem; min-width:500px; }
-            th { padding:4px 6px; font-size:0.55rem; }
-            td { padding:4px 6px; }
-            .toolbar { flex-direction:column; align-items:stretch; gap:6px; padding:8px 10px; }
-            .toolbar-left, .toolbar-right { justify-content:center; flex-wrap:wrap; }
-            .toolbar .search-input input { min-width:100%; font-size:0.75rem; padding:4px 8px 4px 28px; }
-            .modal-content { padding:14px; max-width:100%; margin:8px; border-radius:14px; }
-            .modal-content .form-grid { grid-template-columns:1fr; }
-            .actions-cell { min-width:70px; gap:2px; }
-            .actions-cell .btn { padding:2px 5px; font-size:0.5rem; }
-            .actions-cell .btn .icon { font-size:0.55rem; }
-            .qr-grid { grid-template-columns:repeat(auto-fill, minmax(90px,1fr)); }
-            .qr-card canvas { width:60px; height:60px; }
-            #bulkActions { padding:4px 10px; gap:4px; }
-            #bulkActions .selected-count { font-size:0.7rem; }
-            .layout-container { padding:8px; }
-            .layout-grid { min-height:250px; gap:2px; padding:2px; }
-            .layout-cell { min-height:30px; font-size:0.4rem; }
-            .layout-cell .cell-zone { font-size:0.5rem; }
-            .layout-cell .cell-level { font-size:0.35rem; }
-            .layout-cell .cell-label { font-size:0.3rem; }
-            .layout-legend { font-size:0.5rem; padding:6px 10px; gap:8px; }
-            .layout-legend .color-box { width:10px; height:10px; }
-            .toast-container { bottom:8px; right:8px; left:8px; max-width:100%; }
-            .toast { font-size:0.7rem; padding:8px 12px; }
-            #loginModal .login-box { padding:16px; margin:10px; }
-            .layout-image-container img { max-height:250px; }
-        }
-        @media (max-width:480px) {
-            body { padding:4px; }
-            .app { border-radius:6px; }
-            header .header-left .header-title { font-size:0.7rem; }
-            nav button { padding:6px 6px; font-size:0.5rem; }
-            nav button .nav-icon { font-size:0.65rem; }
-            .card-grid { grid-template-columns:1fr 1fr; gap:4px; }
-            .card { padding:4px 6px; }
-            .card .number { font-size:1rem; }
-            .card .label { font-size:0.5rem; }
-            .card .card-icon { font-size:0.8rem; }
-            table { font-size:0.55rem; min-width:400px; }
-            th { padding:3px 4px; font-size:0.5rem; }
-            td { padding:3px 4px; }
-            .btn { font-size:0.55rem; padding:3px 6px; }
-            .btn .icon { font-size:0.6rem; }
-            .btn-sm { font-size:0.5rem; padding:2px 5px; }
-            .btn-sm .icon { font-size:0.55rem; }
-            .modal-content { padding:10px; }
-            .modal-content h3 { font-size:0.85rem; }
-            .modal-content label { font-size:0.65rem; }
-            .modal-content input, .modal-content select { font-size:0.75rem; padding:6px 8px; }
-            .filter-select { font-size:0.65rem; padding:3px 6px; min-width:60px; }
-            .layout-grid { min-height:180px; gap:1px; padding:1px; }
-            .layout-cell { min-height:22px; font-size:0.3rem; border-radius:2px; }
-            .layout-cell .cell-zone { font-size:0.4rem; }
-            .layout-cell .cell-level { font-size:0.25rem; }
-            .layout-cell .cell-label { display:none; }
-            .layout-legend { font-size:0.45rem; padding:4px 8px; gap:4px; }
-            .layout-legend .color-box { width:8px; height:8px; }
-            .layout-image-container img { max-height:180px; }
-        }
-
-        ::-webkit-scrollbar { width:5px; height:5px; }
-        ::-webkit-scrollbar-track { background:#f1f5f9; border-radius:4px; }
-        ::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:4px; }
-        ::-webkit-scrollbar-thumb:hover { background:#94a3b8; }
 
         @media print {
             body { background:white; padding:0; }
@@ -608,27 +518,35 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- ============================================================ -->
-    <!-- SCRIPT PRINCIPAL CON FIREBASE FIRESTORE TIEMPO REAL -->
+    // SDKs MODERNOS DE FIREBASE V10 (Modular ESM via unpkg)
     <!-- ============================================================ -->
-    <script>
-        // ============================================================
-        //  CONFIGURACIÓN DE FIREBASE (Reemplaza con tus credenciales)
-        // ============================================================
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc, addDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
         const firebaseConfig = {
-            apiKey: "TU_API_KEY",
+            apiKey: "AIzaSyBwOEE8j6KvPxeWA04Ydas_PqGj-5oi4nU",
             authDomain: "wms-hsjd.firebaseapp.com",
             projectId: "wms-hsjd",
-            storageBucket: "wms-hsjd.appspot.com",
-            messagingSenderId: "TU_SENDER_ID",
-            appId: "TU_APP_ID"
+            storageBucket: "wms-hsjd.firebasestorage.app",
+            messagingSenderId: "1090634155119",
+            appId: "1:1090634155119:web:dd4bdcd2b313abffadb99a",
+            measurementId: "G-GZDZLVV9N1"
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const cloudDB = firebase.firestore();
+        const app = initializeApp(firebaseConfig);
+        const cloudDB = getFirestore(app);
 
-        // ============================================================
-        //  VARIABLES GLOBALES
-        // ============================================================
+        // Exponer funciones globales para que funcionen con los botones HTML
+        window.cloudDB = cloudDB;
+        window.firebaseMod = { collection, getDocs, getDoc, doc, setDoc, deleteDoc, addDoc, writeBatch };
+        
+        // Disparar evento de carga completa de Firebase
+        window.dispatchEvent(new Event('firebase-ready'));
+    </script>
+
+    <!-- SCRIPT PRINCIPAL DE LA APLICACIÓN -->
+    <script>
         let currentWarehouse = 'TODAS';
         let currentUserId = null;
         let editMode = false;
@@ -637,7 +555,6 @@
         let modalCallback = null;
 
         const STORAGE_KEY_SESSION = 'wms_session_user';
-        const STORAGE_KEY_ACTIVE_USERS = 'wms_active_users';
 
         const DEFAULT_WAREHOUSES = [
             { id: 'Farmacos', nombre: 'Bodega de Fármacos', descripcion: 'Medicamentos y fármacos', zonas: ['A','B','C','D','E','F','G','H','I','J'], color: '#2563eb' },
@@ -645,12 +562,53 @@
             { id: 'Economato', nombre: 'Bodega de Economato', descripcion: 'Materiales y suministros generales', zonas: ['A','B','C','D','E','F','G','H','I','J'], color: '#d97706' }
         ];
 
-        // ============================================================
-        //  INICIALIZACIÓN Y SINCRONIZACIÓN EN TIEMPO REAL (FIRESTORE)
-        // ============================================================
+        window.addEventListener('firebase-ready', async () => {
+            await initData();
+            await checkSession();
+
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const tabId = this.dataset.tab;
+                    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+                    const tab = document.getElementById('tab-' + tabId);
+                    if (tab) tab.classList.add('active');
+                    this.classList.add('active');
+
+                    if (tabId === 'inventario') await renderInventarioUnificado();
+                    if (tabId === 'layout') {
+                        renderLayoutVisual();
+                        await cargarImagenLayout(currentWarehouse);
+                    }
+                    if (tabId === 'movimientos') await renderHistorialCompleto();
+                    if (tabId === 'usuarios') await renderUsuarios();
+                    if (tabId === 'bodegas') await renderBodegas();
+                    if (tabId === 'config') await renderConfig();
+                });
+            });
+
+            document.getElementById('loginPass').addEventListener('keydown', async function(e) {
+                if (e.key === 'Enter') await handleLogin();
+            });
+            document.getElementById('loginUser').addEventListener('keydown', async function(e) {
+                if (e.key === 'Enter') await handleLogin();
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') cerrarModal();
+            });
+            document.getElementById('modal').addEventListener('click', function(e) {
+                if (e.target === this) cerrarModal();
+            });
+
+            if (await checkSession()) await renderAll();
+        });
+
         async function initData() {
-            // Verificar si existen usuarios en Firestore, si no, crear predeterminados
-            const userSnap = await cloudDB.collection('users').get();
+            const { collection, getDocs, doc, setDoc } = window.firebaseMod;
+            const db = window.cloudDB;
+
+            const userSnap = await getDocs(collection(db, 'users'));
             if (userSnap.empty) {
                 const defaultUsers = [
                     { id: 1, nombre: 'Admin', perfil: 'admin', password: 'admin', permisos: ['lectura','escritura','administracion','carga','descarga'], ultimaActividad: new Date().toISOString() },
@@ -659,74 +617,47 @@
                     { id: 4, nombre: 'Invitado', perfil: 'invitado', password: '1234', permisos: ['lectura'], ultimaActividad: new Date().toISOString() }
                 ];
                 for (let u of defaultUsers) {
-                    await cloudDB.collection('users').doc(String(u.id)).set(u);
+                    await setDoc(doc(db, 'users', String(u.id)), u);
                 }
             }
 
-            const whSnap = await cloudDB.collection('warehouses').get();
+            const whSnap = await getDocs(collection(db, 'warehouses'));
             if (whSnap.empty) {
                 for (let w of DEFAULT_WAREHOUSES) {
-                    await cloudDB.collection('warehouses').doc(w.id).set(w);
+                    await setDoc(doc(db, 'warehouses', w.id), w);
                 }
             }
 
-            const prodSnap = await cloudDB.collection('products').get();
+            const prodSnap = await getDocs(collection(db, 'products'));
             if (prodSnap.empty) {
                 const sample = [
                     { codigo: '01-001-216-026', gtin: '7801234567890', glosa: 'METRONIDAZOL 500 MG/100 ML', bodega: 'Farmacos', ubicaciones: [{ tipo: 'master', ubicacion: 'PALLET_A_1', zona: 'A' }], estado: 'almacenado' },
                     { codigo: '01-001-212-024', gtin: '7801234567999', glosa: 'FENTANILO 0,5 MG/10 ML', bodega: 'Farmacos', ubicaciones: [{ tipo: 'master', ubicacion: 'PALLET_C_2', zona: 'C' }], estado: 'almacenado' }
                 ];
                 for (let p of sample) {
-                    await cloudDB.collection('products').doc(p.codigo).set(p);
+                    await setDoc(doc(db, 'products', p.codigo), p);
                 }
             }
 
             await actualizarSelectBodegas();
-            iniciarEscuchasEnTiempoReal();
         }
 
-        function iniciarEscuchasEnTiempoReal() {
-            // Escuchar cambios en productos en tiempo real
-            cloudDB.collection('products').onSnapshot(() => {
-                if (currentUserId !== null) {
-                    renderAll();
-                    mostrarToast('🔄 Datos sincronizados en tiempo real', 'info');
-                }
-            });
-
-            // Escuchar cambios en usuarios
-            cloudDB.collection('users').onSnapshot(() => {
-                if (currentUserId !== null) {
-                    renderUsuarios();
-                }
-            });
-
-            // Escuchar cambios en bodegas
-            cloudDB.collection('warehouses').onSnapshot(() => {
-                if (currentUserId !== null) {
-                    renderBodegas();
-                    actualizarSelectBodegas();
-                }
-            });
-        }
-
-        // ============================================================
-        //  ACCESO A DATOS (FIRESTORE)
-        // ============================================================
         async function getAllProducts() {
-            const snap = await cloudDB.collection('products').get();
+            const { collection, getDocs } = window.firebaseMod;
+            const snap = await getDocs(collection(window.cloudDB, 'products'));
             return snap.docs.map(doc => doc.data());
         }
 
         async function setProducts(data) {
-            const snap = await cloudDB.collection('products').get();
-            const batch = cloudDB.batch();
-            snap.docs.forEach(doc => batch.delete(doc.ref));
-            data.forEach(item => {
-                const ref = cloudDB.collection('products').doc(String(item.codigo));
-                batch.set(ref, item);
-            });
-            await batch.commit();
+            const { collection, getDocs, doc, deleteDoc, setDoc } = window.firebaseMod;
+            const db = window.cloudDB;
+            const snap = await getDocs(collection(db, 'products'));
+            for (let d of snap.docs) {
+                await deleteDoc(d.ref);
+            }
+            for (let item of data) {
+                await setDoc(doc(db, 'products', String(item.codigo)), item);
+            }
         }
 
         async function getProducts() {
@@ -736,88 +667,101 @@
         }
 
         async function getAllMovements() {
-            const snap = await cloudDB.collection('movements').orderBy('fecha', 'desc').get();
+            const { collection, getDocs } = window.firebaseMod;
+            const snap = await getDocs(collection(window.cloudDB, 'movements'));
             return snap.docs.map(doc => doc.data());
         }
 
         async function addMovement(m) {
-            await cloudDB.collection('movements').add(m);
+            const { collection, addDoc } = window.firebaseMod;
+            await addDoc(collection(window.cloudDB, 'movements'), m);
         }
 
         async function getAllHistorial() {
-            const snap = await cloudDB.collection('historial').get();
+            const { collection, getDocs } = window.firebaseMod;
+            const snap = await getDocs(collection(window.cloudDB, 'historial'));
             return snap.docs.map(doc => doc.data());
         }
 
         async function addHistorial(entry) {
-            await cloudDB.collection('historial').add(entry);
+            const { collection, addDoc } = window.firebaseMod;
+            await addDoc(collection(window.cloudDB, 'historial'), entry);
         }
 
         async function setHistorial(data) {
-            const snap = await cloudDB.collection('historial').get();
-            const batch = cloudDB.batch();
-            snap.docs.forEach(doc => batch.delete(doc.ref));
-            data.forEach((item, idx) => {
-                const ref = cloudDB.collection('historial').doc(String(idx));
-                batch.set(ref, item);
-            });
-            await batch.commit();
+            const { collection, getDocs, doc, deleteDoc, setDoc } = window.firebaseMod;
+            const db = window.cloudDB;
+            const snap = await getDocs(collection(db, 'historial'));
+            for (let d of snap.docs) {
+                await deleteDoc(d.ref);
+            }
+            for (let idx = 0; idx < data.length; idx++) {
+                await setDoc(doc(db, 'historial', String(idx)), data[idx]);
+            }
         }
 
         async function getAllWarehouses() {
-            const snap = await cloudDB.collection('warehouses').get();
+            const { collection, getDocs } = window.firebaseMod;
+            const snap = await getDocs(collection(window.cloudDB, 'warehouses'));
             return snap.docs.map(doc => doc.data());
         }
 
         async function getWarehouse(id) {
-            const doc = await cloudDB.collection('warehouses').doc(id).get();
-            return doc.exists ? doc.data() : null;
+            const { doc, getDoc } = window.firebaseMod;
+            const docSnap = await getDoc(doc(window.cloudDB, 'warehouses', id));
+            return docSnap.exists() ? docSnap.data() : null;
         }
 
         async function setWarehouses(data) {
-            const snap = await cloudDB.collection('warehouses').get();
-            const batch = cloudDB.batch();
-            snap.docs.forEach(doc => batch.delete(doc.ref));
-            data.forEach(wh => {
-                const ref = cloudDB.collection('warehouses').doc(wh.id);
-                batch.set(ref, wh);
-            });
-            await batch.commit();
+            const { collection, getDocs, doc, deleteDoc, setDoc } = window.firebaseMod;
+            const db = window.cloudDB;
+            const snap = await getDocs(collection(db, 'warehouses'));
+            for (let d of snap.docs) {
+                await deleteDoc(d.ref);
+            }
+            for (let wh of data) {
+                await setDoc(doc(db, 'warehouses', wh.id), wh);
+            }
             await actualizarSelectBodegas();
         }
 
         async function addWarehouse(wh) {
-            await cloudDB.collection('warehouses').doc(wh.id).set(wh);
+            const { doc, setDoc } = window.firebaseMod;
+            await setDoc(doc(window.cloudDB, 'warehouses', wh.id), wh);
             await actualizarSelectBodegas();
         }
 
         async function deleteWarehouse(id) {
-            await cloudDB.collection('warehouses').doc(id).delete();
-            await cloudDB.collection('layout_images').doc(id).delete();
+            const { doc, deleteDoc } = window.firebaseMod;
+            const db = window.cloudDB;
+            await deleteDoc(doc(db, 'warehouses', id));
+            await deleteDoc(doc(db, 'layout_images', id));
             await actualizarSelectBodegas();
         }
 
         async function getLayoutImage(bodegaId) {
-            const doc = await cloudDB.collection('layout_images').doc(bodegaId).get();
-            return doc.exists ? doc.data().imageData : null;
+            const { doc, getDoc } = window.firebaseMod;
+            const docSnap = await getDoc(doc(window.cloudDB, 'layout_images', bodegaId));
+            return docSnap.exists() ? docSnap.data().imageData : null;
         }
 
         async function setLayoutImage(bodegaId, imageData) {
-            await cloudDB.collection('layout_images').doc(bodegaId).set({ bodegaId, imageData });
+            const { doc, setDoc } = window.firebaseMod;
+            await setDoc(doc(window.cloudDB, 'layout_images', bodegaId), { bodegaId, imageData });
         }
 
         async function getUsers() {
-            const snap = await cloudDB.collection('users').get();
+            const { collection, getDocs } = window.firebaseMod;
+            const snap = await getDocs(collection(window.cloudDB, 'users'));
             return snap.docs.map(doc => doc.data());
         }
 
         async function setUsers(usersArray) {
-            const batch = cloudDB.batch();
+            const { doc, setDoc } = window.firebaseMod;
+            const db = window.cloudDB;
             for (let u of usersArray) {
-                const ref = cloudDB.collection('users').doc(String(u.id));
-                batch.set(ref, u);
+                await setDoc(doc(db, 'users', String(u.id)), u);
             }
-            await batch.commit();
         }
 
         function getConfig() { return JSON.parse(localStorage.getItem('wms_config') || '{}'); }
@@ -839,9 +783,6 @@
             });
         }
 
-        // ============================================================
-        //  AUTENTICACIÓN Y PERMISOS
-        // ============================================================
         async function getCurrentUser() {
             if (currentUserId === null) return null;
             const users = await getUsers();
@@ -997,9 +938,6 @@
             if (el) el.textContent = activosCount;
         }
 
-        // ============================================================
-        //  HISTORIAL
-        // ============================================================
         async function registrarHistorial(accion, codigo, detalle, bodega = null) {
             const user = await getCurrentUser();
             const entry = {
@@ -1014,9 +952,6 @@
             await addHistorial(entry);
         }
 
-        // ============================================================
-        //  TOAST
-        // ============================================================
         function mostrarToast(mensaje, tipo = 'info') {
             const container = document.getElementById('toastContainer');
             if (!container) return;
@@ -1036,9 +971,6 @@
             }, 5000);
         }
 
-        // ============================================================
-        //  RENDER PRINCIPAL
-        // ============================================================
         async function cambiarBodega() {
             const sel = document.getElementById('warehouseSelect');
             currentWarehouse = sel.value;
@@ -1070,9 +1002,6 @@
             document.getElementById('inventoryBadge').textContent = products.length;
         }
 
-        // ============================================================
-        //  DASHBOARD
-        // ============================================================
         async function renderDashboard() {
             const products = await getProducts();
             const movements = await getAllMovements();
@@ -1096,9 +1025,6 @@
             `).join('') || '<tr><td colspan="5" class="empty-state">No hay movimientos recientes</td></tr>';
         }
 
-        // ============================================================
-        //  CARGA DE EXCEL
-        // ============================================================
         async function cargarExcel(event) {
             if (!(await hasPermission('carga')) && (await getCurrentUser())?.perfil !== 'admin' && (await getCurrentUser())?.perfil !== 'supervisor') {
                 return alert('No tienes permisos para cargar archivos.');
@@ -1170,9 +1096,6 @@
             reader.readAsArrayBuffer(file);
         }
 
-        // ============================================================
-        //  MAPEO DE DATOS
-        // ============================================================
         function mapearDatosExcel(data) {
             if (!data || data.length === 0) return [];
             const headers = Object.keys(data[0]);
@@ -1221,9 +1144,6 @@
             }).filter(item => item.codigo && item.codigo !== '');
         }
 
-        // ============================================================
-        //  LAYOUT VISUAL Y CARGA DE IMAGEN
-        // ============================================================
         function renderLayoutVisual() {}
 
         async function renderLayoutVisualWithProducts(products) {
@@ -1349,9 +1269,6 @@
             if (el) el.textContent = wh ? wh.nombre : 'Todas';
         }
 
-        // ============================================================
-        //  MODAL ALMACENAMIENTO
-        // ============================================================
         async function abrirModalAlmacenamiento() {
             if ((await getCurrentUser())?.perfil === 'invitado') return alert('No tienes permisos.');
             const products = await getProducts();
@@ -1474,9 +1391,6 @@
             document.getElementById('modalActionBtn').textContent = '📥 Almacenar';
         }
 
-        // ============================================================
-        //  INVENTARIO UNIFICADO
-        // ============================================================
         async function renderInventarioUnificado() {
             const search = document.getElementById('searchInventarioUnificado')?.value?.toLowerCase() || '';
             const filterZona = document.getElementById('filterZona')?.value || 'TODAS';
@@ -1613,14 +1527,11 @@
             }
         }
 
-        async function toggleEditMode() {
-            if ((await getCurrentUser())?.perfil === 'invitado') return;
+        function toggleEditMode() {
             editMode = !editMode;
             document.getElementById('editModeLabel').textContent = editMode ? 'Cancelar' : 'Editar';
-            if (!editMode) {
-                editingRows.clear();
-            }
-            await renderInventarioUnificado();
+            if (!editMode) editingRows.clear();
+            renderInventarioUnificado();
         }
 
         async function guardarCambioInline(codigo, campo, valor) {
@@ -1633,11 +1544,8 @@
                 if (!products[index].ubicaciones.length) {
                     products[index].ubicaciones.push({ tipo: 'master', ubicacion: '', zona: '' });
                 }
-                if (campo === 'ubicacion') {
-                    products[index].ubicaciones[0].ubicacion = valor;
-                } else if (campo === 'zona') {
-                    products[index].ubicaciones[0].zona = valor;
-                }
+                if (campo === 'ubicacion') products[index].ubicaciones[0].ubicacion = valor;
+                else if (campo === 'zona') products[index].ubicaciones[0].zona = valor;
             } else {
                 products[index][campo] = valor;
             }
@@ -1661,12 +1569,8 @@
             renderInventarioUnificado();
         }
 
-        // ============================================================
-        //  EDICIÓN MODAL
-        // ============================================================
         async function editarProductoModal(codigo) {
             if ((await getCurrentUser())?.perfil === 'invitado') return alert('No tienes permisos.');
-
             const products = await getAllProducts();
             const p = products.find(prod => prod.codigo === codigo);
             if (!p) return alert('Producto no encontrado');
@@ -1676,45 +1580,18 @@
 
             mostrarModal('✏️ Editar Producto', `
                 <div class="form-grid">
-                    <div class="full-width">
-                        <label>Código</label>
-                        <input id="editCodigo" value="${p.codigo}" readonly style="background:#f1f5f9;">
+                    <div class="full-width"><label>Código</label><input id="editCodigo" value="${p.codigo}" readonly style="background:#f1f5f9;"></div>
+                    <div><label>GTIN/EAN</label><input id="editGTIN" value="${p.gtin || ''}"></div>
+                    <div><label>Bodega</label>
+                        <select id="editBodega">${DEFAULT_WAREHOUSES.map(w => `<option value="${w.id}" ${p.bodega === w.id ? 'selected' : ''}>${w.nombre}</option>`).join('')}</select>
                     </div>
-                    <div>
-                        <label>GTIN/EAN</label>
-                        <input id="editGTIN" value="${p.gtin || ''}">
+                    <div class="full-width"><label>Glosa</label><input id="editGlosa" value="${p.glosa}"></div>
+                    <div><label>Ubicación</label><input id="editUbicacion" value="${ubicacion}" placeholder="Ej: PALLET_A_1"></div>
+                    <div><label>Zona</label>
+                        <select id="editZona"><option value="">Sin zona</option>${['A','B','C','D','E','F','G','H','I','J'].map(z => `<option value="${z}" ${z === zona ? 'selected' : ''}>${z}</option>`).join('')}</select>
                     </div>
-                    <div>
-                        <label>Bodega</label>
-                        <select id="editBodega">
-                            ${DEFAULT_WAREHOUSES.map(w =>
-                                `<option value="${w.id}" ${p.bodega === w.id ? 'selected' : ''}>${w.nombre}</option>`
-                            ).join('')}
-                        </select>
-                    </div>
-                    <div class="full-width">
-                        <label>Glosa</label>
-                        <input id="editGlosa" value="${p.glosa}">
-                    </div>
-                    <div>
-                        <label>Ubicación</label>
-                        <input id="editUbicacion" value="${ubicacion}" placeholder="Ej: PALLET_A_1">
-                    </div>
-                    <div>
-                        <label>Zona</label>
-                        <select id="editZona">
-                            <option value="">Sin zona</option>
-                            ${['A','B','C','D','E','F','G','H','I','J'].map(z =>
-                                `<option value="${z}" ${z === zona ? 'selected' : ''}>${z}</option>`
-                            ).join('')}
-                        </select>
-                    </div>
-                    <div>
-                        <label>Estado</label>
-                        <select id="editEstado">
-                            <option value="recepcion" ${p.estado === 'recepcion' ? 'selected' : ''}>📥 Recepción</option>
-                            <option value="almacenado" ${p.estado === 'almacenado' ? 'selected' : ''}>✅ Almacenado</option>
-                        </select>
+                    <div><label>Estado</label>
+                        <select id="editEstado"><option value="recepcion" ${p.estado === 'recepcion' ? 'selected' : ''}>📥 Recepción</option><option value="almacenado" ${p.estado === 'almacenado' ? 'selected' : ''}>✅ Almacenado</option></select>
                     </div>
                 </div>
             `, true);
@@ -1746,7 +1623,6 @@
                 }
 
                 await setProducts(productos);
-
                 await registrarHistorial('EDITAR', codigo, 'Producto editado: ' + glosa, bodega);
                 mostrarToast('✏️ Producto ' + codigo + ' actualizado', 'warning');
                 await renderAll();
@@ -1755,12 +1631,8 @@
             document.getElementById('modalActionBtn').textContent = 'Actualizar';
         }
 
-        // ============================================================
-        //  MOVER PRODUCTO
-        // ============================================================
         async function moverProductoModal(codigo) {
             if ((await getCurrentUser())?.perfil === 'invitado') return alert('No tienes permisos.');
-
             const products = await getAllProducts();
             const p = products.find(prod => prod.codigo === codigo);
             if (!p) return alert('Producto no encontrado');
@@ -1772,18 +1644,9 @@
                 <p><strong>Producto:</strong> ${p.codigo} - ${p.glosa}</p>
                 <p style="color:#64748b; font-size:0.8rem; margin-bottom:10px;"><strong>Ubicación actual:</strong> ${ubicacionActual || 'Sin ubicación'}</p>
                 <div class="form-grid">
-                    <div class="full-width">
-                        <label>Nueva ubicación</label>
-                        <input id="moverNuevaUbic" value="${ubicacionActual}" placeholder="Ej: PALLET_B_2">
-                    </div>
-                    <div class="full-width">
-                        <label>Nueva zona</label>
-                        <select id="moverNuevaZona">
-                            <option value="">Sin zona</option>
-                            ${['A','B','C','D','E','F','G','H','I','J'].map(z =>
-                                `<option value="${z}" ${z === zonaActual ? 'selected' : ''}>${z}</option>`
-                            ).join('')}
-                        </select>
+                    <div class="full-width"><label>Nueva ubicación</label><input id="moverNuevaUbic" value="${ubicacionActual}" placeholder="Ej: PALLET_B_2"></div>
+                    <div class="full-width"><label>Nueva zona</label>
+                        <select id="moverNuevaZona"><option value="">Sin zona</option>${['A','B','C','D','E','F','G','H','I','J'].map(z => `<option value="${z}" ${z === zonaActual ? 'selected' : ''}>${z}</option>`).join('')}</select>
                     </div>
                 </div>
             `, true);
@@ -1799,7 +1662,6 @@
                 if (index === -1) return alert('Producto no encontrado');
 
                 const oldUbic = productos[index].ubicaciones.map(u => u.ubicacion).join(', ');
-
                 if (productos[index].ubicaciones.length > 0) {
                     productos[index].ubicaciones[0].ubicacion = nuevaUbic;
                     if (nuevaZona) productos[index].ubicaciones[0].zona = nuevaZona;
@@ -1808,7 +1670,6 @@
                 }
 
                 await setProducts(productos);
-
                 const user = await getCurrentUser();
                 await addMovement({
                     fecha: new Date().toISOString().replace('T', ' ').slice(0, 19),
@@ -1828,9 +1689,6 @@
             document.getElementById('modalActionBtn').textContent = 'Mover';
         }
 
-        // ============================================================
-        //  ELIMINAR PRODUCTO
-        // ============================================================
         async function eliminarProducto(codigo) {
             if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede eliminar registros.');
             if (!confirm('¿Estás seguro de eliminar el producto ' + codigo + '?')) return;
@@ -1841,32 +1699,22 @@
 
             const newProducts = products.filter(prod => prod.codigo !== codigo);
             await setProducts(newProducts);
-
             await registrarHistorial('ELIMINAR', codigo, 'Producto eliminado: ' + p.glosa, p.bodega);
             mostrarToast('🗑️ Producto ' + codigo + ' eliminado', 'error');
             await renderAll();
         }
 
-        // ============================================================
-        //  SELECCIÓN MÚLTIPLE
-        // ============================================================
         function toggleSelectAllRow(codigo) {
-            if (selectedRows.has(codigo)) {
-                selectedRows.delete(codigo);
-            } else {
-                selectedRows.add(codigo);
-            }
+            if (selectedRows.has(codigo)) selectedRows.delete(codigo);
+            else selectedRows.add(codigo);
             renderInventarioUnificado();
         }
 
         async function toggleSelectAll() {
             const checked = document.getElementById('selectAll').checked;
             const products = await getProducts();
-            if (checked) {
-                products.forEach(p => selectedRows.add(p.codigo));
-            } else {
-                selectedRows.clear();
-            }
+            if (checked) products.forEach(p => selectedRows.add(p.codigo));
+            else selectedRows.clear();
             await renderInventarioUnificado();
         }
 
@@ -1879,22 +1727,12 @@
 
         async function moverSeleccionados() {
             if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
-
             mostrarModal('🔄 Mover Seleccionados', `
                 <p><strong>${selectedRows.size} productos seleccionados</strong></p>
                 <div class="form-grid">
-                    <div class="full-width">
-                        <label>Nueva ubicación</label>
-                        <input id="moverMasivoUbic" placeholder="Ej: PALLET_B_2">
-                    </div>
-                    <div class="full-width">
-                        <label>Nueva zona</label>
-                        <select id="moverMasivoZona">
-                            <option value="">Sin zona</option>
-                            ${['A','B','C','D','E','F','G','H','I','J'].map(z =>
-                                `<option value="${z}">${z}</option>`
-                            ).join('')}
-                        </select>
+                    <div class="full-width"><label>Nueva ubicación</label><input id="moverMasivoUbic" placeholder="Ej: PALLET_B_2"></div>
+                    <div class="full-width"><label>Nueva zona</label>
+                        <select id="moverMasivoZona"><option value="">Sin zona</option>${['A','B','C','D','E','F','G','H','I','J'].map(z => `<option value="${z}">${z}</option>`).join('')}</select>
                     </div>
                 </div>
             `, true);
@@ -1932,14 +1770,13 @@
         }
 
         async function eliminarSeleccionados() {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede eliminar registros de forma masiva.');
+            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede eliminar registros.');
             if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
             if (!confirm('¿Estás seguro de eliminar ' + selectedRows.size + ' productos?')) return;
 
             const products = await getAllProducts();
             const newProducts = products.filter(p => !selectedRows.has(p.codigo));
             await setProducts(newProducts);
-
             await registrarHistorial('ELIMINAR', 'MULTIPLE', selectedRows.size + ' productos eliminados');
             mostrarToast('🗑️ ' + selectedRows.size + ' productos eliminados', 'error');
             selectedRows.clear();
@@ -1947,7 +1784,7 @@
         }
 
         async function exportarSeleccionados() {
-            if (!(await hasPermission('descarga'))) return alert('No tienes permisos para descargar o exportar.');
+            if (!(await hasPermission('descarga'))) return alert('No tienes permisos.');
             if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
 
             const products = await getProducts();
@@ -1972,13 +1809,9 @@
             link.download = 'productos_seleccionados_' + new Date().toISOString().slice(0,10) + '.xlsx';
             link.click();
             URL.revokeObjectURL(link.href);
-
             mostrarToast('📥 ' + seleccionados.length + ' productos exportados', 'success');
         }
 
-        // ============================================================
-        //  QR - UBICACIONES
-        // ============================================================
         function generarQRCanvas(canvasId, data, size = 120) {
             const canvas = document.getElementById(canvasId);
             if (!canvas) return;
@@ -2010,9 +1843,7 @@
             chars.forEach((char) => {
                 const code = char.charCodeAt(0);
                 for (let bit = 7; bit >= 0; bit--) {
-                    if (code & (1 << bit)) {
-                        ctx.fillRect(x, y, moduleSize * 0.6, moduleSize * 0.6);
-                    }
+                    if (code & (1 << bit)) ctx.fillRect(x, y, moduleSize * 0.6, moduleSize * 0.6);
                     x += moduleSize * 0.7;
                     if (x > size - margin - 4) {
                         x = margin + 7 * moduleSize + 2;
@@ -2033,9 +1864,7 @@
                 });
             });
 
-            if (ubicacionesMap.size === 0) {
-                return alert('No hay ubicaciones registradas para generar QR.');
-            }
+            if (ubicacionesMap.size === 0) return alert('No hay ubicaciones registradas para generar QR.');
 
             let qrHtml = `<h3>📱 Códigos QR de Ubicaciones (${ubicacionesMap.size})</h3>
                        <p style="color:#64748b; margin-bottom:8px; font-size:0.8rem;">Escanee estos QR para trasladar productos a estas ubicaciones.</p>
@@ -2060,7 +1889,6 @@
                        </div>`;
 
             mostrarModal('📱 QR de Ubicaciones', qrHtml, true);
-
             setTimeout(() => {
                 let i = 0;
                 for (const [ubicacion] of ubicacionesMap) {
@@ -2070,12 +1898,8 @@
             }, 100);
 
             document.getElementById('modalActionBtn').style.display = 'none';
-            await registrarHistorial('MOVIMIENTO', 'QR_UBICACIONES', 'Códigos QR generados para ' + ubicacionesMap.size + ' ubicaciones');
         }
 
-        // ============================================================
-        //  USUARIOS
-        // ============================================================
         async function renderUsuarios() {
             const users = await getUsers();
             const tbody = document.getElementById('usuariosBody');
@@ -2096,43 +1920,23 @@
                     <td>${(u.permisos || []).join(', ')}</td>
                     <td style="font-size:0.65rem; color:#64748b;">${ultimaAct}</td>
                     <td>
-                        <button class="btn btn-primary btn-sm" onclick="editarUsuario(${u.id})" ${esAdmin ? '' : 'disabled'}>
-                            <span class="icon">✏️</span>
-                        </button>
-                        <button class="btn btn-danger btn-sm" onclick="eliminarUsuario(${u.id})" ${esAdmin && u.id !== currentUserId ? '' : 'disabled'}>
-                            <span class="icon">🗑️</span>
-                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="editarUsuario(${u.id})" ${esAdmin ? '' : 'disabled'}><span class="icon">✏️</span></button>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarUsuario(${u.id})" ${esAdmin && u.id !== currentUserId ? '' : 'disabled'}><span class="icon">🗑️</span></button>
                     </td>
                 </tr>`;
             }).join('');
         }
 
         async function mostrarModalUsuario() {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede crear nuevos usuarios.');
-
+            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede crear usuarios.');
             mostrarModal('➕ Nuevo Usuario', `
                 <div class="form-grid">
-                    <div class="full-width">
-                        <label>Nombre</label>
-                        <input id="userNombre" placeholder="Nombre del usuario">
+                    <div class="full-width"><label>Nombre</label><input id="userNombre" placeholder="Nombre del usuario"></div>
+                    <div class="full-width"><label>Contraseña</label><input id="userPass" type="password" placeholder="Contraseña"></div>
+                    <div><label>Perfil</label>
+                        <select id="userPerfil"><option value="admin">Admin</option><option value="supervisor">Supervisor</option><option value="operario">Operario</option><option value="invitado">Invitado</option></select>
                     </div>
-                    <div class="full-width">
-                        <label>Contraseña</label>
-                        <input id="userPass" type="password" placeholder="Contraseña">
-                    </div>
-                    <div>
-                        <label>Perfil</label>
-                        <select id="userPerfil">
-                            <option value="admin">Admin</option>
-                            <option value="supervisor">Supervisor</option>
-                            <option value="operario">Operario</option>
-                            <option value="invitado">Invitado</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Permisos</label>
-                        <input id="userPermisos" placeholder="lectura, escritura..." value="lectura">
-                    </div>
+                    <div><label>Permisos</label><input id="userPermisos" placeholder="lectura, escritura..." value="lectura"></div>
                 </div>
             `);
 
@@ -2144,19 +1948,10 @@
 
                 if (!nombre || !password) return alert('Nombre y contraseña son requeridos');
                 const users = await getUsers();
-                if (users.find(u => u.nombre.toLowerCase() === nombre.toLowerCase())) {
-                    return alert('Ya existe un usuario con ese nombre.');
-                }
+                if (users.find(u => u.nombre.toLowerCase() === nombre.toLowerCase())) return alert('Ya existe un usuario con ese nombre.');
 
                 const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
-                users.push({
-                    id: newId,
-                    nombre,
-                    password,
-                    perfil,
-                    permisos,
-                    ultimaActividad: new Date().toISOString()
-                });
+                users.push({ id: newId, nombre, password, perfil, permisos, ultimaActividad: new Date().toISOString() });
                 await setUsers(users);
                 await registrarHistorial('AGREGAR', 'USUARIO_' + nombre, 'Usuario creado: ' + nombre + ' (' + perfil + ')');
                 mostrarToast('✅ Usuario ' + nombre + ' creado', 'success');
@@ -2168,34 +1963,18 @@
 
         async function editarUsuario(id) {
             if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede editar usuarios.');
-
             const users = await getUsers();
             const u = users.find(user => user.id === id);
             if (!u) return alert('Usuario no encontrado');
 
             mostrarModal('✏️ Editar Usuario', `
                 <div class="form-grid">
-                    <div class="full-width">
-                        <label>Nombre</label>
-                        <input id="editUserNombre" value="${u.nombre}">
+                    <div class="full-width"><label>Nombre</label><input id="editUserNombre" value="${u.nombre}"></div>
+                    <div class="full-width"><label>Contraseña</label><input id="editUserPass" type="password" placeholder="Dejar en blanco para no cambiar"></div>
+                    <div><label>Perfil</label>
+                        <select id="editUserPerfil"><option value="admin" ${u.perfil === 'admin' ? 'selected' : ''}>Admin</option><option value="supervisor" ${u.perfil === 'supervisor' ? 'selected' : ''}>Supervisor</option><option value="operario" ${u.perfil === 'operario' ? 'selected' : ''}>Operario</option><option value="invitado" ${u.perfil === 'invitado' ? 'selected' : ''}>Invitado</option></select>
                     </div>
-                    <div class="full-width">
-                        <label>Contraseña</label>
-                        <input id="editUserPass" type="password" placeholder="Dejar en blanco para no cambiar">
-                    </div>
-                    <div>
-                        <label>Perfil</label>
-                        <select id="editUserPerfil">
-                            <option value="admin" ${u.perfil === 'admin' ? 'selected' : ''}>Admin</option>
-                            <option value="supervisor" ${u.perfil === 'supervisor' ? 'selected' : ''}>Supervisor</option>
-                            <option value="operario" ${u.perfil === 'operario' ? 'selected' : ''}>Operario</option>
-                            <option value="invitado" ${u.perfil === 'invitado' ? 'selected' : ''}>Invitado</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Permisos</label>
-                        <input id="editUserPermisos" value="${(u.permisos || []).join(', ')}">
-                    </div>
+                    <div><label>Permisos</label><input id="editUserPermisos" value="${(u.permisos || []).join(', ')}"></div>
                 </div>
             `);
 
@@ -2206,18 +1985,15 @@
                 const permisos = document.getElementById('editUserPermisos').value.split(',').map(s => s.trim()).filter(Boolean);
 
                 if (!nombre) return alert('El nombre es requerido');
-
                 const usersList = await getUsers();
                 const index = usersList.findIndex(user => user.id === id);
                 if (index === -1) return alert('Usuario no encontrado');
 
-                const oldNombre = usersList[index].nombre;
                 usersList[index].nombre = nombre;
                 if (password) usersList[index].password = password;
                 usersList[index].perfil = perfil;
                 usersList[index].permisos = permisos;
                 await setUsers(usersList);
-                await registrarHistorial('EDITAR', 'USUARIO_' + nombre, 'Usuario editado: ' + oldNombre + ' → ' + nombre + ' (' + perfil + ')');
                 mostrarToast('✏️ Usuario ' + nombre + ' actualizado', 'warning');
                 await renderAll();
                 cerrarModal();
@@ -2228,26 +2004,18 @@
         async function eliminarUsuario(id) {
             if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede eliminar usuarios.');
             if (id === currentUserId) return alert('⚠️ No puedes eliminar tu propio usuario');
-
             const users = await getUsers();
             const u = users.find(user => user.id === id);
             if (!u) return alert('Usuario no encontrado');
             if (!confirm('¿Estás seguro de eliminar al usuario "' + u.nombre + '"?')) return;
 
-            const nombre = u.nombre;
-            const perfil = u.perfil;
             let usersList = await getUsers();
             usersList = usersList.filter(user => user.id !== id);
             await setUsers(usersList);
-            await registrarHistorial('ELIMINAR', 'USUARIO_' + nombre, 'Usuario eliminado: ' + nombre + ' (' + perfil + ')');
-
-            mostrarToast('🗑️ Usuario ' + nombre + ' eliminado', 'error');
+            mostrarToast('🗑️ Usuario ' + u.nombre + ' eliminado', 'error');
             await renderAll();
         }
 
-        // ============================================================
-        //  BODEGAS
-        // ============================================================
         async function renderBodegas() {
             const warehouses = await getAllWarehouses();
             const tbody = document.getElementById('bodegasBody');
@@ -2265,51 +2033,24 @@
                     <td><strong>${w.id}</strong></td>
                     <td>${w.nombre}</td>
                     <td style="font-size:0.75rem; color:#64748b;">${w.descripcion || '-'}</td>
-                    <td>${(w.zonas || ['A','B','C','D','E','F','G','H','I','J']).map(z =>
-                        `<span class="zone-tag zone-tag-${z}">${z}</span>`
-                    ).join(' ')}</td>
+                    <td>${(w.zonas || ['A','B','C','D','E','F','G','H','I','J']).map(z => `<span class="zone-tag zone-tag-${z}">${z}</span>`).join(' ')}</td>
                     <td><span class="bodega-color" style="background:${w.color || '#64748b'};"></span> ${w.color || '#64748b'}</td>
                     <td>
-                        <button class="btn btn-primary btn-sm" onclick="editarBodega('${w.id}')" ${esAdmin ? '' : 'disabled'}>
-                            <span class="icon">✏️</span>
-                        </button>
-                        <button class="btn btn-danger btn-sm" onclick="eliminarBodega('${w.id}')" ${esAdmin ? '' : 'disabled'}>
-                            <span class="icon">🗑️</span>
-                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="editarBodega('${w.id}')" ${esAdmin ? '' : 'disabled'}><span class="icon">✏️</span></button>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarBodega('${w.id}')" ${esAdmin ? '' : 'disabled'}><span class="icon">🗑️</span></button>
                     </td>
                 </tr>
             `).join('');
         }
 
         async function mostrarModalBodega() {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede crear nuevas bodegas.');
-
+            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede crear bodegas.');
             mostrarModal('🏢 Nueva Bodega', `
                 <div class="form-grid">
-                    <div class="full-width">
-                        <label>ID (identificador único)</label>
-                        <input id="bodegaId" placeholder="Ej: Farmacos, Insumos, Economato">
-                    </div>
-                    <div class="full-width">
-                        <label>Nombre</label>
-                        <input id="bodegaNombre" placeholder="Ej: Bodega de Fármacos">
-                    </div>
-                    <div class="full-width">
-                        <label>Descripción</label>
-                        <input id="bodegaDescripcion" placeholder="Descripción de la bodega">
-                    </div>
-                    <div class="full-width">
-                        <label>Zonas disponibles</label>
-                        <select id="bodegaZonas" multiple style="height:80px;">
-                            ${['A','B','C','D','E','F','G','H','I','J'].map(z =>
-                                `<option value="${z}" selected>Zona ${z}</option>`
-                            ).join('')}
-                        </select>
-                    </div>
-                    <div class="full-width">
-                        <label>Color representativo</label>
-                        <input id="bodegaColor" type="color" value="#2563eb" style="height:40px; padding:4px;">
-                    </div>
+                    <div class="full-width"><label>ID (identificador único)</label><input id="bodegaId" placeholder="Ej: Farmacos"></div>
+                    <div class="full-width"><label>Nombre</label><input id="bodegaNombre" placeholder="Ej: Bodega de Fármacos"></div>
+                    <div class="full-width"><label>Descripción</label><input id="bodegaDescripcion" placeholder="Descripción"></div>
+                    <div class="full-width"><label>Color representativo</label><input id="bodegaColor" type="color" value="#2563eb" style="height:40px; padding:4px;"></div>
                 </div>
             `, true);
 
@@ -2317,20 +2058,13 @@
                 const id = document.getElementById('bodegaId').value.trim();
                 const nombre = document.getElementById('bodegaNombre').value.trim();
                 const descripcion = document.getElementById('bodegaDescripcion').value.trim();
-                const zonasSelect = document.getElementById('bodegaZonas');
-                const zonas = Array.from(zonasSelect.selectedOptions).map(opt => opt.value);
                 const color = document.getElementById('bodegaColor').value;
 
-                if (!id) return alert('El ID es requerido');
-                if (!nombre) return alert('El nombre es requerido');
-                if (zonas.length === 0) return alert('Selecciona al menos una zona');
-
+                if (!id || !nombre) return alert('ID y nombre son requeridos');
                 const existing = await getWarehouse(id);
                 if (existing) return alert('Ya existe una bodega con ese ID');
 
-                const newWarehouse = { id, nombre, descripcion, zonas, color };
-                await addWarehouse(newWarehouse);
-                await registrarHistorial('AGREGAR', 'BODEGA_' + id, 'Bodega creada: ' + nombre);
+                await addWarehouse({ id, nombre, descripcion, zonas: ['A','B','C','D','E','F','G','H','I','J'], color });
                 mostrarToast('✅ Bodega ' + nombre + ' creada', 'success');
                 await renderAll();
                 cerrarModal();
@@ -2340,61 +2074,32 @@
 
         async function editarBodega(id) {
             if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede editar bodegas.');
-
             const wh = await getWarehouse(id);
             if (!wh) return alert('Bodega no encontrada');
 
             mostrarModal('✏️ Editar Bodega', `
                 <div class="form-grid">
-                    <div class="full-width">
-                        <label>ID</label>
-                        <input id="editBodegaId" value="${wh.id}" readonly style="background:#f1f5f9;">
-                    </div>
-                    <div class="full-width">
-                        <label>Nombre</label>
-                        <input id="editBodegaNombre" value="${wh.nombre}">
-                    </div>
-                    <div class="full-width">
-                        <label>Descripción</label>
-                        <input id="editBodegaDescripcion" value="${wh.descripcion || ''}">
-                    </div>
-                    <div class="full-width">
-                        <label>Zonas disponibles</label>
-                        <select id="editBodegaZonas" multiple style="height:80px;">
-                            ${['A','B','C','D','E','F','G','H','I','J'].map(z =>
-                                `<option value="${z}" ${(wh.zonas || []).includes(z) ? 'selected' : ''}>Zona ${z}</option>`
-                            ).join('')}
-                        </select>
-                    </div>
-                    <div class="full-width">
-                        <label>Color representativo</label>
-                        <input id="editBodegaColor" type="color" value="${wh.color || '#2563eb'}" style="height:40px; padding:4px;">
-                    </div>
+                    <div class="full-width"><label>ID</label><input id="editBodegaId" value="${wh.id}" readonly style="background:#f1f5f9;"></div>
+                    <div class="full-width"><label>Nombre</label><input id="editBodegaNombre" value="${wh.nombre}"></div>
+                    <div class="full-width"><label>Descripción</label><input id="editBodegaDescripcion" value="${wh.descripcion || ''}"></div>
+                    <div class="full-width"><label>Color representativo</label><input id="editBodegaColor" type="color" value="${wh.color || '#2563eb'}" style="height:40px; padding:4px;"></div>
                 </div>
             `, true);
 
             modalCallback = async () => {
                 const nombre = document.getElementById('editBodegaNombre').value.trim();
                 const descripcion = document.getElementById('editBodegaDescripcion').value.trim();
-                const zonasSelect = document.getElementById('editBodegaZonas');
-                const zonas = Array.from(zonasSelect.selectedOptions).map(opt => opt.value);
                 const color = document.getElementById('editBodegaColor').value;
-
                 if (!nombre) return alert('El nombre es requerido');
-                if (zonas.length === 0) return alert('Selecciona al menos una zona');
 
                 const warehouses = await getAllWarehouses();
                 const index = warehouses.findIndex(w => w.id === id);
                 if (index === -1) return alert('Bodega no encontrada');
 
-                const oldNombre = warehouses[index].nombre;
                 warehouses[index].nombre = nombre;
                 warehouses[index].descripcion = descripcion;
-                warehouses[index].zonas = zonas;
                 warehouses[index].color = color;
-
                 await setWarehouses(warehouses);
-                await registrarHistorial('EDITAR', 'BODEGA_' + id, 'Bodega editada: ' + oldNombre + ' → ' + nombre);
                 mostrarToast('✏️ Bodega ' + nombre + ' actualizada', 'warning');
                 await renderAll();
                 cerrarModal();
@@ -2404,22 +2109,15 @@
 
         async function eliminarBodega(id) {
             if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede eliminar bodegas.');
-
             const wh = await getWarehouse(id);
             if (!wh) return alert('Bodega no encontrada');
 
             const products = await getAllProducts();
-            const tieneProductos = products.some(p => p.bodega === id);
-            if (tieneProductos) {
-                return alert('⚠️ No se puede eliminar la bodega "' + wh.nombre + '" porque tiene productos asociados.');
-            }
-
+            if (products.some(p => p.bodega === id)) return alert('⚠️ No se puede eliminar la bodega porque tiene productos asociados.');
             if (!confirm('¿Estás seguro de eliminar la bodega "' + wh.nombre + '"?')) return;
 
             await deleteWarehouse(id);
-            await registrarHistorial('ELIMINAR', 'BODEGA_' + id, 'Bodega eliminada: ' + wh.nombre);
-            mostrarToast('🗑️ Bodega ' + wh.nombre + ' eliminada', 'error');
-
+            mostrarToast('🗑️ Bodega eliminada', 'error');
             if (currentWarehouse === id) {
                 currentWarehouse = 'TODAS';
                 document.getElementById('warehouseSelect').value = 'TODAS';
@@ -2427,9 +2125,6 @@
             await renderAll();
         }
 
-        // ============================================================
-        //  HISTORIAL
-        // ============================================================
         async function renderHistorialCompleto() {
             const filter = document.getElementById('filterHistorial').value.toLowerCase();
             const accionFilter = document.getElementById('filterHistorialAccion').value;
@@ -2437,11 +2132,7 @@
 
             let filtered = historial;
             if (filter) {
-                filtered = filtered.filter(h =>
-                    (h.codigo || '').toLowerCase().includes(filter) ||
-                    (h.usuario || '').toLowerCase().includes(filter) ||
-                    (h.detalle || '').toLowerCase().includes(filter)
-                );
+                filtered = filtered.filter(h => (h.codigo || '').toLowerCase().includes(filter) || (h.usuario || '').toLowerCase().includes(filter) || (h.detalle || '').toLowerCase().includes(filter));
             }
             if (accionFilter !== 'TODAS') {
                 filtered = filtered.filter(h => h.accion === accionFilter);
@@ -2457,7 +2148,7 @@
             tbody.innerHTML = filtered.slice(0, 200).map(h => `
                 <tr>
                     <td style="font-size:0.65rem; color:#64748b;">${h.fecha}</td>
-                    <td><strong>${h.usuario}</strong> <span style="font-size:0.5rem; color:#94a3b8;">(${h.perfil || 'sistema'})</span></td>
+                    <td><strong>${h.usuario}</strong></td>
                     <td>${h.accion}</td>
                     <td><strong>${h.codigo || '-'}</strong></td>
                     <td style="font-size:0.7rem;">${h.detalle || '-'}</td>
@@ -2466,22 +2157,19 @@
         }
 
         async function limpiarHistorialCompleto() {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede limpiar el historial.');
+            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador.');
             if (!confirm('¿Estás seguro de limpiar todo el historial?')) return;
             await setHistorial([]);
             await renderHistorialCompleto();
             mostrarToast('🗑️ Historial limpiado', 'warning');
         }
 
-        // ============================================================
-        //  EXPORTACIONES Y BACKUPS
-        // ============================================================
         async function exportarExcelCompleto() {
-            if (!(await hasPermission('descarga'))) return alert('No tienes permisos para descargar o exportar.');
+            if (!(await hasPermission('descarga'))) return alert('No tienes permisos.');
             const products = await getAllProducts();
             if (products.length === 0) return alert('No hay datos para exportar');
 
-            const exportData = products.map(p => ({
+            const ws = XLSX.utils.json_to_sheet(products.map(p => ({
                 'Código': p.codigo,
                 'GTIN': p.gtin || '',
                 'Glosa': p.glosa,
@@ -2489,9 +2177,8 @@
                 'Ubicación': p.ubicaciones[0]?.ubicacion || '',
                 'Zona': p.ubicaciones[0]?.zona || '',
                 'Estado': p.estado || 'almacenado'
-            }));
+            })));
 
-            const ws = XLSX.utils.json_to_sheet(exportData);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
             const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
@@ -2501,22 +2188,16 @@
             link.download = 'inventario_completo_' + new Date().toISOString().slice(0,10) + '.xlsx';
             link.click();
             URL.revokeObjectURL(link.href);
-
-            await registrarHistorial('AGREGAR', 'EXCEL_EXPORT', 'Excel completo exportado');
             mostrarToast('✅ Excel exportado correctamente', 'success');
         }
 
         async function exportarDatos() {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede exportar backups.');
-            const products = await getAllProducts();
-            const movements = await getAllMovements();
-            const historial = await getAllHistorial();
-            const warehouses = await getAllWarehouses();
+            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador.');
             const data = {
-                products: products,
-                movements: movements,
-                historial: historial,
-                warehouses: warehouses,
+                products: await getAllProducts(),
+                movements: await getAllMovements(),
+                historial: await getAllHistorial(),
+                warehouses: await getAllWarehouses(),
                 users: await getUsers(),
                 config: getConfig(),
                 exportDate: new Date().toISOString()
@@ -2527,12 +2208,11 @@
             link.download = 'wms_backup_' + new Date().toISOString().slice(0,10) + '.json';
             link.click();
             URL.revokeObjectURL(link.href);
-            await registrarHistorial('AGREGAR', 'BACKUP', 'Backup JSON exportado');
             mostrarToast('📤 Backup exportado', 'success');
         }
 
         async function cargarImport(event) {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede importar backups.');
+            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador.');
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
@@ -2540,15 +2220,12 @@
                 try {
                     const data = JSON.parse(e.target.result);
                     if (data.products) await setProducts(data.products);
-                    if (data.movements) {
-                        for (let m of data.movements) await addMovement(m);
-                    }
+                    if (data.movements) for (let m of data.movements) await addMovement(m);
                     if (data.historial) await setHistorial(data.historial);
                     if (data.warehouses) await setWarehouses(data.warehouses);
                     if (data.users) await setUsers(data.users);
                     if (data.config) setConfig(data.config);
                     await renderAll();
-                    await registrarHistorial('AGREGAR', 'BACKUP_IMPORT', 'Backup JSON importado');
                     mostrarToast('✅ Datos importados correctamente', 'success');
                 } catch (error) {
                     alert('❌ Error al importar: ' + error.message);
@@ -2559,22 +2236,17 @@
         }
 
         async function resetData() {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede reiniciar el sistema.');
+            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador.');
             if (!confirm('⚠️ ¿Estás seguro de reiniciar todos los datos?')) return;
-
             await setProducts([]);
             await setHistorial([]);
             await setWarehouses(DEFAULT_WAREHOUSES);
             localStorage.removeItem('wms_config');
             await initData();
             await renderAll();
-            await registrarHistorial('ELIMINAR', 'RESET', 'Todos los datos reiniciados');
             mostrarToast('🔄 Datos reiniciados correctamente', 'warning');
         }
 
-        // ============================================================
-        //  MODAL
-        // ============================================================
         function mostrarModal(titulo, contenido, granTamaño = false) {
             document.getElementById('modalTitle').textContent = titulo;
             document.getElementById('modalBody').innerHTML = contenido;
@@ -2591,52 +2263,6 @@
         function ejecutarModal() {
             if (modalCallback) modalCallback();
         }
-
-        // ============================================================
-        //  NAVEGACIÓN
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function() {
-            initData().then(async () => {
-                await checkSession();
-
-                document.querySelectorAll('nav button').forEach(btn => {
-                    btn.addEventListener('click', async function() {
-                        const tabId = this.dataset.tab;
-                        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-                        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-                        const tab = document.getElementById('tab-' + tabId);
-                        if (tab) tab.classList.add('active');
-                        this.classList.add('active');
-
-                        if (tabId === 'inventario') await renderInventarioUnificado();
-                        if (tabId === 'layout') {
-                            renderLayoutVisual();
-                            await cargarImagenLayout(currentWarehouse);
-                        }
-                        if (tabId === 'movimientos') await renderHistorialCompleto();
-                        if (tabId === 'usuarios') await renderUsuarios();
-                        if (tabId === 'bodegas') await renderBodegas();
-                        if (tabId === 'config') await renderConfig();
-                    });
-                });
-
-                document.getElementById('loginPass').addEventListener('keydown', async function(e) {
-                    if (e.key === 'Enter') await handleLogin();
-                });
-                document.getElementById('loginUser').addEventListener('keydown', async function(e) {
-                    if (e.key === 'Enter') await handleLogin();
-                });
-
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape') cerrarModal();
-                });
-                document.getElementById('modal').addEventListener('click', function(e) {
-                    if (e.target === this) cerrarModal();
-                });
-
-                if (await checkSession()) await renderAll();
-            });
-        });
     </script>
 </body>
 </html>
