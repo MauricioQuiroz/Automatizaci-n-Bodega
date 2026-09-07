@@ -97,13 +97,14 @@
         .badge-insumos { background:#059669; }
         .badge-economato { background:#d97706; color:#0f172a; }
         
-        /* UBICACIÓN LIMPIA (SIN COMAS) */
-        .ubicacion-compacta-box { display:flex; flex-direction:column; gap:3px; }
-        .ubicacion-row-item { display:flex; align-items:center; gap:6px; font-size:0.7rem; background:#f8fafc; padding:2px 6px; border-radius:4px; border:1px solid #e2e8f0; width:fit-content; }
-        .zone-tag { display:inline-block; padding:1px 5px; border-radius:3px; font-size:0.6rem; font-weight:700; background:#dbeafe; color:#1e40af; }
-        .pos-tag { font-family:monospace; font-size:0.65rem; background:#e2e8f0; padding:1px 4px; border-radius:3px; color:#334155; font-weight:600; }
+        /* UBICACIÓN OPTIMIZADA Y SIN COMAS */
+        .ubicacion-compacta-box { display:flex; flex-direction:column; gap:4px; align-items:flex-start; }
+        .ubicacion-row-item { display:inline-flex; align-items:center; gap:5px; font-size:0.7rem; background:#f8fafc; padding:3px 8px; border-radius:6px; border:1px solid #e2e8f0; color:#1e293b; font-weight:500; }
+        .zone-tag { display:inline-block; padding:1px 5px; border-radius:4px; font-size:0.65rem; font-weight:700; background:#dbeafe; color:#1e40af; }
+        .pos-tag { font-family:monospace; font-size:0.65rem; background:#e2e8f0; padding:1px 4px; border-radius:4px; color:#334155; font-weight:600; }
         
-        .type-tag { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.6rem; font-weight:700; background:#f3e8ff; color:#7e22ce; }
+        /* JERARQUÍA SIN ICONOS */
+        .type-tag { display:inline-block; padding:3px 8px; border-radius:6px; font-size:0.65rem; font-weight:700; background:#f3e8ff; color:#7e22ce; }
         .gtin-tag { font-family:monospace; font-size:0.65rem; background:#fef9c3; color:#854d0e; padding:2px 6px; border-radius:4px; font-weight:600; }
 
         /* BOTONES */
@@ -206,7 +207,7 @@
             <button data-tab="movimientos"><span class="nav-icon">🔄</span> Movimientos</button>
             <button data-tab="usuarios" id="navUsuarios"><span class="nav-icon">👥</span> Usuarios</button>
             <button data-tab="bodegas" id="navBodegas"><span class="nav-icon">🏢</span> Bodegas</button>
-            <button data-tab="config"><span class="nav-icon">⚙️</span> Config</button>
+            <button data-tab="config" id="navConfig"><span class="nav-icon">⚙️</span> Config</button>
         </nav>
 
         <!-- DASHBOARD -->
@@ -309,18 +310,33 @@
             </div>
         </div>
 
-        <!-- CONFIG -->
+        <!-- CONFIG (EXCLUSIVO ADMINISTRADOR) -->
         <div id="tab-config" class="tab-content">
             <h3>⚙️ Configuración del Sistema</h3>
-            <div style="max-width:600px; margin-top:10px;">
-                <div style="margin-bottom:12px;" id="configLayoutSection">
-                    <label><strong>📐 Subir imagen del plano (layout visual) para la bodega actual</strong></label>
-                    <p style="font-size:0.7rem; color:#64748b; margin-bottom:4px;">Bodega seleccionada: <strong id="configBodegaNombre">Todas</strong></p>
-                    <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="padding:6px; width:100%; border:2px solid #d1d5db; border-radius:6px;">
+            <div style="max-width:650px; margin-top:10px; display:flex; flex-direction:column; gap:14px;">
+                <div style="background:#f8fafc; padding:14px; border-radius:10px; border:1px solid #e2e8f0;" id="configLayoutSection">
+                    <label><strong>📐 Subir imagen del plano (layout visual)</strong></label>
+                    <p style="font-size:0.75rem; color:#64748b; margin-bottom:8px;">Selecciona si deseas aplicar la imagen a una bodega específica o de forma general.</p>
+                    <div style="display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+                        <select id="configSubirBodegaSelect" style="flex:1; padding:6px; border:2px solid #d1d5db; border-radius:6px; font-size:0.8rem;">
+                            <option value="GENERAL">🌐 General (Todas las bodegas)</option>
+                        </select>
+                    </div>
+                    <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="padding:6px; width:100%; border:2px solid #d1d5db; border-radius:6px; background:white;">
                 </div>
-                <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                    <button class="btn btn-warning btn-sm" onclick="exportarDatos()">📤 Exportar Backup JSON</button>
-                    <button class="btn btn-danger btn-sm" onclick="resetData()">🔄 Reiniciar Datos</button>
+
+                <div style="background:#f8fafc; padding:14px; border-radius:10px; border:1px solid #e2e8f0;">
+                    <label><strong>🔄 Reinicio de Datos y Reseteo</strong></label>
+                    <p style="font-size:0.75rem; color:#64748b; margin-bottom:8px;">Elimina registros de inventario de forma selectiva por bodega o limpia todo el sistema.</p>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                        <select id="configResetBodegaSelect" style="flex:1; padding:6px; border:2px solid #d1d5db; border-radius:6px; font-size:0.8rem;"></select>
+                        <button class="btn btn-warning btn-sm" onclick="resetDataBodega()">🗑️ Reiniciar Bodega Seleccionada</button>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;">
+                    <button class="btn btn-outline btn-sm" onclick="exportarDatos()">📤 Exportar Backup JSON</button>
+                    <button class="btn btn-danger btn-sm" onclick="resetDataGeneral()">⚠️ Reiniciar Todo el Sistema (General)</button>
                 </div>
             </div>
         </div>
@@ -342,7 +358,7 @@
 
     <!-- SCRIPT PRINCIPAL OPTIMIZADO -->
     <script>
-        const STORAGE_KEY = 'wms_hsjd_full_data_v11';
+        const STORAGE_KEY = 'wms_hsjd_full_data_v14';
 
         const DEFAULT_DATA = {
             users: [
@@ -412,6 +428,16 @@
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
                     const tabId = this.dataset.tab;
+                    
+                    // Restricción estricta de seguridad: SOLO ADMIN
+                    if (tabId === 'config') {
+                        const user = getCurrentUser();
+                        if (!user || user.perfil !== 'admin') {
+                            alert('Acceso restringido exclusivamente para el Administrador.');
+                            return;
+                        }
+                    }
+
                     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
                     
@@ -532,19 +558,24 @@
             const btnCargar = document.getElementById('btnCargarArchivo');
             const navUsr = document.getElementById('navUsuarios');
             const navBod = document.getElementById('navBodegas');
+            const navConfig = document.getElementById('navConfig');
             const btnNewUsr = document.getElementById('divBtnNuevoUsr');
             const btnNewBod = document.getElementById('divBtnNuevaBodega');
-            const secCfg = document.getElementById('configLayoutSection');
+
+            // Solo admin ve la pestaña Configuración
+            if (perfil !== 'admin') {
+                if(navConfig) navConfig.style.display = 'none';
+            } else {
+                if(navConfig) navConfig.style.display = 'inline-flex';
+            }
 
             if (perfil === 'invitado') {
                 if(btnCargar) btnCargar.style.display = 'none';
                 if(navUsr) navUsr.style.display = 'none';
                 if(navBod) navBod.style.display = 'none';
-                if(secCfg) secCfg.style.display = 'none';
             } else if (perfil === 'operario') {
                 if(btnCargar) btnCargar.style.display = 'none';
                 if(navUsr) navUsr.style.display = 'none';
-                if(secCfg) secCfg.style.display = 'none';
             } else if (perfil === 'supervisor') {
                 if(btnNewUsr) btnNewUsr.style.display = 'none';
                 if(btnNewBod) btnNewBod.style.display = 'none';
@@ -668,11 +699,7 @@
 
             const tbody = document.getElementById('inventarioUnificadoBody');
             tbody.innerHTML = prods.map(p => {
-                let tipoIcon = '🏗️';
-                if(p.tipo === 'Unidad Máster') tipoIcon = '📦';
-                if(p.tipo === 'Unidad Mínima / Unidosis') tipoIcon = '💊';
-
-                // UBICACIÓN LIMPIA (SIN COMAS)
+                // UBICACIÓN OPTIMIZADA Y SIN COMAS
                 const ubicsHtml = (p.ubicaciones || []).map(u => `
                     <div class="ubicacion-row-item">
                         <span class="zone-tag">Zona ${u.zona}</span> 
@@ -687,7 +714,7 @@
                     <td><span class="gtin-tag">${p.gtin || '-'}</span></td>
                     <td>${p.glosa}</td>
                     <td><span class="badge-bodega badge-${p.bodega.toLowerCase()}">${p.bodega}</span></td>
-                    <td><span class="type-tag">${tipoIcon} ${p.tipo || 'Unidad Comercial'}</span></td>
+                    <td><span class="type-tag">${p.tipo || 'Unidad Comercial'}</span></td>
                     <td>
                         <div class="ubicacion-compacta-box">
                             ${ubicsHtml}
@@ -935,14 +962,15 @@
         function subirImagenLayout(event) {
             const file = event.target.files[0];
             if (!file) return;
+            const targetBodega = document.getElementById('configSubirBodegaSelect').value;
             const reader = new FileReader();
             reader.onload = function(e) {
                 const db = getDB();
                 if(!db.layouts) db.layouts = {};
-                db.layouts[currentWarehouse] = e.target.result;
+                db.layouts[targetBodega] = e.target.result;
                 saveDB(db);
                 cargarImagenLayout(currentWarehouse);
-                mostrarToast('✅ Imagen de plano actualizada');
+                mostrarToast(`✅ Imagen de plano actualizada (${targetBodega})`);
             };
             reader.readAsDataURL(file);
         }
@@ -950,7 +978,7 @@
         function cargarImagenLayout(bodegaId) {
             const container = document.getElementById('layoutImageContent');
             const db = getDB();
-            const imgData = db.layouts ? db.layouts[bodegaId] : null;
+            const imgData = (db.layouts && db.layouts[bodegaId]) ? db.layouts[bodegaId] : (db.layouts && db.layouts['GENERAL'] ? db.layouts['GENERAL'] : null);
 
             if (imgData) {
                 container.innerHTML = `<img src="${imgData}" alt="Layout">`;
@@ -1011,11 +1039,15 @@
                 
                 let printHtml = `<div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:15px; padding:20px; font-family:sans-serif;">`;
                 chks.forEach((chk, i) => {
+                    const partes = chk.value.split(']');
+                    const jerarquia = partes[0].replace('[', '').trim();
+                    const resto = partes[1].trim();
                     printHtml += `
-                        <div style="border:2px dashed #333; padding:15px; border-radius:8px; text-align:center; background:#fff; display:flex; flex-direction:column; align-items:center; gap:6px;">
-                            <div style="font-weight:bold; font-size:10px;">HOSPITAL SAN JUAN DE DIOS</div>
-                            <div style="font-size:11px; font-weight:800; color:#1e1b4b;">${chk.value}</div>
-                            <div id="qrcode-${i}" style="margin:4px auto;"></div>
+                        <div style="border:2px dashed #333; padding:12px; border-radius:8px; text-align:center; background:#fff; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <div style="font-weight:bold; font-size:9px; color:#333;">HOSPITAL SAN JUAN DE DIOS</div>
+                            <div style="font-size:10px; font-weight:700; color:#4f46e5; background:#eef2ff; padding:2px 6px; border-radius:4px; width:100%;">${jerarquia}</div>
+                            <div style="font-size:11px; font-weight:800; color:#1e1b4b;">${resto}</div>
+                            <div id="qrcode-${i}" style="margin:2px auto;"></div>
                             <div style="font-size:8px; color:#666;">Bodega Central WMS - Control Logístico</div>
                         </div>
                     `;
@@ -1023,7 +1055,7 @@
                 printHtml += `</div>`;
 
                 const win = window.open('', '_blank');
-                win.document.write(`<html><head><title>Imprimir Etiquetas QR</title><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script></head><body onload="window.print();">` + printHtml + `<script>` + Array.from(chks).map((chk, i) => `new QRCode(document.getElementById("qrcode-${i}"), { text: "${chk.value}", width: 75, height: 75 });`).join('') + `<\/script></body></html>`);
+                win.document.write(`<html><head><title>Imprimir Etiquetas QR</title><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script></head><body onload="window.print();">` + printHtml + `<script>` + Array.from(chks).map((chk, i) => `new QRCode(document.getElementById("qrcode-${i}"), { text: "${chk.value}", width: 90, height: 90 });`).join('') + `<\/script></body></html>`);
                 win.document.close();
                 cerrarModal();
             };
@@ -1246,8 +1278,33 @@
 
         function renderConfig() {
             const db = getDB();
-            const wh = db.warehouses.find(w => w.id === currentWarehouse);
-            document.getElementById('configBodegaNombre').textContent = wh ? wh.nombre : 'Todas';
+            // Poblar selects de configuración
+            const selSubir = document.getElementById('configSubirBodegaSelect');
+            selSubir.innerHTML = '<option value="GENERAL">🌐 General (Todas las bodegas)</option>';
+            db.warehouses.forEach(w => {
+                selSubir.innerHTML += `<option value="${w.id}">🏢 ${w.nombre}</option>`;
+            });
+
+            const selReset = document.getElementById('configResetBodegaSelect');
+            selReset.innerHTML = '';
+            db.warehouses.forEach(w => {
+                selReset.innerHTML += `<option value="${w.id}">🏢 ${w.nombre}</option>`;
+            });
+        }
+
+        function resetDataBodega() {
+            const selBodega = document.getElementById('configResetBodegaSelect').value;
+            const db = getDB();
+            const wh = db.warehouses.find(w => w.id === selBodega);
+            const nombreBodega = wh ? wh.nombre : selBodega;
+
+            if(!confirm(`¿Estás seguro de eliminar todo el inventario de la bodega "${nombreBodega}"?`)) return;
+
+            db.products = db.products.filter(p => p.bodega !== selBodega);
+            saveDB(db);
+            registrarHistorial('Reinicio de Bodega', selBodega, `Eliminados registros de inventario de ${nombreBodega}`);
+            renderAll();
+            mostrarToast(`🗑️ Inventario de ${nombreBodega} reiniciado con éxito.`);
         }
 
         function renderHistorialCompleto() {
@@ -1286,8 +1343,8 @@
             dl.click();
         }
 
-        function resetData() {
-            if(confirm('¿Reiniciar base de datos local?')) {
+        function resetDataGeneral() {
+            if(confirm('⚠️ ¿Estás completamente seguro de reiniciar TODO EL SISTEMA? Se perderán todos los datos, usuarios personalizados y productos.')) {
                 localStorage.removeItem(STORAGE_KEY);
                 location.reload();
             }
