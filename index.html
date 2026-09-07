@@ -30,8 +30,12 @@
             margin-bottom:12px;
         }
         #loginModal .login-box .hospital-logo img {
-            max-width:70px; height:auto; border-radius:12px;
-            background:#0f172a; padding:8px;
+            max-width:80px;
+            height:auto;
+            border-radius:12px;
+            background:white;
+            padding:4px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.1);
         }
         #loginModal .login-box .hospital-name {
             font-size:1.1rem; font-weight:700; color:#0f172a; 
@@ -74,13 +78,13 @@
             gap: 14px;
         }
         header .header-left .banner-img {
-            height: 44px;
+            height: 50px;
             width: auto;
-            max-width: 160px;
+            max-width: 180px;
             object-fit: contain;
             border-radius: 8px;
             background: white;
-            padding: 3px 8px;
+            padding: 4px 10px;
         }
         header .header-left .banner-text {
             display: flex;
@@ -254,8 +258,8 @@
         @media (max-width:768px) {
             body { padding:10px; }
             header { flex-direction:column; align-items:stretch; gap:6px; padding:10px 16px; }
-            header .header-left { justify-content:center; }
-            header .header-left .banner-img { height:36px; max-width:120px; }
+            header .header-left { justify-content:center; flex-wrap:wrap; }
+            header .header-left .banner-img { height:40px; max-width:140px; }
             header .header-left .banner-text .title-main { font-size:0.85rem; text-align:center; }
             header .header-left .banner-text .title-sub { font-size:0.55rem; text-align:center; }
             header .user-info { justify-content:center; flex-wrap:wrap; }
@@ -275,7 +279,7 @@
             .btn { font-size:0.6rem; padding:4px 8px; }
             .modal-content { padding:14px; }
             input, select { font-size:0.8rem; padding:5px 10px; min-height:32px; }
-            header .header-left .banner-img { height:30px; max-width:90px; }
+            header .header-left .banner-img { height:32px; max-width:100px; }
             header .header-left .banner-text .title-main { font-size:0.7rem; }
             header .header-left .banner-text .title-sub { font-size:0.5rem; }
             #loginModal .login-box { padding:25px 20px; }
@@ -283,7 +287,7 @@
         }
         @media (max-width:380px) {
             nav button { font-size:0.5rem; padding:4px 6px; }
-            header .header-left .banner-img { height:26px; max-width:70px; }
+            header .header-left .banner-img { height:28px; max-width:80px; }
             header .header-left .banner-text .title-main { font-size:0.6rem; }
         }
     </style>
@@ -295,7 +299,7 @@
     <div id="loginModal">
         <div class="login-box">
             <div class="hospital-logo">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70' viewBox='0 0 70 70'%3E%3Crect width='70' height='70' fill='%230f172a' rx='12'/%3E%3Ctext x='35' y='38' font-family='Arial' font-size='22' font-weight='bold' fill='white' text-anchor='middle'%3EHSJD%3C/text%3E%3Ctext x='35' y='52' font-family='Arial' font-size='8' fill='%2360a5fa' text-anchor='middle'%3E❤️%3C/text%3E%3C/svg%3E" alt="Hospital San Juan de Dios">
+                <img src="banner.png" alt="Hospital San Juan de Dios - CDT">
             </div>
             <div class="hospital-name">Hospital San Juan de Dios - CDT</div>
             <div class="hospital-sub">Asistencial Docente · <span>"El Primero de Chile"</span></div>
@@ -318,7 +322,7 @@
         <!-- HEADER CON BANNER -->
         <header>
             <div class="header-left">
-                <img class="banner-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='44' viewBox='0 0 160 44'%3E%3Crect width='160' height='44' fill='%230f172a' rx='8'/%3E%3Ctext x='12' y='26' font-family='Arial' font-size='12' font-weight='bold' fill='white'%3E🏥%3C/text%3E%3Ctext x='30' y='20' font-family='Arial' font-size='10' font-weight='bold' fill='white'%3EHSJD%3C/text%3E%3Ctext x='30' y='34' font-family='Arial' font-size='7' fill='%2360a5fa'%3ESan Juan de Dios%3C/text%3E%3C/svg%3E" alt="Hospital San Juan de Dios">
+                <img class="banner-img" src="banner.png" alt="Hospital San Juan de Dios - CDT">
                 <div class="banner-text">
                     <span class="title-main">Hospital San Juan de Dios - CDT</span>
                     <span class="title-sub">Asistencial Docente · <span>"El Primero de Chile"</span></span>
