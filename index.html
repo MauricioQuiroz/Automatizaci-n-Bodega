@@ -38,17 +38,16 @@
 
         /* LOGIN */
         #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:16px; }
-        #loginModal .login-box { background:var(--white); padding:30px 32px; border-radius:24px; max-width:400px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.3); animation:fadeIn 0.3s ease; text-align:center; }
-        #loginModal .login-box .hospital-logo { margin-bottom:10px; }
-        #loginModal .login-box .hospital-logo img { max-width:160px; height:auto; border-radius:12px; background:var(--white); padding:6px 12px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
-        #loginModal .login-box .hospital-name { font-size:1.1rem; font-weight:700; color:#0f172a; letter-spacing:-0.3px; }
-        #loginModal .login-box .hospital-sub { font-size:0.75rem; color:#64748b; margin-bottom:14px; font-weight:500; }
-        #loginModal .login-box .hospital-sub span { color:var(--primary); }
-        #loginModal .login-box .divider { width:60px; height:3px; background:var(--primary); margin:8px auto 14px; border-radius:4px; }
-        #loginModal h2 { margin-bottom:4px; font-size:1.3rem; color:#0f172a; }
-        #loginModal p { color:#64748b; margin-bottom:18px; font-size:0.9rem; }
+        #loginModal .login-box { background:var(--white); padding:30px 32px; border-radius:24px; max-width:420px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.3); animation:fadeIn 0.3s ease; text-align:center; }
+        #loginModal .login-box .hospital-logo { margin-bottom:12px; }
+        #loginModal .login-box .hospital-logo img { max-width:180px; height:auto; border-radius:8px; background:var(--white); padding:4px; box-shadow:0 2px 8px rgba(0,0,0,0.08); object-fit:contain; }
+        #loginModal .login-box .hospital-name { font-size:0.95rem; font-weight:700; color:#0f172a; line-height:1.2; }
+        #loginModal .login-box .hospital-sub { font-size:0.75rem; color:#64748b; margin-bottom:10px; font-weight:500; }
+        #loginModal .login-box .divider { width:50px; height:3px; background:var(--primary); margin:8px auto 14px; border-radius:4px; }
+        #loginModal h2 { margin-bottom:4px; font-size:1.15rem; color:#0f172a; line-height:1.3; }
+        #loginModal p { color:#64748b; margin-bottom:16px; font-size:0.85rem; }
         #loginModal label { display:block; font-weight:600; margin:10px 0 4px; font-size:0.8rem; text-align:left; color:#334155; }
-        #loginModal input { width:100%; padding:12px 14px; border:2px solid #d1d5db; border-radius:10px; font-size:0.95rem; transition:var(--transition); }
+        #loginModal input { width:100%; padding:12px 14px; border:2px solid #d1d5db; border-radius:10px; font-size:0.95rem; transition:var(--transition); background:#fff; }
         #loginModal input:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(79,70,229,0.15); }
         #loginModal .btn { width:100%; margin-top:16px; padding:12px; font-size:1rem; border-radius:10px; }
         .login-error { color:var(--danger); font-size:0.85rem; margin-top:8px; display:none; text-align:center; }
@@ -349,17 +348,17 @@
     <div id="loginModal">
         <div class="login-box">
             <div class="hospital-logo">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='60' viewBox='0 0 200 60'%3E%3Crect width='200' height='60' fill='%230f172a' rx='8'/%3E%3Ctext x='100' y='35' font-family='Arial' font-size='18' fill='white' text-anchor='middle' font-weight='bold'%3EHospital San Juan de Dios%3C/text%3E%3Ctext x='100' y='52' font-family='Arial' font-size='10' fill='%2360a5fa' text-anchor='middle'%3E%22El Primero de Chile%22%3C/text%3E%3C/svg%3E" alt="Hospital San Juan de Dios - CDT">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='100' viewBox='0 0 300 100'%3E%3Crect width='300' height='100' fill='white' rx='8'/%3E%3Cpath d='M70 30 h35 v12 h-20 v12 h18 v12 h-18 v14 h-15 z' fill='%23990000'/%3E%3Ccircle cx='87' cy='22' r='8' fill='%23990000'/%3E%3Cpath d='M110 20 h30 a25 25 0 0 1 0 50 h-30 z' fill='%230f4c5c'/%3E%3Ctext x='150' y='72' font-family='Arial' font-size='10' fill='%23333' text-anchor='middle' font-weight='bold'%3EHospital San Juan de Dios - CDT%3C/text%3E%3Ctext x='150' y='84' font-family='Arial' font-size='9' fill='%23666' text-anchor='middle'%3EAsistencial Docente%3C/text%3E%3Ctext x='150' y='94' font-family='Arial' font-size='7' fill='%230f4c5c' text-anchor='middle' font-style='italic'%3E%22El Primero de Chile%22%3C/text%3E%3C/svg%3E" alt="Hospital San Juan de Dios - CDT Asistencial Docente">
             </div>
-            <div class="hospital-name">Hospital San Juan de Dios</div>
-            <div class="hospital-sub"><span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
+            <div class="hospital-name">Hospital San Juan de Dios - CDT Asistencial Docente</div>
+            <div class="hospital-sub">"El Primero de Chile"</div>
             <div class="divider"></div>
-            <h2>Automatización Almacenamiento  Unidad de Bodega de Abastecimiento</h2>
+            <h2>Automatización Almacenamiento<br>"Diseñado por Mauricio Quiroz Ayala"<br>Bodega de Abastecimiento</h2>
             <p>Ingresa tus credenciales para acceder al sistema.</p>
             <label>Usuario</label>
-            <input type="text" id="loginUser" placeholder="Ej: admin" value="admin">
+            <input type="text" id="loginUser" placeholder="Ingresa tu usuario" value="">
             <label>Contraseña</label>
-            <input type="password" id="loginPass" placeholder="••••••••" value="admin" onkeydown="if(event.key==='Enter') handleLogin()">
+            <input type="password" id="loginPass" placeholder="••••••••" value="" onkeydown="if(event.key==='Enter') handleLogin()">
             <div id="loginError" class="login-error">Usuario o contraseña incorrectos.</div>
             <button class="btn btn-primary" onclick="handleLogin()">Ingresar</button>
         </div>
@@ -491,7 +490,6 @@
             <h3 style="font-size:0.95rem; margin-bottom:8px;">🗺️ Plano de la bodega</h3>
             <p style="color:#64748b; margin-bottom:10px; font-size:0.8rem;">Visualiza la distribución de las zonas en tu bodega.</p>
 
-            <!-- Imagen del layout por bodega -->
             <div class="layout-image-container" id="layoutImageContainer">
                 <div id="layoutImageContent">
                     <span class="no-image">📷 No hay imagen cargada para esta bodega</span>
@@ -923,7 +921,7 @@
         }
 
         // ============================================================
-        //  BROADCAST CHANNEL + POLLING
+        //  BROADCAST CHANNEL + POLLING (TIEMPO REAL MULTIUSER)
         // ============================================================
         function initBroadcastChannel() {
             try {
@@ -1020,12 +1018,6 @@
 
             const perfil = user.perfil;
 
-            // Elementos de la interfaz según requerimiento:
-            // - Invitado: Solo navegación/visualización
-            // - Operario: Lectura y edición (mover, actualizar), sin carga/descarga
-            // - Supervisor: Todo menos crear bodegas y perfiles
-            // - Admin: Todos los perfiles y permisos completos
-
             const btnCargar = document.getElementById('btnCargarArchivo');
             const btnExportar = document.getElementById('btnExportarArchivo');
             const btnExportarSelec = document.getElementById('btnExportarSelec');
@@ -1043,7 +1035,7 @@
             if (perfil === 'invitado') {
                 if (btnCargar) btnCargar.style.display = 'none';
                 if (btnExportar) btnExportar.style.display = 'none';
-                if (btnExportarSelec) btnExportar.style.display = 'none';
+                if (btnExportarSelec) btnExportarSelec.style.display = 'none';
                 if (btnToggleEdit) btnToggleEdit.style.display = 'none';
                 if (btnRecepcionAlmacenar) btnRecepcionAlmacenar.style.display = 'none';
                 if (btnEliminarSelec) btnEliminarSelec.style.display = 'none';
@@ -1054,7 +1046,7 @@
             } else if (perfil === 'operario') {
                 if (btnCargar) btnCargar.style.display = 'none';
                 if (btnExportar) btnExportar.style.display = 'none';
-                if (btnExportarSelec) btnExportar.style.display = 'none';
+                if (btnExportarSelec) btnExportarSelec.style.display = 'none';
                 if (navUsuarios) navUsuarios.style.display = 'none';
                 if (navBodegas) navBodegas.style.display = 'inline-flex';
                 if (btnNuevaBodega) btnNuevaBodega.style.display = 'none';
@@ -1063,17 +1055,17 @@
             } else if (perfil === 'supervisor') {
                 if (btnCargar) btnCargar.style.display = 'inline-flex';
                 if (btnExportar) btnExportar.style.display = 'inline-flex';
-                if (btnExportarSelec) btnExportar.style.display = 'inline-flex';
+                if (btnExportarSelec) btnExportarSelec.style.display = 'inline-flex';
                 if (navUsuarios) navUsuarios.style.display = 'inline-flex';
                 if (navBodegas) navBodegas.style.display = 'inline-flex';
-                if (btnNuevoUsuario) btnNuevoUsuario.style.display = 'none'; // Supervisor no crea usuarios ni perfiles
-                if (btnNuevaBodega) btnNuevaBodega.style.display = 'none'; // Supervisor no crea bodegas
+                if (btnNuevoUsuario) btnNuevoUsuario.style.display = 'none';
+                if (btnNuevaBodega) btnNuevaBodega.style.display = 'none';
                 if (btnClearHistorial) btnClearHistorial.style.display = 'none';
                 if (configAdminButtons) configAdminButtons.style.display = 'flex';
             } else if (perfil === 'admin') {
                 if (btnCargar) btnCargar.style.display = 'inline-flex';
                 if (btnExportar) btnExportar.style.display = 'inline-flex';
-                if (btnExportarSelec) btnExportar.style.display = 'inline-flex';
+                if (btnExportarSelec) btnExportarSelec.style.display = 'inline-flex';
                 if (btnToggleEdit) btnToggleEdit.style.display = 'inline-flex';
                 if (btnRecepcionAlmacenar) btnRecepcionAlmacenar.style.display = 'inline-flex';
                 if (btnEliminarSelec) btnEliminarSelec.style.display = 'inline-flex';
@@ -1122,6 +1114,7 @@
             localStorage.removeItem(STORAGE_KEY_SESSION);
             document.getElementById('app').style.display = 'none';
             document.getElementById('loginModal').style.display = 'flex';
+            document.getElementById('loginUser').value = '';
             document.getElementById('loginPass').value = '';
             document.getElementById('loginError').style.display = 'none';
             if (broadcastChannel) { try { broadcastChannel.close(); } catch(e) {} broadcastChannel = null; }
@@ -1498,7 +1491,7 @@
 
             const bodegaId = currentWarehouse;
             if (bodegaId === 'TODAS') {
-                swal ? alert('Selecciona una bodega específica') : mostrarToast('⚠️ Selecciona una bodega específica para subir su imagen', 'warning');
+                mostrarToast('⚠️ Selecciona una bodega específica para subir su imagen', 'warning');
                 event.target.value = '';
                 return;
             }
@@ -1706,7 +1699,7 @@
                 <tr class="${isEditing ? 'row-editing' : ''}" data-codigo="${p.codigo}">
                     <td>
                         <input type="checkbox" class="row-selector" data-codigo="${p.codigo}"
-                               ${isSelected ? 'checked' : ''} onchange="toggleRowSelection('${p.codigo}')" ${esInvitado ? 'disabled' : ''}>
+                               ${isSelected ? 'checked' : ''} onchange="toggleSelectAllRow('${p.codigo}')" ${esInvitado ? 'disabled' : ''}>
                     </td>
                     <td>
                         ${showInlineEdit ?
@@ -2030,7 +2023,7 @@
         // ============================================================
         //  SELECCIÓN MÚLTIPLE
         // ============================================================
-        function toggleRowSelection(codigo) {
+        function toggleSelectAllRow(codigo) {
             if (selectedRows.has(codigo)) {
                 selectedRows.delete(codigo);
             } else {
@@ -2041,18 +2034,20 @@
 
         function toggleSelectAll() {
             const checked = document.getElementById('selectAll').checked;
-            const products = getProducts();
-            if (checked) {
-                products.forEach(p => selectedRows.add(p.codigo));
-            } else {
-                selectedRows.clear();
-            }
-            renderInventarioUnificado();
+            getProducts().then(products => {
+                if (checked) {
+                    products.forEach(p => selectedRows.add(p.codigo));
+                } else {
+                    selectedRows.clear();
+                }
+                renderInventarioUnificado();
+            });
         }
 
         function deseleccionarTodos() {
             selectedRows.clear();
-            document.getElementById('selectAll').checked = false;
+            const selectAllEl = document.getElementById('selectAll');
+            if (selectAllEl) selectAllEl.checked = false;
             renderInventarioUnificado();
         }
 
