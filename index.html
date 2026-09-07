@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Automatización Almacenamiento - Bodega Central</title>
-    <script src="https://unpkg.com/html5-qrcode"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.2/umd/index.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.1/umd/index.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root {
@@ -24,235 +21,112 @@
             --orange: #ea580c;
             --orange-hover: #c2410c;
             --gray: #6b7280;
-            --gray-hover: #4b5563;
             --white: #ffffff;
             --shadow: 0 1px 3px rgba(0,0,0,0.1);
             --shadow-lg: 0 10px 30px rgba(0,0,0,0.15);
             --radius: 12px;
             --radius-sm: 8px;
-            --transition: all 0.25s ease;
+            --transition: all 0.2s ease;
         }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', system-ui, sans-serif; }
-        body { background:#f1f5f9; color:#1e293b; padding:12px; min-height:100vh; display:flex; align-items:flex-start; justify-content:center; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background:#f1f5f9; color:#1e293b; padding:8px; min-height:100vh; display:flex; align-items:flex-start; justify-content:center; }
         .app { max-width:1400px; margin:0 auto; background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow-lg); overflow:hidden; width:100%; }
 
         /* LOGIN */
         #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:16px; }
-        #loginModal .login-box { background:var(--white); padding:30px 32px; border-radius:24px; max-width:420px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.3); animation:fadeIn 0.3s ease; text-align:center; }
-        #loginModal .login-box .hospital-logo { margin-bottom:12px; }
-        #loginModal .login-box .hospital-logo img { max-width:180px; height:auto; border-radius:8px; background:var(--white); padding:4px; box-shadow:0 2px 8px rgba(0,0,0,0.08); object-fit:contain; }
-        #loginModal .login-box .hospital-name { font-size:0.95rem; font-weight:700; color:#0f172a; line-height:1.2; }
-        #loginModal .login-box .hospital-sub { font-size:0.75rem; color:#64748b; margin-bottom:10px; font-weight:500; }
-        #loginModal .login-box .divider { width:50px; height:3px; background:var(--primary); margin:8px auto 14px; border-radius:4px; }
-        #loginModal h2 { margin-bottom:4px; font-size:1.15rem; color:#0f172a; line-height:1.3; }
-        #loginModal p { color:#64748b; margin-bottom:16px; font-size:0.85rem; }
-        #loginModal label { display:block; font-weight:600; margin:10px 0 4px; font-size:0.8rem; text-align:left; color:#334155; }
-        #loginModal input { width:100%; padding:12px 14px; border:2px solid #d1d5db; border-radius:10px; font-size:0.95rem; transition:var(--transition); background:#fff; }
-        #loginModal input:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(79,70,229,0.15); }
-        #loginModal .btn { width:100%; margin-top:16px; padding:12px; font-size:1rem; border-radius:10px; }
-        .login-error { color:var(--danger); font-size:0.85rem; margin-top:8px; display:none; text-align:center; }
-        @keyframes fadeIn { from { opacity:0.4; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        #loginModal .login-box { background:var(--white); padding:24px; border-radius:20px; max-width:380px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.3); text-align:center; }
+        #loginModal .login-box img { max-width:160px; height:auto; margin-bottom:10px; }
+        #loginModal h2 { font-size:1.1rem; color:#0f172a; margin-bottom:12px; }
+        #loginModal label { display:block; font-weight:600; margin:8px 0 4px; font-size:0.8rem; text-align:left; color:#334155; }
+        #loginModal input { width:100%; padding:10px 12px; border:2px solid #d1d5db; border-radius:8px; font-size:0.9rem; background:#fff; }
+        #loginModal input:focus { outline:none; border-color:var(--primary); }
+        #loginModal .btn { width:100%; margin-top:14px; padding:10px; font-size:0.95rem; border-radius:8px; }
+        .login-error { color:var(--danger); font-size:0.8rem; margin-top:6px; display:none; }
 
-        /* HEADER */
-        header { background: #0f172a; color: var(--white); padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
-        header .header-left { display:flex; align-items:center; gap:10px; }
-        header .header-left .header-title { font-weight:700; font-size:0.95rem; color:var(--white); letter-spacing:-0.2px; }
-        header .header-left .header-sub { font-size:0.55rem; color:#94a3b8; font-weight:400; }
+        /* HEADER RESPONSIVE */
+        header { background: #0f172a; color: var(--white); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        header .header-left .header-title { font-weight:700; font-size:0.9rem; color:var(--white); }
+        header .header-left .header-sub { font-size:0.5rem; color:#94a3b8; }
         header .header-left .header-sub span { color:#60a5fa; }
         header .user-info { display:flex; align-items:center; gap:6px; font-size:0.7rem; flex-wrap:wrap; }
-        header .user-info select { padding:4px 8px; border-radius:6px; border:none; background:#1e293b; color:var(--white); font-weight:500; cursor:pointer; font-size:0.65rem; }
-        header .user-info .btn { background:#334155; color:var(--white); border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-weight:500; transition:var(--transition); font-size:0.65rem; display:inline-flex; align-items:center; gap:4px; }
-        header .user-info .btn:hover { background:#475569; }
-        header .user-info .btn-success { background:var(--success); }
-        header .user-info .btn-success:hover { background:var(--success-hover); }
-        header .user-info .btn-warning { background:var(--warning); color:var(--white); }
-        header .user-info .btn-warning:hover { background:var(--warning-hover); }
-        header .user-info .btn-purple { background:var(--purple); }
-        header .user-info .btn-purple:hover { background:var(--purple-hover); }
-        header .user-info .user-name { color:#94a3b8; font-size:0.65rem; }
-        header .user-info .online-indicator { display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e; margin-right:4px; animation:pulse 1.5s ease-in-out infinite; }
-        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
-
-        /* NAV */
-        nav { display:flex; background:#f8fafc; border-bottom:1px solid #e2e8f0; flex-wrap:nowrap; overflow-x:auto; padding:0 6px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
-        nav::-webkit-scrollbar { display:none; }
-        nav button { background:transparent; border:none; padding:10px 12px; font-weight:600; font-size:0.7rem; color:#64748b; cursor:pointer; transition:var(--transition); border-bottom:3px solid transparent; flex:0 0 auto; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; }
-        nav button .nav-icon { font-size:0.9rem; }
-        nav button:hover { color:#0f172a; background:#f1f5f9; }
-        nav button.active { color:var(--primary); border-bottom-color:var(--primary); }
-        nav button .badge-nav { background:var(--primary); color:var(--white); font-size:0.5rem; padding:1px 6px; border-radius:10px; margin-left:4px; }
+        header .user-info select { padding:6px; border-radius:6px; border:none; background:#1e293b; color:var(--white); font-weight:500; font-size:0.7rem; }
+        
+        /* NAV TACTIL FLUIDO */
+        nav { display:flex; background:#f8fafc; border-bottom:1px solid #e2e8f0; overflow-x:auto; -webkit-overflow-scrolling:touch; padding:4px; gap:4px; }
+        nav button { background:transparent; border:none; padding:10px 14px; font-weight:600; font-size:0.75rem; color:#64748b; cursor:pointer; border-bottom:3px solid transparent; flex:0 0 auto; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; min-height:44px; }
+        nav button.active { color:var(--primary); border-bottom-color:var(--primary); background:var(--white); border-radius:6px 6px 0 0; }
+        nav button .badge-nav { background:var(--primary); color:var(--white); font-size:0.55rem; padding:2px 6px; border-radius:10px; }
 
         /* TABS */
-        .tab-content { display:none; padding:14px; animation:fadeIn 0.3s ease; }
+        .tab-content { display:none; padding:12px; }
         .tab-content.active { display:block; }
 
         /* CARDS */
-        .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(100px,1fr)); gap:10px; margin-bottom:14px; }
-        .card { background:#f8fafc; padding:10px 14px; border-radius:var(--radius); text-align:center; border:1px solid #e2e8f0; transition:var(--transition); }
-        .card:hover { transform:translateY(-2px); box-shadow:var(--shadow); }
-        .card .number { font-size:1.6rem; font-weight:700; color:#0f172a; }
-        .card .label { color:#64748b; font-size:0.65rem; margin-top:3px; }
-        .card .card-icon { font-size:1.3rem; display:block; margin-bottom:3px; }
+        .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px,1fr)); gap:8px; margin-bottom:12px; }
+        .card { background:#f8fafc; padding:10px; border-radius:var(--radius); text-align:center; border:1px solid #e2e8f0; }
+        .card .number { font-size:1.4rem; font-weight:700; color:#0f172a; }
+        .card .label { color:#64748b; font-size:0.6rem; margin-top:2px; }
+        .card .card-icon { font-size:1.2rem; display:block; margin-bottom:2px; }
 
-        /* TABLAS */
-        .table-wrap { overflow-x:auto; margin-top:10px; -webkit-overflow-scrolling:touch; }
-        .table-container { max-height:60vh; overflow:auto; border-radius:var(--radius); border:1px solid #e2e8f0; -webkit-overflow-scrolling:touch; }
-        table { width:100%; border-collapse:collapse; font-size:0.75rem; min-width:650px; }
-        th { background:#f1f5f9; text-align:left; padding:8px 10px; font-weight:600; color:#334155; white-space:nowrap; position:sticky; top:0; z-index:10; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.3px; }
-        td { padding:6px 8px; border-bottom:1px solid #e2e8f0; vertical-align:middle; }
+        /* TABLAS Y CONTENEDORES */
+        .table-wrap { overflow-x:auto; margin-top:8px; -webkit-overflow-scrolling:touch; }
+        .table-container { max-height:55vh; overflow:auto; border-radius:var(--radius); border:1px solid #e2e8f0; -webkit-overflow-scrolling:touch; background:white; }
+        table { width:100%; border-collapse:collapse; font-size:0.75rem; min-width:600px; }
+        th { background:#f1f5f9; text-align:left; padding:8px; font-weight:600; color:#334155; position:sticky; top:0; z-index:10; font-size:0.65rem; text-transform:uppercase; }
+        td { padding:8px; border-bottom:1px solid #e2e8f0; vertical-align:middle; }
         tr:hover td { background:#f8fafc; }
-        tr.row-editing td { background:var(--primary-light) !important; }
 
-        /* BADGES */
+        /* BADGES & TAGS */
         .badge { display:inline-block; padding:2px 8px; border-radius:50px; font-size:0.6rem; font-weight:600; }
         .badge-admin { background:#fee2e2; color:#b91c1c; }
-        .badge-supervisor { background:#fef3c7; color:#92400e; }
-        .badge-operario { background:#dbeafe; color:#1e40af; }
-        .badge-invitado { background:#f1f5f9; color:#475569; }
-        .badge-bodega { display:inline-block; padding:2px 8px; border-radius:6px; font-size:0.5rem; font-weight:700; color:var(--white); }
+        .badge-bodega { display:inline-block; padding:2px 8px; border-radius:6px; font-size:0.55rem; font-weight:700; color:var(--white); }
         .badge-farmacos { background:#2563eb; }
         .badge-insumos { background:var(--success); }
         .badge-economato { background:var(--warning); color:#0f172a; }
-        .badge-estado { display:inline-block; padding:2px 8px; border-radius:10px; font-size:0.5rem; font-weight:600; }
-        .badge-recepcion { background:#fef3c7; color:#92400e; }
-        .badge-almacenado { background:#dcfce7; color:#166534; }
-
-        .zone-tag { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.55rem; font-weight:700; }
-        .zone-tag-A { background:#dbeafe; color:#1e40af; }
-        .zone-tag-B { background:#dcfce7; color:#166534; }
-        .zone-tag-C { background:#fef3c7; color:#92400e; }
-        .zone-tag-D { background:#f3e8ff; color:#6b21a8; }
-        .zone-tag-E { background:#fce7f3; color:#9d174d; }
-        .zone-tag-F { background:#fecaca; color:#991b1b; }
-        .zone-tag-G { background:#cffafe; color:#0e7490; }
-        .zone-tag-H { background:#e0f2fe; color:#0369a1; }
-        .zone-tag-I { background:#fed7aa; color:#9a3412; }
-        .zone-tag-J { background:#e9d5ff; color:#5b21b6; }
+        .zone-tag { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.6rem; font-weight:700; background:#dbeafe; color:#1e40af; }
         .ubicacion-tag { font-family:monospace; font-size:0.65rem; background:#f1f5f9; padding:2px 6px; border-radius:4px; }
 
-        /* BOTONES */
-        .btn { padding:5px 12px; border:none; border-radius:var(--radius-sm); font-weight:600; font-size:0.7rem; cursor:pointer; transition:var(--transition); display:inline-flex; align-items:center; gap:5px; white-space:nowrap; text-decoration:none; color:var(--white); }
-        .btn .icon { font-size:0.8rem; line-height:1; }
+        /* BOTONES ADAPTADOS A TACTIL (Min 44px de altura para PDA/Celular) */
+        .btn { padding:8px 12px; border:none; border-radius:var(--radius-sm); font-weight:600; font-size:0.75rem; cursor:pointer; display:inline-flex; align-items:center; gap:5px; text-decoration:none; color:var(--white); min-height:38px; }
         .btn-primary { background:var(--primary); }
-        .btn-primary:hover { background:var(--primary-hover); transform:translateY(-1px); box-shadow:0 4px 12px rgba(79,70,229,0.3); }
         .btn-success { background:var(--success); }
-        .btn-success:hover { background:var(--success-hover); transform:translateY(-1px); box-shadow:0 4px 12px rgba(5,150,105,0.3); }
-        .btn-warning { background:var(--warning); }
-        .btn-warning:hover { background:var(--warning-hover); transform:translateY(-1px); box-shadow:0 4px 12px rgba(217,119,6,0.3); }
+        .btn-warning { background:var(--warning); color:var(--white); }
         .btn-danger { background:var(--danger); }
-        .btn-danger:hover { background:var(--danger-hover); transform:translateY(-1px); box-shadow:0 4px 12px rgba(220,38,38,0.3); }
         .btn-purple { background:var(--purple); }
-        .btn-purple:hover { background:var(--purple-hover); transform:translateY(-1px); box-shadow:0 4px 12px rgba(124,58,237,0.3); }
         .btn-orange { background:var(--orange); }
-        .btn-orange:hover { background:var(--orange-hover); transform:translateY(-1px); box-shadow:0 4px 12px rgba(234,88,12,0.3); }
         .btn-outline { background:transparent; border:2px solid var(--gray); color:var(--gray); }
-        .btn-outline:hover { background:var(--gray); color:var(--white); transform:translateY(-1px); }
-        .btn-sm { padding:3px 8px; font-size:0.6rem; }
-        .btn-sm .icon { font-size:0.7rem; }
-        .btn-xs { padding:2px 6px; font-size:0.5rem; }
-        .btn-xs .icon { font-size:0.6rem; }
+        .btn-sm { padding:6px 10px; font-size:0.65rem; min-height:32px; }
 
         /* TOOLBAR */
-        .toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:10px 14px; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; margin-bottom:10px; }
+        .toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:8px 12px; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; margin-bottom:8px; }
         .toolbar-left, .toolbar-right { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
-        .toolbar .search-input { position:relative; }
-        .toolbar .search-input input { padding:6px 10px 6px 30px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.8rem; min-width:150px; transition:var(--transition); background:var(--white); }
-        .toolbar .search-input input:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(79,70,229,0.15); }
-        .toolbar .search-input .search-icon { position:absolute; left:8px; top:50%; transform:translateY(-50%); color:#94a3b8; font-size:0.8rem; }
-        .filter-select { padding:6px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.75rem; background:var(--white); cursor:pointer; transition:var(--transition); min-width:80px; }
-        .filter-select:focus { outline:none; border-color:var(--primary); }
-
-        /* ACCIONES EN FILAS */
-        .actions-cell { display:flex; gap:3px; flex-wrap:wrap; min-width:100px; }
-
-        /* EDICIÓN INLINE */
-        .edit-field { border:2px solid transparent; border-radius:4px; padding:3px 6px; background:transparent; transition:var(--transition); width:100%; font-size:0.7rem; font-family:inherit; color:inherit; }
-        .edit-field:hover { background:#f1f5f9; }
-        .edit-field:focus { border-color:var(--primary); background:var(--white); outline:none; box-shadow:0 0 0 3px rgba(79,70,229,0.1); }
-        .edit-field-select { padding:3px 6px; border:2px solid transparent; border-radius:4px; font-size:0.7rem; background:transparent; transition:var(--transition); width:100%; }
-        .edit-field-select:focus { border-color:var(--primary); background:var(--white); outline:none; box-shadow:0 0 0 3px rgba(79,70,229,0.1); }
+        .toolbar input { padding:8px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.8rem; background:white; }
+        .filter-select { padding:8px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.75rem; background:white; }
 
         /* MODAL */
-        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.5); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:1500; padding:16px; }
+        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:1500; padding:12px; }
         .modal.active { display:flex; }
-        .modal-content { background:var(--white); border-radius:20px; padding:20px; max-width:600px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); animation:fadeIn 0.25s ease; }
-        .modal-content h3 { margin-bottom:10px; font-size:1rem; display:flex; align-items:center; gap:8px; }
-        .modal-content .flex { margin-top:14px; justify-content:flex-end; gap:8px; }
-        .modal-content label { display:block; margin:8px 0 3px; font-weight:600; font-size:0.75rem; color:#475569; }
-        .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:8px 12px; border:2px solid #d1d5db; border-radius:8px; font-size:0.85rem; transition:var(--transition); font-family:inherit; }
-        .modal-content input:focus, .modal-content select:focus, .modal-content textarea:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(79,70,229,0.15); }
-        .modal-content .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-        .modal-content .form-grid .full-width { grid-column:1/-1; }
-        .modal-content .image-preview { max-width:100%; max-height:300px; border-radius:8px; border:1px solid #e2e8f0; margin-top:8px; object-fit:contain; }
+        .modal-content { background:var(--white); border-radius:16px; padding:16px; max-width:550px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 40px rgba(0,0,0,0.3); }
+        .modal-content label { display:block; margin:6px 0 2px; font-weight:600; font-size:0.75rem; color:#475569; }
+        .modal-content input, .modal-content select { width:100%; padding:8px; border:2px solid #d1d5db; border-radius:6px; font-size:0.85rem; }
+        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+        .form-grid .full-width { grid-column:1/-1; }
 
-        /* LAYOUT */
-        .layout-container { width:100%; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; overflow:hidden; padding:16px; }
-        .layout-grid { display:grid; grid-template-columns:repeat(10,1fr); gap:4px; min-height:500px; background:#f1f5f9; border-radius:8px; padding:4px; position:relative; }
-        .layout-cell { background:rgba(255,255,255,0.7); border-radius:4px; border:1px solid rgba(0,0,0,0.05); display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:0.5rem; font-weight:600; color:#1e293b; min-height:45px; text-align:center; padding:2px; transition:var(--transition); position:relative; }
-        .layout-cell .cell-zone { font-size:0.65rem; font-weight:800; }
-        .layout-cell .cell-level { font-size:0.45rem; opacity:0.7; font-weight:400; }
-        .layout-cell .cell-label { font-size:0.4rem; opacity:0.6; font-weight:400; line-height:1.1; }
-        .layout-cell.zone-a { background:rgba(37,99,235,0.25); border-color:rgba(37,99,235,0.3); }
-        .layout-cell.zone-b { background:rgba(22,163,74,0.25); border-color:rgba(22,163,74,0.3); }
-        .layout-cell.zone-c { background:rgba(245,158,11,0.25); border-color:rgba(245,158,11,0.3); }
-        .layout-cell.zone-d { background:rgba(168,85,247,0.25); border-color:rgba(168,85,247,0.3); }
-        .layout-cell.zone-e { background:rgba(236,72,153,0.25); border-color:rgba(236,72,153,0.3); }
-        .layout-cell.zone-f { background:rgba(244,63,94,0.25); border-color:rgba(244,63,94,0.3); }
-        .layout-cell.zone-g { background:rgba(6,182,212,0.25); border-color:rgba(6,182,212,0.3); }
-        .layout-cell.zone-h { background:rgba(59,130,246,0.25); border-color:rgba(59,130,246,0.3); }
-        .layout-cell.zone-i { background:rgba(251,146,60,0.25); border-color:rgba(251,146,60,0.3); }
-        .layout-cell.zone-j { background:rgba(139,92,246,0.25); border-color:rgba(139,92,246,0.3); }
-        .layout-cell.office { background:rgba(148,163,184,0.2); border-color:rgba(148,163,184,0.2); color:#475569; }
-        .layout-cell.despacho { background:rgba(251,191,36,0.2); border-color:rgba(251,191,36,0.25); color:#92400e; }
-        .layout-cell.ocupado { background:rgba(22,163,74,0.15) !important; border-color:rgba(22,163,74,0.3) !important; }
-        .layout-cell.ocupado::after { content:'●'; position:absolute; top:2px; right:4px; font-size:0.4rem; color:#22c55e; }
-        .layout-legend { display:flex; flex-wrap:wrap; gap:12px; margin:12px 0 8px; padding:10px 14px; background:var(--white); border-radius:var(--radius-sm); border:1px solid #e2e8f0; font-size:0.6rem; align-items:center; }
-        .layout-legend .legend-item { display:flex; align-items:center; gap:5px; }
-        .layout-legend .color-box { width:14px; height:14px; border-radius:3px; border:1px solid rgba(0,0,0,0.1); }
-        .layout-legend .dot { width:8px; height:8px; border-radius:50%; background:#22c55e; display:inline-block; }
-
-        /* LAYOUT IMAGEN */
-        .layout-image-container { width:100%; margin-top:10px; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; overflow:hidden; padding:12px; text-align:center; min-height:100px; display:flex; align-items:center; justify-content:center; flex-direction:column; }
-        .layout-image-container img { max-width:100%; max-height:500px; border-radius:8px; object-fit:contain; }
-        .layout-image-container .no-image { color:#94a3b8; font-size:0.85rem; }
+        /* LAYOUT RESPONSIVE */
+        .layout-container { width:100%; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; padding:12px; overflow-x:auto; }
+        .layout-grid { display:grid; grid-template-columns:repeat(10, minmax(35px, 1fr)); gap:3px; min-width:380px; }
+        .layout-cell { background:rgba(255,255,255,0.8); border-radius:3px; border:1px solid rgba(0,0,0,0.1); display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:0.5rem; font-weight:600; min-height:40px; text-align:center; padding:2px; }
+        .layout-cell.ocupado { background:rgba(22,163,74,0.2) !important; border-color:rgba(22,163,74,0.4); }
 
         /* TOAST */
-        .toast-container { position:fixed; bottom:16px; right:16px; z-index:9999; display:flex; flex-direction:column; gap:6px; max-width:300px; width:100%; }
-        .toast { background:#0f172a; color:var(--white); padding:10px 14px; border-radius:var(--radius); font-size:0.8rem; animation:slideIn 0.3s ease; box-shadow:0 4px 12px rgba(0,0,0,0.2); border-left:4px solid var(--primary); display:flex; align-items:center; gap:8px; }
-        .toast .toast-icon { font-size:1rem; }
-        .toast.success { border-left-color:var(--success); }
-        .toast.warning { border-left-color:var(--warning); }
-        .toast.error { border-left-color:var(--danger); }
-        .toast.info { border-left-color:var(--primary); }
-        @keyframes slideIn { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:translateX(0); } }
-        .toast-close { background:none; border:none; color:#94a3b8; cursor:pointer; font-size:1rem; margin-left:auto; padding:0 4px; }
-        .toast-close:hover { color:var(--white); }
+        .toast-container { position:fixed; bottom:12px; right:12px; z-index:9999; display:flex; flex-direction:column; gap:6px; max-width:280px; width:100%; }
+        .toast { background:#0f172a; color:var(--white); padding:10px 12px; border-radius:8px; font-size:0.75rem; border-left:4px solid var(--primary); box-shadow:0 4px 12px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:space-between; }
+        .empty-state { color:#94a3b8; text-align:center; padding:24px; font-size:0.8rem; }
 
-        /* BULK ACTIONS */
-        #bulkActions { display:none; padding:6px 12px; background:var(--primary-light); border-radius:var(--radius-sm); margin-bottom:8px; align-items:center; gap:8px; flex-wrap:wrap; }
-        #bulkActions .selected-count { font-weight:600; font-size:0.8rem; }
-
-        .empty-state { color:#94a3b8; text-align:center; padding:30px 16px; font-size:0.85rem; }
-        .empty-state .empty-icon { font-size:2.5rem; display:block; margin-bottom:10px; }
-
-        /* QR GRID para ubicaciones */
-        .qr-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:10px; }
-        .qr-card { border:2px solid #e2e8f0; border-radius:8px; padding:8px; text-align:center; background:white; }
-        .qr-card .qr-code { font-weight:700; font-size:0.8rem; margin-top:4px; }
-        .qr-card .qr-ubicacion { font-size:0.6rem; color:#64748b; }
-
-        /* BODEGAS */
-        .bodega-color { display:inline-block; width:16px; height:16px; border-radius:4px; border:1px solid rgba(0,0,0,0.1); vertical-align:middle; margin-right:4px; }
-
-        @media print {
-            body { background:white; padding:0; }
-            .app { box-shadow:none; border-radius:0; }
-            header, nav, .toolbar, .btn, .no-print { display:none !important; }
-            .tab-content { display:block !important; padding:8px; }
-            .table-container { max-height:none; overflow:visible; }
-            .qr-grid { page-break-inside:avoid; }
-            .qr-card { break-inside:avoid; border:1px solid #ddd; }
-            .layout-grid { break-inside:avoid; }
+        @media (max-width: 600px) {
+            header { flex-direction:column; align-items:stretch; }
+            header .user-info { justify-content:space-between; }
+            .form-grid { grid-template-columns:1fr; }
         }
     </style>
 </head>
@@ -260,76 +134,55 @@
     <!-- LOGIN -->
     <div id="loginModal">
         <div class="login-box">
-            <div class="hospital-logo">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='100' viewBox='0 0 300 100'%3E%3Crect width='300' height='100' fill='white' rx='8'/%3E%3Cpath d='M70 30 h35 v12 h-20 v12 h18 v12 h-18 v14 h-15 z' fill='%23990000'/%3E%3Ccircle cx='87' cy='22' r='8' fill='%23990000'/%3E%3Cpath d='M110 20 h30 a25 25 0 0 1 0 50 h-30 z' fill='%230f4c5c'/%3E%3Ctext x='150' y='72' font-family='Arial' font-size='10' fill='%23333' text-anchor='middle' font-weight='bold'%3EHospital San Juan de Dios - CDT%3C/text%3E%3Ctext x='150' y='84' font-family='Arial' font-size='9' fill='%23666' text-anchor='middle'%3EAsistencial Docente%3C/text%3E%3Ctext x='150' y='94' font-family='Arial' font-size='7' fill='%230f4c5c' text-anchor='middle' font-style='italic'%3E%22El Primero de Chile%22%3C/text%3E%3C/svg%3E" alt="Hospital San Juan de Dios - CDT Asistencial Docente">
-            </div>
-            <div class="hospital-name">Hospital San Juan de Dios - CDT Asistencial Docente</div>
-            <div class="hospital-sub">"El Primero de Chile"</div>
-            <div class="divider"></div>
-            <h2>Automatización Almacenamiento<br><span style="font-size:0.9rem; color:var(--primary); font-weight:600;">"Diseñado por Mauricio Quiroz Ayala"</span><br>Unidad de Bodega de Abastecimiento</h2>
-            <p>Ingresa tus credenciales para acceder al sistema.</p>
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='70' viewBox='0 0 300 100'%3E%3Crect width='300' height='100' fill='white' rx='8'/%3E%3Cpath d='M70 30 h35 v12 h-20 v12 h18 v12 h-18 v14 h-15 z' fill='%23990000'/%3E%3Ccircle cx='87' cy='22' r='8' fill='%23990000'/%3E%3Cpath d='M110 20 h30 a25 25 0 0 1 0 50 h-30 z' fill='%230f4c5c'/%3E%3Ctext x='150' y='72' font-family='Arial' font-size='10' fill='%23333' text-anchor='middle' font-weight='bold'%3EHospital San Juan de Dios - CDT%3C/text%3E%3C/svg%3E" alt="Hospital San Juan de Dios">
+            <h2>Bodega Central WMS</h2>
             <label>Usuario</label>
-            <input type="text" id="loginUser" placeholder="Ingresa tu usuario" value="">
+            <input type="text" id="loginUser" placeholder="Usuario">
             <label>Contraseña</label>
-            <input type="password" id="loginPass" placeholder="••••••••" value="" onkeydown="if(event.key==='Enter') handleLogin()">
-            <div id="loginError" class="login-error">Usuario o contraseña incorrectos.</div>
+            <input type="password" id="loginPass" placeholder="••••••••">
+            <div id="loginError" class="login-error">Credenciales incorrectas</div>
             <button class="btn btn-primary" onclick="handleLogin()">Ingresar</button>
         </div>
     </div>
 
     <!-- APP -->
     <div class="app" id="app" style="display:none;">
-        <!-- HEADER -->
         <header>
             <div class="header-left">
-                <div>
-                    <div class="header-title">Automatización Almacenamiento - Bodega Central</div>
-                    <div class="header-sub">Hospital San Juan de Dios · <span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
-                </div>
+                <div class="header-title">Automatización Almacenamiento</div>
+                <div class="header-sub">Hospital San Juan de Dios · <span>Mauricio Quiroz Ayala</span></div>
             </div>
             <div class="user-info">
-                <span class="online-indicator"></span>
-                <span class="user-name" id="currentUserDisplay">👤 Admin</span>
                 <select id="warehouseSelect" onchange="cambiarBodega()">
-                    <option value="TODAS">🏢 Todas</option>
+                    <option value="TODAS">🏢 Todas las Bodegas</option>
                 </select>
-                <button class="btn btn-success" id="btnCargarArchivo" onclick="document.getElementById('fileInput').click()">
-                    <span class="icon">📂</span> Cargar Archivo
+                <button class="btn btn-success btn-sm" onclick="document.getElementById('fileInput').click()">
+                    📂 Cargar Excel
                 </button>
                 <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event)">
-                <button class="btn btn-warning" id="btnExportarArchivo" onclick="exportarExcelCompleto()">
-                    <span class="icon">📤</span> Exportar Archivo
-                </button>
-                <button class="btn btn-purple" onclick="generarQRUbicaciones()">
-                    <span class="icon">📱</span> QR Ubicaciones
-                </button>
-                <button class="btn" onclick="logout()">
-                    <span class="icon">🚪</span>Salir
-                </button>
+                <button class="btn btn-warning btn-sm" onclick="exportarExcelCompleto()">📤 Exportar</button>
+                <button class="btn btn-danger btn-sm" onclick="logout()">Salir</button>
             </div>
         </header>
 
-        <!-- NAV -->
         <nav id="mainNav">
-            <button class="active" data-tab="dashboard"><span class="nav-icon">📊</span> Dashboard</button>
-            <button data-tab="inventario"><span class="nav-icon">📦</span> Inventario <span class="badge-nav" id="inventoryBadge">0</span></button>
-            <button data-tab="layout"><span class="nav-icon">🗺️</span> Layout</button>
-            <button data-tab="movimientos"><span class="nav-icon">🔄</span> Movimientos</button>
-            <button data-tab="usuarios" id="navUsuarios"><span class="nav-icon">👥</span> Usuarios</button>
-            <button data-tab="bodegas" id="navBodegas"><span class="nav-icon">🏢</span> Bodegas</button>
-            <button data-tab="config"><span class="nav-icon">⚙️</span> Config</button>
+            <button class="active" data-tab="dashboard">📊 Dashboard</button>
+            <button data-tab="inventario">📦 Inventario <span class="badge-nav" id="inventoryBadge">0</span></button>
+            <button data-tab="layout">🗺️ Layout</button>
+            <button data-tab="movimientos">🔄 Movimientos</button>
+            <button data-tab="usuarios">👥 Usuarios</button>
+            <button data-tab="config">⚙️ Config</button>
         </nav>
 
         <!-- DASHBOARD -->
         <div id="tab-dashboard" class="tab-content active">
             <div class="card-grid">
                 <div class="card"><span class="card-icon">📦</span><div class="number" id="totalProductos">0</div><div class="label">Total productos</div></div>
-                <div class="card"><span class="card-icon">📍</span><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones ocupadas</div></div>
-                <div class="card"><span class="card-icon">🔄</span><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos totales</div></div>
-                <div class="card"><span class="card-icon">👥</span><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios activos</div></div>
-                <div class="card"><span class="card-icon">🟢</span><div class="number" id="usuariosConectados">0</div><div class="label">Conectados ahora</div></div>
+                <div class="card"><span class="card-icon">📍</span><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones</div></div>
+                <div class="card"><span class="card-icon">🔄</span><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos</div></div>
+                <div class="card"><span class="card-icon">👥</span><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios</div></div>
             </div>
-            <h3 style="font-size:0.9rem; margin-bottom:6px;">📋 Últimos movimientos</h3>
+            <h3 style="font-size:0.85rem; margin-bottom:6px;">📋 Últimos Movimientos</h3>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>Fecha</th><th>Producto</th><th>Desde</th><th>Hacia</th><th>Usuario</th></tr></thead>
@@ -341,43 +194,22 @@
         <!-- INVENTARIO -->
         <div id="tab-inventario" class="tab-content">
             <div class="toolbar">
-                <div class="toolbar-left" id="toolbarLeftActions">
-                    <button class="btn btn-primary btn-sm" id="btnToggleEdit" onclick="toggleEditMode()">
-                        <span class="icon">✏️</span> <span id="editModeLabel">Editar</span>
-                    </button>
-                    <button class="btn btn-orange btn-sm" id="btnRecepcionAlmacenar" onclick="abrirModalAlmacenamiento()">
-                        <span class="icon">📥</span> Recepción → Almacenar
-                    </button>
-                    <button class="btn btn-warning btn-sm" id="btnExportarSelec" onclick="exportarSeleccionados()">
-                        <span class="icon">📥</span> Exportar
-                    </button>
+                <div class="toolbar-left">
+                    <button class="btn btn-orange btn-sm" onclick="abrirModalAlmacenamiento()">📥 Recepción → Almacenar</button>
                 </div>
                 <div class="toolbar-right">
-                    <div class="search-input">
-                        <span class="search-icon">🔍</span>
-                        <input type="text" id="searchInventarioUnificado" placeholder="Buscar..." oninput="renderInventarioUnificado()">
-                    </div>
+                    <input type="text" id="searchInventarioUnificado" placeholder="Buscar código o glosa..." oninput="renderInventarioUnificado()">
                     <select class="filter-select" id="filterZona" onchange="renderInventarioUnificado()">
-                        <option value="TODAS">🌐 Todas</option>
-                        <option value="A">A</option><option value="B">B</option><option value="C">C</option>
-                        <option value="D">D</option><option value="E">E</option><option value="F">F</option>
-                        <option value="G">G</option><option value="H">H</option><option value="I">I</option><option value="J">J</option>
+                        <option value="TODAS">🌐 Todas las Zonas</option>
+                        <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option>
+                        <option value="F">F</option><option value="G">G</option><option value="H">H</option><option value="I">I</option><option value="J">J</option>
                     </select>
                 </div>
             </div>
-
-            <div id="bulkActions">
-                <span class="selected-count" id="selectedCount">0 seleccionados</span>
-                <button class="btn btn-warning btn-sm" onclick="moverSeleccionados()"><span class="icon">🔄</span> Mover</button>
-                <button class="btn btn-danger btn-sm" id="btnEliminarSelec" onclick="eliminarSeleccionados()"><span class="icon">🗑️</span> Eliminar</button>
-                <button class="btn btn-outline btn-sm" onclick="deseleccionarTodos()"><span class="icon">✖️</span></button>
-            </div>
-
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
-                            <th style="width:25px;"><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"></th>
                             <th>Código</th>
                             <th>GTIN</th>
                             <th>Glosa</th>
@@ -385,63 +217,25 @@
                             <th>Ubicación</th>
                             <th>Zona</th>
                             <th>Estado</th>
-                            <th style="min-width:130px;">Acciones</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="inventarioUnificadoBody"></tbody>
                 </table>
             </div>
-
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-top:8px; padding:6px 12px; background:#f8fafc; border-radius:var(--radius-sm); border:1px solid #e2e8f0; font-size:0.7rem; color:#64748b;">
-                <span id="inventorySummary">0 productos</span>
-                <span id="editHintInfo">💡 Haz clic en <strong>Editar</strong> para modificar campos</span>
-            </div>
         </div>
 
         <!-- LAYOUT -->
         <div id="tab-layout" class="tab-content">
-            <h3 style="font-size:0.95rem; margin-bottom:8px;">🗺️ Plano de la bodega</h3>
-            <p style="color:#64748b; margin-bottom:10px; font-size:0.8rem;">Visualiza la distribución de las zonas en tu bodega.</p>
-
-            <div class="layout-image-container" id="layoutImageContainer">
-                <div id="layoutImageContent">
-                    <span class="no-image">📷 No hay imagen cargada para esta bodega</span>
-                </div>
-            </div>
-
+            <h3 style="font-size:0.9rem; margin-bottom:6px;">🗺️ Plano de Bodega</h3>
             <div class="layout-container">
                 <div class="layout-grid" id="layoutGrid"></div>
-            </div>
-
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:8px; margin-top:12px; padding:12px; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; font-size:0.65rem;">
-                <div><strong style="color:#1e40af;">Zona A:</strong> Palletizado Rack Doble Altura</div>
-                <div><strong style="color:#166534;">Zona B:</strong> Palletizado Rack Doble Altura</div>
-                <div><strong style="color:#92400e;">Zona C:</strong> Palletizado Pasillo</div>
-                <div><strong style="color:#6b21a8;">Zona D:</strong> Palletizado Estrecho</div>
-                <div><strong style="color:#9d174d;">Zona E:</strong> Palletizado Almacenamiento Selectivo</div>
-                <div><strong style="color:#991b1b;">Zona F:</strong> Anaqueles (PM, DAC, LRS, JARABES)</div>
-                <div><strong style="color:#0e7490;">Zona G:</strong> Full Space (Inyectables/Comprimidos)</div>
-                <div><strong style="color:#0369a1;">Zona H:</strong> Cámara de Frío</div>
-                <div><strong style="color:#9a3412;">Zona I:</strong> Palletizado Recepción (Inyectables/Insumos)</div>
-                <div><strong style="color:#5b21b6;">Zona J:</strong> Bodega Mezclas</div>
             </div>
         </div>
 
         <!-- MOVIMIENTOS -->
         <div id="tab-movimientos" class="tab-content">
-            <h3 style="font-size:0.9rem; margin-bottom:6px;">📜 Historial de cambios</h3>
-            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
-                <input type="text" id="filterHistorial" placeholder="🔍 Filtrar..." style="flex:1; min-width:120px; padding:6px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.8rem;" oninput="renderHistorialCompleto()">
-                <select id="filterHistorialAccion" onchange="renderHistorialCompleto()" style="padding:6px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.75rem; background:white; max-width:130px;">
-                    <option value="TODAS">📋 Todas</option>
-                    <option value="AGREGAR">➕ Agregar</option>
-                    <option value="EDITAR">✏️ Editar</option>
-                    <option value="ELIMINAR">🗑️ Eliminar</option>
-                    <option value="MOVIMIENTO">🔄 Movimiento</option>
-                    <option value="ALMACENAR">📥 Almacenar</option>
-                </select>
-                <button class="btn btn-danger btn-sm" id="btnClearHistorial" onclick="limpiarHistorialCompleto()"><span class="icon">🗑️</span> Limpiar</button>
-            </div>
+            <h3 style="font-size:0.9rem; margin-bottom:6px;">📜 Historial Completo</h3>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Producto</th><th>Detalle</th></tr></thead>
@@ -452,52 +246,21 @@
 
         <!-- USUARIOS -->
         <div id="tab-usuarios" class="tab-content">
-            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
-                <button class="btn btn-primary" id="btnNuevoUsuario" onclick="mostrarModalUsuario()"><span class="icon">➕</span> Nuevo usuario</button>
-                <button class="btn btn-outline" onclick="renderUsuarios()"><span class="icon">🔄</span> Actualizar</button>
-            </div>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>ID</th><th>Nombre</th><th>Perfil</th><th>Permisos</th><th>Última actividad</th><th>Acciones</th></tr></thead>
+                    <thead><tr><th>ID</th><th>Nombre</th><th>Perfil</th><th>Permisos</th></tr></thead>
                     <tbody id="usuariosBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- BODEGAS -->
-        <div id="tab-bodegas" class="tab-content">
-            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
-                <button class="btn btn-primary" id="btnNuevaBodega" onclick="mostrarModalBodega()"><span class="icon">➕</span> Nueva Bodega</button>
-                <button class="btn btn-outline" onclick="renderBodegas()"><span class="icon">🔄</span> Actualizar</button>
-            </div>
-            <div class="table-wrap">
-                <table>
-                    <thead><tr><th>ID</th><th>Nombre</th><th>Descripción</th><th>Zonas</th><th>Color</th><th>Acciones</th></tr></thead>
-                    <tbody id="bodegasBody"></tbody>
                 </table>
             </div>
         </div>
 
         <!-- CONFIG -->
         <div id="tab-config" class="tab-content">
-            <h3>⚙️ Configuración</h3>
-            <div style="max-width:600px;">
-                <div style="margin-bottom:10px;" id="configLayoutSection">
-                    <label style="font-weight:600; font-size:0.8rem; display:block; margin-bottom:4px;">
-                        <strong>📐 Sube la imagen del layout para la bodega seleccionada</strong>
-                    </label>
-                    <p style="font-size:0.7rem; color:#64748b; margin-bottom:6px;">
-                        Bodega actual: <strong id="configBodegaNombre">Todas</strong>
-                    </p>
-                    <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="width:100%; padding:6px; border:2px solid #d1d5db; border-radius:var(--radius-sm);">
-                    <p style="font-size:0.65rem; color:#64748b; margin-top:3px;">Sube una imagen del plano real para la bodega seleccionada.</p>
-                </div>
-                <div style="display:flex; gap:6px; flex-wrap:wrap;" id="configAdminButtons">
-                    <button class="btn btn-primary" onclick="resetData()"><span class="icon">🔄</span> Reiniciar</button>
-                    <button class="btn btn-warning" onclick="exportarDatos()"><span class="icon">📤</span> Exportar JSON</button>
-                    <button class="btn btn-success" onclick="document.getElementById('importFile').click()"><span class="icon">📥</span> Importar JSON</button>
-                    <input type="file" id="importFile" accept=".json" style="display:none" onchange="cargarImport(event)">
-                </div>
+            <h3>⚙️ Configuración del Sistema</h3>
+            <p style="font-size:0.75rem; color:#64748b; margin-top:6px;">Gestión de datos locales y respaldo offline optimizado.</p>
+            <div style="margin-top:12px; display:flex; gap:6px; flex-wrap:wrap;">
+                <button class="btn btn-warning btn-sm" onclick="exportarDatos()">📤 Exportar Backup JSON</button>
+                <button class="btn btn-danger btn-sm" onclick="resetData()">🔄 Reiniciar Base de Datos</button>
             </div>
         </div>
     </div>
@@ -505,1751 +268,349 @@
     <!-- MODAL -->
     <div class="modal" id="modal">
         <div class="modal-content">
-            <h3 id="modalTitle">📝 Título</h3>
+            <h3 id="modalTitle" style="font-size:0.95rem; margin-bottom:8px;">📝 Modal</h3>
             <div id="modalBody"></div>
-            <div class="flex">
-                <button class="btn btn-outline" onclick="cerrarModal()">Cancelar</button>
-                <button class="btn btn-primary" id="modalActionBtn" onclick="ejecutarModal()">Guardar</button>
+            <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:12px;">
+                <button class="btn btn-outline btn-sm" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn btn-primary btn-sm" id="modalActionBtn" onclick="ejecutarModal()">Guardar</button>
             </div>
         </div>
     </div>
 
-    <!-- TOAST -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBwOEE8j6KvPxeWA04Ydas_PqGj-5oi4nU",
-            authDomain: "wms-hsjd.firebaseapp.com",
-            projectId: "wms-hsjd",
-            storageBucket: "wms-hsjd.firebasestorage.app",
-            messagingSenderId: "1090634155119",
-            appId: "1:1090634155119:web:dd4bdcd2b313abffadb99a",
-            measurementId: "G-GZDZLVV9N1"
+    <script>
+        const STORAGE_KEY = 'wms_hsjd_data_v2';
+        
+        const DEFAULT_DATA = {
+            users: [
+                { id: 1, nombre: 'Admin', perfil: 'admin', password: 'admin', permisos: ['lectura','escritura','administracion','carga','descarga'] },
+                { id: 2, nombre: 'Operario', perfil: 'operario', password: '1234', permisos: ['lectura','escritura'] }
+            ],
+            warehouses: [
+                { id: 'Farmacos', nombre: 'Bodega de Fármacos', color: '#2563eb' },
+                { id: 'Insumos', nombre: 'Bodega de Insumos Clínicos', color: '#059669' },
+                { id: 'Economato', nombre: 'Bodega de Economato', color: '#d97706' }
+            ],
+            products: [
+                { codigo: '01-001-216-026', gtin: '7801234567890', glosa: 'METRONIDAZOL 500 MG/100 ML', bodega: 'Farmacos', ubicaciones: [{ ubicacion: 'PALLET_A_1', zona: 'A' }], estado: 'almacenado' }
+            ],
+            movements: [],
+            historial: []
         };
 
-        const app = initializeApp(firebaseConfig);
-        const cloudDB = getFirestore(app);
+        function getDB() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            if (!data) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DATA));
+                return DEFAULT_DATA;
+            }
+            try { return JSON.parse(data); } catch(e) { return DEFAULT_DATA; }
+        }
 
-        window.cloudDB = cloudDB;
-        window.firebaseMod = { collection, getDocs, getDoc, doc, setDoc, deleteDoc, addDoc };
-        
-        // Ajuste aplicado: Liberar hilo principal para que el navegador móvil no bloquee los clics
-        setTimeout(() => {
-            window.dispatchEvent(new Event('firebase-ready'));
-        }, 50);
-    </script>
+        function saveDB(db) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+        }
 
-    <script>
         let currentWarehouse = 'TODAS';
         let currentUserId = null;
-        let editMode = false;
-        let selectedRows = new Set();
-        let editingRows = new Set();
         let modalCallback = null;
 
-        const STORAGE_KEY_SESSION = 'wms_session_user';
-
-        const DEFAULT_WAREHOUSES = [
-            { id: 'Farmacos', nombre: 'Bodega de Fármacos', descripcion: 'Medicamentos y fármacos', zonas: ['A','B','C','D','E','F','G','H','I','J'], color: '#2563eb' },
-            { id: 'Insumos', nombre: 'Bodega de Insumos Clínicos', descripcion: 'Insumos médicos y clínicos', zonas: ['A','B','C','D','E','F','G','H','I','J'], color: '#059669' },
-            { id: 'Economato', nombre: 'Bodega de Economato', descripcion: 'Materiales y suministros generales', zonas: ['A','B','C','D','E','F','G','H','I','J'], color: '#d97706' }
-        ];
-
-        window.addEventListener('firebase-ready', async () => {
-            await initData();
-            await checkSession();
-
+        document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('nav button').forEach(btn => {
-                btn.addEventListener('click', async function() {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
                     const tabId = this.dataset.tab;
                     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-                    const tab = document.getElementById('tab-' + tabId);
-                    if (tab) tab.classList.add('active');
+                    
+                    const target = document.getElementById('tab-' + tabId);
+                    if (target) target.classList.add('active');
                     this.classList.add('active');
 
-                    if (tabId === 'inventario') await renderInventarioUnificado();
-                    if (tabId === 'layout') {
-                        renderLayoutVisual();
-                        await cargarImagenLayout(currentWarehouse);
-                    }
-                    if (tabId === 'movimientos') await renderHistorialCompleto();
-                    if (tabId === 'usuarios') await renderUsuarios();
-                    if (tabId === 'bodegas') await renderBodegas();
-                    if (tabId === 'config') await renderConfig();
+                    if (tabId === 'inventario') renderInventarioUnificado();
+                    if (tabId === 'layout') renderLayoutVisual();
+                    if (tabId === 'movimientos') renderHistorialCompleto();
+                    if (tabId === 'usuarios') renderUsuarios();
                 });
             });
 
-            document.getElementById('loginPass').addEventListener('keydown', async function(e) {
-                if (e.key === 'Enter') await handleLogin();
-            });
-            document.getElementById('loginUser').addEventListener('keydown', async function(e) {
-                if (e.key === 'Enter') await handleLogin();
-            });
-
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') cerrarModal();
-            });
-            document.getElementById('modal').addEventListener('click', function(e) {
-                if (e.target === this) cerrarModal();
-            });
-
-            if (await checkSession()) await renderAll();
-        });
-
-        async function initData() {
-            const { collection, getDocs, doc, setDoc } = window.firebaseMod;
-            const db = window.cloudDB;
-
-            const userSnap = await getDocs(collection(db, 'users'));
-            if (userSnap.empty) {
-                const defaultUsers = [
-                    { id: 1, nombre: 'Admin', perfil: 'admin', password: 'admin', permisos: ['lectura','escritura','administracion','carga','descarga'], ultimaActividad: new Date().toISOString() },
-                    { id: 2, nombre: 'Supervisor', perfil: 'supervisor', password: '1234', permisos: ['lectura','escritura','carga','descarga'], ultimaActividad: new Date().toISOString() },
-                    { id: 3, nombre: 'Operario', perfil: 'operario', password: '1234', permisos: ['lectura','escritura'], ultimaActividad: new Date().toISOString() },
-                    { id: 4, nombre: 'Invitado', perfil: 'invitado', password: '1234', permisos: ['lectura'], ultimaActividad: new Date().toISOString() }
-                ];
-                for (let u of defaultUsers) {
-                    await setDoc(doc(db, 'users', String(u.id)), u);
-                }
-            }
-
-            const whSnap = await getDocs(collection(db, 'warehouses'));
-            if (whSnap.empty) {
-                for (let w of DEFAULT_WAREHOUSES) {
-                    await setDoc(doc(db, 'warehouses', w.id), w);
-                }
-            }
-
-            const prodSnap = await getDocs(collection(db, 'products'));
-            if (prodSnap.empty) {
-                const sample = [
-                    { codigo: '01-001-216-026', gtin: '7801234567890', glosa: 'METRONIDAZOL 500 MG/100 ML', bodega: 'Farmacos', ubicaciones: [{ tipo: 'master', ubicacion: 'PALLET_A_1', zona: 'A' }], estado: 'almacenado' },
-                    { codigo: '01-001-212-024', gtin: '7801234567999', glosa: 'FENTANILO 0,5 MG/10 ML', bodega: 'Farmacos', ubicaciones: [{ tipo: 'master', ubicacion: 'PALLET_C_2', zona: 'C' }], estado: 'almacenado' }
-                ];
-                for (let p of sample) {
-                    await setDoc(doc(db, 'products', p.codigo), p);
-                }
-            }
-
-            await actualizarSelectBodegas();
-        }
-
-        async function getAllProducts() {
-            const { collection, getDocs } = window.firebaseMod;
-            const snap = await getDocs(collection(window.cloudDB, 'products'));
-            return snap.docs.map(doc => doc.data());
-        }
-
-        async function setProducts(data) {
-            const { collection, getDocs, doc, deleteDoc, setDoc } = window.firebaseMod;
-            const db = window.cloudDB;
-            const snap = await getDocs(collection(db, 'products'));
-            for (let d of snap.docs) {
-                await deleteDoc(d.ref);
-            }
-            for (let item of data) {
-                await setDoc(doc(db, 'products', String(item.codigo)), item);
-            }
-        }
-
-        async function getProducts() {
-            const all = await getAllProducts();
-            if (currentWarehouse === 'TODAS') return all;
-            return all.filter(p => p.bodega === currentWarehouse);
-        }
-
-        async function getAllMovements() {
-            const { collection, getDocs } = window.firebaseMod;
-            const snap = await getDocs(collection(window.cloudDB, 'movements'));
-            return snap.docs.map(doc => doc.data());
-        }
-
-        async function addMovement(m) {
-            const { collection, addDoc } = window.firebaseMod;
-            await addDoc(collection(window.cloudDB, 'movements'), m);
-        }
-
-        async function getAllHistorial() {
-            const { collection, getDocs } = window.firebaseMod;
-            const snap = await getDocs(collection(window.cloudDB, 'historial'));
-            return snap.docs.map(doc => doc.data());
-        }
-
-        async function addHistorial(entry) {
-            const { collection, addDoc } = window.firebaseMod;
-            await addDoc(collection(window.cloudDB, 'historial'), entry);
-        }
-
-        async function setHistorial(data) {
-            const { collection, getDocs, doc, deleteDoc, setDoc } = window.firebaseMod;
-            const db = window.cloudDB;
-            const snap = await getDocs(collection(db, 'historial'));
-            for (let d of snap.docs) {
-                await deleteDoc(d.ref);
-            }
-            for (let idx = 0; idx < data.length; idx++) {
-                await setDoc(doc(db, 'historial', String(idx)), data[idx]);
-            }
-        }
-
-        async function getAllWarehouses() {
-            const { collection, getDocs } = window.firebaseMod;
-            const snap = await getDocs(collection(window.cloudDB, 'warehouses'));
-            return snap.docs.map(doc => doc.data());
-        }
-
-        async function getWarehouse(id) {
-            const { doc, getDoc } = window.firebaseMod;
-            const docSnap = await getDoc(doc(window.cloudDB, 'warehouses', id));
-            return docSnap.exists() ? docSnap.data() : null;
-        }
-
-        async function setWarehouses(data) {
-            const { collection, getDocs, doc, deleteDoc, setDoc } = window.firebaseMod;
-            const db = window.cloudDB;
-            const snap = await getDocs(collection(db, 'warehouses'));
-            for (let d of snap.docs) {
-                await deleteDoc(d.ref);
-            }
-            for (let wh of data) {
-                await setDoc(doc(db, 'warehouses', wh.id), wh);
-            }
-            await actualizarSelectBodegas();
-        }
-
-        async function addWarehouse(wh) {
-            const { doc, setDoc } = window.firebaseMod;
-            await setDoc(doc(window.cloudDB, 'warehouses', wh.id), wh);
-            await actualizarSelectBodegas();
-        }
-
-        async function deleteWarehouse(id) {
-            const { doc, deleteDoc } = window.firebaseMod;
-            const db = window.cloudDB;
-            await deleteDoc(doc(db, 'warehouses', id));
-            await deleteDoc(doc(db, 'layout_images', id));
-            await actualizarSelectBodegas();
-        }
-
-        async function getLayoutImage(bodegaId) {
-            const { doc, getDoc } = window.firebaseMod;
-            const docSnap = await getDoc(doc(window.cloudDB, 'layout_images', bodegaId));
-            return docSnap.exists() ? docSnap.data().imageData : null;
-        }
-
-        async function setLayoutImage(bodegaId, imageData) {
-            const { doc, setDoc } = window.firebaseMod;
-            await setDoc(doc(window.cloudDB, 'layout_images', bodegaId), { bodegaId, imageData });
-        }
-
-        async function getUsers() {
-            const { collection, getDocs } = window.firebaseMod;
-            const snap = await getDocs(collection(window.cloudDB, 'users'));
-            return snap.docs.map(doc => doc.data());
-        }
-
-        async function setUsers(usersArray) {
-            const { doc, setDoc } = window.firebaseMod;
-            const db = window.cloudDB;
-            for (let u of usersArray) {
-                await setDoc(doc(db, 'users', String(u.id)), u);
-            }
-        }
-
-        function getConfig() { return JSON.parse(localStorage.getItem('wms_config') || '{}'); }
-        function setConfig(c) { localStorage.setItem('wms_config', JSON.stringify(c)); }
-
-        async function actualizarSelectBodegas() {
-            const select = document.getElementById('warehouseSelect');
-            if (!select) return;
-            const warehouses = await getAllWarehouses();
-            const currentValue = select.value;
-
-            select.innerHTML = '<option value="TODAS">🏢 Todas</option>';
-            warehouses.forEach(wh => {
-                const opt = document.createElement('option');
-                opt.value = wh.id;
-                opt.textContent = '🏢 ' + wh.nombre;
-                if (wh.id === currentValue) opt.selected = true;
-                select.appendChild(opt);
-            });
-        }
-
-        async function getCurrentUser() {
-            if (currentUserId === null) return null;
-            const users = await getUsers();
-            return users.find(u => u.id === currentUserId) || null;
-        }
-
-        async function hasPermission(perm) {
-            const user = await getCurrentUser();
-            if (!user) return false;
-            if (user.perfil === 'admin') return true;
-            return user.permisos && user.permisos.includes(perm);
-        }
-
-        async function aplicarPermisosUI() {
-            const user = await getCurrentUser();
-            if (!user) return;
-            const perfil = user.perfil;
-
-            const btnCargar = document.getElementById('btnCargarArchivo');
-            const btnExportar = document.getElementById('btnExportarArchivo');
-            const btnExportarSelec = document.getElementById('btnExportarSelec');
-            const btnToggleEdit = document.getElementById('btnToggleEdit');
-            const btnRecepcionAlmacenar = document.getElementById('btnRecepcionAlmacenar');
-            const btnEliminarSelec = document.getElementById('btnEliminarSelec');
-            const navUsuarios = document.getElementById('navUsuarios');
-            const navBodegas = document.getElementById('navBodegas');
-            const btnNuevoUsuario = document.getElementById('btnNuevoUsuario');
-            const btnNuevaBodega = document.getElementById('btnNuevaBodega');
-            const btnClearHistorial = document.getElementById('btnClearHistorial');
-            const configLayoutSection = document.getElementById('configLayoutSection');
-            const configAdminButtons = document.getElementById('configAdminButtons');
-
-            if (perfil === 'invitado') {
-                if (btnCargar) btnCargar.style.display = 'none';
-                if (btnExportar) btnExportar.style.display = 'none';
-                if (btnExportarSelec) btnExportarSelec.style.display = 'none';
-                if (btnToggleEdit) btnToggleEdit.style.display = 'none';
-                if (btnRecepcionAlmacenar) btnRecepcionAlmacenar.style.display = 'none';
-                if (btnEliminarSelec) btnEliminarSelec.style.display = 'none';
-                if (navUsuarios) navUsuarios.style.display = 'none';
-                if (navBodegas) navBodegas.style.display = 'none';
-                if (configLayoutSection) configLayoutSection.style.display = 'none';
-                if (configAdminButtons) configAdminButtons.style.display = 'none';
-            } else if (perfil === 'operario') {
-                if (btnCargar) btnCargar.style.display = 'none';
-                if (btnExportar) btnExportar.style.display = 'none';
-                if (btnExportarSelec) btnExportarSelec.style.display = 'none';
-                if (navUsuarios) navUsuarios.style.display = 'none';
-                if (navBodegas) navBodegas.style.display = 'inline-flex';
-                if (btnNuevaBodega) btnNuevaBodega.style.display = 'none';
-                if (btnClearHistorial) btnClearHistorial.style.display = 'none';
-                if (configAdminButtons) configAdminButtons.style.display = 'none';
-            } else if (perfil === 'supervisor') {
-                if (btnCargar) btnCargar.style.display = 'inline-flex';
-                if (btnExportar) btnExportar.style.display = 'inline-flex';
-                if (btnExportarSelec) btnExportarSelec.style.display = 'inline-flex';
-                if (navUsuarios) navUsuarios.style.display = 'inline-flex';
-                if (navBodegas) navBodegas.style.display = 'inline-flex';
-                if (btnNuevoUsuario) btnNuevoUsuario.style.display = 'none';
-                if (btnNuevaBodega) btnNuevaBodega.style.display = 'none';
-                if (btnClearHistorial) btnClearHistorial.style.display = 'none';
-                if (configAdminButtons) configAdminButtons.style.display = 'flex';
-            } else if (perfil === 'admin') {
-                if (btnCargar) btnCargar.style.display = 'inline-flex';
-                if (btnExportar) btnExportar.style.display = 'inline-flex';
-                if (btnExportarSelec) btnExportarSelec.style.display = 'inline-flex';
-                if (btnToggleEdit) btnToggleEdit.style.display = 'inline-flex';
-                if (btnRecepcionAlmacenar) btnRecepcionAlmacenar.style.display = 'inline-flex';
-                if (btnEliminarSelec) btnEliminarSelec.style.display = 'inline-flex';
-                if (navUsuarios) navUsuarios.style.display = 'inline-flex';
-                if (navBodegas) navBodegas.style.display = 'inline-flex';
-                if (btnNuevoUsuario) btnNuevoUsuario.style.display = 'inline-flex';
-                if (btnNuevaBodega) btnNuevaBodega.style.display = 'inline-flex';
-                if (btnClearHistorial) btnClearHistorial.style.display = 'inline-flex';
-                if (configLayoutSection) configLayoutSection.style.display = 'block';
-                if (configAdminButtons) configAdminButtons.style.display = 'flex';
-            }
-        }
-
-        async function handleLogin() {
-            const username = document.getElementById('loginUser').value.trim();
-            const password = document.getElementById('loginPass').value.trim();
-            const users = await getUsers();
-            const user = users.find(u => u.nombre.toLowerCase() === username.toLowerCase() && u.password === password);
-            if (user) {
-                currentUserId = user.id;
-                localStorage.setItem(STORAGE_KEY_SESSION, user.id);
+            const savedUser = localStorage.getItem('wms_session');
+            if (savedUser) {
+                currentUserId = parseInt(savedUser);
                 document.getElementById('loginModal').style.display = 'none';
                 document.getElementById('app').style.display = 'block';
-                await renderAll();
-                await aplicarPermisosUI();
-                document.getElementById('loginError').style.display = 'none';
-                mostrarToast('👋 Bienvenido ' + user.nombre + ' (' + user.perfil + ')', 'success');
-                await registrarHistorial('LOGIN', user.nombre, 'Inicio de sesión');
+                renderAll();
+            }
+        });
+
+        function handleLogin() {
+            const u = document.getElementById('loginUser').value.trim();
+            const p = document.getElementById('loginPass').value.trim();
+            const db = getDB();
+            const user = db.users.find(x => x.nombre.toLowerCase() === u.toLowerCase() && x.password === p);
+            
+            if (user) {
+                currentUserId = user.id;
+                localStorage.setItem('wms_session', user.id);
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('app').style.display = 'block';
+                renderAll();
+                mostrarToast('Bienvenido ' + user.nombre);
             } else {
                 document.getElementById('loginError').style.display = 'block';
-                document.getElementById('loginError').textContent = '❌ Usuario o contraseña incorrectos.';
             }
         }
 
-        async function logout() {
-            const user = await getCurrentUser();
-            if (user) {
-                await registrarHistorial('LOGOUT', user.nombre, 'Cierre de sesión');
-            }
+        function logout() {
+            localStorage.removeItem('wms_session');
             currentUserId = null;
-            localStorage.removeItem(STORAGE_KEY_SESSION);
             document.getElementById('app').style.display = 'none';
             document.getElementById('loginModal').style.display = 'flex';
-            document.getElementById('loginUser').value = '';
-            document.getElementById('loginPass').value = '';
-            document.getElementById('loginError').style.display = 'none';
         }
 
-        async function checkSession() {
-            const savedId = localStorage.getItem(STORAGE_KEY_SESSION);
-            if (savedId) {
-                const users = await getUsers();
-                const foundUser = users.find(u => u.id === parseInt(savedId));
-                if (foundUser) {
-                    currentUserId = foundUser.id;
-                    document.getElementById('loginModal').style.display = 'none';
-                    document.getElementById('app').style.display = 'block';
-                    await aplicarPermisosUI();
-                    return true;
-                }
-            }
-            document.getElementById('loginModal').style.display = 'flex';
-            document.getElementById('app').style.display = 'none';
-            return false;
+        function mostrarToast(msg) {
+            const c = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.innerHTML = `<span>${msg}</span>`;
+            c.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
         }
 
-        async function actualizarUsuariosConectados() {
-            const user = await getCurrentUser();
-            if (user) {
-                const users = await getUsers();
-                const u = users.find(x => x.id === user.id);
-                if (u) {
-                    u.ultimaActividad = new Date().toISOString();
-                    await setUsers(users);
-                }
-            }
-            const users = await getUsers();
-            const ahora = new Date();
-            let activosCount = 0;
-            users.forEach(u => {
-                if (u.ultimaActividad) {
-                    const fecha = new Date(u.ultimaActividad);
-                    if ((ahora - fecha) / 1000 / 60 < 5) activosCount++;
-                }
+        function renderAll() {
+            const db = getDB();
+            const sel = document.getElementById('warehouseSelect');
+            sel.innerHTML = '<option value="TODAS">🏢 Todas las Bodegas</option>';
+            db.warehouses.forEach(w => {
+                sel.innerHTML += `<option value="${w.id}">${w.nombre}</option>`;
             });
-            const el = document.getElementById('usuariosConectados');
-            if (el) el.textContent = activosCount;
+            sel.value = currentWarehouse;
+
+            renderDashboard();
+            renderInventarioUnificado();
+            renderLayoutVisual();
+            renderHistorialCompleto();
+            renderUsuarios();
+            
+            document.getElementById('inventoryBadge').textContent = getProducts().length;
         }
 
-        async function registrarHistorial(accion, codigo, detalle, bodega = null) {
-            const user = await getCurrentUser();
-            const entry = {
-                fecha: new Date().toISOString().replace('T', ' ').slice(0, 19),
-                usuario: user ? user.nombre : 'Sistema',
-                accion: accion,
-                codigo: codigo,
-                bodega: bodega || '',
-                detalle: detalle,
-                perfil: user ? user.perfil : 'sistema'
-            };
-            await addHistorial(entry);
+        function getProducts() {
+            const db = getDB();
+            if (currentWarehouse === 'TODAS') return db.products;
+            return db.products.filter(p => p.bodega === currentWarehouse);
         }
 
-        function mostrarToast(mensaje, tipo = 'info') {
-            const container = document.getElementById('toastContainer');
-            if (!container) return;
-            const toast = document.createElement('div');
-            toast.className = 'toast ' + tipo;
-            const iconos = { success: '✅', warning: '⚠️', error: '❌', info: 'ℹ️' };
-            toast.innerHTML = `
-                <span class="toast-icon">${iconos[tipo] || 'ℹ️'}</span>
-                <span>${mensaje}</span>
-                <button class="toast-close" onclick="this.parentElement.remove()">✕</button>
-            `;
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(30px)';
-                setTimeout(() => toast.remove(), 300);
-            }, 5000);
+        function cambiarBodega() {
+            currentWarehouse = document.getElementById('warehouseSelect').value;
+            renderAll();
         }
 
-        async function cambiarBodega() {
-            const sel = document.getElementById('warehouseSelect');
-            currentWarehouse = sel.value;
-            await renderAll();
-        }
-
-        async function renderAll() {
-            const user = await getCurrentUser();
-            document.getElementById('currentUserDisplay').textContent = user ? '👤 ' + user.nombre + ' (' + user.perfil + ')' : '👤 Invitado';
-            const sel = document.getElementById('warehouseSelect');
-            if (sel && sel.value !== currentWarehouse) sel.value = currentWarehouse;
-
-            await renderDashboard();
-            await renderInventarioUnificado();
-            await renderLayoutVisualWithProducts(await getProducts());
-            await renderHistorialCompleto();
-            await renderUsuarios();
-            await renderBodegas();
-            await renderConfig();
-            await actualizarUsuariosConectados();
-            await aplicarPermisosUI();
-
-            await cargarImagenLayout(currentWarehouse);
-
-            const wh = await getWarehouse(currentWarehouse);
-            document.getElementById('configBodegaNombre').textContent = wh ? wh.nombre : 'Todas';
-
-            const products = await getProducts();
-            document.getElementById('inventoryBadge').textContent = products.length;
-        }
-
-        async function renderDashboard() {
-            const products = await getProducts();
-            const movements = await getAllMovements();
-            const users = await getUsers();
-            document.getElementById('totalProductos').textContent = products.length;
-            const ubicaciones = new Set();
-            products.forEach(p => p.ubicaciones.forEach(u => ubicaciones.add(u.ubicacion)));
-            document.getElementById('totalUbicaciones').textContent = ubicaciones.size;
-            document.getElementById('totalMovimientos').textContent = movements.length;
-            document.getElementById('totalUsuarios').textContent = users.length;
-            await actualizarUsuariosConectados();
+        function renderDashboard() {
+            const prods = getProducts();
+            const db = getDB();
+            document.getElementById('totalProductos').textContent = prods.length;
+            
+            const ubics = new Set();
+            prods.forEach(p => p.ubicaciones.forEach(u => ubics.add(u.ubicacion)));
+            document.getElementById('totalUbicaciones').textContent = ubics.size;
+            document.getElementById('totalMovimientos').textContent = db.movements.length;
+            document.getElementById('totalUsuarios').textContent = db.users.length;
 
             const tbody = document.getElementById('ultimosMovimientos');
-            const recent = movements.slice(0, 5);
-            tbody.innerHTML = recent.map(m => `
-                <tr><td style="font-size:0.65rem; color:#64748b;">${m.fecha}</td>
-                <td><strong>${m.codigo}</strong></td>
-                <td>${m.desde || '-'}</td>
-                <td>${m.hacia || '-'}</td>
-                <td>${m.usuario || 'Sistema'}</td></tr>
-            `).join('') || '<tr><td colspan="5" class="empty-state">No hay movimientos recientes</td></tr>';
+            tbody.innerHTML = db.movements.slice(-5).reverse().map(m => `
+                <tr><td>${m.fecha}</td><td><strong>${m.codigo}</strong></td><td>${m.desde}</td><td>${m.hacia}</td><td>${m.usuario}</td></tr>
+            `).join('') || '<tr><td colspan="5" class="empty-state">Sin movimientos recientes</td></tr>';
         }
 
-        async function cargarExcel(event) {
-            if (!(await hasPermission('carga')) && (await getCurrentUser())?.perfil !== 'admin' && (await getCurrentUser())?.perfil !== 'supervisor') {
-                return alert('No tienes permisos para cargar archivos.');
-            }
+        function cargarExcel(event) {
             const file = event.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = async function(e) {
+            reader.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
-
-                    let totalItems = 0;
-                    const allProducts = await getAllProducts();
+                    const db = getDB();
+                    let count = 0;
 
                     workbook.SheetNames.forEach(name => {
-                        const sheet = workbook.Sheets[name];
-                        const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-                        if (json.length > 0) {
-                            const mappedData = mapearDatosExcel(json);
-                            if (mappedData.length > 0) {
-                                mappedData.forEach(item => {
-                                    const existing = allProducts.find(p => p.codigo === item.codigo);
-                                    if (existing) {
-                                        if (item.ubicacion) {
-                                            const master = existing.ubicaciones.find(u => u.tipo === 'master');
-                                            if (master) {
-                                                master.ubicacion = item.ubicacion;
-                                                master.zona = item.zona || master.zona;
-                                            } else {
-                                                existing.ubicaciones.push({ tipo: 'master', ubicacion: item.ubicacion, zona: item.zona || 'A' });
-                                            }
-                                        }
-                                        if (item.gtin) existing.gtin = item.gtin;
-                                        if (item.bodega) existing.bodega = item.bodega;
-                                        if (item.glosa) existing.glosa = item.glosa;
-                                        existing.estado = 'almacenado';
-                                    } else {
-                                        const ubicaciones = [];
-                                        if (item.ubicacion) {
-                                            ubicaciones.push({ tipo: 'master', ubicacion: item.ubicacion, zona: item.zona || 'A' });
-                                        }
-                                        allProducts.push({
-                                            codigo: item.codigo,
-                                            gtin: item.gtin || '',
-                                            glosa: item.glosa || item.codigo,
-                                            bodega: item.bodega || 'Farmacos',
-                                            tags: [],
-                                            ubicaciones: ubicaciones,
-                                            estado: 'almacenado'
-                                        });
-                                    }
-                                    totalItems++;
+                        const json = XLSX.utils.sheet_to_json(workbook.Sheets[name], { defval: '' });
+                        json.forEach((row, idx) => {
+                            const keys = Object.keys(row);
+                            const codigo = row[keys.find(k => /COD|SKU|ID/i.test(k))] || `ITEM_${idx+1}`;
+                            const glosa = row[keys.find(k => /GLOSA|NOMBRE|DESC/i.test(k))] || 'Sin descripción';
+                            const gtin = row[keys.find(k => /GTIN|EAN/i.test(k))] || '';
+                            const ubicacion = row[keys.find(k => /UBICACION|RACK/i.test(k))] || 'A_1';
+                            
+                            const existing = db.products.find(p => p.codigo === String(codigo).trim());
+                            if (existing) {
+                                existing.glosa = String(glosa);
+                                existing.gtin = String(gtin);
+                                if(ubicacion) existing.ubicaciones = [{ ubicacion: String(ubicacion), zona: String(ubicacion)[0] || 'A' }];
+                            } else {
+                                db.products.push({
+                                    codigo: String(codigo).trim(),
+                                    gtin: String(gtin),
+                                    glosa: String(glosa),
+                                    bodega: currentWarehouse === 'TODAS' ? 'Farmacos' : currentWarehouse,
+                                    ubicaciones: [{ ubicacion: String(ubicacion), zona: String(ubicacion)[0] || 'A' }],
+                                    estado: 'almacenado'
                                 });
                             }
-                        }
+                            count++;
+                        });
                     });
 
-                    await setProducts(allProducts);
-                    await renderAll();
+                    saveDB(db);
+                    renderAll();
                     document.getElementById('fileInput').value = '';
-                    await registrarHistorial('AGREGAR', 'EXCEL_IMPORT', 'Archivo importado: ' + file.name + ' (' + totalItems + ' productos)');
-                    mostrarToast('✅ Archivo cargado: ' + totalItems + ' productos de ' + file.name, 'success');
-                } catch (error) {
-                    alert('❌ Error al leer el archivo: ' + error.message);
+                    mostrarToast(`✅ Archivo cargado: ${count} registros procesados`);
+                } catch(err) {
+                    alert('Error al leer el archivo Excel: ' + err.message);
                 }
             };
             reader.readAsArrayBuffer(file);
         }
 
-        function mapearDatosExcel(data) {
-            if (!data || data.length === 0) return [];
-            const headers = Object.keys(data[0]);
-            const colMap = {
-                codigo: headers.find(h => /COD\.?.*HERMES|HERMES|CODIGO|COD|SKU|ID|CÓDIGO/i.test(h)) || headers[0],
-                glosa: headers.find(h => /GLOSA|NOMBRE|DESCRIPCION|PRODUCTO|ITEM|GLOSA INTERNA/i.test(h)) || headers[1],
-                gtin: headers.find(h => /GTIN|EAN|EAN13|BARRA/i.test(h)),
-                ubicacion: headers.find(h => /UBICACION|UBICACIÓN|POSICION|RACK|LOCATION/i.test(h)),
-                zona: headers.find(h => /ZONA|ZONA.*ALMACENAMIENTO|PASILLO|AREA/i.test(h)),
-                bodega: headers.find(h => /BODEGA|ALMACEN|WAREHOUSE|SUB BODEGA/i.test(h))
-            };
-
-            return data.map((row, idx) => {
-                const getVal = (key) => {
-                    if (!key) return '';
-                    const val = row[key];
-                    return val !== undefined && val !== null ? String(val).trim() : '';
-                };
-
-                let codigo = getVal(colMap.codigo);
-                let glosa = getVal(colMap.glosa);
-                let gtin = getVal(colMap.gtin);
-                let ubicacion = getVal(colMap.ubicacion);
-                let zona = getVal(colMap.zona);
-                let bodega = getVal(colMap.bodega) || 'Farmacos';
-
-                if (!zona && ubicacion) {
-                    const match = ubicacion.match(/([A-J])(?:_|\s|$)/);
-                    if (match && ['A','B','C','D','E','F','G','H','I','J'].includes(match[1])) {
-                        zona = match[1];
-                    }
-                }
-                if (!zona) zona = 'A';
-                if (!ubicacion) ubicacion = zona + '_' + (idx + 1);
-                if (!codigo) codigo = 'ITEM_' + String(idx + 1).padStart(3, '0');
-
-                return {
-                    codigo: codigo,
-                    glosa: glosa || 'Sin descripción',
-                    gtin: gtin || '',
-                    ubicacion: ubicacion,
-                    zona: zona,
-                    bodega: bodega,
-                    estado: 'almacenado'
-                };
-            }).filter(item => item.codigo && item.codigo !== '');
-        }
-
-        function renderLayoutVisual() {}
-
-        async function renderLayoutVisualWithProducts(products) {
-            const grid = document.getElementById('layoutGrid');
-            if (!grid) return;
-
-            const layoutData = [
-                ['A1', 'A1', 'A1', 'B1', 'B1', 'B1', 'C1', 'C1', 'C1', 'C1'],
-                ['A2', 'A2', 'A2', 'B2', 'B2', 'B2', 'C2', 'C2', 'C2', 'C2'],
-                ['A3', 'A3', 'A3', 'B3', 'B3', 'B3', 'C3', 'C3', 'C3', 'C3'],
-                ['A4', 'A4', 'A4', 'B4', 'B4', 'B4', 'C4', 'C4', 'C4', 'C4'],
-                ['D1', 'D2', 'D3', 'D4', 'E1', 'E2', 'E3', 'F1', 'F2', 'OFC'],
-                ['D5', 'D6', 'D7', 'D8', 'E4', 'E5', 'E6', 'F3', 'F4', 'OFC'],
-                ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7', 'F5', 'F6', 'OFC'],
-                ['H1', 'H2', 'H3', 'H4', 'I1', 'I2', 'I3', 'I4', 'J1', 'REC'],
-                ['J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'CUA', 'REC']
-            ];
-
-            grid.innerHTML = '';
-
-            const zonasOcupadas = new Set();
-            products.forEach(p => {
-                p.ubicaciones.forEach(u => {
-                    if (u.zona) zonasOcupadas.add(u.zona);
-                });
-            });
-
-            layoutData.forEach((row) => {
-                row.forEach((cell) => {
-                    const div = document.createElement('div');
-                    div.className = 'layout-cell';
-
-                    let zone = cell.replace(/[0-9]/g, '');
-                    let level = cell.replace(/[^0-9]/g, '') || '';
-                    let label = '';
-
-                    if (cell === 'OFC') { zone = 'office'; label = 'Oficinas'; }
-                    else if (cell === 'REC') { zone = 'despacho'; label = 'Recepción'; }
-                    else if (cell === 'CUA') { zone = 'despacho'; label = 'Cuarentena'; }
-
-                    if (zone && zone !== 'office' && zone !== 'despacho') {
-                        div.classList.add('zone-' + zone.toLowerCase());
-                    } else if (zone === 'office') {
-                        div.classList.add('office');
-                    } else if (zone === 'despacho') {
-                        div.classList.add('despacho');
-                    }
-
-                    if (zonasOcupadas.has(zone)) {
-                        div.classList.add('ocupado');
-                    }
-
-                    const zoneLabel = document.createElement('span');
-                    zoneLabel.className = 'cell-zone';
-                    zoneLabel.textContent = zone || '';
-
-                    const levelLabel = document.createElement('span');
-                    levelLabel.className = 'cell-level';
-                    levelLabel.textContent = level || '';
-
-                    const labelSpan = document.createElement('span');
-                    labelSpan.className = 'cell-label';
-                    labelSpan.textContent = label || '';
-
-                    div.appendChild(zoneLabel);
-                    if (level) div.appendChild(levelLabel);
-                    if (label) div.appendChild(labelSpan);
-
-                    grid.appendChild(div);
-                });
-            });
-        }
-
-        async function cargarImagenLayout(bodegaId) {
-            const container = document.getElementById('layoutImageContent');
-            if (!container) return;
-
-            if (bodegaId === 'TODAS') {
-                container.innerHTML = '<span class="no-image">📷 Mostrando vista general - selecciona una bodega para ver su plano</span>';
-                return;
-            }
-
-            const imageData = await getLayoutImage(bodegaId);
-            if (imageData) {
-                container.innerHTML = `<img src="${imageData}" alt="Layout de ${bodegaId}" style="max-width:100%; max-height:500px; border-radius:8px; object-fit:contain;">`;
-            } else {
-                const wh = await getWarehouse(bodegaId);
-                container.innerHTML = `<span class="no-image">📷 No hay imagen cargada para ${wh ? wh.nombre : bodegaId}<br><small style="color:#94a3b8;">Sube una imagen desde la pestaña Configuración</small></span>`;
-            }
-        }
-
-        async function subirImagenLayout(event) {
-            if (!(await hasPermission('administracion'))) return alert('Solo el administrador puede subir la imagen del layout.');
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const bodegaId = currentWarehouse;
-            if (bodegaId === 'TODAS') {
-                mostrarToast('⚠️ Selecciona una bodega específica para subir su imagen', 'warning');
-                event.target.value = '';
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    await setLayoutImage(bodegaId, e.target.result);
-                    await cargarImagenLayout(bodegaId);
-                    mostrarToast('✅ Imagen del layout subida para ' + bodegaId, 'success');
-                    await registrarHistorial('EDITAR', 'LAYOUT_' + bodegaId, 'Imagen del layout actualizada para ' + bodegaId);
-                } catch (error) {
-                    mostrarToast('❌ Error al guardar la imagen: ' + error.message, 'error');
-                }
-            };
-            reader.readAsDataURL(file);
-            event.target.value = '';
-        }
-
-        async function renderConfig() {
-            const warehouses = await getAllWarehouses();
-            const wh = warehouses.find(w => w.id === currentWarehouse);
-            const el = document.getElementById('configBodegaNombre');
-            if (el) el.textContent = wh ? wh.nombre : 'Todas';
-        }
-
-        async function abrirModalAlmacenamiento() {
-            if ((await getCurrentUser())?.perfil === 'invitado') return alert('No tienes permisos.');
-            const products = await getProducts();
-            mostrarModal('📥 Recepción y Almacenamiento', `
-                <p style="color:#64748b; font-size:0.85rem; margin-bottom:12px;">Registra un producto desde recepción a su ubicación final en la bodega.</p>
-                <div class="form-grid">
-                    <div class="full-width">
-                        <label>Código del producto</label>
-                        <input id="almacenarCodigo" placeholder="Ej: 01-001-216-026" list="productosList">
-                        <datalist id="productosList">
-                            ${products.map(p => `<option value="${p.codigo}">${p.codigo} - ${p.glosa}</option>`).join('')}
-                        </datalist>
-                    </div>
-                    <div class="full-width">
-                        <label>Glosa / Descripción</label>
-                        <input id="almacenarGlosa" placeholder="Nombre del producto">
-                    </div>
-                    <div>
-                        <label>GTIN / EAN</label>
-                        <input id="almacenarGTIN" placeholder="7801234567890">
-                    </div>
-                    <div>
-                        <label>Bodega</label>
-                        <select id="almacenarBodega">
-                            ${DEFAULT_WAREHOUSES.map(w => `<option value="${w.id}">${w.nombre}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div>
-                        <label>Ubicación destino</label>
-                        <input id="almacenarUbicacion" placeholder="Ej: PALLET_A_1">
-                    </div>
-                    <div>
-                        <label>Zona</label>
-                        <select id="almacenarZona">
-                            <option value="A">A - Palletizado</option>
-                            <option value="B">B - Palletizado</option>
-                            <option value="C">C - Controlados</option>
-                            <option value="D">D - VNA</option>
-                            <option value="E">E - Selectivo</option>
-                            <option value="F">F - Anaquel</option>
-                            <option value="G">G - Full Space</option>
-                            <option value="H">H - Cámara Frío</option>
-                            <option value="I">I - Inyectables</option>
-                            <option value="J">J - Mezclas</option>
-                        </select>
-                    </div>
-                </div>
-            `, true);
-
-            document.getElementById('almacenarCodigo').addEventListener('input', async function() {
-                const codigo = this.value.trim();
-                const allP = await getProducts();
-                const found = allP.find(p => p.codigo === codigo);
-                if (found) {
-                    document.getElementById('almacenarGlosa').value = found.glosa;
-                    document.getElementById('almacenarGTIN').value = found.gtin || '';
-                    document.getElementById('almacenarBodega').value = found.bodega;
-                    if (found.ubicaciones.length > 0) {
-                        document.getElementById('almacenarUbicacion').value = found.ubicaciones[0].ubicacion || '';
-                        document.getElementById('almacenarZona').value = found.ubicaciones[0].zona || 'A';
-                    }
-                }
-            });
-
-            modalCallback = async () => {
-                const codigo = document.getElementById('almacenarCodigo').value.trim();
-                const glosa = document.getElementById('almacenarGlosa').value.trim();
-                const gtin = document.getElementById('almacenarGTIN').value.trim();
-                const bodega = document.getElementById('almacenarBodega').value;
-                const ubicacion = document.getElementById('almacenarUbicacion').value.trim();
-                const zona = document.getElementById('almacenarZona').value;
-
-                if (!codigo) return alert('El código del producto es requerido');
-                if (!ubicacion) return alert('La ubicación destino es requerida');
-
-                const products = await getAllProducts();
-                let existing = products.find(p => p.codigo === codigo);
-
-                if (existing) {
-                    if (existing.ubicaciones.length > 0) {
-                        existing.ubicaciones[0].ubicacion = ubicacion;
-                        existing.ubicaciones[0].zona = zona;
-                    } else {
-                        existing.ubicaciones.push({ tipo: 'master', ubicacion: ubicacion, zona: zona });
-                    }
-                    existing.estado = 'almacenado';
-                    if (gtin) existing.gtin = gtin;
-                    if (glosa) existing.glosa = glosa;
-                    if (bodega) existing.bodega = bodega;
-                } else {
-                    products.push({
-                        codigo: codigo,
-                        gtin: gtin || '',
-                        glosa: glosa || codigo,
-                        bodega: bodega || 'Farmacos',
-                        tags: [],
-                        ubicaciones: [{ tipo: 'master', ubicacion: ubicacion, zona: zona }],
-                        estado: 'almacenado'
-                    });
-                }
-
-                await setProducts(products);
-
-                const user = await getCurrentUser();
-                await addMovement({
-                    fecha: new Date().toISOString().replace('T', ' ').slice(0, 19),
-                    codigo: codigo,
-                    bodega: bodega,
-                    desde: 'RECEPCION',
-                    hacia: ubicacion,
-                    usuario: user ? user.nombre : 'Sistema',
-                    tipo: 'ALMACENAR'
-                });
-
-                await registrarHistorial('ALMACENAR', codigo, 'Producto almacenado desde RECEPCIÓN → ' + ubicacion + ' (' + zona + ')', bodega);
-                mostrarToast('📥 Producto ' + codigo + ' almacenado en ' + ubicacion, 'success');
-                await renderAll();
-                cerrarModal();
-            };
-            document.getElementById('modalActionBtn').textContent = '📥 Almacenar';
-        }
-
-        async function renderInventarioUnificado() {
-            const search = document.getElementById('searchInventarioUnificado')?.value?.toLowerCase() || '';
-            const filterZona = document.getElementById('filterZona')?.value || 'TODAS';
-
-            let products = await getProducts();
+        function renderInventarioUnificado() {
+            const search = document.getElementById('searchInventarioUnificado').value.toLowerCase();
+            const zona = document.getElementById('filterZona').value;
+            let prods = getProducts();
 
             if (search) {
-                products = products.filter(p =>
-                    p.codigo.toLowerCase().includes(search) ||
-                    p.glosa.toLowerCase().includes(search) ||
-                    (p.gtin && p.gtin.includes(search))
-                );
+                prods = prods.filter(p => p.codigo.toLowerCase().includes(search) || p.glosa.toLowerCase().includes(search));
             }
-
-            if (filterZona !== 'TODAS') {
-                products = products.filter(p =>
-                    p.ubicaciones.some(u => u.zona === filterZona)
-                );
+            if (zona !== 'TODAS') {
+                prods = prods.filter(p => p.ubicaciones.some(u => u.zona === zona));
             }
 
             const tbody = document.getElementById('inventarioUnificadoBody');
-            document.getElementById('inventorySummary').textContent = products.length + ' productos';
-
-            if (products.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="empty-state">
-                    <span class="empty-icon">📭</span>
-                    ${search ? 'No se encontraron productos que coincidan con "' + search + '"' : 'No hay productos en esta bodega'}
-                </td></tr>`;
-                return;
-            }
-
-            const isMobile = window.innerWidth < 768;
-            const currentUser = await getCurrentUser();
-            const esInvitado = currentUser?.perfil === 'invitado';
-
-            tbody.innerHTML = products.map((p) => {
-                const isEditing = editingRows.has(p.codigo);
-                const isSelected = selectedRows.has(p.codigo);
-                const ubicacion = p.ubicaciones[0]?.ubicacion || '';
-                const zona = p.ubicaciones[0]?.zona || '';
-                const estado = p.estado || 'almacenado';
-                const bodegaClass = p.bodega === 'Farmacos' ? 'badge-farmacos' : p.bodega === 'Insumos' ? 'badge-insumos' : 'badge-economato';
-                const estadoClass = estado === 'recepcion' ? 'badge-recepcion' : 'badge-almacenado';
-                const estadoLabel = estado === 'recepcion' ? '📥 Recepción' : '✅ Almacenado';
-
-                const showInlineEdit = editMode && !isMobile && !esInvitado;
-
-                return `
-                <tr class="${isEditing ? 'row-editing' : ''}" data-codigo="${p.codigo}">
-                    <td>
-                        <input type="checkbox" class="row-selector" data-codigo="${p.codigo}"
-                               ${isSelected ? 'checked' : ''} onchange="toggleSelectAllRow('${p.codigo}')" ${esInvitado ? 'disabled' : ''}>
-                    </td>
-                    <td>
-                        ${showInlineEdit ?
-                            `<input class="edit-field" value="${p.codigo}" data-field="codigo" data-codigo="${p.codigo}" onchange="guardarCambioInline('${p.codigo}', 'codigo', this.value)">` :
-                            `<strong>${p.codigo}</strong>`
-                        }
-                    </td>
-                    <td>
-                        ${showInlineEdit ?
-                            `<input class="edit-field" value="${p.gtin || ''}" data-field="gtin" data-codigo="${p.codigo}" onchange="guardarCambioInline('${p.codigo}', 'gtin', this.value)">` :
-                            `${p.gtin || 'N/A'}`
-                        }
-                    </td>
-                    <td>
-                        ${showInlineEdit ?
-                            `<input class="edit-field" value="${p.glosa}" data-field="glosa" data-codigo="${p.codigo}" onchange="guardarCambioInline('${p.codigo}', 'glosa', this.value)">` :
-                            `${p.glosa}`
-                        }
-                    </td>
-                    <td>
-                        ${showInlineEdit ?
-                            `<select class="edit-field-select" data-field="bodega" data-codigo="${p.codigo}" onchange="guardarCambioInline('${p.codigo}', 'bodega', this.value)">
-                                ${(DEFAULT_WAREHOUSES).map(w =>
-                                    `<option value="${w.id}" ${p.bodega === w.id ? 'selected' : ''}>${w.nombre}</option>`
-                                ).join('')}
-                            </select>` :
-                            `<span class="badge-bodega ${bodegaClass}">${p.bodega}</span>`
-                        }
-                    </td>
-                    <td>
-                        ${showInlineEdit ?
-                            `<input class="edit-field" value="${ubicacion}" data-field="ubicacion" data-codigo="${p.codigo}" placeholder="Ej: PALLET_A_1" onchange="guardarCambioInline('${p.codigo}', 'ubicacion', this.value)">` :
-                            `<span class="ubicacion-tag">📍 ${ubicacion || 'Sin ubicar'}</span>`
-                        }
-                    </td>
-                    <td>
-                        ${showInlineEdit ?
-                            `<select class="edit-field-select" data-field="zona" data-codigo="${p.codigo}" onchange="guardarCambioInline('${p.codigo}', 'zona', this.value)">
-                                <option value="">Sin zona</option>
-                                ${['A','B','C','D','E','F','G','H','I','J'].map(z =>
-                                    `<option value="${z}" ${z === zona ? 'selected' : ''}>${z}</option>`
-                                ).join('')}
-                            </select>` :
-                            `<span class="zone-tag zone-tag-${zona}">${zona || 'N/A'}</span>`
-                        }
-                    </td>
-                    <td>
-                        <span class="badge-estado ${estadoClass}">${estadoLabel}</span>
-                    </td>
-                    <td>
-                        <div class="actions-cell">
-                            ${esInvitado ? `<span style="font-size:0.6rem; color:#94a3b8;">Solo lectura</span>` : (showInlineEdit ? `
-                                <button class="btn btn-success btn-xs" onclick="guardarEdicionCompleta('${p.codigo}')" title="Guardar">
-                                    <span class="icon">💾</span>
-                                </button>
-                                <button class="btn btn-danger btn-xs" onclick="cancelarEdicion('${p.codigo}')" title="Cancelar">
-                                    <span class="icon">❌</span>
-                                </button>
-                            ` : `
-                                <button class="btn btn-primary btn-xs" onclick="editarProductoModal('${p.codigo}')" title="Editar">
-                                    <span class="icon">✏️</span>
-                                </button>
-                                <button class="btn btn-warning btn-xs" onclick="moverProductoModal('${p.codigo}')" title="Mover">
-                                    <span class="icon">🔄</span>
-                                </button>
-                                ${currentUser?.perfil === 'admin' ? `
-                                <button class="btn btn-danger btn-xs" onclick="eliminarProducto('${p.codigo}')" title="Eliminar">
-                                    <span class="icon">🗑️</span>
-                                </button>` : ''}
-                            `)}
-                        </div>
-                    </td>
-                </tr>`;
-            }).join('');
-
-            const bulkActions = document.getElementById('bulkActions');
-            if (selectedRows.size > 0 && !esInvitado) {
-                bulkActions.style.display = 'flex';
-                document.getElementById('selectedCount').textContent = selectedRows.size + ' seleccionados';
-            } else {
-                bulkActions.style.display = 'none';
-            }
-        }
-
-        function toggleEditMode() {
-            editMode = !editMode;
-            document.getElementById('editModeLabel').textContent = editMode ? 'Cancelar' : 'Editar';
-            if (!editMode) editingRows.clear();
-            renderInventarioUnificado();
-        }
-
-        async function guardarCambioInline(codigo, campo, valor) {
-            const products = await getAllProducts();
-            const index = products.findIndex(p => p.codigo === codigo);
-            if (index === -1) return;
-
-            const oldValor = products[index][campo];
-            if (campo === 'ubicacion' || campo === 'zona') {
-                if (!products[index].ubicaciones.length) {
-                    products[index].ubicaciones.push({ tipo: 'master', ubicacion: '', zona: '' });
-                }
-                if (campo === 'ubicacion') products[index].ubicaciones[0].ubicacion = valor;
-                else if (campo === 'zona') products[index].ubicaciones[0].zona = valor;
-            } else {
-                products[index][campo] = valor;
-            }
-
-            await setProducts(products);
-            editingRows.add(codigo);
-
-            if (oldValor !== valor) {
-                await registrarHistorial('EDITAR', codigo, campo + ': ' + oldValor + ' → ' + valor);
-            }
-        }
-
-        async function guardarEdicionCompleta(codigo) {
-            editingRows.delete(codigo);
-            await renderInventarioUnificado();
-            mostrarToast('✅ Cambios guardados para ' + codigo, 'success');
-        }
-
-        function cancelarEdicion(codigo) {
-            editingRows.delete(codigo);
-            renderInventarioUnificado();
-        }
-
-        async function editarProductoModal(codigo) {
-            if ((await getCurrentUser())?.perfil === 'invitado') return alert('No tienes permisos.');
-            const products = await getAllProducts();
-            const p = products.find(prod => prod.codigo === codigo);
-            if (!p) return alert('Producto no encontrado');
-
-            const ubicacion = p.ubicaciones[0]?.ubicacion || '';
-            const zona = p.ubicaciones[0]?.zona || '';
-
-            mostrarModal('✏️ Editar Producto', `
-                <div class="form-grid">
-                    <div class="full-width"><label>Código</label><input id="editCodigo" value="${p.codigo}" readonly style="background:#f1f5f9;"></div>
-                    <div><label>GTIN/EAN</label><input id="editGTIN" value="${p.gtin || ''}"></div>
-                    <div><label>Bodega</label>
-                        <select id="editBodega">${DEFAULT_WAREHOUSES.map(w => `<option value="${w.id}" ${p.bodega === w.id ? 'selected' : ''}>${w.nombre}</option>`).join('')}</select>
-                    </div>
-                    <div class="full-width"><label>Glosa</label><input id="editGlosa" value="${p.glosa}"></div>
-                    <div><label>Ubicación</label><input id="editUbicacion" value="${ubicacion}" placeholder="Ej: PALLET_A_1"></div>
-                    <div><label>Zona</label>
-                        <select id="editZona"><option value="">Sin zona</option>${['A','B','C','D','E','F','G','H','I','J'].map(z => `<option value="${z}" ${z === zona ? 'selected' : ''}>${z}</option>`).join('')}</select>
-                    </div>
-                    <div><label>Estado</label>
-                        <select id="editEstado"><option value="recepcion" ${p.estado === 'recepcion' ? 'selected' : ''}>📥 Recepción</option><option value="almacenado" ${p.estado === 'almacenado' ? 'selected' : ''}>✅ Almacenado</option></select>
-                    </div>
-                </div>
-            `, true);
-
-            modalCallback = async () => {
-                const glosa = document.getElementById('editGlosa').value.trim();
-                const bodega = document.getElementById('editBodega').value;
-                const gtin = document.getElementById('editGTIN').value.trim();
-                const ubicacion = document.getElementById('editUbicacion').value.trim();
-                const zona = document.getElementById('editZona').value;
-                const estado = document.getElementById('editEstado').value;
-
-                if (!glosa) return alert('La glosa es requerida');
-
-                const productos = await getAllProducts();
-                const index = productos.findIndex(prod => prod.codigo === codigo);
-                if (index === -1) return alert('Producto no encontrado');
-
-                productos[index].glosa = glosa;
-                productos[index].bodega = bodega;
-                productos[index].gtin = gtin;
-                productos[index].estado = estado;
-
-                if (productos[index].ubicaciones.length > 0) {
-                    productos[index].ubicaciones[0].ubicacion = ubicacion || productos[index].ubicaciones[0].ubicacion;
-                    productos[index].ubicaciones[0].zona = zona || productos[index].ubicaciones[0].zona;
-                } else if (ubicacion) {
-                    productos[index].ubicaciones.push({ tipo: 'master', ubicacion: ubicacion, zona: zona || 'A' });
-                }
-
-                await setProducts(productos);
-                await registrarHistorial('EDITAR', codigo, 'Producto editado: ' + glosa, bodega);
-                mostrarToast('✏️ Producto ' + codigo + ' actualizado', 'warning');
-                await renderAll();
-                cerrarModal();
-            };
-            document.getElementById('modalActionBtn').textContent = 'Actualizar';
-        }
-
-        async function moverProductoModal(codigo) {
-            if ((await getCurrentUser())?.perfil === 'invitado') return alert('No tienes permisos.');
-            const products = await getAllProducts();
-            const p = products.find(prod => prod.codigo === codigo);
-            if (!p) return alert('Producto no encontrado');
-
-            const ubicacionActual = p.ubicaciones[0]?.ubicacion || '';
-            const zonaActual = p.ubicaciones[0]?.zona || '';
-
-            mostrarModal('🔄 Mover Producto', `
-                <p><strong>Producto:</strong> ${p.codigo} - ${p.glosa}</p>
-                <p style="color:#64748b; font-size:0.8rem; margin-bottom:10px;"><strong>Ubicación actual:</strong> ${ubicacionActual || 'Sin ubicación'}</p>
-                <div class="form-grid">
-                    <div class="full-width"><label>Nueva ubicación</label><input id="moverNuevaUbic" value="${ubicacionActual}" placeholder="Ej: PALLET_B_2"></div>
-                    <div class="full-width"><label>Nueva zona</label>
-                        <select id="moverNuevaZona"><option value="">Sin zona</option>${['A','B','C','D','E','F','G','H','I','J'].map(z => `<option value="${z}" ${z === zonaActual ? 'selected' : ''}>${z}</option>`).join('')}</select>
-                    </div>
-                </div>
-            `, true);
-
-            modalCallback = async () => {
-                const nuevaUbic = document.getElementById('moverNuevaUbic').value.trim();
-                const nuevaZona = document.getElementById('moverNuevaZona').value;
-
-                if (!nuevaUbic) return alert('La nueva ubicación es requerida');
-
-                const productos = await getAllProducts();
-                const index = productos.findIndex(prod => prod.codigo === codigo);
-                if (index === -1) return alert('Producto no encontrado');
-
-                const oldUbic = productos[index].ubicaciones.map(u => u.ubicacion).join(', ');
-                if (productos[index].ubicaciones.length > 0) {
-                    productos[index].ubicaciones[0].ubicacion = nuevaUbic;
-                    if (nuevaZona) productos[index].ubicaciones[0].zona = nuevaZona;
-                } else {
-                    productos[index].ubicaciones.push({ tipo: 'master', ubicacion: nuevaUbic, zona: nuevaZona || 'A' });
-                }
-
-                await setProducts(productos);
-                const user = await getCurrentUser();
-                await addMovement({
-                    fecha: new Date().toISOString().replace('T', ' ').slice(0, 19),
-                    codigo: codigo,
-                    bodega: productos[index].bodega,
-                    desde: oldUbic || 'N/A',
-                    hacia: nuevaUbic,
-                    usuario: user ? user.nombre : 'Sistema',
-                    tipo: 'MOVIMIENTO'
-                });
-
-                await registrarHistorial('MOVIMIENTO', codigo, 'Reubicado: ' + (oldUbic || 'N/A') + ' → ' + nuevaUbic);
-                mostrarToast('🔄 Producto reubicado a ' + nuevaUbic, 'success');
-                await renderAll();
-                cerrarModal();
-            };
-            document.getElementById('modalActionBtn').textContent = 'Mover';
-        }
-
-        async function eliminarProducto(codigo) {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede eliminar registros.');
-            if (!confirm('¿Estás seguro de eliminar el producto ' + codigo + '?')) return;
-
-            const products = await getAllProducts();
-            const p = products.find(prod => prod.codigo === codigo);
-            if (!p) return alert('Producto no encontrado');
-
-            const newProducts = products.filter(prod => prod.codigo !== codigo);
-            await setProducts(newProducts);
-            await registrarHistorial('ELIMINAR', codigo, 'Producto eliminado: ' + p.glosa, p.bodega);
-            mostrarToast('🗑️ Producto ' + codigo + ' eliminado', 'error');
-            await renderAll();
-        }
-
-        function toggleSelectAllRow(codigo) {
-            if (selectedRows.has(codigo)) selectedRows.delete(codigo);
-            else selectedRows.add(codigo);
-            renderInventarioUnificado();
-        }
-
-        async function toggleSelectAll() {
-            const checked = document.getElementById('selectAll').checked;
-            const products = await getProducts();
-            if (checked) products.forEach(p => selectedRows.add(p.codigo));
-            else selectedRows.clear();
-            await renderInventarioUnificado();
-        }
-
-        function deseleccionarTodos() {
-            selectedRows.clear();
-            const selectAllEl = document.getElementById('selectAll');
-            if (selectAllEl) selectAllEl.checked = false;
-            renderInventarioUnificado();
-        }
-
-        async function moverSeleccionados() {
-            if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
-            mostrarModal('🔄 Mover Seleccionados', `
-                <p><strong>${selectedRows.size} productos seleccionados</strong></p>
-                <div class="form-grid">
-                    <div class="full-width"><label>Nueva ubicación</label><input id="moverMasivoUbic" placeholder="Ej: PALLET_B_2"></div>
-                    <div class="full-width"><label>Nueva zona</label>
-                        <select id="moverMasivoZona"><option value="">Sin zona</option>${['A','B','C','D','E','F','G','H','I','J'].map(z => `<option value="${z}">${z}</option>`).join('')}</select>
-                    </div>
-                </div>
-            `, true);
-
-            modalCallback = async () => {
-                const nuevaUbic = document.getElementById('moverMasivoUbic').value.trim();
-                const nuevaZona = document.getElementById('moverMasivoZona').value;
-
-                if (!nuevaUbic) return alert('La nueva ubicación es requerida');
-
-                const products = await getAllProducts();
-                let count = 0;
-
-                selectedRows.forEach(codigo => {
-                    const index = products.findIndex(p => p.codigo === codigo);
-                    if (index !== -1) {
-                        if (products[index].ubicaciones.length > 0) {
-                            products[index].ubicaciones[0].ubicacion = nuevaUbic;
-                            if (nuevaZona) products[index].ubicaciones[0].zona = nuevaZona;
-                        } else {
-                            products[index].ubicaciones.push({ tipo: 'master', ubicacion: nuevaUbic, zona: nuevaZona || 'A' });
-                        }
-                        count++;
-                    }
-                });
-
-                await setProducts(products);
-                await registrarHistorial('MOVIMIENTO', 'MULTIPLE', count + ' productos reubicados a ' + nuevaUbic);
-                mostrarToast('🔄 ' + count + ' productos reubicados a ' + nuevaUbic, 'success');
-                selectedRows.clear();
-                await renderAll();
-                cerrarModal();
-            };
-            document.getElementById('modalActionBtn').textContent = 'Mover todos';
-        }
-
-        async function eliminarSeleccionados() {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede eliminar registros.');
-            if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
-            if (!confirm('¿Estás seguro de eliminar ' + selectedRows.size + ' productos?')) return;
-
-            const products = await getAllProducts();
-            const newProducts = products.filter(p => !selectedRows.has(p.codigo));
-            await setProducts(newProducts);
-            await registrarHistorial('ELIMINAR', 'MULTIPLE', selectedRows.size + ' productos eliminados');
-            mostrarToast('🗑️ ' + selectedRows.size + ' productos eliminados', 'error');
-            selectedRows.clear();
-            await renderAll();
-        }
-
-        async function exportarSeleccionados() {
-            if (!(await hasPermission('descarga'))) return alert('No tienes permisos.');
-            if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
-
-            const products = await getProducts();
-            const seleccionados = products.filter(p => selectedRows.has(p.codigo));
-
-            const ws = XLSX.utils.json_to_sheet(seleccionados.map(p => ({
-                'Código': p.codigo,
-                'GTIN': p.gtin || '',
-                'Glosa': p.glosa,
-                'Bodega': p.bodega,
-                'Ubicación': p.ubicaciones[0]?.ubicacion || '',
-                'Zona': p.ubicaciones[0]?.zona || '',
-                'Estado': p.estado || 'almacenado'
-            })));
-
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Seleccionados');
-            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-            const blob = new Blob([wbout], { type: 'application/octet-stream' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'productos_seleccionados_' + new Date().toISOString().slice(0,10) + '.xlsx';
-            link.click();
-            URL.revokeObjectURL(link.href);
-            mostrarToast('📥 ' + seleccionados.length + ' productos exportados', 'success');
-        }
-
-        function generarQRCanvas(canvasId, data, size = 120) {
-            const canvas = document.getElementById(canvasId);
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, size, size);
-
-            const moduleSize = Math.floor(size / 20);
-            const margin = 4;
-            ctx.fillStyle = '#0f172a';
-
-            const drawPattern = (x, y) => {
-                for (let i = 0; i < 7; i++) {
-                    for (let j = 0; j < 7; j++) {
-                        if ((i < 2 || i > 4 || j < 2 || j > 4) && !(i === 3 && j === 3)) {
-                            ctx.fillRect(x + i * moduleSize, y + j * moduleSize, moduleSize, moduleSize);
-                        }
-                    }
-                }
-            };
-
-            drawPattern(margin, margin);
-            drawPattern(size - margin - 7 * moduleSize, margin);
-            drawPattern(margin, size - margin - 7 * moduleSize);
-
-            const chars = String(data).split('');
-            let x = margin + 7 * moduleSize + 2;
-            let y = margin + 2;
-            chars.forEach((char) => {
-                const code = char.charCodeAt(0);
-                for (let bit = 7; bit >= 0; bit--) {
-                    if (code & (1 << bit)) ctx.fillRect(x, y, moduleSize * 0.6, moduleSize * 0.6);
-                    x += moduleSize * 0.7;
-                    if (x > size - margin - 4) {
-                        x = margin + 7 * moduleSize + 2;
-                        y += moduleSize * 0.7;
-                    }
-                }
-            });
-        }
-
-        async function generarQRUbicaciones() {
-            const products = await getAllProducts();
-            const ubicacionesMap = new Map();
-            products.forEach(p => {
-                p.ubicaciones.forEach(u => {
-                    if (u.ubicacion && !ubicacionesMap.has(u.ubicacion)) {
-                        ubicacionesMap.set(u.ubicacion, u.zona || 'A');
-                    }
-                });
-            });
-
-            if (ubicacionesMap.size === 0) return alert('No hay ubicaciones registradas para generar QR.');
-
-            let qrHtml = `<h3>📱 Códigos QR de Ubicaciones (${ubicacionesMap.size})</h3>
-                       <p style="color:#64748b; margin-bottom:8px; font-size:0.8rem;">Escanee estos QR para trasladar productos a estas ubicaciones.</p>
-                       <div class="qr-grid">`;
-
-            let idx = 0;
-            for (const [ubicacion, zona] of ubicacionesMap) {
-                qrHtml += `
-                    <div class="qr-card">
-                        <canvas id="qr_ubic_${idx}" width="120" height="120"></canvas>
-                        <div class="qr-code">📍 ${ubicacion}</div>
-                        <div style="font-size:0.6rem; color:#64748b;">Zona: ${zona}</div>
-                    </div>
-                `;
-                idx++;
-            }
-
-            qrHtml += `</div>
-                       <div style="display:flex; justify-content:center; margin-top:10px; gap:6px;">
-                            <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir</button>
-                            <button class="btn btn-outline" onclick="cerrarModal()">Cerrar</button>
-                       </div>`;
-
-            mostrarModal('📱 QR de Ubicaciones', qrHtml, true);
-            setTimeout(() => {
-                let i = 0;
-                for (const [ubicacion] of ubicacionesMap) {
-                    generarQRCanvas('qr_ubic_' + i, ubicacion, 120);
-                    i++;
-                }
-            }, 100);
-
-            document.getElementById('modalActionBtn').style.display = 'none';
-        }
-
-        async function renderUsuarios() {
-            const users = await getUsers();
-            const tbody = document.getElementById('usuariosBody');
-            if (!tbody) return;
-            const currentUser = await getCurrentUser();
-            const esAdmin = currentUser?.perfil === 'admin';
-
-            if (users.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No hay usuarios registrados</td></tr>';
-                return;
-            }
-            tbody.innerHTML = users.map(u => {
-                const ultimaAct = u.ultimaActividad ? new Date(u.ultimaActividad).toLocaleString() : 'Nunca';
-                return `<tr>
-                    <td>${u.id}</td>
-                    <td>${u.nombre}</td>
-                    <td><span class="badge badge-${u.perfil}">${u.perfil}</span></td>
-                    <td>${(u.permisos || []).join(', ')}</td>
-                    <td style="font-size:0.65rem; color:#64748b;">${ultimaAct}</td>
-                    <td>
-                        <button class="btn btn-primary btn-sm" onclick="editarUsuario(${u.id})" ${esAdmin ? '' : 'disabled'}><span class="icon">✏️</span></button>
-                        <button class="btn btn-danger btn-sm" onclick="eliminarUsuario(${u.id})" ${esAdmin && u.id !== currentUserId ? '' : 'disabled'}><span class="icon">🗑️</span></button>
-                    </td>
-                </tr>`;
-            }).join('');
-        }
-
-        async function mostrarModalUsuario() {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede crear usuarios.');
-            mostrarModal('➕ Nuevo Usuario', `
-                <div class="form-grid">
-                    <div class="full-width"><label>Nombre</label><input id="userNombre" placeholder="Nombre del usuario"></div>
-                    <div class="full-width"><label>Contraseña</label><input id="userPass" type="password" placeholder="Contraseña"></div>
-                    <div><label>Perfil</label>
-                        <select id="userPerfil"><option value="admin">Admin</option><option value="supervisor">Supervisor</option><option value="operario">Operario</option><option value="invitado">Invitado</option></select>
-                    </div>
-                    <div><label>Permisos</label><input id="userPermisos" placeholder="lectura, escritura..." value="lectura"></div>
-                </div>
-            `);
-
-            modalCallback = async () => {
-                const nombre = document.getElementById('userNombre').value.trim();
-                const password = document.getElementById('userPass').value.trim();
-                const perfil = document.getElementById('userPerfil').value;
-                const permisos = document.getElementById('userPermisos').value.split(',').map(s => s.trim()).filter(Boolean);
-
-                if (!nombre || !password) return alert('Nombre y contraseña son requeridos');
-                const users = await getUsers();
-                if (users.find(u => u.nombre.toLowerCase() === nombre.toLowerCase())) return alert('Ya existe un usuario con ese nombre.');
-
-                const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
-                users.push({ id: newId, nombre, password, perfil, permisos, ultimaActividad: new Date().toISOString() });
-                await setUsers(users);
-                await registrarHistorial('AGREGAR', 'USUARIO_' + nombre, 'Usuario creado: ' + nombre + ' (' + perfil + ')');
-                mostrarToast('✅ Usuario ' + nombre + ' creado', 'success');
-                await renderAll();
-                cerrarModal();
-            };
-            document.getElementById('modalActionBtn').textContent = 'Guardar';
-        }
-
-        async function editarUsuario(id) {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede editar usuarios.');
-            const users = await getUsers();
-            const u = users.find(user => user.id === id);
-            if (!u) return alert('Usuario no encontrado');
-
-            mostrarModal('✏️ Editar Usuario', `
-                <div class="form-grid">
-                    <div class="full-width"><label>Nombre</label><input id="editUserNombre" value="${u.nombre}"></div>
-                    <div class="full-width"><label>Contraseña</label><input id="editUserPass" type="password" placeholder="Dejar en blanco para no cambiar"></div>
-                    <div><label>Perfil</label>
-                        <select id="editUserPerfil"><option value="admin" ${u.perfil === 'admin' ? 'selected' : ''}>Admin</option><option value="supervisor" ${u.perfil === 'supervisor' ? 'selected' : ''}>Supervisor</option><option value="operario" ${u.perfil === 'operario' ? 'selected' : ''}>Operario</option><option value="invitado" ${u.perfil === 'invitado' ? 'selected' : ''}>Invitado</option></select>
-                    </div>
-                    <div><label>Permisos</label><input id="editUserPermisos" value="${(u.permisos || []).join(', ')}"></div>
-                </div>
-            `);
-
-            modalCallback = async () => {
-                const nombre = document.getElementById('editUserNombre').value.trim();
-                const password = document.getElementById('editUserPass').value.trim();
-                const perfil = document.getElementById('editUserPerfil').value;
-                const permisos = document.getElementById('editUserPermisos').value.split(',').map(s => s.trim()).filter(Boolean);
-
-                if (!nombre) return alert('El nombre es requerido');
-                const usersList = await getUsers();
-                const index = usersList.findIndex(user => user.id === id);
-                if (index === -1) return alert('Usuario no encontrado');
-
-                usersList[index].nombre = nombre;
-                if (password) usersList[index].password = password;
-                usersList[index].perfil = perfil;
-                usersList[index].permisos = permisos;
-                await setUsers(usersList);
-                mostrarToast('✏️ Usuario ' + nombre + ' actualizado', 'warning');
-                await renderAll();
-                cerrarModal();
-            };
-            document.getElementById('modalActionBtn').textContent = 'Actualizar';
-        }
-
-        async function eliminarUsuario(id) {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede eliminar usuarios.');
-            if (id === currentUserId) return alert('⚠️ No puedes eliminar tu propio usuario');
-            const users = await getUsers();
-            const u = users.find(user => user.id === id);
-            if (!u) return alert('Usuario no encontrado');
-            if (!confirm('¿Estás seguro de eliminar al usuario "' + u.nombre + '"?')) return;
-
-            let usersList = await getUsers();
-            usersList = usersList.filter(user => user.id !== id);
-            await setUsers(usersList);
-            mostrarToast('🗑️ Usuario ' + u.nombre + ' eliminado', 'error');
-            await renderAll();
-        }
-
-        async function renderBodegas() {
-            const warehouses = await getAllWarehouses();
-            const tbody = document.getElementById('bodegasBody');
-            if (!tbody) return;
-            const currentUser = await getCurrentUser();
-            const esAdmin = currentUser?.perfil === 'admin';
-
-            if (warehouses.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No hay bodegas registradas</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = warehouses.map(w => `
+            tbody.innerHTML = prods.map(p => `
                 <tr>
-                    <td><strong>${w.id}</strong></td>
-                    <td>${w.nombre}</td>
-                    <td style="font-size:0.75rem; color:#64748b;">${w.descripcion || '-'}</td>
-                    <td>${(w.zonas || ['A','B','C','D','E','F','G','H','I','J']).map(z => `<span class="zone-tag zone-tag-${z}">${z}</span>`).join(' ')}</td>
-                    <td><span class="bodega-color" style="background:${w.color || '#64748b'};"></span> ${w.color || '#64748b'}</td>
+                    <td><strong>${p.codigo}</strong></td>
+                    <td>${p.gtin || '-'}</td>
+                    <td>${p.glosa}</td>
+                    <td><span class="badge-bodega badge-${p.bodega.toLowerCase()}">${p.bodega}</span></td>
+                    <td><span class="ubicacion-tag">📍 ${p.ubicaciones[0]?.ubicacion || 'Sin ubicar'}</span></td>
+                    <td><span class="zone-tag">${p.ubicaciones[0]?.zona || 'A'}</span></td>
+                    <td><span class="badge" style="background:#dcfce7; color:#166534;">Almacenado</span></td>
                     <td>
-                        <button class="btn btn-primary btn-sm" onclick="editarBodega('${w.id}')" ${esAdmin ? '' : 'disabled'}><span class="icon">✏️</span></button>
-                        <button class="btn btn-danger btn-sm" onclick="eliminarBodega('${w.id}')" ${esAdmin ? '' : 'disabled'}><span class="icon">🗑️</span></button>
+                        <button class="btn btn-primary btn-sm" onclick="moverProductoModal('${p.codigo}')">🔄 Mover</button>
                     </td>
                 </tr>
-            `).join('');
+            `).join('') || '<tr><td colspan="8" class="empty-state">No se encontraron productos</td></tr>';
         }
 
-        async function mostrarModalBodega() {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede crear bodegas.');
-            mostrarModal('🏢 Nueva Bodega', `
+        function renderLayoutVisual() {
+            const grid = document.getElementById('layoutGrid');
+            const prods = getProducts();
+            const ubicsOcupadas = new Set();
+            prods.forEach(p => p.ubicaciones.forEach(u => ubicsOcupadas.add(u.ubicacion)));
+
+            let html = '';
+            const zonas = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+            zonas.forEach(z => {
+                for(let i=1; i<=4; i++) {
+                    const code = `${z}${i}`;
+                    const ocupado = ubicsOcupadas.has(code) ? 'ocupado' : '';
+                    html += `<div class="layout-cell ${ocupado}"><span style="font-weight:700;">${z}</span><span style="font-size:0.45rem;">${i}</span></div>`;
+                }
+            });
+            grid.innerHTML = html;
+        }
+
+        function abrirModalAlmacenamiento() {
+            mostrarModal('📥 Recepción a Ubicación', `
                 <div class="form-grid">
-                    <div class="full-width"><label>ID (identificador único)</label><input id="bodegaId" placeholder="Ej: Farmacos"></div>
-                    <div class="full-width"><label>Nombre</label><input id="bodegaNombre" placeholder="Ej: Bodega de Fármacos"></div>
-                    <div class="full-width"><label>Descripción</label><input id="bodegaDescripcion" placeholder="Descripción"></div>
-                    <div class="full-width"><label>Color representativo</label><input id="bodegaColor" type="color" value="#2563eb" style="height:40px; padding:4px;"></div>
+                    <div class="full-width"><label>Código del producto</label><input id="mCod" placeholder="Ej: 01-001"></div>
+                    <div class="full-width"><label>Glosa / Descripción</label><input id="mGlosa" placeholder="Nombre del insumo"></div>
+                    <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">Fármacos</option><option value="Insumos">Insumos</option><option value="Economato">Economato</option></select></div>
+                    <div><label>Ubicación Destino</label><input id="mUbic" placeholder="Ej: A_1"></div>
                 </div>
-            `, true);
+            `);
+            modalCallback = () => {
+                const cod = document.getElementById('mCod').value.trim();
+                const glosa = document.getElementById('mGlosa').value.trim();
+                const bodega = document.getElementById('mBodega').value;
+                const ubic = document.getElementById('mUbic').value.trim();
 
-            modalCallback = async () => {
-                const id = document.getElementById('bodegaId').value.trim();
-                const nombre = document.getElementById('bodegaNombre').value.trim();
-                const descripcion = document.getElementById('bodegaDescripcion').value.trim();
-                const color = document.getElementById('bodegaColor').value;
+                if(!cod || !ubic) return alert('Completa los campos obligatorios');
 
-                if (!id || !nombre) return alert('ID y nombre son requeridos');
-                const existing = await getWarehouse(id);
-                if (existing) return alert('Ya existe una bodega con ese ID');
-
-                await addWarehouse({ id, nombre, descripcion, zonas: ['A','B','C','D','E','F','G','H','I','J'], color });
-                mostrarToast('✅ Bodega ' + nombre + ' creada', 'success');
-                await renderAll();
+                const db = getDB();
+                db.products.push({
+                    codigo: cod, gtin: '', glosa: glosa || cod, bodega: bodega,
+                    ubicaciones: [{ ubicacion: ubic, zona: ubic[0] || 'A' }], estado: 'almacenado'
+                });
+                db.movements.push({
+                    fecha: new Date().toLocaleString(), codigo: cod, desde: 'RECEPCION', hacia: ubic, usuario: 'Admin'
+                });
+                saveDB(db);
+                renderAll();
                 cerrarModal();
+                mostrarToast('Producto almacenado con éxito');
             };
-            document.getElementById('modalActionBtn').textContent = 'Crear Bodega';
         }
 
-        async function editarBodega(id) {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede editar bodegas.');
-            const wh = await getWarehouse(id);
-            if (!wh) return alert('Bodega no encontrada');
-
-            mostrarModal('✏️ Editar Bodega', `
-                <div class="form-grid">
-                    <div class="full-width"><label>ID</label><input id="editBodegaId" value="${wh.id}" readonly style="background:#f1f5f9;"></div>
-                    <div class="full-width"><label>Nombre</label><input id="editBodegaNombre" value="${wh.nombre}"></div>
-                    <div class="full-width"><label>Descripción</label><input id="editBodegaDescripcion" value="${wh.descripcion || ''}"></div>
-                    <div class="full-width"><label>Color representativo</label><input id="editBodegaColor" type="color" value="${wh.color || '#2563eb'}" style="height:40px; padding:4px;"></div>
-                </div>
-            `, true);
-
-            modalCallback = async () => {
-                const nombre = document.getElementById('editBodegaNombre').value.trim();
-                const descripcion = document.getElementById('editBodegaDescripcion').value.trim();
-                const color = document.getElementById('editBodegaColor').value;
-                if (!nombre) return alert('El nombre es requerido');
-
-                const warehouses = await getAllWarehouses();
-                const index = warehouses.findIndex(w => w.id === id);
-                if (index === -1) return alert('Bodega no encontrada');
-
-                warehouses[index].nombre = nombre;
-                warehouses[index].descripcion = descripcion;
-                warehouses[index].color = color;
-                await setWarehouses(warehouses);
-                mostrarToast('✏️ Bodega ' + nombre + ' actualizada', 'warning');
-                await renderAll();
-                cerrarModal();
+        function moverProductoModal(codigo) {
+            mostrarModal('🔄 Reubicar Producto', `
+                <p style="font-size:0.8rem; margin-bottom:8px;">Producto: <strong>${codigo}</strong></p>
+                <label>Nueva Ubicación</label><input id="nuevoUbicacion" placeholder="Ej: B_3">
+            `);
+            modalCallback = () => {
+                const nueva = document.getElementById('nuevoUbicacion').value.trim();
+                if(!nueva) return alert('Ingresa la nueva ubicación');
+                const db = getDB();
+                const p = db.products.find(x => x.codigo === codigo);
+                if(p) {
+                    const viejo = p.ubicaciones[0]?.ubicacion || 'S/N';
+                    p.ubicaciones = [{ ubicacion: nueva, zona: nueva[0] || 'A' }];
+                    db.movements.push({ fecha: new Date().toLocaleString(), codigo: codigo, desde: viejo, hacia: nueva, usuario: 'Admin' });
+                    saveDB(db);
+                    renderAll();
+                    cerrarModal();
+                    mostrarToast('Producto reubicado correctamente');
+                }
             };
-            document.getElementById('modalActionBtn').textContent = 'Actualizar';
         }
 
-        async function eliminarBodega(id) {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador puede eliminar bodegas.');
-            const wh = await getWarehouse(id);
-            if (!wh) return alert('Bodega no encontrada');
-
-            const products = await getAllProducts();
-            if (products.some(p => p.bodega === id)) return alert('⚠️ No se puede eliminar la bodega porque tiene productos asociados.');
-            if (!confirm('¿Estás seguro de eliminar la bodega "' + wh.nombre + '"?')) return;
-
-            await deleteWarehouse(id);
-            mostrarToast('🗑️ Bodega eliminada', 'error');
-            if (currentWarehouse === id) {
-                currentWarehouse = 'TODAS';
-                document.getElementById('warehouseSelect').value = 'TODAS';
-            }
-            await renderAll();
-        }
-
-        async function renderHistorialCompleto() {
-            const filter = document.getElementById('filterHistorial').value.toLowerCase();
-            const accionFilter = document.getElementById('filterHistorialAccion').value;
-            const historial = await getAllHistorial();
-
-            let filtered = historial;
-            if (filter) {
-                filtered = filtered.filter(h => (h.codigo || '').toLowerCase().includes(filter) || (h.usuario || '').toLowerCase().includes(filter) || (h.detalle || '').toLowerCase().includes(filter));
-            }
-            if (accionFilter !== 'TODAS') {
-                filtered = filtered.filter(h => h.accion === accionFilter);
-            }
-
+        function renderHistorialCompleto() {
+            const db = getDB();
             const tbody = document.getElementById('historialCompletoBody');
-            if (!tbody) return;
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No hay registros en el historial</td></tr>';
-                return;
-            }
+            tbody.innerHTML = db.movements.slice().reverse().map(m => `
+                <tr><td>${m.fecha}</td><td><strong>${m.usuario}</strong></td><td>MOVIMIENTO</td><td>${m.codigo}</td><td>${m.desde} → ${m.hacia}</td></tr>
+            `).join('') || '<tr><td colspan="5" class="empty-state">Sin historial disponible</td></tr>';
+        }
 
-            tbody.innerHTML = filtered.slice(0, 200).map(h => `
-                <tr>
-                    <td style="font-size:0.65rem; color:#64748b;">${h.fecha}</td>
-                    <td><strong>${h.usuario}</strong></td>
-                    <td>${h.accion}</td>
-                    <td><strong>${h.codigo || '-'}</strong></td>
-                    <td style="font-size:0.7rem;">${h.detalle || '-'}</td>
-                </tr>
+        function renderUsuarios() {
+            const db = getDB();
+            const tbody = document.getElementById('usuariosBody');
+            tbody.innerHTML = db.users.map(u => `
+                <tr><td>${u.id}</td><td>${u.nombre}</td><td><span class="badge badge-admin">${u.perfil}</span></td><td>${u.permisos.join(', ')}</td></tr>
             `).join('');
         }
 
-        async function limpiarHistorialCompleto() {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador.');
-            if (!confirm('¿Estás seguro de limpiar todo el historial?')) return;
-            await setHistorial([]);
-            await renderHistorialCompleto();
-            mostrarToast('🗑️ Historial limpiado', 'warning');
+        function exportarDatos() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(localStorage.getItem(STORAGE_KEY));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", "wms_backup_hsjd.json");
+            dlAnchor.click();
         }
 
-        async function exportarExcelCompleto() {
-            if (!(await hasPermission('descarga'))) return alert('No tienes permisos.');
-            const products = await getAllProducts();
-            if (products.length === 0) return alert('No hay datos para exportar');
-
-            const ws = XLSX.utils.json_to_sheet(products.map(p => ({
-                'Código': p.codigo,
-                'GTIN': p.gtin || '',
-                'Glosa': p.glosa,
-                'Bodega': p.bodega,
-                'Ubicación': p.ubicaciones[0]?.ubicacion || '',
-                'Zona': p.ubicaciones[0]?.zona || '',
-                'Estado': p.estado || 'almacenado'
-            })));
-
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
-            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-            const blob = new Blob([wbout], { type: 'application/octet-stream' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'inventario_completo_' + new Date().toISOString().slice(0,10) + '.xlsx';
-            link.click();
-            URL.revokeObjectURL(link.href);
-            mostrarToast('✅ Excel exportado correctamente', 'success');
+        function resetData() {
+            if(confirm('¿Reiniciar toda la base de datos local?')) {
+                localStorage.removeItem(STORAGE_KEY);
+                location.reload();
+            }
         }
 
-        async function exportarDatos() {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador.');
-            const data = {
-                products: await getAllProducts(),
-                movements: await getAllMovements(),
-                historial: await getAllHistorial(),
-                warehouses: await getAllWarehouses(),
-                users: await getUsers(),
-                config: getConfig(),
-                exportDate: new Date().toISOString()
-            };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'wms_backup_' + new Date().toISOString().slice(0,10) + '.json';
-            link.click();
-            URL.revokeObjectURL(link.href);
-            mostrarToast('📤 Backup exportado', 'success');
-        }
-
-        async function cargarImport(event) {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador.');
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (data.products) await setProducts(data.products);
-                    if (data.movements) for (let m of data.movements) await addMovement(m);
-                    if (data.historial) await setHistorial(data.historial);
-                    if (data.warehouses) await setWarehouses(data.warehouses);
-                    if (data.users) await setUsers(data.users);
-                    if (data.config) setConfig(data.config);
-                    await renderAll();
-                    mostrarToast('✅ Datos importados correctamente', 'success');
-                } catch (error) {
-                    alert('❌ Error al importar: ' + error.message);
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = '';
-        }
-
-        async function resetData() {
-            if ((await getCurrentUser())?.perfil !== 'admin') return alert('Solo el administrador.');
-            if (!confirm('⚠️ ¿Estás seguro de reiniciar todos los datos?')) return;
-            await setProducts([]);
-            await setHistorial([]);
-            await setWarehouses(DEFAULT_WAREHOUSES);
-            localStorage.removeItem('wms_config');
-            await initData();
-            await renderAll();
-            mostrarToast('🔄 Datos reiniciados correctamente', 'warning');
-        }
-
-        function mostrarModal(titulo, contenido, granTamaño = false) {
+        function mostrarModal(titulo, html) {
             document.getElementById('modalTitle').textContent = titulo;
-            document.getElementById('modalBody').innerHTML = contenido;
+            document.getElementById('modalBody').innerHTML = html;
             document.getElementById('modal').classList.add('active');
-            document.querySelector('.modal-content').style.maxWidth = granTamaño ? '700px' : '550px';
-            document.getElementById('modalActionBtn').style.display = 'inline-flex';
         }
 
         function cerrarModal() {
@@ -2258,7 +619,7 @@
         }
 
         function ejecutarModal() {
-            if (modalCallback) modalCallback();
+            if(modalCallback) modalCallback();
         }
     </script>
 </body>
