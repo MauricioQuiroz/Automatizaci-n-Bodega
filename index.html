@@ -25,6 +25,9 @@
             --orange-hover: #c2410c;
             --gray: #6b7280;
             --gray-hover: #4b5563;
+            --silver: #9ca3af;
+            --silver-light: #d1d5db;
+            --silver-dark: #6b7280;
             --white: #ffffff;
             --shadow: 0 1px 3px rgba(0,0,0,0.1);
             --shadow-lg: 0 10px 30px rgba(0,0,0,0.15);
@@ -118,16 +121,17 @@
         .badge-almacenado { background:#dcfce7; color:#166534; }
 
         .zone-tag { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.55rem; font-weight:700; }
-        .zone-tag-A { background:#dbeafe; color:#1e40af; }
-        .zone-tag-B { background:#dcfce7; color:#166534; }
-        .zone-tag-C { background:#fef3c7; color:#92400e; }
-        .zone-tag-D { background:#f3e8ff; color:#6b21a8; }
-        .zone-tag-E { background:#fce7f3; color:#9d174d; }
-        .zone-tag-F { background:#fecaca; color:#991b1b; }
-        .zone-tag-G { background:#cffafe; color:#0e7490; }
-        .zone-tag-H { background:#e0f2fe; color:#0369a1; }
-        .zone-tag-I { background:#fed7aa; color:#9a3412; }
-        .zone-tag-J { background:#e9d5ff; color:#5b21b6; }
+        .zone-tag-A { background:#2563eb; color:white; }
+        .zone-tag-B { background:#16a34a; color:white; }
+        .zone-tag-C { background:#f59e0b; color:#0f172a; }
+        .zone-tag-D { background:#8b5cf6; color:white; }
+        .zone-tag-E { background:#ec4899; color:white; }
+        .zone-tag-F { background:#f43f5e; color:white; }
+        .zone-tag-G { background:#06b6d4; color:white; }
+        .zone-tag-H { background:#3b82f6; color:white; }
+        .zone-tag-I { background:#fb923c; color:white; }
+        .zone-tag-J { background:#8b5cf6; color:white; }
+
         .ubicacion-tag { font-family:monospace; font-size:0.65rem; background:#f1f5f9; padding:2px 6px; border-radius:4px; }
 
         /* BOTONES */
@@ -162,6 +166,12 @@
         .filter-select { padding:6px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.75rem; background:var(--white); cursor:pointer; transition:var(--transition); min-width:80px; }
         .filter-select:focus { outline:none; border-color:var(--primary); }
 
+        /* FILTROS DE COLUMNA */
+        .filter-row { display:flex; flex-wrap:wrap; gap:6px; padding:6px 10px; background:#f8fafc; border-bottom:1px solid #e2e8f0; }
+        .filter-row input { padding:4px 8px; border:1px solid #d1d5db; border-radius:4px; font-size:0.65rem; min-width:80px; flex:1; background:white; }
+        .filter-row input:focus { outline:2px solid var(--primary); outline-offset:1px; }
+        .filter-row .filter-label { font-size:0.6rem; color:#64748b; font-weight:600; display:flex; align-items:center; gap:4px; }
+
         /* ACCIONES EN FILAS */
         .actions-cell { display:flex; gap:3px; flex-wrap:wrap; min-width:100px; }
 
@@ -191,16 +201,16 @@
         .layout-cell .cell-zone { font-size:0.65rem; font-weight:800; }
         .layout-cell .cell-level { font-size:0.45rem; opacity:0.7; font-weight:400; }
         .layout-cell .cell-label { font-size:0.4rem; opacity:0.6; font-weight:400; line-height:1.1; }
-        .layout-cell.zone-a { background:rgba(37,99,235,0.25); border-color:rgba(37,99,235,0.3); }
-        .layout-cell.zone-b { background:rgba(22,163,74,0.25); border-color:rgba(22,163,74,0.3); }
-        .layout-cell.zone-c { background:rgba(245,158,11,0.25); border-color:rgba(245,158,11,0.3); }
-        .layout-cell.zone-d { background:rgba(168,85,247,0.25); border-color:rgba(168,85,247,0.3); }
-        .layout-cell.zone-e { background:rgba(236,72,153,0.25); border-color:rgba(236,72,153,0.3); }
-        .layout-cell.zone-f { background:rgba(244,63,94,0.25); border-color:rgba(244,63,94,0.3); }
-        .layout-cell.zone-g { background:rgba(6,182,212,0.25); border-color:rgba(6,182,212,0.3); }
-        .layout-cell.zone-h { background:rgba(59,130,246,0.25); border-color:rgba(59,130,246,0.3); }
-        .layout-cell.zone-i { background:rgba(251,146,60,0.25); border-color:rgba(251,146,60,0.3); }
-        .layout-cell.zone-j { background:rgba(139,92,246,0.25); border-color:rgba(139,92,246,0.3); }
+        .layout-cell.zone-a { background:rgba(37,99,235,0.3); border-color:rgba(37,99,235,0.4); }
+        .layout-cell.zone-b { background:rgba(22,163,74,0.3); border-color:rgba(22,163,74,0.4); }
+        .layout-cell.zone-c { background:rgba(245,158,11,0.3); border-color:rgba(245,158,11,0.4); }
+        .layout-cell.zone-d { background:rgba(168,85,247,0.3); border-color:rgba(168,85,247,0.4); }
+        .layout-cell.zone-e { background:rgba(236,72,153,0.3); border-color:rgba(236,72,153,0.4); }
+        .layout-cell.zone-f { background:rgba(244,63,94,0.3); border-color:rgba(244,63,94,0.4); }
+        .layout-cell.zone-g { background:rgba(6,182,212,0.3); border-color:rgba(6,182,212,0.4); }
+        .layout-cell.zone-h { background:rgba(59,130,246,0.3); border-color:rgba(59,130,246,0.4); }
+        .layout-cell.zone-i { background:rgba(251,146,60,0.3); border-color:rgba(251,146,60,0.4); }
+        .layout-cell.zone-j { background:rgba(139,92,246,0.3); border-color:rgba(139,92,246,0.4); }
         .layout-cell.office { background:rgba(148,163,184,0.2); border-color:rgba(148,163,184,0.2); color:#475569; }
         .layout-cell.despacho { background:rgba(251,191,36,0.2); border-color:rgba(251,191,36,0.25); color:#92400e; }
         .layout-cell.ocupado { background:rgba(22,163,74,0.15) !important; border-color:rgba(22,163,74,0.3) !important; }
@@ -209,6 +219,7 @@
         .layout-legend .legend-item { display:flex; align-items:center; gap:5px; }
         .layout-legend .color-box { width:14px; height:14px; border-radius:3px; border:1px solid rgba(0,0,0,0.1); }
         .layout-legend .dot { width:8px; height:8px; border-radius:50%; background:#22c55e; display:inline-block; }
+        .layout-image { width:100%; height:auto; display:block; border-radius:var(--radius-sm); }
 
         /* TOAST */
         .toast-container { position:fixed; bottom:16px; right:16px; z-index:9999; display:flex; flex-direction:column; gap:6px; max-width:300px; width:100%; }
@@ -229,8 +240,75 @@
         .empty-state { color:#94a3b8; text-align:center; padding:30px 16px; font-size:0.85rem; }
         .empty-state .empty-icon { font-size:2.5rem; display:block; margin-bottom:10px; }
 
+        /* ============================================================
+           FOOTER - PIE DE PÁGINA (ESTILO PLATEADO)
+           ============================================================ */
+        .app-footer {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border-top: 1px solid #cbd5e1;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 0.65rem;
+            color: var(--silver-dark);
+        }
+        .app-footer .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .app-footer .footer-left .footer-brand {
+            font-weight: 700;
+            color: #475569;
+            letter-spacing: -0.3px;
+        }
+        .app-footer .footer-left .footer-brand span {
+            color: var(--primary);
+        }
+        .app-footer .footer-left .footer-divider {
+            width: 1px;
+            height: 20px;
+            background: #cbd5e1;
+        }
+        .app-footer .footer-left .footer-info {
+            color: #64748b;
+            font-weight: 400;
+        }
+        .app-footer .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            color: #94a3b8;
+            font-size: 0.6rem;
+        }
+        .app-footer .footer-right .footer-badge {
+            background: var(--silver-light);
+            color: var(--silver-dark);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.55rem;
+        }
+        .app-footer .footer-right .footer-contact {
+            color: #94a3b8;
+        }
+        .app-footer .footer-right .footer-contact strong {
+            color: #475569;
+        }
+
         /* RESPONSIVE */
-        @media (max-width:1024px) { .tab-content { padding:10px; } .card-grid { grid-template-columns:repeat(auto-fit, minmax(90px,1fr)); } .modal-content { max-width:95%; padding:16px; } .layout-grid { min-height:350px; } }
+        @media (max-width:1024px) { 
+            .tab-content { padding:10px; } 
+            .card-grid { grid-template-columns:repeat(auto-fit, minmax(90px,1fr)); } 
+            .modal-content { max-width:95%; padding:16px; } 
+            .layout-grid { min-height:350px; } 
+            .app-footer { padding:10px 16px; font-size:0.6rem; }
+        }
         @media (max-width:768px) {
             body { padding:6px; }
             .app { border-radius:10px; }
@@ -256,6 +334,7 @@
             .toolbar { flex-direction:column; align-items:stretch; gap:6px; padding:8px 10px; }
             .toolbar-left, .toolbar-right { justify-content:center; flex-wrap:wrap; }
             .toolbar .search-input input { min-width:100%; font-size:0.75rem; padding:4px 8px 4px 28px; }
+            .filter-row input { font-size:0.55rem; min-width:60px; padding:3px 5px; }
             .modal-content { padding:14px; max-width:100%; margin:8px; border-radius:14px; }
             .modal-content .form-grid { grid-template-columns:1fr; }
             .actions-cell { min-width:70px; gap:2px; }
@@ -276,6 +355,17 @@
             .toast-container { bottom:8px; right:8px; left:8px; max-width:100%; }
             .toast { font-size:0.7rem; padding:8px 12px; }
             #loginModal .login-box { padding:16px; margin:10px; }
+            .app-footer { 
+                flex-direction:column; 
+                align-items:center; 
+                text-align:center; 
+                padding:10px 14px; 
+                gap:6px;
+                font-size:0.55rem;
+            }
+            .app-footer .footer-left { justify-content:center; }
+            .app-footer .footer-left .footer-divider { display:none; }
+            .app-footer .footer-right { justify-content:center; }
         }
         @media (max-width:480px) {
             body { padding:4px; }
@@ -300,6 +390,7 @@
             .modal-content label { font-size:0.65rem; }
             .modal-content input, .modal-content select { font-size:0.75rem; padding:6px 8px; }
             .filter-select { font-size:0.65rem; padding:3px 6px; min-width:60px; }
+            .filter-row input { font-size:0.5rem; min-width:50px; padding:2px 4px; }
             .layout-grid { min-height:180px; gap:1px; padding:1px; }
             .layout-cell { min-height:22px; font-size:0.3rem; border-radius:2px; }
             .layout-cell .cell-zone { font-size:0.4rem; }
@@ -307,6 +398,11 @@
             .layout-cell .cell-label { display:none; }
             .layout-legend { font-size:0.45rem; padding:4px 8px; gap:4px; }
             .layout-legend .color-box { width:8px; height:8px; }
+            .app-footer { 
+                font-size:0.5rem; 
+                padding:8px 10px; 
+            }
+            .app-footer .footer-right .footer-badge { font-size:0.45rem; padding:1px 6px; }
         }
 
         ::-webkit-scrollbar { width:5px; height:5px; }
@@ -323,6 +419,15 @@
             .qr-grid { page-break-inside:avoid; }
             .qr-card { break-inside:avoid; border:1px solid #ddd; }
             .layout-grid { break-inside:avoid; }
+            .app-footer { 
+                position:fixed; 
+                bottom:0; 
+                left:0; 
+                right:0; 
+                border-top:1px solid #ccc; 
+                background:#f8fafc;
+                padding:6px 16px;
+            }
         }
     </style>
 </head>
@@ -410,7 +515,7 @@
             </div>
         </div>
 
-        <!-- INVENTARIO -->
+        <!-- INVENTARIO CON FILTROS -->
         <div id="tab-inventario" class="tab-content">
             <div class="toolbar">
                 <div class="toolbar-left">
@@ -431,11 +536,30 @@
                     </div>
                     <select class="filter-select" id="filterZona" onchange="renderInventarioUnificado()">
                         <option value="TODAS">🌐 Todas</option>
-                        <option value="A">A</option><option value="B">B</option><option value="C">C</option>
-                        <option value="D">D</option><option value="E">E</option><option value="F">F</option>
-                        <option value="G">G</option><option value="H">H</option><option value="I">I</option><option value="J">J</option>
+                        <option value="A">A - Palletizado Doble Altura</option>
+                        <option value="B">B - Palletizado Doble Altura</option>
+                        <option value="C">C - Palletizado Pasillo</option>
+                        <option value="D">D - VNA</option>
+                        <option value="E">E - Selectivo</option>
+                        <option value="F">F - Anaquel</option>
+                        <option value="G">G - Full Space</option>
+                        <option value="H">H - Cámara Frío</option>
+                        <option value="I">I - Inyectables</option>
+                        <option value="J">J - Mezclas</option>
                     </select>
                 </div>
+            </div>
+
+            <!-- FILTROS POR COLUMNA -->
+            <div class="filter-row">
+                <span class="filter-label">📌 Filtros:</span>
+                <input type="text" id="filterCodigo" placeholder="Código" oninput="renderInventarioUnificado()">
+                <input type="text" id="filterGTIN" placeholder="GTIN" oninput="renderInventarioUnificado()">
+                <input type="text" id="filterGlosa" placeholder="Glosa" oninput="renderInventarioUnificado()">
+                <input type="text" id="filterBodega" placeholder="Bodega" oninput="renderInventarioUnificado()">
+                <input type="text" id="filterUbicacion" placeholder="Ubicación" oninput="renderInventarioUnificado()">
+                <input type="text" id="filterEstado" placeholder="Estado" oninput="renderInventarioUnificado()">
+                <button class="btn btn-outline btn-xs" onclick="limpiarFiltros()">🧹 Limpiar</button>
             </div>
 
             <div id="bulkActions">
@@ -458,8 +582,7 @@
                             <th>Ubicación</th>
                             <th>Zona</th>
                             <th>Estado</th>
-                            <th>QR</th>
-                            <th style="min-width:130px;">Acciones</th>
+                            <th style="min-width:100px;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="inventarioUnificadoBody"></tbody>
@@ -478,32 +601,36 @@
             <p style="color:#64748b; margin-bottom:10px; font-size:0.8rem;">Visualiza la distribución de las zonas en tu bodega.</p>
 
             <div class="layout-legend">
-                <span class="legend-item"><span class="color-box" style="background:rgba(37,99,235,0.4);"></span> A-D (Palletizado)</span>
-                <span class="legend-item"><span class="color-box" style="background:rgba(236,72,153,0.4);"></span> E (Selectivo)</span>
-                <span class="legend-item"><span class="color-box" style="background:rgba(244,63,94,0.4);"></span> F (Anaquel)</span>
-                <span class="legend-item"><span class="color-box" style="background:rgba(6,182,212,0.4);"></span> G (Full Space)</span>
-                <span class="legend-item"><span class="color-box" style="background:rgba(59,130,246,0.4);"></span> H (Cámara Frío)</span>
-                <span class="legend-item"><span class="color-box" style="background:rgba(251,146,60,0.4);"></span> I (Inyectables)</span>
-                <span class="legend-item"><span class="color-box" style="background:rgba(139,92,246,0.4);"></span> J (Mezclas)</span>
-                <span class="legend-item"><span class="color-box" style="background:rgba(148,163,184,0.3);"></span> Oficinas</span>
+                <span class="legend-item"><span class="color-box" style="background:#2563eb;"></span> A - Palletizado Doble Altura</span>
+                <span class="legend-item"><span class="color-box" style="background:#16a34a;"></span> B - Palletizado Doble Altura</span>
+                <span class="legend-item"><span class="color-box" style="background:#f59e0b;"></span> C - Palletizado Pasillo</span>
+                <span class="legend-item"><span class="color-box" style="background:#8b5cf6;"></span> D - VNA</span>
+                <span class="legend-item"><span class="color-box" style="background:#ec4899;"></span> E - Selectivo</span>
+                <span class="legend-item"><span class="color-box" style="background:#f43f5e;"></span> F - Anaquel</span>
+                <span class="legend-item"><span class="color-box" style="background:#06b6d4;"></span> G - Full Space</span>
+                <span class="legend-item"><span class="color-box" style="background:#3b82f6;"></span> H - Cámara Frío</span>
+                <span class="legend-item"><span class="color-box" style="background:#fb923c;"></span> I - Inyectables</span>
+                <span class="legend-item"><span class="color-box" style="background:#8b5cf6;"></span> J - Mezclas</span>
+                <span class="legend-item"><span class="color-box" style="background:#94a3b8;"></span> Oficinas</span>
                 <span class="legend-item"><span class="dot"></span> Ocupado</span>
             </div>
 
             <div class="layout-container">
+                <img id="mapImage" class="layout-image" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='700' viewBox='0 0 1200 700'%3E%3Crect width='1200' height='700' fill='%23f1f5f9'/%3E%3Ctext x='600' y='340' font-family='Arial' font-size='36' fill='%2394a3b8' text-anchor='middle'%3E🗺️ Layout de Bodega%3C/text%3E%3Ctext x='600' y='390' font-family='Arial' font-size='18' fill='%23cbd5e1' text-anchor='middle'%3ESubir imagen en Configuración%3C/text%3E%3C/svg%3E" alt="Layout de bodega">
                 <div class="layout-grid" id="layoutGrid"></div>
             </div>
 
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:8px; margin-top:12px; padding:12px; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; font-size:0.65rem;">
-                <div><strong style="color:#1e40af;">Zona A:</strong> Palletizado Masivo (Alta Rotación)</div>
-                <div><strong style="color:#166534;">Zona B:</strong> Palletizado Masivo (Baja Rotación)</div>
-                <div><strong style="color:#92400e;">Zona C:</strong> Palletizado Controlados</div>
-                <div><strong style="color:#6b21a8;">Zona D:</strong> Pasillo Estrecho VNA</div>
-                <div><strong style="color:#9d174d;">Zona E:</strong> Almacenamiento Selectivo</div>
-                <div><strong style="color:#991b1b;">Zona F:</strong> Anaquel (PM, DAC, LRS, JARABES)</div>
-                <div><strong style="color:#0e7490;">Zona G:</strong> Full Space (Inyectables/Comprimidos)</div>
-                <div><strong style="color:#0369a1;">Zona H:</strong> Cámara de Frío</div>
-                <div><strong style="color:#9a3412;">Zona I:</strong> Palletizado (Inyectables/Insumos)</div>
-                <div><strong style="color:#5b21b6;">Zona J:</strong> Bodega Mezclas</div>
+                <div><strong style="color:#2563eb;">Zona A:</strong> Palletizado Doble Altura</div>
+                <div><strong style="color:#16a34a;">Zona B:</strong> Palletizado Doble Altura</div>
+                <div><strong style="color:#f59e0b;">Zona C:</strong> Palletizado Pasillo</div>
+                <div><strong style="color:#8b5cf6;">Zona D:</strong> VNA (Pasillo Estrecho)</div>
+                <div><strong style="color:#ec4899;">Zona E:</strong> Almacenamiento Selectivo</div>
+                <div><strong style="color:#f43f5e;">Zona F:</strong> Anaquel (PM, DAC, LRS, JARABES)</div>
+                <div><strong style="color:#06b6d4;">Zona G:</strong> Full Space (Inyectables/Comprimidos)</div>
+                <div><strong style="color:#3b82f6;">Zona H:</strong> Cámara de Frío</div>
+                <div><strong style="color:#fb923c;">Zona I:</strong> Palletizado (Inyectables/Insumos)</div>
+                <div><strong style="color:#8b5cf6;">Zona J:</strong> Bodega Mezclas</div>
             </div>
         </div>
 
@@ -561,6 +688,27 @@
                 </div>
             </div>
         </div>
+
+        <!-- ============================================================ -->
+        <!-- FOOTER - PIE DE PÁGINA (ESTILO PLATEADO) -->
+        <!-- ============================================================ -->
+        <div class="app-footer">
+            <div class="footer-left">
+                <span class="footer-brand">📦 <span>WMS</span> Bodega Central</span>
+                <span class="footer-divider"></span>
+                <span class="footer-info">Automatización Almacenamiento</span>
+                <span class="footer-divider"></span>
+                <span class="footer-info">Actualizado: Agosto 2026 · Santiago, Chile</span>
+            </div>
+            <div class="footer-right">
+                <span class="footer-badge">✦ Optimización Cadena de Suministro</span>
+                <span class="footer-badge">✦ Estándares Globales</span>
+                <span class="footer-badge">✦ Trazabilidad Sanitaria</span>
+                <span class="footer-contact">
+                    <strong>Mauricio Leonardo Quiroz Ayala</strong> · 📱 +56 9 5105 3930
+                </span>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL -->
@@ -579,14 +727,35 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- ============================================================ -->
-    <!-- SCRIPT PRINCIPAL CON INDEXEDDB Y BROADCAST + POLLING -->
+    <!-- SCRIPT PRINCIPAL -->
     <!-- ============================================================ -->
     <script>
+        // ============================================================
+        //  FUNCIÓN PARA OBTENER HORA DE CHILE
+        // ============================================================
+        function getFechaHoraChile() {
+            const now = new Date();
+            const options = {
+                timeZone: 'America/Santiago',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            };
+            const formatter = new Intl.DateTimeFormat('es-CL', options);
+            const parts = formatter.formatToParts(now);
+            const fecha = parts.filter(p => p.type !== 'literal').map(p => p.value);
+            return `${fecha[2]}-${fecha[1]}-${fecha[0]} ${fecha[3]}:${fecha[4]}:${fecha[5]}`;
+        }
+
         // ============================================================
         //  CONFIGURACIÓN INDEXEDDB
         // ============================================================
         const DB_NAME = 'WMS_DB';
-        const DB_VERSION = 2; // Aumentamos versión para agregar stores si es necesario
+        const DB_VERSION = 2;
 
         let db = null;
 
@@ -626,7 +795,6 @@
             });
         }
 
-        // Funciones de acceso a datos con IndexedDB (promesas)
         function dbGetAll(storeName) {
             return new Promise((resolve, reject) => {
                 if (!db) return reject(new Error('Base de datos no abierta'));
@@ -705,26 +873,39 @@
         const STORAGE_KEY_MODIFIED = 'wms_data_modified';
 
         // ============================================================
-        //  INICIALIZACIÓN (async)
+        //  ZONAS CON COLORES
+        // ============================================================
+        const ZONE_COLORS = {
+            'A': { bg: '#2563eb', text: 'white', label: 'Palletizado Doble Altura' },
+            'B': { bg: '#16a34a', text: 'white', label: 'Palletizado Doble Altura' },
+            'C': { bg: '#f59e0b', text: '#0f172a', label: 'Palletizado Pasillo' },
+            'D': { bg: '#8b5cf6', text: 'white', label: 'VNA' },
+            'E': { bg: '#ec4899', text: 'white', label: 'Selectivo' },
+            'F': { bg: '#f43f5e', text: 'white', label: 'Anaquel' },
+            'G': { bg: '#06b6d4', text: 'white', label: 'Full Space' },
+            'H': { bg: '#3b82f6', text: 'white', label: 'Cámara Frío' },
+            'I': { bg: '#fb923c', text: 'white', label: 'Inyectables' },
+            'J': { bg: '#8b5cf6', text: 'white', label: 'Mezclas' }
+        };
+
+        // ============================================================
+        //  INICIALIZACIÓN
         // ============================================================
         async function initData() {
             await abrirDB();
 
-            // Usuarios (se mantienen en localStorage por simplicidad, pero se pueden migrar a IndexedDB si se desea)
             if (!localStorage.getItem(STORAGE_KEY_USERS)) {
                 localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify([
-                    { id: 1, nombre: 'Admin', perfil: 'Admin', password: 'admin', permisos: ['lectura','escritura','administracion'], ultimaActividad: new Date().toISOString() },
-                    { id: 2, nombre: 'Supervisor', perfil: 'supervisor', password: '1234', permisos: ['lectura','escritura'], ultimaActividad: new Date().toISOString() },
-                    { id: 3, nombre: 'Operario', perfil: 'operario', password: '1234', permisos: ['lectura'], ultimaActividad: new Date().toISOString() }
+                    { id: 1, nombre: 'Admin', perfil: 'Admin', password: 'admin', permisos: ['lectura','escritura','administracion'], ultimaActividad: getFechaHoraChile() },
+                    { id: 2, nombre: 'Supervisor', perfil: 'supervisor', password: '1234', permisos: ['lectura','escritura'], ultimaActividad: getFechaHoraChile() },
+                    { id: 3, nombre: 'Operario', perfil: 'operario', password: '1234', permisos: ['lectura'], ultimaActividad: getFechaHoraChile() }
                 ]));
             }
 
-            // Config
             if (!localStorage.getItem(STORAGE_KEY_CONFIG)) {
                 localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify({ mapImage: '' }));
             }
 
-            // Productos de ejemplo si no hay
             const products = await dbGetAll('products');
             if (products.length === 0) {
                 const sample = [
@@ -735,11 +916,10 @@
                 await dbPutAll('products', sample);
             }
 
-            // Movimientos
             const movements = await dbGetAll('movements');
             if (movements.length === 0) {
                 await dbPut('movements', {
-                    fecha: new Date().toISOString().replace('T', ' ').slice(0, 19),
+                    fecha: getFechaHoraChile(),
                     codigo: '01-001-216-026',
                     bodega: 'Farmacos',
                     desde: 'RECEPCION',
@@ -749,11 +929,10 @@
                 });
             }
 
-            // Historial
             const historial = await dbGetAll('historial');
             if (historial.length === 0) {
                 await dbPut('historial', {
-                    fecha: new Date().toISOString().replace('T', ' ').slice(0, 19),
+                    fecha: getFechaHoraChile(),
                     usuario: 'Sistema',
                     accion: 'INICIO',
                     codigo: 'SISTEMA',
@@ -764,7 +943,7 @@
         }
 
         // ============================================================
-        //  FUNCIONES DE ACCESO A DATOS (async)
+        //  FUNCIONES DE ACCESO A DATOS
         // ============================================================
         async function getAllProducts() { return await dbGetAll('products'); }
         async function setProducts(data) {
@@ -801,7 +980,6 @@
             marcarDatosModificados();
         }
 
-        // Usuarios se mantienen en localStorage para simplicidad y compatibilidad
         function getUsers() { return JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]'); }
         function setUsers(u) {
             localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(u));
@@ -812,9 +990,6 @@
         function getConfig() { return JSON.parse(localStorage.getItem(STORAGE_KEY_CONFIG) || '{}'); }
         function setConfig(c) { localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify(c)); }
 
-        // ============================================================
-        //  MARCADOR DE DATOS MODIFICADOS (para polling)
-        // ============================================================
         function marcarDatosModificados() {
             localStorage.setItem(STORAGE_KEY_MODIFIED, 'true');
         }
@@ -824,7 +999,7 @@
         }
 
         // ============================================================
-        //  BROADCAST CHANNEL + POLLING (SINCRONIZACIÓN EN TIEMPO REAL)
+        //  BROADCAST CHANNEL + POLLING
         // ============================================================
         function initBroadcastChannel() {
             try {
@@ -832,7 +1007,6 @@
                 broadcastChannel.onmessage = function(event) {
                     const data = event.data;
                     if (data.type === 'CAMBIOS' || data.type === 'USUARIO') {
-                        // Recargar todo o parte
                         if (data.type === 'USUARIO') {
                             renderUsuarios();
                             mostrarToast('👥 ' + (data.usuario || 'Alguien') + ' actualizó usuarios', 'info');
@@ -842,7 +1016,6 @@
                         }
                     }
                 };
-                // Si soporta BroadcastChannel, cancelamos el polling si existe
                 if (pollingInterval) {
                     clearInterval(pollingInterval);
                     pollingInterval = null;
@@ -859,7 +1032,6 @@
             let lastModified = localStorage.getItem(STORAGE_KEY_MODIFIED);
 
             pollingInterval = setInterval(() => {
-                // Verificar cambios en usuarios
                 const users = getUsers();
                 const currentHash = JSON.stringify(users);
                 if (currentHash !== lastUserHash) {
@@ -867,7 +1039,6 @@
                     renderUsuarios();
                 }
 
-                // Verificar flag de modificaciones generales
                 const modified = localStorage.getItem(STORAGE_KEY_MODIFIED);
                 if (modified === 'true') {
                     limpiarMarcaModificados();
@@ -884,16 +1055,15 @@
                     type: tipo,
                     usuario: user ? user.nombre : 'Sistema',
                     detalle: detalle,
-                    timestamp: new Date().toISOString()
+                    timestamp: getFechaHoraChile()
                 });
             }
-            // También marcamos para polling
             marcarDatosModificados();
             actualizarUsuariosConectados();
         }
 
         // ============================================================
-        //  AUTENTICACIÓN (mejorada con trim y case-insensitive)
+        //  AUTENTICACIÓN
         // ============================================================
         function getCurrentUser() {
             if (currentUserId === null) return null;
@@ -911,7 +1081,6 @@
             const username = document.getElementById('loginUser').value.trim();
             const password = document.getElementById('loginPass').value.trim();
             const users = getUsers();
-            // Comparación case-insensitive y trim
             const user = users.find(u => u.nombre.toLowerCase() === username.toLowerCase() && u.password === password);
             if (user) {
                 currentUserId = user.id;
@@ -923,7 +1092,6 @@
                 document.getElementById('loginError').style.display = 'none';
                 mostrarToast('👋 Bienvenido ' + user.nombre, 'success');
                 setInterval(actualizarUsuariosConectados, 30000);
-                // Registrar login en historial
                 registrarHistorial('LOGIN', user.nombre, 'Inicio de sesión');
             } else {
                 document.getElementById('loginError').style.display = 'block';
@@ -970,15 +1138,17 @@
             const user = getCurrentUser();
             if (user) {
                 const activos = JSON.parse(localStorage.getItem(STORAGE_KEY_ACTIVE_USERS) || '{}');
-                activos[user.id] = { nombre: user.nombre, ultimaActividad: new Date().toISOString() };
+                activos[user.id] = { nombre: user.nombre, ultimaActividad: getFechaHoraChile() };
                 localStorage.setItem(STORAGE_KEY_ACTIVE_USERS, JSON.stringify(activos));
             }
             const activos = JSON.parse(localStorage.getItem(STORAGE_KEY_ACTIVE_USERS) || '{}');
             const ahora = new Date();
+            const ahoraChile = getFechaHoraChile();
             const activosRecientes = {};
             Object.keys(activos).forEach(id => {
                 const fecha = new Date(activos[id].ultimaActividad);
-                if ((ahora - fecha) / 1000 / 60 < 5) {
+                const diff = (new Date() - fecha) / 1000 / 60;
+                if (diff < 5) {
                     activosRecientes[id] = activos[id];
                 }
             });
@@ -992,7 +1162,7 @@
         async function registrarHistorial(accion, codigo, detalle, bodega = null) {
             const user = getCurrentUser();
             const entry = {
-                fecha: new Date().toISOString().replace('T', ' ').slice(0, 19),
+                fecha: getFechaHoraChile(),
                 usuario: user ? user.nombre : 'Sistema',
                 accion: accion,
                 codigo: codigo,
@@ -1005,9 +1175,8 @@
             if (user) {
                 const users = getUsers();
                 const u = users.find(u => u.id === user.id);
-                if (u) { u.ultimaActividad = new Date().toISOString(); setUsers(users); }
+                if (u) { u.ultimaActividad = getFechaHoraChile(); setUsers(users); }
             }
-            // Broadcast general
             broadcastCambios('CAMBIOS', detalle);
         }
 
@@ -1086,7 +1255,7 @@
         }
 
         // ============================================================
-        //  CARGA DE EXCEL CON INDEXEDDB
+        //  CARGA DE EXCEL
         // ============================================================
         function cargarExcel(event) {
             const file = event.target.files[0];
@@ -1158,7 +1327,7 @@
         }
 
         // ============================================================
-        //  MAPEO DE DATOS (mejorado)
+        //  MAPEO DE DATOS
         // ============================================================
         function mapearDatosExcel(data) {
             if (!data || data.length === 0) return [];
@@ -1242,10 +1411,7 @@
         function renderLayoutVisual() {
             const grid = document.getElementById('layoutGrid');
             if (!grid) return;
-            // Se usa getProducts() de forma síncrona? No, es async. Mejor obtener productos desde el scope.
-            // Para simplificar, usamos una variable global cache o llamamos a getProducts() y luego renderizamos.
-            // Aquí lo dejamos simple: usamos un array vacío y se actualiza en renderAll.
-            // En renderAll llamamos a renderLayoutVisualWithProducts con los productos obtenidos.
+            // Se renderiza con datos de productos
         }
 
         async function renderLayoutVisualWithProducts(products) {
@@ -1324,7 +1490,12 @@
         // ============================================================
         function renderConfig() {
             const config = getConfig();
-            // no-op
+            const mapImage = document.getElementById('mapImage');
+            if (mapImage && config.mapImage) {
+                mapImage.src = config.mapImage;
+            } else if (mapImage) {
+                mapImage.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='700' viewBox='0 0 1200 700'%3E%3Crect width='1200' height='700' fill='%23f1f5f9'/%3E%3Ctext x='600' y='340' font-family='Arial' font-size='36' fill='%2394a3b8' text-anchor='middle'%3E🗺️ Layout de Bodega%3C/text%3E%3Ctext x='600' y='390' font-family='Arial' font-size='18' fill='%23cbd5e1' text-anchor='middle'%3ESubir imagen en Configuración%3C/text%3E%3C/svg%3E";
+            }
         }
 
         function subirImagenLayout(event) {
@@ -1335,6 +1506,8 @@
                 const config = getConfig();
                 config.mapImage = e.target.result;
                 setConfig(config);
+                const mapImage = document.getElementById('mapImage');
+                if (mapImage) mapImage.src = config.mapImage;
                 mostrarToast('✅ Imagen del layout actualizada', 'success');
                 registrarHistorial('EDITAR', 'LAYOUT', 'Imagen del layout actualizada');
             };
@@ -1378,9 +1551,9 @@
                     <div>
                         <label>Zona</label>
                         <select id="almacenarZona">
-                            <option value="A">A - Palletizado</option>
-                            <option value="B">B - Palletizado</option>
-                            <option value="C">C - Controlados</option>
+                            <option value="A">A - Palletizado Doble Altura</option>
+                            <option value="B">B - Palletizado Doble Altura</option>
+                            <option value="C">C - Palletizado Pasillo</option>
                             <option value="D">D - VNA</option>
                             <option value="E">E - Selectivo</option>
                             <option value="F">F - Anaquel</option>
@@ -1464,7 +1637,7 @@
                 const movements = await getAllMovements();
                 const user = getCurrentUser();
                 movements.push({
-                    fecha: new Date().toISOString().replace('T', ' ').slice(0, 19),
+                    fecha: getFechaHoraChile(),
                     codigo: codigo,
                     bodega: bodega,
                     desde: 'RECEPCION',
@@ -1509,1137 +1682,4 @@
                         (decodedText) => {
                             status.textContent = '✅ Ubicación detectada: ' + decodedText;
                             document.getElementById('almacenarUbicacion').value = decodedText;
-                            detenerScannerAlmacenar();
-                            mostrarToast('📍 Ubicación escaneada: ' + decodedText, 'success');
-                        },
-                        () => {}
-                    );
-                    status.textContent = '📷 Escaneando...';
-                } else {
-                    status.textContent = '❌ Librería de escaneo no disponible.';
-                }
-            } catch (e) {
-                status.textContent = '❌ Error: ' + e.message;
-            }
-        }
-
-        function detenerScannerAlmacenar() {
-            if (scannerAlmacenar) {
-                scannerAlmacenar.stop().catch(() => {});
-                scannerAlmacenar = null;
-            }
-            const container = document.getElementById('scannerAlmacenarContainer');
-            if (container) container.style.display = 'none';
-        }
-
-        // ============================================================
-        //  INVENTARIO UNIFICADO (async)
-        // ============================================================
-        async function renderInventarioUnificado() {
-            const search = document.getElementById('searchInventarioUnificado')?.value?.toLowerCase() || '';
-            const filterZona = document.getElementById('filterZona')?.value || 'TODAS';
-
-            let products = await getProducts();
-
-            if (search) {
-                products = products.filter(p =>
-                    p.codigo.toLowerCase().includes(search) ||
-                    p.glosa.toLowerCase().includes(search) ||
-                    (p.gtin && p.gtin.includes(search))
-                );
-            }
-
-            if (filterZona !== 'TODAS') {
-                products = products.filter(p =>
-                    p.ubicaciones.some(u => u.zona === filterZona)
-                );
-            }
-
-            const tbody = document.getElementById('inventarioUnificadoBody');
-            document.getElementById('inventorySummary').textContent = products.length + ' productos';
-
-            if (products.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" class="empty-state">
-                    <span class="empty-icon">📭</span>
-                    ${search ? 'No se encontraron productos que coincidan con "' + search + '"' : 'No hay productos en esta bodega'}
-                </td></tr>`;
-                return;
-            }
-
-            const isMobile = window.innerWidth < 768;
-
-            tbody.innerHTML = products.map((p, idx) => {
-                const isEditing = editingRows.has(p.codigo);
-                const isSelected = selectedRows.has(p.codigo);
-                const ubicacion = p.ubicaciones[0]?.ubicacion || '';
-                const zona = p.ubicaciones[0]?.zona || '';
-                const estado = p.estado || 'almacenado';
-                const bodegaClass = p.bodega === 'Farmacos' ? 'badge-farmacos' : p.bodega === 'Insumos' ? 'badge-insumos' : 'badge-economato';
-                const estadoClass = estado === 'recepcion' ? 'badge-recepcion' : 'badge-almacenado';
-                const estadoLabel = estado === 'recepcion' ? '📥 Recepción' : '✅ Almacenado';
-
-                const showInlineEdit = editMode && !isMobile;
-
-                return `
-                <tr class="${isEditing ? 'row-editing' : ''}" data-codigo="${p.codigo}">
-                    <td>
-                        <input type="checkbox" class="row-selector" data-codigo="${p.codigo}"
-                               ${isSelected ? 'checked' : ''} onchange="toggleRowSelection('${p.codigo}')">
-                    </td>
-                    <td>
-                        ${showInlineEdit ?
-                            `<input class="edit-field" value="${p.codigo}" data-field="codigo" data-codigo="${p.codigo}" onchange="guardarCambioInline('${p.codigo}', 'codigo', this.value)">` :
-                            `<strong>${p.codigo}</strong>`
-                        }
-                    </td>
-                    <td>
-                        ${showInlineEdit ?
-                            `<input class="edit-field" value="${p.gtin || ''}" data-field="gtin" data-codigo="${p.codigo}" onchange="guardarCambioInline('${p.codigo}', 'gtin', this.value)">` :
-                            `${p.gtin || 'N/A'}`
-                        }
-                    </td>
-                    <td>
-                        ${showInlineEdit ?
-                            `<input class="edit-field" value="${p.glosa}" data-field="glosa" data-codigo="${p.codigo}" onchange="guardarCambioInline('${p.codigo}', 'glosa', this.value)">` :
-                            `${p.glosa}`
-                        }
-                    </td>
-                    <td>
-                        ${showInlineEdit ?
-                            `<select class="edit-field-select" data-field="bodega" data-codigo="${p.codigo}" onchange="guardarCambioInline('${p.codigo}', 'bodega', this.value)">
-                                <option value="Farmacos" ${p.bodega === 'Farmacos' ? 'selected' : ''}>💊 Fármacos</option>
-                                <option value="Insumos" ${p.bodega === 'Insumos' ? 'selected' : ''}>🧪 Insumos</option>
-                                <option value="Economato" ${p.bodega === 'Economato' ? 'selected' : ''}>📦 Economato</option>
-                            </select>` :
-                            `<span class="badge-bodega ${bodegaClass}">${p.bodega}</span>`
-                        }
-                    </td>
-                    <td>
-                        ${showInlineEdit ?
-                            `<input class="edit-field" value="${ubicacion}" data-field="ubicacion" data-codigo="${p.codigo}" placeholder="Ej: PALLET_A_1" onchange="guardarCambioInline('${p.codigo}', 'ubicacion', this.value)">` :
-                            `<span class="ubicacion-tag">📍 ${ubicacion || 'Sin ubicar'}</span>`
-                        }
-                    </td>
-                    <td>
-                        ${showInlineEdit ?
-                            `<select class="edit-field-select" data-field="zona" data-codigo="${p.codigo}" onchange="guardarCambioInline('${p.codigo}', 'zona', this.value)">
-                                <option value="">Sin zona</option>
-                                ${['A','B','C','D','E','F','G','H','I','J'].map(z =>
-                                    `<option value="${z}" ${z === zona ? 'selected' : ''}>${z}</option>`
-                                ).join('')}
-                            </select>` :
-                            `<span class="zone-tag zone-tag-${zona}">${zona || 'N/A'}</span>`
-                        }
-                    </td>
-                    <td>
-                        <span class="badge-estado ${estadoClass}">${estadoLabel}</span>
-                    </td>
-                    <td>
-                        <button class="btn btn-purple btn-xs" onclick="generarQRProducto('${p.codigo}')" title="Generar QR">
-                            <span class="icon">📱</span>
-                        </button>
-                    </td>
-                    <td>
-                        <div class="actions-cell">
-                            ${showInlineEdit ? `
-                                <button class="btn btn-success btn-xs" onclick="guardarEdicionCompleta('${p.codigo}')" title="Guardar">
-                                    <span class="icon">💾</span>
-                                </button>
-                                <button class="btn btn-danger btn-xs" onclick="cancelarEdicion('${p.codigo}')" title="Cancelar">
-                                    <span class="icon">❌</span>
-                                </button>
-                            ` : `
-                                <button class="btn btn-primary btn-xs" onclick="editarProductoModal('${p.codigo}')" title="Editar">
-                                    <span class="icon">✏️</span>
-                                </button>
-                                <button class="btn btn-warning btn-xs" onclick="moverProductoModal('${p.codigo}')" title="Mover">
-                                    <span class="icon">🔄</span>
-                                </button>
-                                <button class="btn btn-danger btn-xs" onclick="eliminarProducto('${p.codigo}')" title="Eliminar">
-                                    <span class="icon">🗑️</span>
-                                </button>
-                            `}
-                        </div>
-                    </td>
-                </tr>`;
-            }).join('');
-
-            const bulkActions = document.getElementById('bulkActions');
-            if (selectedRows.size > 0) {
-                bulkActions.style.display = 'flex';
-                document.getElementById('selectedCount').textContent = selectedRows.size + ' seleccionados';
-            } else {
-                bulkActions.style.display = 'none';
-            }
-        }
-
-        // ============================================================
-        //  EDICIÓN INLINE (async)
-        // ============================================================
-        function toggleEditMode() {
-            editMode = !editMode;
-            document.getElementById('editModeLabel').textContent = editMode ? 'Cancelar' : 'Editar';
-            if (!editMode) {
-                editingRows.clear();
-            }
-            renderInventarioUnificado();
-        }
-
-        async function guardarCambioInline(codigo, campo, valor) {
-            const products = await getAllProducts();
-            const index = products.findIndex(p => p.codigo === codigo);
-            if (index === -1) return;
-
-            const oldValor = products[index][campo];
-            if (campo === 'ubicacion' || campo === 'zona') {
-                if (!products[index].ubicaciones.length) {
-                    products[index].ubicaciones.push({ tipo: 'master', ubicacion: '', zona: '' });
-                }
-                if (campo === 'ubicacion') {
-                    products[index].ubicaciones[0].ubicacion = valor;
-                } else if (campo === 'zona') {
-                    products[index].ubicaciones[0].zona = valor;
-                }
-            } else {
-                products[index][campo] = valor;
-            }
-
-            await setProducts(products);
-            editingRows.add(codigo);
-
-            if (oldValor !== valor) {
-                await registrarHistorial('EDITAR', codigo, campo + ': ' + oldValor + ' → ' + valor);
-            }
-        }
-
-        async function guardarEdicionCompleta(codigo) {
-            editingRows.delete(codigo);
-            await renderInventarioUnificado();
-            mostrarToast('✅ Cambios guardados para ' + codigo, 'success');
-        }
-
-        function cancelarEdicion(codigo) {
-            editingRows.delete(codigo);
-            renderInventarioUnificado();
-        }
-
-        // ============================================================
-        //  EDICIÓN MODAL (async)
-        // ============================================================
-        async function editarProductoModal(codigo) {
-            if (!hasPermission('escritura')) return alert('No tienes permisos');
-
-            const products = await getAllProducts();
-            const p = products.find(prod => prod.codigo === codigo);
-            if (!p) return alert('Producto no encontrado');
-
-            const ubicacion = p.ubicaciones[0]?.ubicacion || '';
-            const zona = p.ubicaciones[0]?.zona || '';
-
-            mostrarModal('✏️ Editar Producto', `
-                <div class="form-grid">
-                    <div class="full-width">
-                        <label>Código</label>
-                        <input id="editCodigo" value="${p.codigo}" readonly style="background:#f1f5f9;">
-                    </div>
-                    <div>
-                        <label>GTIN/EAN</label>
-                        <input id="editGTIN" value="${p.gtin || ''}">
-                    </div>
-                    <div>
-                        <label>Bodega</label>
-                        <select id="editBodega">
-                            <option value="Farmacos" ${p.bodega === 'Farmacos' ? 'selected' : ''}>💊 Fármacos</option>
-                            <option value="Insumos" ${p.bodega === 'Insumos' ? 'selected' : ''}>🧪 Insumos</option>
-                            <option value="Economato" ${p.bodega === 'Economato' ? 'selected' : ''}>📦 Economato</option>
-                        </select>
-                    </div>
-                    <div class="full-width">
-                        <label>Glosa</label>
-                        <input id="editGlosa" value="${p.glosa}">
-                    </div>
-                    <div>
-                        <label>Ubicación</label>
-                        <input id="editUbicacion" value="${ubicacion}" placeholder="Ej: PALLET_A_1">
-                    </div>
-                    <div>
-                        <label>Zona</label>
-                        <select id="editZona">
-                            <option value="">Sin zona</option>
-                            ${['A','B','C','D','E','F','G','H','I','J'].map(z =>
-                                `<option value="${z}" ${z === zona ? 'selected' : ''}>${z}</option>`
-                            ).join('')}
-                        </select>
-                    </div>
-                    <div>
-                        <label>Estado</label>
-                        <select id="editEstado">
-                            <option value="recepcion" ${p.estado === 'recepcion' ? 'selected' : ''}>📥 Recepción</option>
-                            <option value="almacenado" ${p.estado === 'almacenado' ? 'selected' : ''}>✅ Almacenado</option>
-                        </select>
-                    </div>
-                </div>
-            `, true);
-
-            modalCallback = async () => {
-                const glosa = document.getElementById('editGlosa').value.trim();
-                const bodega = document.getElementById('editBodega').value;
-                const gtin = document.getElementById('editGTIN').value.trim();
-                const ubicacion = document.getElementById('editUbicacion').value.trim();
-                const zona = document.getElementById('editZona').value;
-                const estado = document.getElementById('editEstado').value;
-
-                if (!glosa) return alert('La glosa es requerida');
-
-                const productos = await getAllProducts();
-                const index = productos.findIndex(prod => prod.codigo === codigo);
-                if (index === -1) return alert('Producto no encontrado');
-
-                productos[index].glosa = glosa;
-                productos[index].bodega = bodega;
-                productos[index].gtin = gtin;
-                productos[index].estado = estado;
-
-                if (productos[index].ubicaciones.length > 0) {
-                    productos[index].ubicaciones[0].ubicacion = ubicacion || productos[index].ubicaciones[0].ubicacion;
-                    productos[index].ubicaciones[0].zona = zona || productos[index].ubicaciones[0].zona;
-                } else if (ubicacion) {
-                    productos[index].ubicaciones.push({ tipo: 'master', ubicacion: ubicacion, zona: zona || 'A' });
-                }
-
-                await setProducts(productos);
-
-                await registrarHistorial('EDITAR', codigo, 'Producto editado: ' + glosa, bodega);
-                mostrarToast('✏️ Producto ' + codigo + ' actualizado', 'warning');
-                renderAll();
-                cerrarModal();
-            };
-            document.getElementById('modalActionBtn').textContent = 'Actualizar';
-        }
-
-        // ============================================================
-        //  MOVER PRODUCTO (async)
-        // ============================================================
-        async function moverProductoModal(codigo) {
-            if (!hasPermission('escritura')) return alert('No tienes permisos');
-
-            const products = await getAllProducts();
-            const p = products.find(prod => prod.codigo === codigo);
-            if (!p) return alert('Producto no encontrado');
-
-            const ubicacionActual = p.ubicaciones[0]?.ubicacion || '';
-            const zonaActual = p.ubicaciones[0]?.zona || '';
-
-            mostrarModal('🔄 Mover Producto', `
-                <p><strong>Producto:</strong> ${p.codigo} - ${p.glosa}</p>
-                <p style="color:#64748b; font-size:0.8rem; margin-bottom:10px;"><strong>Ubicación actual:</strong> ${ubicacionActual || 'Sin ubicación'}</p>
-                <div class="form-grid">
-                    <div class="full-width">
-                        <label>Nueva ubicación</label>
-                        <input id="moverNuevaUbic" value="${ubicacionActual}" placeholder="Ej: PALLET_B_2">
-                    </div>
-                    <div class="full-width">
-                        <label>Nueva zona</label>
-                        <select id="moverNuevaZona">
-                            <option value="">Sin zona</option>
-                            ${['A','B','C','D','E','F','G','H','I','J'].map(z =>
-                                `<option value="${z}" ${z === zonaActual ? 'selected' : ''}>${z}</option>`
-                            ).join('')}
-                        </select>
-                    </div>
-                </div>
-                <div style="margin-top:8px; display:flex; gap:8px;">
-                    <button class="btn btn-success btn-sm" onclick="escanearUbicacionMover()" type="button">
-                        <span class="icon">📷</span> Escanear QR
-                    </button>
-                </div>
-                <div id="scannerMoverContainer" style="display:none; margin-top:8px;">
-                    <div id="scannerMover" style="width:100%; max-width:300px; margin:0 auto; border-radius:8px; overflow:hidden; background:#0f172a; min-height:150px;"></div>
-                    <div id="scannerMoverStatus" style="color:#64748b; font-size:0.8rem; text-align:center; margin:4px 0;"></div>
-                    <button class="btn btn-danger btn-sm" onclick="detenerScannerMover()" type="button">⏹️ Detener</button>
-                </div>
-            `, true);
-
-            modalCallback = async () => {
-                const nuevaUbic = document.getElementById('moverNuevaUbic').value.trim();
-                const nuevaZona = document.getElementById('moverNuevaZona').value;
-
-                if (!nuevaUbic) return alert('La nueva ubicación es requerida');
-
-                const productos = await getAllProducts();
-                const index = productos.findIndex(prod => prod.codigo === codigo);
-                if (index === -1) return alert('Producto no encontrado');
-
-                const oldUbic = productos[index].ubicaciones.map(u => u.ubicacion).join(', ');
-
-                if (productos[index].ubicaciones.length > 0) {
-                    productos[index].ubicaciones[0].ubicacion = nuevaUbic;
-                    if (nuevaZona) productos[index].ubicaciones[0].zona = nuevaZona;
-                } else {
-                    productos[index].ubicaciones.push({ tipo: 'master', ubicacion: nuevaUbic, zona: nuevaZona || 'A' });
-                }
-
-                await setProducts(productos);
-
-                const movements = await getAllMovements();
-                const user = getCurrentUser();
-                movements.push({
-                    fecha: new Date().toISOString().replace('T', ' ').slice(0, 19),
-                    codigo: codigo,
-                    bodega: productos[index].bodega,
-                    desde: oldUbic || 'N/A',
-                    hacia: nuevaUbic,
-                    usuario: user ? user.nombre : 'Sistema',
-                    tipo: 'MOVIMIENTO'
-                });
-                await setMovements(movements);
-
-                await registrarHistorial('MOVIMIENTO', codigo, 'Reubicado: ' + (oldUbic || 'N/A') + ' → ' + nuevaUbic);
-                mostrarToast('🔄 Producto reubicado a ' + nuevaUbic, 'success');
-                renderAll();
-                cerrarModal();
-            };
-            document.getElementById('modalActionBtn').textContent = 'Mover';
-        }
-
-        // ============================================================
-        //  ESCANER PARA MOVER
-        // ============================================================
-        let scannerMover = null;
-
-        function escanearUbicacionMover() {
-            const container = document.getElementById('scannerMoverContainer');
-            const status = document.getElementById('scannerMoverStatus');
-            if (!container) return;
-
-            container.style.display = 'block';
-            status.textContent = '📷 Iniciando escáner...';
-
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                status.textContent = '❌ Tu navegador no soporta la cámara.';
-                return;
-            }
-
-            try {
-                if (typeof Html5Qrcode !== 'undefined') {
-                    scannerMover = new Html5Qrcode("scannerMover");
-                    scannerMover.start(
-                        { facingMode: "environment" },
-                        { fps: 10, qrbox: { width: 200, height: 100 } },
-                        (decodedText) => {
-                            status.textContent = '✅ Ubicación detectada: ' + decodedText;
-                            document.getElementById('moverNuevaUbic').value = decodedText;
-                            detenerScannerMover();
-                            mostrarToast('📍 Ubicación escaneada: ' + decodedText, 'success');
-                        },
-                        () => {}
-                    );
-                    status.textContent = '📷 Escaneando...';
-                } else {
-                    status.textContent = '❌ Librería de escaneo no disponible.';
-                }
-            } catch (e) {
-                status.textContent = '❌ Error: ' + e.message;
-            }
-        }
-
-        function detenerScannerMover() {
-            if (scannerMover) {
-                scannerMover.stop().catch(() => {});
-                scannerMover = null;
-            }
-            const container = document.getElementById('scannerMoverContainer');
-            if (container) container.style.display = 'none';
-        }
-
-        // ============================================================
-        //  ELIMINAR PRODUCTO (async)
-        // ============================================================
-        async function eliminarProducto(codigo) {
-            if (!hasPermission('escritura')) return alert('No tienes permisos');
-            if (!confirm('¿Estás seguro de eliminar el producto ' + codigo + '?')) return;
-
-            const products = await getAllProducts();
-            const p = products.find(prod => prod.codigo === codigo);
-            if (!p) return alert('Producto no encontrado');
-
-            const newProducts = products.filter(prod => prod.codigo !== codigo);
-            await setProducts(newProducts);
-
-            await registrarHistorial('ELIMINAR', codigo, 'Producto eliminado: ' + p.glosa, p.bodega);
-            mostrarToast('🗑️ Producto ' + codigo + ' eliminado', 'error');
-            renderAll();
-        }
-
-        // ============================================================
-        //  SELECCIÓN MÚLTIPLE
-        // ============================================================
-        function toggleRowSelection(codigo) {
-            if (selectedRows.has(codigo)) {
-                selectedRows.delete(codigo);
-            } else {
-                selectedRows.add(codigo);
-            }
-            renderInventarioUnificado();
-        }
-
-        function toggleSelectAll() {
-            const checked = document.getElementById('selectAll').checked;
-            const products = getProducts();
-            if (checked) {
-                products.forEach(p => selectedRows.add(p.codigo));
-            } else {
-                selectedRows.clear();
-            }
-            renderInventarioUnificado();
-        }
-
-        function deseleccionarTodos() {
-            selectedRows.clear();
-            document.getElementById('selectAll').checked = false;
-            renderInventarioUnificado();
-        }
-
-        async function generarQRSeleccionados() {
-            if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
-
-            const products = await getProducts();
-            const seleccionados = products.filter(p => selectedRows.has(p.codigo));
-
-            let qrHtml = `<h3>📱 Códigos QR (${seleccionados.length})</h3>
-                         <p style="color:#64748b; margin-bottom:8px; font-size:0.8rem;">Códigos QR para los productos seleccionados.</p>
-                         <div class="qr-grid">`;
-
-            seleccionados.forEach((p, idx) => {
-                const ubicacion = p.ubicaciones[0]?.ubicacion || 'Sin ubicación';
-                qrHtml += `
-                    <div class="qr-card">
-                        <canvas id="qr_sel_${idx}" width="100" height="100"></canvas>
-                        <div class="qr-code">${p.codigo}</div>
-                        <div class="qr-ubicacion">📍 ${ubicacion}</div>
-                    </div>
-                `;
-            });
-
-            qrHtml += `</div>
-                       <div style="display:flex; justify-content:center; margin-top:10px; gap:6px;">
-                           <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir</button>
-                           <button class="btn btn-outline" onclick="cerrarModal()">Cerrar</button>
-                       </div>`;
-
-            mostrarModal('📱 Códigos QR', qrHtml, true);
-
-            setTimeout(() => {
-                seleccionados.forEach((p, idx) => {
-                    const ubicacion = p.ubicaciones[0]?.ubicacion || 'Sin ubicación';
-                    generarQRCanvas('qr_sel_' + idx, ubicacion, 100);
-                });
-            }, 100);
-
-            document.getElementById('modalActionBtn').style.display = 'none';
-        }
-
-        async function moverSeleccionados() {
-            if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
-
-            mostrarModal('🔄 Mover Seleccionados', `
-                <p><strong>${selectedRows.size} productos seleccionados</strong></p>
-                <div class="form-grid">
-                    <div class="full-width">
-                        <label>Nueva ubicación</label>
-                        <input id="moverMasivoUbic" placeholder="Ej: PALLET_B_2">
-                    </div>
-                    <div class="full-width">
-                        <label>Nueva zona</label>
-                        <select id="moverMasivoZona">
-                            <option value="">Sin zona</option>
-                            ${['A','B','C','D','E','F','G','H','I','J'].map(z =>
-                                `<option value="${z}">${z}</option>`
-                            ).join('')}
-                        </select>
-                    </div>
-                </div>
-            `, true);
-
-            modalCallback = async () => {
-                const nuevaUbic = document.getElementById('moverMasivoUbic').value.trim();
-                const nuevaZona = document.getElementById('moverMasivoZona').value;
-
-                if (!nuevaUbic) return alert('La nueva ubicación es requerida');
-
-                const products = await getAllProducts();
-                let count = 0;
-
-                selectedRows.forEach(codigo => {
-                    const index = products.findIndex(p => p.codigo === codigo);
-                    if (index !== -1) {
-                        if (products[index].ubicaciones.length > 0) {
-                            products[index].ubicaciones[0].ubicacion = nuevaUbic;
-                            if (nuevaZona) products[index].ubicaciones[0].zona = nuevaZona;
-                        } else {
-                            products[index].ubicaciones.push({ tipo: 'master', ubicacion: nuevaUbic, zona: nuevaZona || 'A' });
-                        }
-                        count++;
-                    }
-                });
-
-                await setProducts(products);
-                await registrarHistorial('MOVIMIENTO', 'MULTIPLE', count + ' productos reubicados a ' + nuevaUbic);
-                mostrarToast('🔄 ' + count + ' productos reubicados a ' + nuevaUbic, 'success');
-                selectedRows.clear();
-                renderAll();
-                cerrarModal();
-            };
-            document.getElementById('modalActionBtn').textContent = 'Mover todos';
-        }
-
-        async function eliminarSeleccionados() {
-            if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
-            if (!confirm('¿Estás seguro de eliminar ' + selectedRows.size + ' productos?')) return;
-
-            const products = await getAllProducts();
-            const newProducts = products.filter(p => !selectedRows.has(p.codigo));
-            await setProducts(newProducts);
-
-            await registrarHistorial('ELIMINAR', 'MULTIPLE', selectedRows.size + ' productos eliminados');
-            mostrarToast('🗑️ ' + selectedRows.size + ' productos eliminados', 'error');
-            selectedRows.clear();
-            renderAll();
-        }
-
-        async function exportarSeleccionados() {
-            if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
-
-            const products = await getProducts();
-            const seleccionados = products.filter(p => selectedRows.has(p.codigo));
-
-            const ws = XLSX.utils.json_to_sheet(seleccionados.map(p => ({
-                'Código': p.codigo,
-                'GTIN': p.gtin || '',
-                'Glosa': p.glosa,
-                'Bodega': p.bodega,
-                'Ubicación': p.ubicaciones[0]?.ubicacion || '',
-                'Zona': p.ubicaciones[0]?.zona || '',
-                'Estado': p.estado || 'almacenado'
-            })));
-
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Seleccionados');
-            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-            const blob = new Blob([wbout], { type: 'application/octet-stream' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'productos_seleccionados_' + new Date().toISOString().slice(0,10) + '.xlsx';
-            link.click();
-            URL.revokeObjectURL(link.href);
-
-            mostrarToast('📥 ' + seleccionados.length + ' productos exportados', 'success');
-        }
-
-        // ============================================================
-        //  QR
-        // ============================================================
-        function generarQRCanvas(canvasId, data, size = 120) {
-            const canvas = document.getElementById(canvasId);
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, size, size);
-
-            const moduleSize = Math.floor(size / 20);
-            const margin = 4;
-
-            ctx.fillStyle = '#0f172a';
-
-            const drawPattern = (x, y) => {
-                for (let i = 0; i < 7; i++) {
-                    for (let j = 0; j < 7; j++) {
-                        if ((i < 2 || i > 4 || j < 2 || j > 4) && !(i === 3 && j === 3)) {
-                            ctx.fillRect(x + i * moduleSize, y + j * moduleSize, moduleSize, moduleSize);
-                        }
-                    }
-                }
-            };
-
-            drawPattern(margin, margin);
-            drawPattern(size - margin - 7 * moduleSize, margin);
-            drawPattern(margin, size - margin - 7 * moduleSize);
-
-            const chars = String(data).split('');
-            let x = margin + 7 * moduleSize + 2;
-            let y = margin + 2;
-            chars.forEach((char) => {
-                const code = char.charCodeAt(0);
-                for (let bit = 7; bit >= 0; bit--) {
-                    if (code & (1 << bit)) {
-                        ctx.fillRect(x, y, moduleSize * 0.6, moduleSize * 0.6);
-                    }
-                    x += moduleSize * 0.7;
-                    if (x > size - margin - 4) {
-                        x = margin + 7 * moduleSize + 2;
-                        y += moduleSize * 0.7;
-                    }
-                }
-            });
-        }
-
-        async function generarQRProducto(codigo) {
-            const products = await getAllProducts();
-            const p = products.find(prod => prod.codigo === codigo);
-            if (!p) return alert('Producto no encontrado');
-
-            const ubicacion = p.ubicaciones[0]?.ubicacion || 'Sin ubicación';
-
-            const qrHtml = `
-                <div style="text-align:center; padding:14px;">
-                    <h4>${p.codigo}</h4>
-                    <p style="color:#64748b; font-size:0.75rem;">${p.glosa}</p>
-                    <p style="font-size:0.65rem; color:#64748b;">GTIN: ${p.gtin || 'N/A'}</p>
-                    <canvas id="qr_producto" width="180" height="180"></canvas>
-                    <p style="font-size:0.85rem; font-weight:600; margin-top:6px;">📍 ${ubicacion}</p>
-                    <p style="font-size:0.65rem; color:#64748b;">Zona: ${p.ubicaciones[0]?.zona || 'N/A'}</p>
-                    <div style="display:flex; justify-content:center; margin-top:10px; gap:6px;">
-                        <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir</button>
-                        <button class="btn btn-outline" onclick="cerrarModal()">Cerrar</button>
-                    </div>
-                </div>
-            `;
-
-            mostrarModal('📱 QR de Producto', qrHtml, true);
-            setTimeout(() => generarQRCanvas('qr_producto', ubicacion, 180), 100);
-            document.getElementById('modalActionBtn').style.display = 'none';
-        }
-
-        async function generarTodosQR() {
-            const products = await getProducts();
-            if (products.length === 0) return alert('No hay productos');
-
-            let qrHtml = `<h3>📱 Códigos QR (${products.length})</h3>
-                         <p style="color:#64748b; margin-bottom:8px; font-size:0.8rem;">Códigos QR para todos los productos.</p>
-                         <div class="qr-grid">`;
-
-            products.forEach((p, idx) => {
-                const ubicacion = p.ubicaciones[0]?.ubicacion || 'Sin ubicación';
-                qrHtml += `
-                    <div class="qr-card">
-                        <canvas id="qr_all_${idx}" width="100" height="100"></canvas>
-                        <div class="qr-code">${p.codigo}</div>
-                        <div class="qr-ubicacion">📍 ${ubicacion}</div>
-                    </div>
-                `;
-            });
-
-            qrHtml += `</div>
-                       <div style="display:flex; justify-content:center; margin-top:10px; gap:6px;">
-                           <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir</button>
-                           <button class="btn btn-outline" onclick="cerrarModal()">Cerrar</button>
-                       </div>`;
-
-            mostrarModal('📱 Códigos QR', qrHtml, true);
-
-            setTimeout(() => {
-                products.forEach((p, idx) => {
-                    const ubicacion = p.ubicaciones[0]?.ubicacion || 'Sin ubicación';
-                    generarQRCanvas('qr_all_' + idx, ubicacion, 100);
-                });
-            }, 100);
-
-            document.getElementById('modalActionBtn').style.display = 'none';
-            await registrarHistorial('MOVIMIENTO', 'QR_GENERADO', 'Códigos QR generados para ' + products.length + ' productos');
-        }
-
-        // ============================================================
-        //  USUARIOS (CON BROADCAST Y SINCRONIZACIÓN)
-        // ============================================================
-        function renderUsuarios() {
-            const users = getUsers();
-            const tbody = document.getElementById('usuariosBody');
-            if (users.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No hay usuarios registrados</td></tr>';
-                return;
-            }
-            tbody.innerHTML = users.map(u => {
-                const ultimaAct = u.ultimaActividad ? new Date(u.ultimaActividad).toLocaleString() : 'Nunca';
-                return `<tr>
-                    <td>${u.id}</td>
-                    <td>${u.nombre}</td>
-                    <td><span class="badge badge-${u.perfil}">${u.perfil}</span></td>
-                    <td>${(u.permisos || []).join(', ')}</td>
-                    <td style="font-size:0.65rem; color:#64748b;">${ultimaAct}</td>
-                    <td>
-                        <button class="btn btn-primary btn-sm" onclick="editarUsuario(${u.id})" ${hasPermission('administracion') ? '' : 'disabled'}>
-                            <span class="icon">✏️</span>
-                        </button>
-                        <button class="btn btn-danger btn-sm" onclick="eliminarUsuario(${u.id})" ${hasPermission('administracion') && u.id !== currentUserId ? '' : 'disabled'}>
-                            <span class="icon">🗑️</span>
-                        </button>
-                    </td>
-                </tr>`;
-            }).join('');
-        }
-
-        function mostrarModalUsuario() {
-            if (!hasPermission('administracion')) return alert('No tienes permisos');
-
-            mostrarModal('➕ Nuevo Usuario', `
-                <div class="form-grid">
-                    <div class="full-width">
-                        <label>Nombre</label>
-                        <input id="userNombre" placeholder="Nombre del usuario">
-                    </div>
-                    <div class="full-width">
-                        <label>Contraseña</label>
-                        <input id="userPass" type="password" placeholder="Contraseña">
-                    </div>
-                    <div>
-                        <label>Perfil</label>
-                        <select id="userPerfil">
-                            <option value="admin">Admin</option>
-                            <option value="supervisor">Supervisor</option>
-                            <option value="operario">Operario</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Permisos</label>
-                        <input id="userPermisos" placeholder="lectura, escritura, administracion" value="lectura">
-                    </div>
-                </div>
-            `);
-
-            modalCallback = () => {
-                const nombre = document.getElementById('userNombre').value.trim();
-                const password = document.getElementById('userPass').value.trim();
-                const perfil = document.getElementById('userPerfil').value;
-                const permisos = document.getElementById('userPermisos').value.split(',').map(s => s.trim()).filter(Boolean);
-
-                if (!nombre || !password) return alert('Nombre y contraseña son requeridos');
-                if (getUsers().find(u => u.nombre.toLowerCase() === nombre.toLowerCase())) {
-                    return alert('Ya existe un usuario con ese nombre.');
-                }
-
-                const users = getUsers();
-                const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
-                users.push({
-                    id: newId,
-                    nombre,
-                    password,
-                    perfil,
-                    permisos,
-                    ultimaActividad: new Date().toISOString()
-                });
-                setUsers(users);
-                broadcastCambios('USUARIO', 'Usuario creado: ' + nombre);
-                registrarHistorial('AGREGAR', 'USUARIO_' + nombre, 'Usuario creado: ' + nombre + ' (' + perfil + ')');
-                mostrarToast('✅ Usuario ' + nombre + ' creado', 'success');
-                renderAll();
-                cerrarModal();
-            };
-            document.getElementById('modalActionBtn').textContent = 'Guardar';
-        }
-
-        function editarUsuario(id) {
-            if (!hasPermission('administracion')) return alert('No tienes permisos');
-
-            const users = getUsers();
-            const u = users.find(user => user.id === id);
-            if (!u) return alert('Usuario no encontrado');
-
-            mostrarModal('✏️ Editar Usuario', `
-                <div class="form-grid">
-                    <div class="full-width">
-                        <label>Nombre</label>
-                        <input id="editUserNombre" value="${u.nombre}">
-                    </div>
-                    <div class="full-width">
-                        <label>Contraseña</label>
-                        <input id="editUserPass" type="password" placeholder="Dejar en blanco para no cambiar">
-                    </div>
-                    <div>
-                        <label>Perfil</label>
-                        <select id="editUserPerfil">
-                            <option value="admin" ${u.perfil === 'admin' ? 'selected' : ''}>Admin</option>
-                            <option value="supervisor" ${u.perfil === 'supervisor' ? 'selected' : ''}>Supervisor</option>
-                            <option value="operario" ${u.perfil === 'operario' ? 'selected' : ''}>Operario</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Permisos</label>
-                        <input id="editUserPermisos" value="${(u.permisos || []).join(', ')}">
-                    </div>
-                </div>
-            `);
-
-            modalCallback = () => {
-                const nombre = document.getElementById('editUserNombre').value.trim();
-                const password = document.getElementById('editUserPass').value.trim();
-                const perfil = document.getElementById('editUserPerfil').value;
-                const permisos = document.getElementById('editUserPermisos').value.split(',').map(s => s.trim()).filter(Boolean);
-
-                if (!nombre) return alert('El nombre es requerido');
-
-                const usersList = getUsers();
-                const index = usersList.findIndex(user => user.id === id);
-                if (index === -1) return alert('Usuario no encontrado');
-
-                const oldNombre = usersList[index].nombre;
-                usersList[index].nombre = nombre;
-                if (password) usersList[index].password = password;
-                usersList[index].perfil = perfil;
-                usersList[index].permisos = permisos;
-                setUsers(usersList);
-                broadcastCambios('USUARIO', 'Usuario editado: ' + nombre);
-                registrarHistorial('EDITAR', 'USUARIO_' + nombre, 'Usuario editado: ' + oldNombre + ' → ' + nombre + ' (' + perfil + ')');
-                mostrarToast('✏️ Usuario ' + nombre + ' actualizado', 'warning');
-                renderAll();
-                cerrarModal();
-            };
-            document.getElementById('modalActionBtn').textContent = 'Actualizar';
-        }
-
-        function eliminarUsuario(id) {
-            if (!hasPermission('administracion')) return alert('No tienes permisos');
-            if (id === currentUserId) return alert('⚠️ No puedes eliminar tu propio usuario');
-
-            const users = getUsers();
-            const u = users.find(user => user.id === id);
-            if (!u) return alert('Usuario no encontrado');
-
-            if (!confirm('¿Estás seguro de eliminar al usuario "' + u.nombre + '"?')) return;
-
-            const nombre = u.nombre;
-            const perfil = u.perfil;
-            let usersList = getUsers();
-            usersList = usersList.filter(user => user.id !== id);
-            setUsers(usersList);
-            broadcastCambios('USUARIO', 'Usuario eliminado: ' + nombre);
-            registrarHistorial('ELIMINAR', 'USUARIO_' + nombre, 'Usuario eliminado: ' + nombre + ' (' + perfil + ')');
-
-            const activos = JSON.parse(localStorage.getItem(STORAGE_KEY_ACTIVE_USERS) || '{}');
-            delete activos[id];
-            localStorage.setItem(STORAGE_KEY_ACTIVE_USERS, JSON.stringify(activos));
-
-            mostrarToast('🗑️ Usuario ' + nombre + ' eliminado', 'error');
-            renderAll();
-        }
-
-        // ============================================================
-        //  HISTORIAL (async)
-        // ============================================================
-        async function renderHistorialCompleto() {
-            const filter = document.getElementById('filterHistorial').value.toLowerCase();
-            const accionFilter = document.getElementById('filterHistorialAccion').value;
-            const historial = await getAllHistorial();
-
-            let filtered = historial;
-            if (filter) {
-                filtered = filtered.filter(h =>
-                    (h.codigo || '').toLowerCase().includes(filter) ||
-                    (h.usuario || '').toLowerCase().includes(filter) ||
-                    (h.detalle || '').toLowerCase().includes(filter)
-                );
-            }
-            if (accionFilter !== 'TODAS') {
-                filtered = filtered.filter(h => h.accion === accionFilter);
-            }
-
-            const tbody = document.getElementById('historialCompletoBody');
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No hay registros en el historial</td></tr>';
-                return;
-            }
-
-            const accionLabels = {
-                'AGREGAR': '<span class="badge-accion badge-agregar">➕ Agregar</span>',
-                'EDITAR': '<span class="badge-accion badge-editar">✏️ Editar</span>',
-                'ELIMINAR': '<span class="badge-accion badge-eliminar">🗑️ Eliminar</span>',
-                'MOVIMIENTO': '<span class="badge-accion badge-mover">🔄 Movimiento</span>',
-                'ALMACENAR': '<span class="badge-accion" style="background:#fef3c7;color:#92400e;">📥 Almacenar</span>'
-            };
-
-            tbody.innerHTML = filtered.slice().reverse().slice(0, 200).map(h => `
-                <tr>
-                    <td style="font-size:0.65rem; color:#64748b;">${h.fecha}</td>
-                    <td><strong>${h.usuario}</strong> <span style="font-size:0.5rem; color:#94a3b8;">(${h.perfil || 'sistema'})</span></td>
-                    <td>${accionLabels[h.accion] || h.accion}</td>
-                    <td><strong>${h.codigo || '-'}</strong></td>
-                    <td style="font-size:0.7rem;">${h.detalle || '-'}</td>
-                </tr>
-            `).join('');
-        }
-
-        async function limpiarHistorialCompleto() {
-            if (!hasPermission('administracion')) return alert('No tienes permisos');
-            if (!confirm('¿Estás seguro de limpiar todo el historial?')) return;
-            await setHistorial([]);
-            renderHistorialCompleto();
-            mostrarToast('🗑️ Historial limpiado', 'warning');
-        }
-
-        // ============================================================
-        //  EXPORTAR EXCEL (async)
-        // ============================================================
-        async function exportarExcelCompleto() {
-            const products = await getAllProducts();
-            if (products.length === 0) return alert('No hay datos para exportar');
-
-            const exportData = products.map(p => ({
-                'Código': p.codigo,
-                'GTIN': p.gtin || '',
-                'Glosa': p.glosa,
-                'Bodega': p.bodega,
-                'Ubicación': p.ubicaciones[0]?.ubicacion || '',
-                'Zona': p.ubicaciones[0]?.zona || '',
-                'Estado': p.estado || 'almacenado'
-            }));
-
-            const ws = XLSX.utils.json_to_sheet(exportData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
-            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-            const blob = new Blob([wbout], { type: 'application/octet-stream' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'inventario_completo_' + new Date().toISOString().slice(0,10) + '.xlsx';
-            link.click();
-            URL.revokeObjectURL(link.href);
-
-            await registrarHistorial('AGREGAR', 'EXCEL_EXPORT', 'Excel completo exportado');
-            mostrarToast('✅ Excel exportado correctamente', 'success');
-        }
-
-        async function exportarDatos() {
-            const products = await getAllProducts();
-            const movements = await getAllMovements();
-            const historial = await getAllHistorial();
-            const data = {
-                products: products,
-                movements: movements,
-                historial: historial,
-                users: getUsers(),
-                config: getConfig(),
-                exportDate: new Date().toISOString()
-            };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'wms_backup_' + new Date().toISOString().slice(0,10) + '.json';
-            link.click();
-            URL.revokeObjectURL(link.href);
-            await registrarHistorial('AGREGAR', 'BACKUP', 'Backup JSON exportado');
-            mostrarToast('📤 Backup exportado', 'success');
-        }
-
-        async function cargarImport(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (data.products) await setProducts(data.products);
-                    if (data.movements) await setMovements(data.movements);
-                    if (data.historial) await setHistorial(data.historial);
-                    if (data.users) setUsers(data.users);
-                    if (data.config) setConfig(data.config);
-                    renderAll();
-                    await registrarHistorial('AGREGAR', 'BACKUP_IMPORT', 'Backup JSON importado');
-                    mostrarToast('✅ Datos importados correctamente', 'success');
-                } catch (error) {
-                    alert('❌ Error al importar: ' + error.message);
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = '';
-        }
-
-        async function resetData() {
-            if (!hasPermission('administracion')) return alert('No tienes permisos');
-            if (!confirm('⚠️ ¿Estás seguro de reiniciar todos los datos?')) return;
-
-            await setProducts([]);
-            await setMovements([]);
-            await setHistorial([]);
-            localStorage.removeItem(STORAGE_KEY_USERS);
-            localStorage.removeItem(STORAGE_KEY_CONFIG);
-            initData();
-            renderAll();
-            await registrarHistorial('ELIMINAR', 'RESET', 'Todos los datos reiniciados');
-            mostrarToast('🔄 Datos reiniciados correctamente', 'warning');
-        }
-
-        // ============================================================
-        //  MODAL
-        // ============================================================
-        function mostrarModal(titulo, contenido, granTamaño = false) {
-            document.getElementById('modalTitle').textContent = titulo;
-            document.getElementById('modalBody').innerHTML = contenido;
-            document.getElementById('modal').classList.add('active');
-            document.querySelector('.modal-content').style.maxWidth = granTamaño ? '700px' : '550px';
-            document.getElementById('modalActionBtn').style.display = 'inline-flex';
-        }
-
-        function cerrarModal() {
-            document.getElementById('modal').classList.remove('active');
-            modalCallback = null;
-            detenerScannerAlmacenar();
-            detenerScannerMover();
-        }
-
-        function ejecutarModal() {
-            if (modalCallback) modalCallback();
-        }
-
-        // ============================================================
-        //  NAVEGACIÓN
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function() {
-            initData().then(() => {
-                checkSession();
-
-                document.querySelectorAll('nav button').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const tabId = this.dataset.tab;
-                        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-                        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-                        const tab = document.getElementById('tab-' + tabId);
-                        if (tab) tab.classList.add('active');
-                        this.classList.add('active');
-
-                        if (tabId === 'inventario') renderInventarioUnificado();
-                        if (tabId === 'layout') renderLayoutVisual();
-                        if (tabId === 'movimientos') renderHistorialCompleto();
-                        if (tabId === 'usuarios') renderUsuarios();
-                        if (tabId === 'config') renderConfig();
-                    });
-                });
-
-                document.getElementById('loginPass').addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') handleLogin();
-                });
-                document.getElementById('loginUser').addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') handleLogin();
-                });
-
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape') cerrarModal();
-                });
-                document.getElementById('modal').addEventListener('click', function(e) {
-                    if (e.target === this) cerrarModal();
-                });
-
-                window.addEventListener('resize', function() {
-                    if (window.innerWidth < 768 && editMode) {
-                        editMode = false;
-                        document.getElementById('editModeLabel').textContent = 'Editar';
-                        editingRows.clear();
-                        renderInventarioUnificado();
-                    }
-                });
-
-                if (checkSession()) renderAll();
-            });
-        });
-    </script>
-</body>
-</html>
+                            detenerScannerAlmacenar
