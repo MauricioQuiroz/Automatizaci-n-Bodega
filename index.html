@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WMS Bodega Central - Gestión de Inventario</title>
+    <title>WMS Bodega Central</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.2/umd/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.1/umd/index.min.js"></script>
@@ -105,31 +105,31 @@
         header {
             background: #0f172a;
             color: var(--white);
-            padding: 10px 20px;
+            padding: 8px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
         }
-        header .header-left { display:flex; align-items:center; gap:12px; }
+        header .header-left { display:flex; align-items:center; gap:10px; }
         header .header-left .header-title {
-            font-weight:700; font-size:1rem; color:var(--white); letter-spacing:-0.2px;
+            font-weight:700; font-size:0.95rem; color:var(--white); letter-spacing:-0.2px;
         }
         header .header-left .header-sub {
-            font-size:0.6rem; color:#94a3b8; font-weight:400;
+            font-size:0.55rem; color:#94a3b8; font-weight:400;
         }
         header .header-left .header-sub span { color:#60a5fa; }
         header .user-info {
-            display:flex; align-items:center; gap:8px; font-size:0.75rem; flex-wrap:wrap;
+            display:flex; align-items:center; gap:6px; font-size:0.7rem; flex-wrap:wrap;
         }
         header .user-info select {
-            padding:4px 10px; border-radius:8px; border:none; background:#1e293b;
-            color:var(--white); font-weight:500; cursor:pointer; font-size:0.7rem;
+            padding:4px 8px; border-radius:6px; border:none; background:#1e293b;
+            color:var(--white); font-weight:500; cursor:pointer; font-size:0.65rem;
         }
         header .user-info .btn {
-            background:#334155; color:var(--white); border:none; padding:4px 10px;
-            border-radius:8px; cursor:pointer; font-weight:500; transition:var(--transition); font-size:0.7rem;
+            background:#334155; color:var(--white); border:none; padding:4px 8px;
+            border-radius:6px; cursor:pointer; font-weight:500; transition:var(--transition); font-size:0.65rem;
             display:inline-flex; align-items:center; gap:4px;
         }
         header .user-info .btn:hover { background:#475569; }
@@ -139,7 +139,7 @@
         header .user-info .btn-warning:hover { background:var(--warning-hover); }
         header .user-info .btn-purple { background:var(--purple); }
         header .user-info .btn-purple:hover { background:var(--purple-hover); }
-        header .user-info .user-name { color:#94a3b8; font-size:0.7rem; }
+        header .user-info .user-name { color:#94a3b8; font-size:0.65rem; }
         header .user-info .online-indicator {
             display:inline-block; width:8px; height:8px; border-radius:50%;
             background:#22c55e; margin-right:4px; animation:pulse 1.5s ease-in-out infinite;
@@ -155,7 +155,7 @@
             border-bottom:1px solid #e2e8f0;
             flex-wrap:nowrap;
             overflow-x:auto;
-            padding:0 8px;
+            padding:0 6px;
             -webkit-overflow-scrolling:touch;
             scrollbar-width:none;
         }
@@ -163,9 +163,9 @@
         nav button {
             background:transparent; 
             border:none; 
-            padding:12px 14px;
+            padding:10px 12px;
             font-weight:600; 
-            font-size:0.75rem; 
+            font-size:0.7rem; 
             color:#64748b;
             cursor:pointer; 
             transition:var(--transition); 
@@ -174,15 +174,15 @@
             white-space:nowrap;
             display:inline-flex;
             align-items:center;
-            gap:6px;
+            gap:5px;
         }
-        nav button .nav-icon { font-size:1rem; }
+        nav button .nav-icon { font-size:0.9rem; }
         nav button:hover { color:#0f172a; background:#f1f5f9; }
         nav button.active { color:var(--primary); border-bottom-color:var(--primary); }
         nav button .badge-nav {
             background:var(--primary);
             color:var(--white);
-            font-size:0.55rem;
+            font-size:0.5rem;
             padding:1px 6px;
             border-radius:10px;
             margin-left:4px;
@@ -191,7 +191,7 @@
         /* ============================================================
            TABS
            ============================================================ */
-        .tab-content { display:none; padding:16px; animation:fadeIn 0.3s ease; }
+        .tab-content { display:none; padding:14px; animation:fadeIn 0.3s ease; }
         .tab-content.active { display:block; }
 
         /* ============================================================
@@ -199,71 +199,71 @@
            ============================================================ */
         .card-grid {
             display:grid;
-            grid-template-columns:repeat(auto-fit, minmax(120px,1fr));
-            gap:12px;
-            margin-bottom:16px;
+            grid-template-columns:repeat(auto-fit, minmax(100px,1fr));
+            gap:10px;
+            margin-bottom:14px;
         }
         .card {
             background:#f8fafc;
-            padding:12px 16px;
+            padding:10px 14px;
             border-radius:var(--radius);
             text-align:center;
             border:1px solid #e2e8f0;
             transition:var(--transition);
         }
         .card:hover { transform:translateY(-2px); box-shadow:var(--shadow); }
-        .card .number { font-size:1.8rem; font-weight:700; color:#0f172a; }
-        .card .label { color:#64748b; font-size:0.7rem; margin-top:4px; }
-        .card .card-icon { font-size:1.5rem; display:block; margin-bottom:4px; }
+        .card .number { font-size:1.6rem; font-weight:700; color:#0f172a; }
+        .card .label { color:#64748b; font-size:0.65rem; margin-top:3px; }
+        .card .card-icon { font-size:1.3rem; display:block; margin-bottom:3px; }
 
         /* ============================================================
            TABLAS
            ============================================================ */
-        .table-wrap { overflow-x:auto; margin-top:12px; -webkit-overflow-scrolling:touch; }
+        .table-wrap { overflow-x:auto; margin-top:10px; -webkit-overflow-scrolling:touch; }
         .table-container {
-            max-height:65vh;
+            max-height:60vh;
             overflow:auto;
             border-radius:var(--radius);
             border:1px solid #e2e8f0;
             -webkit-overflow-scrolling:touch;
         }
-        table { width:100%; border-collapse:collapse; font-size:0.8rem; min-width:700px; }
+        table { width:100%; border-collapse:collapse; font-size:0.75rem; min-width:650px; }
         th { 
             background:#f1f5f9; 
             text-align:left; 
-            padding:10px 12px; 
+            padding:8px 10px; 
             font-weight:600; 
             color:#334155; 
             white-space:nowrap; 
             position:sticky; 
             top:0; 
             z-index:10;
-            font-size:0.7rem;
+            font-size:0.65rem;
             text-transform:uppercase;
             letter-spacing:0.3px;
         }
-        td { padding:8px 10px; border-bottom:1px solid #e2e8f0; vertical-align:middle; }
+        td { padding:6px 8px; border-bottom:1px solid #e2e8f0; vertical-align:middle; }
         tr:hover td { background:#f8fafc; }
         tr.row-editing td { background:var(--primary-light) !important; }
 
         /* ============================================================
            BADGES Y ETIQUETAS
            ============================================================ */
-        .badge { display:inline-block; padding:2px 10px; border-radius:50px; font-size:0.65rem; font-weight:600; }
+        .badge { display:inline-block; padding:2px 8px; border-radius:50px; font-size:0.6rem; font-weight:600; }
         .badge-admin { background:#fee2e2; color:#b91c1c; }
         .badge-supervisor { background:#fef3c7; color:#92400e; }
         .badge-operario { background:#dbeafe; color:#1e40af; }
         
-        .badge-bodega { display:inline-block; padding:2px 8px; border-radius:8px; font-size:0.55rem; font-weight:700; color:var(--white); }
+        .badge-bodega { display:inline-block; padding:2px 8px; border-radius:6px; font-size:0.5rem; font-weight:700; color:var(--white); }
         .badge-farmacos { background:#2563eb; }
         .badge-insumos { background:var(--success); }
         .badge-economato { background:var(--warning); color:#0f172a; }
 
         .zone-tag {
             display:inline-block;
-            padding:2px 8px;
-            border-radius:6px;
-            font-size:0.6rem;
+            padding:2px 6px;
+            border-radius:4px;
+            font-size:0.55rem;
             font-weight:700;
         }
         .zone-tag-A { background:#dbeafe; color:#1e40af; }
@@ -277,41 +277,33 @@
         .zone-tag-I { background:#fed7aa; color:#9a3412; }
         .zone-tag-J { background:#e9d5ff; color:#5b21b6; }
 
-        .badge-estado {
-            display:inline-flex; align-items:center; gap:4px;
-            padding:2px 10px; border-radius:12px; font-size:0.6rem; font-weight:600;
-        }
-        .badge-confirmado { background:#dcfce7; color:#166534; }
-        .badge-pendiente { background:#fef3c7; color:#92400e; }
-        .badge-reubicado { background:#dbeafe; color:#1e40af; }
-
         .ubicacion-tag {
             font-family:monospace;
-            font-size:0.7rem;
+            font-size:0.65rem;
             background:#f1f5f9;
-            padding:2px 8px;
+            padding:2px 6px;
             border-radius:4px;
         }
 
         /* ============================================================
-           BOTONES DE ACCIÓN MEJORADOS
+           BOTONES DE ACCIÓN
            ============================================================ */
         .btn {
-            padding:6px 14px;
+            padding:5px 12px;
             border:none;
             border-radius:var(--radius-sm);
             font-weight:600;
-            font-size:0.75rem;
+            font-size:0.7rem;
             cursor:pointer;
             transition:var(--transition);
             display:inline-flex;
             align-items:center;
-            gap:6px;
+            gap:5px;
             white-space:nowrap;
             text-decoration:none;
             color:var(--white);
         }
-        .btn .icon { font-size:0.9rem; line-height:1; }
+        .btn .icon { font-size:0.8rem; line-height:1; }
         .btn-primary { background:var(--primary); }
         .btn-primary:hover { background:var(--primary-hover); transform:translateY(-1px); box-shadow:0 4px 12px rgba(79,70,229,0.3); }
         .btn-success { background:var(--success); }
@@ -324,16 +316,10 @@
         .btn-purple:hover { background:var(--purple-hover); transform:translateY(-1px); box-shadow:0 4px 12px rgba(124,58,237,0.3); }
         .btn-outline { background:transparent; border:2px solid var(--gray); color:var(--gray); }
         .btn-outline:hover { background:var(--gray); color:var(--white); transform:translateY(-1px); }
-        .btn-sm { padding:4px 10px; font-size:0.65rem; }
-        .btn-sm .icon { font-size:0.75rem; }
-        .btn-xs { padding:2px 8px; font-size:0.55rem; }
-        .btn-xs .icon { font-size:0.65rem; }
-
-        .btn-group {
-            display:flex;
-            gap:4px;
-            flex-wrap:wrap;
-        }
+        .btn-sm { padding:3px 8px; font-size:0.6rem; }
+        .btn-sm .icon { font-size:0.7rem; }
+        .btn-xs { padding:2px 6px; font-size:0.5rem; }
+        .btn-xs .icon { font-size:0.6rem; }
 
         /* ============================================================
            TOOLBAR
@@ -343,16 +329,16 @@
             justify-content:space-between;
             align-items:center;
             flex-wrap:wrap;
-            gap:10px;
-            padding:12px 16px;
+            gap:8px;
+            padding:10px 14px;
             background:#f8fafc;
             border-radius:var(--radius);
             border:1px solid #e2e8f0;
-            margin-bottom:12px;
+            margin-bottom:10px;
         }
         .toolbar-left, .toolbar-right {
             display:flex;
-            gap:8px;
+            gap:6px;
             flex-wrap:wrap;
             align-items:center;
         }
@@ -360,11 +346,11 @@
             position:relative;
         }
         .toolbar .search-input input {
-            padding:8px 12px 8px 36px;
+            padding:6px 10px 6px 30px;
             border:2px solid #d1d5db;
             border-radius:var(--radius-sm);
-            font-size:0.85rem;
-            min-width:180px;
+            font-size:0.8rem;
+            min-width:150px;
             transition:var(--transition);
             background:var(--white);
         }
@@ -375,10 +361,26 @@
         }
         .toolbar .search-input .search-icon {
             position:absolute;
-            left:10px;
+            left:8px;
             top:50%;
             transform:translateY(-50%);
             color:#94a3b8;
+            font-size:0.8rem;
+        }
+
+        .filter-select {
+            padding:6px 10px;
+            border:2px solid #d1d5db;
+            border-radius:var(--radius-sm);
+            font-size:0.75rem;
+            background:var(--white);
+            cursor:pointer;
+            transition:var(--transition);
+            min-width:80px;
+        }
+        .filter-select:focus {
+            outline:none;
+            border-color:var(--primary);
         }
 
         /* ============================================================
@@ -386,27 +388,22 @@
            ============================================================ */
         .actions-cell {
             display:flex;
-            gap:4px;
+            gap:3px;
             flex-wrap:wrap;
-            min-width:120px;
+            min-width:100px;
         }
-        .actions-cell .btn {
-            padding:3px 8px;
-            font-size:0.6rem;
-        }
-        .actions-cell .btn .icon { font-size:0.7rem; }
 
         /* ============================================================
            EDICIÓN INLINE
            ============================================================ */
         .edit-field {
             border:2px solid transparent;
-            border-radius:6px;
-            padding:4px 8px;
+            border-radius:4px;
+            padding:3px 6px;
             background:transparent;
             transition:var(--transition);
             width:100%;
-            font-size:0.8rem;
+            font-size:0.7rem;
             font-family:inherit;
             color:inherit;
         }
@@ -417,15 +414,11 @@
             outline:none;
             box-shadow:0 0 0 3px rgba(79,70,229,0.1);
         }
-        .edit-field.editing {
-            border-color:var(--primary);
-            background:var(--white);
-        }
         .edit-field-select {
-            padding:4px 8px;
+            padding:3px 6px;
             border:2px solid transparent;
-            border-radius:6px;
-            font-size:0.8rem;
+            border-radius:4px;
+            font-size:0.7rem;
             background:transparent;
             transition:var(--transition);
             width:100%;
@@ -456,7 +449,7 @@
         .modal-content {
             background:var(--white);
             border-radius:20px;
-            padding:24px;
+            padding:20px;
             max-width:600px;
             width:100%;
             max-height:92vh;
@@ -465,20 +458,20 @@
             animation:fadeIn 0.25s ease;
         }
         .modal-content h3 { 
-            margin-bottom:12px; 
-            font-size:1.1rem; 
+            margin-bottom:10px; 
+            font-size:1rem; 
             display:flex; 
             align-items:center; 
             gap:8px; 
         }
-        .modal-content .flex { margin-top:16px; justify-content:flex-end; gap:8px; }
-        .modal-content label { display:block; margin:10px 0 4px; font-weight:600; font-size:0.8rem; color:#475569; }
+        .modal-content .flex { margin-top:14px; justify-content:flex-end; gap:8px; }
+        .modal-content label { display:block; margin:8px 0 3px; font-weight:600; font-size:0.75rem; color:#475569; }
         .modal-content input, .modal-content select, .modal-content textarea {
             width:100%;
-            padding:10px 12px;
+            padding:8px 12px;
             border:2px solid #d1d5db;
             border-radius:8px;
-            font-size:0.9rem;
+            font-size:0.85rem;
             transition:var(--transition);
             font-family:inherit;
         }
@@ -490,101 +483,12 @@
         .modal-content .form-grid {
             display:grid;
             grid-template-columns:1fr 1fr;
-            gap:12px;
+            gap:10px;
         }
         .modal-content .form-grid .full-width { grid-column:1/-1; }
 
         /* ============================================================
-           QR
-           ============================================================ */
-        .qr-grid {
-            display:grid;
-            grid-template-columns:repeat(auto-fill, minmax(140px,1fr));
-            gap:12px;
-            margin:12px 0;
-        }
-        .qr-card {
-            background:var(--white);
-            border:1px solid #e2e8f0;
-            border-radius:var(--radius);
-            padding:12px;
-            text-align:center;
-            transition:var(--transition);
-        }
-        .qr-card:hover { box-shadow:var(--shadow-lg); transform:translateY(-2px); }
-        .qr-card canvas { width:100px; height:100px; margin:0 auto; display:block; }
-        .qr-card .qr-code { font-weight:600; font-size:0.7rem; margin-top:6px; color:#0f172a; word-break:break-all; }
-        .qr-card .qr-ubicacion { font-size:0.6rem; color:#64748b; }
-        .qr-card .qr-actions { margin-top:6px; display:flex; gap:4px; justify-content:center; flex-wrap:wrap; }
-
-        /* ============================================================
-           SCANNER
-           ============================================================ */
-        #scanner-container {
-            width:100%;
-            max-width:400px;
-            margin:0 auto;
-            border-radius:var(--radius);
-            overflow:hidden;
-            background:#0f172a;
-            min-height:200px;
-        }
-        #scanner-status {
-            color:#64748b;
-            font-size:0.85rem;
-            text-align:center;
-            margin:8px 0;
-        }
-
-        /* ============================================================
-           TOAST
-           ============================================================ */
-        .toast-container {
-            position:fixed;
-            bottom:20px;
-            right:20px;
-            z-index:9999;
-            display:flex;
-            flex-direction:column;
-            gap:8px;
-            max-width:340px;
-            width:100%;
-        }
-        .toast {
-            background:#0f172a;
-            color:var(--white);
-            padding:12px 16px;
-            border-radius:var(--radius);
-            font-size:0.85rem;
-            animation:slideIn 0.3s ease;
-            box-shadow:0 4px 12px rgba(0,0,0,0.2);
-            border-left:4px solid var(--primary);
-            display:flex;
-            align-items:center;
-            gap:10px;
-        }
-        .toast .toast-icon { font-size:1.2rem; }
-        .toast.success { border-left-color:var(--success); }
-        .toast.warning { border-left-color:var(--warning); }
-        .toast.error { border-left-color:var(--danger); }
-        .toast.info { border-left-color:var(--primary); }
-        @keyframes slideIn {
-            from { opacity:0; transform:translateX(30px); }
-            to { opacity:1; transform:translateX(0); }
-        }
-        .toast-close {
-            background:none;
-            border:none;
-            color:#94a3b8;
-            cursor:pointer;
-            font-size:1.2rem;
-            margin-left:auto;
-            padding:0 4px;
-        }
-        .toast-close:hover { color:var(--white); }
-
-        /* ============================================================
-           MAPA
+           LAYOUT / MAPA
            ============================================================ */
         .map-container {
             position:relative;
@@ -603,66 +507,139 @@
         .map-legend {
             display:flex;
             flex-wrap:wrap;
-            gap:10px;
+            gap:8px;
             margin:10px 0;
-            padding:10px 14px;
+            padding:8px 12px;
             background:#f8fafc;
             border-radius:var(--radius);
             border:1px solid #e2e8f0;
-            font-size:0.65rem;
+            font-size:0.6rem;
             align-items:center;
         }
-        .map-legend .legend-item { display:flex; align-items:center; gap:5px; }
-        .map-legend .color-box { width:14px; height:14px; border-radius:4px; border:1px solid rgba(0,0,0,0.1); }
+        .map-legend .legend-item { display:flex; align-items:center; gap:4px; }
+        .map-legend .color-box { width:12px; height:12px; border-radius:3px; border:1px solid rgba(0,0,0,0.1); }
+
+        .layout-btn {
+            background:var(--purple);
+            color:var(--white);
+            border:none;
+            padding:5px 12px;
+            border-radius:var(--radius-sm);
+            cursor:pointer;
+            font-weight:600;
+            font-size:0.7rem;
+            transition:var(--transition);
+            display:inline-flex;
+            align-items:center;
+            gap:5px;
+        }
+        .layout-btn:hover { background:var(--purple-hover); transform:translateY(-1px); }
 
         /* ============================================================
-           MANTENEDOR
+           QR
            ============================================================ */
-        .inventory-summary {
+        .qr-grid {
             display:grid;
-            grid-template-columns:repeat(auto-fit, minmax(100px,1fr));
+            grid-template-columns:repeat(auto-fill, minmax(120px,1fr));
             gap:10px;
-            margin-bottom:12px;
+            margin:10px 0;
         }
-        .inventory-summary .stat-card {
+        .qr-card {
             background:var(--white);
-            padding:10px 14px;
-            border-radius:var(--radius);
             border:1px solid #e2e8f0;
+            border-radius:var(--radius);
+            padding:10px;
             text-align:center;
-        }
-        .inventory-summary .stat-card .stat-number { font-size:1.2rem; font-weight:700; color:#0f172a; }
-        .inventory-summary .stat-card .stat-label { font-size:0.6rem; color:#64748b; }
-
-        .sheet-selector {
-            display:flex;
-            align-items:center;
-            gap:10px;
-            padding:8px 14px;
-            background:#f8fafc;
-            border-bottom:1px solid #e2e8f0;
-            flex-wrap:wrap;
-        }
-        .sheet-selector label { font-weight:600; font-size:0.75rem; color:#475569; }
-        .sheet-selector select {
-            padding:6px 12px;
-            border-radius:var(--radius-sm);
-            border:2px solid #d1d5db;
-            font-size:0.8rem;
-            min-width:160px;
-            flex:1;
-            max-width:300px;
-            background:var(--white);
-            cursor:pointer;
             transition:var(--transition);
         }
-        .sheet-selector select:focus {
-            outline:none;
-            border-color:var(--primary);
+        .qr-card:hover { box-shadow:var(--shadow-lg); transform:translateY(-2px); }
+        .qr-card canvas { width:80px; height:80px; margin:0 auto; display:block; }
+        .qr-card .qr-code { font-weight:600; font-size:0.65rem; margin-top:4px; color:#0f172a; word-break:break-all; }
+        .qr-card .qr-ubicacion { font-size:0.55rem; color:#64748b; }
+
+        /* ============================================================
+           SCANNER
+           ============================================================ */
+        #scanner-container {
+            width:100%;
+            max-width:350px;
+            margin:0 auto;
+            border-radius:var(--radius);
+            overflow:hidden;
+            background:#0f172a;
+            min-height:180px;
+        }
+        #scanner-status {
+            color:#64748b;
+            font-size:0.8rem;
+            text-align:center;
+            margin:6px 0;
         }
 
-        .highlight-changed { background:#fef3c7 !important; }
-        .highlight-changed td { background:#fef3c7 !important; }
+        /* ============================================================
+           TOAST
+           ============================================================ */
+        .toast-container {
+            position:fixed;
+            bottom:16px;
+            right:16px;
+            z-index:9999;
+            display:flex;
+            flex-direction:column;
+            gap:6px;
+            max-width:300px;
+            width:100%;
+        }
+        .toast {
+            background:#0f172a;
+            color:var(--white);
+            padding:10px 14px;
+            border-radius:var(--radius);
+            font-size:0.8rem;
+            animation:slideIn 0.3s ease;
+            box-shadow:0 4px 12px rgba(0,0,0,0.2);
+            border-left:4px solid var(--primary);
+            display:flex;
+            align-items:center;
+            gap:8px;
+        }
+        .toast .toast-icon { font-size:1rem; }
+        .toast.success { border-left-color:var(--success); }
+        .toast.warning { border-left-color:var(--warning); }
+        .toast.error { border-left-color:var(--danger); }
+        .toast.info { border-left-color:var(--primary); }
+        @keyframes slideIn {
+            from { opacity:0; transform:translateX(30px); }
+            to { opacity:1; transform:translateX(0); }
+        }
+        .toast-close {
+            background:none;
+            border:none;
+            color:#94a3b8;
+            cursor:pointer;
+            font-size:1rem;
+            margin-left:auto;
+            padding:0 4px;
+        }
+        .toast-close:hover { color:var(--white); }
+
+        /* ============================================================
+           BULK ACTIONS
+           ============================================================ */
+        #bulkActions {
+            display:none;
+            padding:6px 12px;
+            background:var(--primary-light);
+            border-radius:var(--radius-sm);
+            margin-bottom:8px;
+            align-items:center;
+            gap:8px;
+            flex-wrap:wrap;
+        }
+        #bulkActions .selected-count {
+            font-weight:600;
+            font-size:0.8rem;
+        }
 
         /* ============================================================
            EMPTY STATE
@@ -670,75 +647,60 @@
         .empty-state {
             color:#94a3b8;
             text-align:center;
-            padding:40px 20px;
-            font-size:0.9rem;
+            padding:30px 16px;
+            font-size:0.85rem;
         }
-        .empty-state .empty-icon { font-size:3rem; display:block; margin-bottom:12px; }
-
-        /* ============================================================
-           SELECTOR DE ZONA EN FILTRO
-           ============================================================ */
-        .filter-select {
-            padding:8px 12px;
-            border:2px solid #d1d5db;
-            border-radius:var(--radius-sm);
-            font-size:0.8rem;
-            background:var(--white);
-            cursor:pointer;
-            transition:var(--transition);
-            min-width:100px;
-        }
-        .filter-select:focus {
-            outline:none;
-            border-color:var(--primary);
-        }
+        .empty-state .empty-icon { font-size:2.5rem; display:block; margin-bottom:10px; }
 
         /* ============================================================
            RESPONSIVE
            ============================================================ */
         @media (max-width:1024px) {
-            .tab-content { padding:12px; }
-            .card-grid { grid-template-columns:repeat(auto-fit, minmax(100px,1fr)); }
-            .modal-content { max-width:95%; padding:20px; }
+            .tab-content { padding:10px; }
+            .card-grid { grid-template-columns:repeat(auto-fit, minmax(90px,1fr)); }
+            .modal-content { max-width:95%; padding:16px; }
         }
 
         @media (max-width:768px) {
-            body { padding:8px; }
-            .app { border-radius:12px; }
+            body { padding:6px; }
+            .app { border-radius:10px; }
             
             header { 
                 flex-direction:column; 
                 align-items:stretch; 
-                gap:6px; 
-                padding:8px 14px; 
+                gap:4px; 
+                padding:6px 12px; 
             }
             header .header-left { justify-content:center; flex-wrap:wrap; }
-            header .header-left .header-title { font-size:0.85rem; text-align:center; }
+            header .header-left .header-title { font-size:0.8rem; text-align:center; }
             header .header-left .header-sub { font-size:0.5rem; text-align:center; }
             header .user-info { justify-content:center; flex-wrap:wrap; }
-            header .user-info .btn { font-size:0.6rem; padding:3px 8px; }
+            header .user-info .btn { font-size:0.55rem; padding:3px 6px; }
+            header .user-info .btn .icon { font-size:0.6rem; }
             
             nav button { 
-                padding:10px 10px; 
-                font-size:0.65rem; 
+                padding:8px 8px; 
+                font-size:0.6rem; 
             }
-            nav button .nav-icon { font-size:0.8rem; }
+            nav button .nav-icon { font-size:0.75rem; }
             
-            .tab-content { padding:10px; }
-            .card-grid { grid-template-columns:1fr 1fr; gap:8px; }
-            .card { padding:8px 12px; }
-            .card .number { font-size:1.4rem; }
+            .tab-content { padding:8px; }
+            .card-grid { grid-template-columns:1fr 1fr; gap:6px; }
+            .card { padding:6px 10px; }
+            .card .number { font-size:1.2rem; }
+            .card .label { font-size:0.55rem; }
+            .card .card-icon { font-size:1rem; }
             
-            .table-container { max-height:50vh; }
-            table { font-size:0.7rem; min-width:600px; }
-            th { padding:6px 8px; font-size:0.6rem; }
-            td { padding:6px 8px; }
+            .table-container { max-height:45vh; }
+            table { font-size:0.65rem; min-width:500px; }
+            th { padding:4px 6px; font-size:0.55rem; }
+            td { padding:4px 6px; }
             
             .toolbar { 
                 flex-direction:column; 
                 align-items:stretch; 
-                gap:8px;
-                padding:10px 12px;
+                gap:6px;
+                padding:8px 10px;
             }
             .toolbar-left, .toolbar-right { 
                 justify-content:center; 
@@ -746,107 +708,95 @@
             }
             .toolbar .search-input input { 
                 min-width:100%; 
-                font-size:0.8rem;
-                padding:6px 10px 6px 32px;
+                font-size:0.75rem;
+                padding:4px 8px 4px 28px;
             }
             
             .modal-content { 
-                padding:16px; 
+                padding:14px; 
                 max-width:100%;
                 margin:8px;
-                border-radius:16px;
+                border-radius:14px;
             }
             .modal-content .form-grid { grid-template-columns:1fr; }
             
             .actions-cell { 
-                min-width:80px; 
+                min-width:70px; 
                 gap:2px; 
             }
             .actions-cell .btn { 
-                padding:2px 6px; 
+                padding:2px 5px; 
                 font-size:0.5rem; 
             }
-            .actions-cell .btn .icon { font-size:0.6rem; }
+            .actions-cell .btn .icon { font-size:0.55rem; }
             
-            .qr-grid { grid-template-columns:repeat(auto-fill, minmax(100px,1fr)); }
-            .qr-card canvas { width:70px; height:70px; }
+            .qr-grid { grid-template-columns:repeat(auto-fill, minmax(90px,1fr)); }
+            .qr-card canvas { width:60px; height:60px; }
             
-            .sheet-selector { 
-                flex-direction:column; 
-                align-items:stretch; 
-                gap:6px; 
-            }
-            .sheet-selector select { max-width:100%; }
+            #bulkActions { padding:4px 10px; gap:4px; }
+            #bulkActions .selected-count { font-size:0.7rem; }
             
-            .inventory-summary { grid-template-columns:1fr 1fr; }
+            .map-legend { font-size:0.5rem; padding:6px 8px; gap:4px; }
+            .map-legend .color-box { width:10px; height:10px; }
             
             .toast-container { 
-                bottom:10px; 
-                right:10px; 
-                left:10px; 
+                bottom:8px; 
+                right:8px; 
+                left:8px; 
                 max-width:100%; 
             }
-            .toast { font-size:0.75rem; padding:10px 14px; }
+            .toast { font-size:0.7rem; padding:8px 12px; }
             
-            #loginModal .login-box { padding:20px; margin:10px; }
+            #loginModal .login-box { padding:16px; margin:10px; }
         }
 
         @media (max-width:480px) {
             body { padding:4px; }
-            .app { border-radius:8px; }
+            .app { border-radius:6px; }
             
-            header .header-left .header-title { font-size:0.75rem; }
+            header .header-left .header-title { font-size:0.7rem; }
             nav button { 
-                padding:8px 8px; 
-                font-size:0.55rem; 
+                padding:6px 6px; 
+                font-size:0.5rem; 
             }
-            nav button .nav-icon { font-size:0.7rem; }
+            nav button .nav-icon { font-size:0.65rem; }
             
-            .card-grid { grid-template-columns:1fr 1fr; gap:6px; }
-            .card { padding:6px 8px; }
-            .card .number { font-size:1.2rem; }
-            .card .label { font-size:0.55rem; }
-            .card .card-icon { font-size:1rem; }
+            .card-grid { grid-template-columns:1fr 1fr; gap:4px; }
+            .card { padding:4px 6px; }
+            .card .number { font-size:1rem; }
+            .card .label { font-size:0.5rem; }
+            .card .card-icon { font-size:0.8rem; }
             
-            table { font-size:0.6rem; min-width:480px; }
-            th { padding:4px 6px; font-size:0.5rem; }
-            td { padding:4px 6px; }
+            table { font-size:0.55rem; min-width:400px; }
+            th { padding:3px 4px; font-size:0.5rem; }
+            td { padding:3px 4px; }
             
-            .btn { font-size:0.6rem; padding:4px 8px; }
-            .btn .icon { font-size:0.7rem; }
-            .btn-sm { font-size:0.5rem; padding:2px 6px; }
-            .btn-sm .icon { font-size:0.6rem; }
+            .btn { font-size:0.55rem; padding:3px 6px; }
+            .btn .icon { font-size:0.6rem; }
+            .btn-sm { font-size:0.5rem; padding:2px 5px; }
+            .btn-sm .icon { font-size:0.55rem; }
             
-            .modal-content { padding:12px; }
-            .modal-content h3 { font-size:0.95rem; }
-            .modal-content label { font-size:0.7rem; }
-            .modal-content input, .modal-content select { font-size:0.8rem; padding:8px 10px; }
+            .modal-content { padding:10px; }
+            .modal-content h3 { font-size:0.85rem; }
+            .modal-content label { font-size:0.65rem; }
+            .modal-content input, .modal-content select { font-size:0.75rem; padding:6px 8px; }
             
             .filter-select { 
-                font-size:0.7rem; 
-                padding:4px 8px; 
-                min-width:70px; 
+                font-size:0.65rem; 
+                padding:3px 6px; 
+                min-width:60px; 
             }
             
-            .qr-grid { grid-template-columns:repeat(auto-fill, minmax(80px,1fr)); gap:8px; }
-            .qr-card canvas { width:60px; height:60px; }
-            .qr-card .qr-code { font-size:0.55rem; }
-            .qr-card .qr-ubicacion { font-size:0.5rem; }
-            
-            .inventory-summary { grid-template-columns:1fr; }
-            
-            .map-legend { 
-                font-size:0.5rem; 
-                gap:4px; 
-                padding:6px 10px; 
-            }
-            .map-legend .color-box { width:10px; height:10px; }
+            .qr-grid { grid-template-columns:repeat(auto-fill, minmax(70px,1fr)); gap:6px; }
+            .qr-card canvas { width:50px; height:50px; }
+            .qr-card .qr-code { font-size:0.5rem; }
+            .qr-card .qr-ubicacion { font-size:0.45rem; }
         }
 
         /* ============================================================
-           SCROLLBAR PERSONALIZADA
+           SCROLLBAR
            ============================================================ */
-        ::-webkit-scrollbar { width:6px; height:6px; }
+        ::-webkit-scrollbar { width:5px; height:5px; }
         ::-webkit-scrollbar-track { background:#f1f5f9; border-radius:4px; }
         ::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:4px; }
         ::-webkit-scrollbar-thumb:hover { background:#94a3b8; }
@@ -858,7 +808,7 @@
             body { background:white; padding:0; }
             .app { box-shadow:none; border-radius:0; }
             header, nav, .toolbar, .btn, .no-print { display:none !important; }
-            .tab-content { display:block !important; padding:10px; }
+            .tab-content { display:block !important; padding:8px; }
             .table-container { max-height:none; overflow:visible; }
             .qr-grid { page-break-inside:avoid; }
             .qr-card { break-inside:avoid; border:1px solid #ddd; }
@@ -896,7 +846,7 @@
         <header>
             <div class="header-left">
                 <div>
-                    <div class="header-title">WMS Bodega Central</div>
+                    <div class="header-title">📦 WMS Bodega Central</div>
                     <div class="header-sub">Hospital San Juan de Dios · <span>"El Primero de Chile"</span></div>
                 </div>
             </div>
@@ -933,6 +883,9 @@
             <button data-tab="inventario">
                 <span class="nav-icon">📦</span> Inventario
                 <span class="badge-nav" id="inventoryBadge">0</span>
+            </button>
+            <button data-tab="layout">
+                <span class="nav-icon">🗺️</span> Layout
             </button>
             <button data-tab="movimientos">
                 <span class="nav-icon">🔄</span> Movimientos
@@ -976,7 +929,7 @@
                     <div class="label">Conectados ahora</div>
                 </div>
             </div>
-            <h3 style="font-size:0.95rem; margin-bottom:8px;">📋 Últimos movimientos</h3>
+            <h3 style="font-size:0.9rem; margin-bottom:6px;">📋 Últimos movimientos</h3>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>Fecha</th><th>Producto</th><th>Desde</th><th>Hacia</th><th>Usuario</th></tr></thead>
@@ -986,7 +939,7 @@
         </div>
 
         <!-- ============================================================ -->
-        <!-- TAB: INVENTARIO (UNIFICADO) -->
+        <!-- TAB: INVENTARIO -->
         <!-- ============================================================ -->
         <div id="tab-inventario" class="tab-content">
             <div class="toolbar">
@@ -1000,6 +953,9 @@
                     <button class="btn btn-warning btn-sm" onclick="exportarSeleccionados()">
                         <span class="icon">📥</span> Exportar
                     </button>
+                    <button class="layout-btn btn-sm" onclick="verLayout()">
+                        <span class="icon">🗺️</span> Ver Layout
+                    </button>
                 </div>
                 <div class="toolbar-right">
                     <div class="search-input">
@@ -1007,24 +963,18 @@
                         <input type="text" id="searchInventarioUnificado" placeholder="Buscar..." oninput="renderInventarioUnificado()">
                     </div>
                     <select class="filter-select" id="filterZona" onchange="renderInventarioUnificado()">
-                        <option value="TODAS">🌐 Todas las zonas</option>
-                        <option value="A">A - Palletizado</option>
-                        <option value="B">B - Palletizado</option>
-                        <option value="C">C - Controlados</option>
-                        <option value="D">D - VNA</option>
-                        <option value="E">E - Selectivo</option>
-                        <option value="F">F - Anaquel</option>
-                        <option value="G">G - Full Space</option>
-                        <option value="H">H - Cámara Frío</option>
-                        <option value="I">I - Inyectables</option>
-                        <option value="J">J - Mezclas</option>
+                        <option value="TODAS">🌐 Todas</option>
+                        <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+                        <option value="D">D</option><option value="E">E</option><option value="F">F</option>
+                        <option value="G">G</option><option value="H">H</option><option value="I">I</option>
+                        <option value="J">J</option>
                     </select>
                 </div>
             </div>
 
-            <!-- Barra de acciones masivas -->
-            <div id="bulkActions" style="display:none; padding:8px 14px; background:var(--primary-light); border-radius:var(--radius-sm); margin-bottom:10px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                <span id="selectedCount" style="font-weight:600; font-size:0.85rem;">0 seleccionados</span>
+            <!-- Acciones masivas -->
+            <div id="bulkActions">
+                <span class="selected-count" id="selectedCount">0 seleccionados</span>
                 <button class="btn btn-purple btn-sm" onclick="generarQRSeleccionados()">
                     <span class="icon">📱</span> QR
                 </button>
@@ -1035,17 +985,15 @@
                     <span class="icon">🗑️</span> Eliminar
                 </button>
                 <button class="btn btn-outline btn-sm" onclick="deseleccionarTodos()">
-                    <span class="icon">✖️</span> Deseleccionar
+                    <span class="icon">✖️</span>
                 </button>
             </div>
 
-            <div class="table-container" id="inventoryTableContainer">
+            <div class="table-container">
                 <table>
                     <thead>
                         <tr>
-                            <th style="width:30px;">
-                                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
-                            </th>
+                            <th style="width:25px;"><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"></th>
                             <th>Código</th>
                             <th>GTIN</th>
                             <th>Glosa</th>
@@ -1053,17 +1001,44 @@
                             <th>Ubicación</th>
                             <th>Zona</th>
                             <th>QR</th>
-                            <th style="min-width:160px;">Acciones</th>
+                            <th style="min-width:130px;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="inventarioUnificadoBody"></tbody>
                 </table>
             </div>
 
-            <!-- Resumen -->
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-top:10px; padding:8px 14px; background:#f8fafc; border-radius:var(--radius-sm); border:1px solid #e2e8f0; font-size:0.75rem; color:#64748b;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-top:8px; padding:6px 12px; background:#f8fafc; border-radius:var(--radius-sm); border:1px solid #e2e8f0; font-size:0.7rem; color:#64748b;">
                 <span id="inventorySummary">0 productos</span>
-                <span>💡 Haz clic en <strong>Editar</strong> para modificar campos directamente</span>
+                <span>💡 Haz clic en <strong>Editar</strong> para modificar campos</span>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- TAB: LAYOUT (MAPA) -->
+        <!-- ============================================================ -->
+        <div id="tab-layout" class="tab-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:10px;">
+                <h3 style="font-size:0.95rem;">🗺️ Plano de la bodega</h3>
+                <button class="btn btn-outline btn-sm" onclick="window.location.href='#tab-config'">
+                    <span class="icon">⚙️</span> Cambiar imagen
+                </button>
+            </div>
+            <p style="color:#64748b; margin-bottom:8px; font-size:0.8rem;">Visualiza la distribución de las zonas en tu bodega. Los colores indican los diferentes tipos de almacenamiento.</p>
+            
+            <div class="map-legend">
+                <span class="legend-item"><span class="color-box" style="background:#2563eb;"></span> A-D (Palletizado)</span>
+                <span class="legend-item"><span class="color-box" style="background:#ec4899;"></span> E (Selectivo)</span>
+                <span class="legend-item"><span class="color-box" style="background:#f43f5e;"></span> F (Anaquel)</span>
+                <span class="legend-item"><span class="color-box" style="background:#06b6d4;"></span> G (Full Space)</span>
+                <span class="legend-item"><span class="color-box" style="background:#3b82f6;"></span> H (Cámara Frío)</span>
+                <span class="legend-item"><span class="color-box" style="background:#fb923c;"></span> I (Inyectables)</span>
+                <span class="legend-item"><span class="color-box" style="background:#8b5cf6;"></span> J (Mezclas)</span>
+            </div>
+
+            <div class="map-container" id="mapContainer">
+                <img id="mapImage" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='700' viewBox='0 0 1200 700'%3E%3Crect width='1200' height='700' fill='%23f1f5f9'/%3E%3Ctext x='600' y='340' font-family='Arial' font-size='36' fill='%2394a3b8' text-anchor='middle'%3E🗺️ Layout de Bodega%3C/text%3E%3Ctext x='600' y='390' font-family='Arial' font-size='18' fill='%23cbd5e1' text-anchor='middle'%3ESubir imagen en Configuración%3C/text%3E%3C/svg%3E" alt="Layout de bodega">
+                <div class="map-overlay" id="mapOverlay"></div>
             </div>
         </div>
 
@@ -1071,10 +1046,10 @@
         <!-- TAB: MOVIMIENTOS -->
         <!-- ============================================================ -->
         <div id="tab-movimientos" class="tab-content">
-            <h3 style="font-size:0.95rem; margin-bottom:8px;">📜 Historial de cambios</h3>
-            <div class="flex mb-2" style="gap:8px; flex-wrap:wrap;">
-                <input type="text" id="filterHistorial" placeholder="🔍 Filtrar..." style="flex:1; min-width:140px; padding:8px 12px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.85rem;" oninput="renderHistorialCompleto()">
-                <select id="filterHistorialAccion" onchange="renderHistorialCompleto()" style="padding:8px 12px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.8rem; background:white; max-width:150px;">
+            <h3 style="font-size:0.9rem; margin-bottom:6px;">📜 Historial de cambios</h3>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
+                <input type="text" id="filterHistorial" placeholder="🔍 Filtrar..." style="flex:1; min-width:120px; padding:6px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.8rem;" oninput="renderHistorialCompleto()">
+                <select id="filterHistorialAccion" onchange="renderHistorialCompleto()" style="padding:6px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.75rem; background:white; max-width:130px;">
                     <option value="TODAS">📋 Todas</option>
                     <option value="AGREGAR">➕ Agregar</option>
                     <option value="EDITAR">✏️ Editar</option>
@@ -1097,7 +1072,7 @@
         <!-- TAB: USUARIOS -->
         <!-- ============================================================ -->
         <div id="tab-usuarios" class="tab-content">
-            <div class="flex mb-2" style="gap:8px; flex-wrap:wrap;">
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
                 <button class="btn btn-primary" onclick="mostrarModalUsuario()">
                     <span class="icon">➕</span> Nuevo usuario
                 </button>
@@ -1119,12 +1094,12 @@
         <div id="tab-config" class="tab-content">
             <h3>⚙️ Configuración</h3>
             <div style="max-width:600px;">
-                <div class="mb-2">
-                    <label style="font-weight:600; font-size:0.85rem; display:block; margin-bottom:4px;"><strong>Sube tu imagen del layout</strong></label>
-                    <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="width:100%; padding:8px; border:2px solid #d1d5db; border-radius:var(--radius-sm);">
-                    <p style="font-size:0.7rem; color:#64748b; margin-top:4px;">Reemplaza la imagen de referencia por tu plano real de la bodega.</p>
+                <div style="margin-bottom:10px;">
+                    <label style="font-weight:600; font-size:0.8rem; display:block; margin-bottom:4px;"><strong>📐 Sube tu imagen del layout</strong></label>
+                    <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="width:100%; padding:6px; border:2px solid #d1d5db; border-radius:var(--radius-sm);">
+                    <p style="font-size:0.65rem; color:#64748b; margin-top:3px;">Reemplaza la imagen de referencia por tu plano real de la bodega.</p>
                 </div>
-                <div class="mt-2 flex" style="gap:8px; flex-wrap:wrap;">
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
                     <button class="btn btn-primary" onclick="resetData()">
                         <span class="icon">🔄</span> Reiniciar
                     </button>
@@ -1166,13 +1141,13 @@
         // ============================================================
         // CONSTANTES Y VARIABLES
         // ============================================================
-        const STORAGE_KEY_PRODUCTS = 'wms_products_v14';
-        const STORAGE_KEY_MOVEMENTS = 'wms_movements_v14';
-        const STORAGE_KEY_HISTORIAL = 'wms_historial_v3';
+        const STORAGE_KEY_PRODUCTS = 'wms_products_v15';
+        const STORAGE_KEY_MOVEMENTS = 'wms_movements_v15';
+        const STORAGE_KEY_HISTORIAL = 'wms_historial_v4';
         const STORAGE_KEY_USERS = 'wms_users';
         const STORAGE_KEY_CONFIG = 'wms_config';
         const STORAGE_KEY_SESSION = 'wms_session_user';
-        const STORAGE_KEY_MANTENEDOR = 'wms_mantenedor_v5';
+        const STORAGE_KEY_MANTENEDOR = 'wms_mantenedor_v6';
         const STORAGE_KEY_EXCEL_DATA = 'wms_excel_data';
         const STORAGE_KEY_ACTIVE_USERS = 'wms_active_users';
 
@@ -1181,7 +1156,6 @@
         let editMode = false;
         let selectedRows = new Set();
         let editingRows = new Set();
-        let cambiosPendientes = {};
         let modalCallback = null;
         let qrScanner = null;
         let broadcastChannel = null;
@@ -1435,13 +1409,12 @@
             
             renderDashboard();
             renderInventarioUnificado();
+            renderLayout();
             renderHistorialCompleto();
             renderUsuarios();
-            renderPlano();
             renderConfig();
             actualizarUsuariosConectados();
             
-            // Actualizar badge del inventario
             const products = getProducts();
             document.getElementById('inventoryBadge').textContent = products.length;
         }
@@ -1464,7 +1437,7 @@
             const tbody = document.getElementById('ultimosMovimientos');
             const recent = movements.slice(-5).reverse();
             tbody.innerHTML = recent.map(m => `
-                <tr><td style="font-size:0.7rem; color:#64748b;">${m.fecha}</td>
+                <tr><td style="font-size:0.65rem; color:#64748b;">${m.fecha}</td>
                 <td><strong>${m.codigo}</strong></td>
                 <td>${m.desde || '-'}</td>
                 <td>${m.hacia || '-'}</td>
@@ -1473,7 +1446,7 @@
         }
 
         // ============================================================
-        // INVENTARIO UNIFICADO (con edición inline y modal)
+        // INVENTARIO UNIFICADO
         // ============================================================
         function renderInventarioUnificado() {
             const search = document.getElementById('searchInventarioUnificado')?.value?.toLowerCase() || '';
@@ -1481,7 +1454,6 @@
             
             let products = getProducts();
             
-            // Filtrar por búsqueda
             if (search) {
                 products = products.filter(p => 
                     p.codigo.toLowerCase().includes(search) || 
@@ -1490,7 +1462,6 @@
                 );
             }
             
-            // Filtrar por zona
             if (filterZona !== 'TODAS') {
                 products = products.filter(p => 
                     p.ubicaciones.some(u => u.zona === filterZona)
@@ -1498,8 +1469,6 @@
             }
             
             const tbody = document.getElementById('inventarioUnificadoBody');
-            
-            // Actualizar resumen
             document.getElementById('inventorySummary').textContent = products.length + ' productos';
             
             if (products.length === 0) {
@@ -1510,7 +1479,6 @@
                 return;
             }
 
-            // Determinar si estamos en móvil (para decidir tipo de edición)
             const isMobile = window.innerWidth < 768;
 
             tbody.innerHTML = products.map((p, idx) => {
@@ -1520,7 +1488,6 @@
                 const zona = p.ubicaciones[0]?.zona || '';
                 const bodegaClass = p.bodega === 'Farmacos' ? 'badge-farmacos' : p.bodega === 'Insumos' ? 'badge-insumos' : 'badge-economato';
                 
-                // En móvil siempre mostramos botón de edición modal
                 const showInlineEdit = editMode && !isMobile;
                 
                 return `
@@ -1604,7 +1571,6 @@
                 </tr>`;
             }).join('');
             
-            // Actualizar barra de acciones masivas
             const bulkActions = document.getElementById('bulkActions');
             if (selectedRows.size > 0) {
                 bulkActions.style.display = 'flex';
@@ -1612,6 +1578,58 @@
             } else {
                 bulkActions.style.display = 'none';
             }
+        }
+
+        // ============================================================
+        // FUNCIÓN PARA VER LAYOUT
+        // ============================================================
+        function verLayout() {
+            // Cambiar a la tab de layout
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-layout').classList.add('active');
+            document.querySelector('nav button[data-tab="layout"]').classList.add('active');
+            renderLayout();
+        }
+
+        // ============================================================
+        // LAYOUT / MAPA
+        // ============================================================
+        function renderLayout() {
+            const config = getConfig();
+            const mapImage = document.getElementById('mapImage');
+            if (mapImage) {
+                if (config.mapImage) {
+                    mapImage.src = config.mapImage;
+                } else {
+                    // Si no hay imagen, mantener el placeholder
+                }
+            }
+            // Overlay vacío
+            const overlay = document.getElementById('mapOverlay');
+            if (overlay) overlay.innerHTML = '';
+        }
+
+        function renderConfig() {
+            const config = getConfig();
+            // No forzamos la recarga de la imagen aquí
+        }
+
+        function subirImagenLayout(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const config = getConfig();
+                config.mapImage = e.target.result;
+                setConfig(config);
+                // Actualizar la imagen en el layout
+                const mapImage = document.getElementById('mapImage');
+                if (mapImage) mapImage.src = config.mapImage;
+                mostrarToast('✅ Imagen del layout actualizada', 'success');
+                registrarHistorial('EDITAR', 'LAYOUT', 'Imagen del layout actualizada');
+            };
+            reader.readAsDataURL(file);
         }
 
         // ============================================================
@@ -1665,7 +1683,7 @@
         }
 
         // ============================================================
-        // EDICIÓN MODAL (OPCIÓN 2 - RECOMENDADA PARA MÓVIL)
+        // EDICIÓN MODAL
         // ============================================================
         function editarProductoModal(codigo) {
             if (!hasPermission('escritura')) return alert('No tienes permisos');
@@ -1753,7 +1771,7 @@
         }
 
         // ============================================================
-        // MOVER PRODUCTO (MODAL)
+        // MOVER PRODUCTO
         // ============================================================
         function moverProductoModal(codigo) {
             if (!hasPermission('escritura')) return alert('No tienes permisos');
@@ -1767,7 +1785,7 @@
             
             mostrarModal('🔄 Mover Producto', `
                 <p><strong>Producto:</strong> ${p.codigo} - ${p.glosa}</p>
-                <p style="color:#64748b; font-size:0.85rem; margin-bottom:12px;"><strong>Ubicación actual:</strong> ${ubicacionActual || 'Sin ubicación'}</p>
+                <p style="color:#64748b; font-size:0.8rem; margin-bottom:10px;"><strong>Ubicación actual:</strong> ${ubicacionActual || 'Sin ubicación'}</p>
                 <div class="form-grid">
                     <div class="full-width">
                         <label>Nueva ubicación</label>
@@ -1782,16 +1800,6 @@
                             ).join('')}
                         </select>
                     </div>
-                </div>
-                <div style="margin-top:8px; display:flex; gap:8px;">
-                    <button class="btn btn-success btn-sm" onclick="escanearUbicacionQR()">
-                        <span class="icon">📷</span> Escanear QR
-                    </button>
-                </div>
-                <div id="scannerUbicacionContainer" style="display:none; margin-top:8px;">
-                    <div id="scannerUbicacion" style="width:100%; max-width:300px; margin:0 auto; border-radius:8px; overflow:hidden; background:#0f172a; min-height:150px;"></div>
-                    <div id="scannerUbicacionStatus" style="color:#64748b; font-size:0.8rem; text-align:center; margin:4px 0;"></div>
-                    <button class="btn btn-danger btn-sm" onclick="detenerScannerUbicacion()">⏹️ Detener</button>
                 </div>
             `, true);
             
@@ -1816,7 +1824,6 @@
                 
                 setProducts(productos);
                 
-                // Registrar movimiento
                 const movements = getAllMovements();
                 const user = getCurrentUser();
                 movements.push({
@@ -1835,55 +1842,6 @@
                 cerrarModal();
             };
             document.getElementById('modalActionBtn').textContent = 'Mover';
-        }
-
-        // ============================================================
-        // ESCANER QR PARA UBICACIÓN (en mover)
-        // ============================================================
-        let scannerUbicacion = null;
-
-        function escanearUbicacionQR() {
-            const container = document.getElementById('scannerUbicacionContainer');
-            const status = document.getElementById('scannerUbicacionStatus');
-            if (!container) return;
-            
-            container.style.display = 'block';
-            status.textContent = '📷 Iniciando escáner...';
-            
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                status.textContent = '❌ Tu navegador no soporta la cámara.';
-                return;
-            }
-            
-            try {
-                if (typeof Html5Qrcode !== 'undefined') {
-                    scannerUbicacion = new Html5Qrcode("scannerUbicacion");
-                    scannerUbicacion.start(
-                        { facingMode: "environment" },
-                        { fps: 10, qrbox: { width: 200, height: 100 } },
-                        (decodedText) => {
-                            status.textContent = '✅ Ubicación detectada: ' + decodedText;
-                            document.getElementById('moverNuevaUbic').value = decodedText;
-                            detenerScannerUbicacion();
-                            mostrarToast('📍 Ubicación escaneada: ' + decodedText, 'success');
-                        },
-                        () => {}
-                    );
-                    status.textContent = '📷 Escaneando...';
-                } else {
-                    status.textContent = '❌ Librería de escaneo no disponible.';
-                }
-            } catch (e) {
-                status.textContent = '❌ Error: ' + e.message;
-            }
-        }
-
-        function detenerScannerUbicacion() {
-            if (scannerUbicacion) {
-                scannerUbicacion.stop().catch(() => {});
-                scannerUbicacion = null;
-            }
-            document.getElementById('scannerUbicacionContainer').style.display = 'none';
         }
 
         // ============================================================
@@ -1941,7 +1899,7 @@
             const seleccionados = products.filter(p => selectedRows.has(p.codigo));
             
             let qrHtml = `<h3>📱 Códigos QR (${seleccionados.length})</h3>
-                         <p style="color:#64748b; margin-bottom:10px; font-size:0.85rem;">Códigos QR para los productos seleccionados.</p>
+                         <p style="color:#64748b; margin-bottom:8px; font-size:0.8rem;">Códigos QR para los productos seleccionados.</p>
                          <div class="qr-grid">`;
             
             seleccionados.forEach((p, idx) => {
@@ -1956,7 +1914,7 @@
             });
             
             qrHtml += `</div>
-                       <div class="flex" style="justify-content:center; margin-top:12px; gap:8px;">
+                       <div style="display:flex; justify-content:center; margin-top:10px; gap:6px;">
                            <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir</button>
                            <button class="btn btn-outline" onclick="cerrarModal()">Cerrar</button>
                        </div>`;
@@ -2126,14 +2084,14 @@
             const ubicacion = p.ubicaciones[0]?.ubicacion || 'Sin ubicación';
             
             const qrHtml = `
-                <div style="text-align:center; padding:16px;">
+                <div style="text-align:center; padding:14px;">
                     <h4>${p.codigo}</h4>
-                    <p style="color:#64748b; font-size:0.8rem;">${p.glosa}</p>
-                    <p style="font-size:0.7rem; color:#64748b;">GTIN: ${p.gtin || 'N/A'}</p>
-                    <canvas id="qr_producto" width="200" height="200"></canvas>
-                    <p style="font-size:0.9rem; font-weight:600; margin-top:8px;">📍 ${ubicacion}</p>
-                    <p style="font-size:0.7rem; color:#64748b;">Zona: ${p.ubicaciones[0]?.zona || 'N/A'}</p>
-                    <div class="flex" style="justify-content:center; margin-top:12px; gap:8px;">
+                    <p style="color:#64748b; font-size:0.75rem;">${p.glosa}</p>
+                    <p style="font-size:0.65rem; color:#64748b;">GTIN: ${p.gtin || 'N/A'}</p>
+                    <canvas id="qr_producto" width="180" height="180"></canvas>
+                    <p style="font-size:0.85rem; font-weight:600; margin-top:6px;">📍 ${ubicacion}</p>
+                    <p style="font-size:0.65rem; color:#64748b;">Zona: ${p.ubicaciones[0]?.zona || 'N/A'}</p>
+                    <div style="display:flex; justify-content:center; margin-top:10px; gap:6px;">
                         <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir</button>
                         <button class="btn btn-outline" onclick="cerrarModal()">Cerrar</button>
                     </div>
@@ -2141,7 +2099,7 @@
             `;
             
             mostrarModal('📱 QR de Producto', qrHtml, true);
-            setTimeout(() => generarQRCanvas('qr_producto', ubicacion, 200), 100);
+            setTimeout(() => generarQRCanvas('qr_producto', ubicacion, 180), 100);
             document.getElementById('modalActionBtn').style.display = 'none';
         }
 
@@ -2150,7 +2108,7 @@
             if (products.length === 0) return alert('No hay productos');
             
             let qrHtml = `<h3>📱 Códigos QR (${products.length})</h3>
-                         <p style="color:#64748b; margin-bottom:10px; font-size:0.85rem;">Códigos QR para todos los productos.</p>
+                         <p style="color:#64748b; margin-bottom:8px; font-size:0.8rem;">Códigos QR para todos los productos.</p>
                          <div class="qr-grid">`;
             
             products.forEach((p, idx) => {
@@ -2165,7 +2123,7 @@
             });
             
             qrHtml += `</div>
-                       <div class="flex" style="justify-content:center; margin-top:12px; gap:8px;">
+                       <div style="display:flex; justify-content:center; margin-top:10px; gap:6px;">
                            <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir</button>
                            <button class="btn btn-outline" onclick="cerrarModal()">Cerrar</button>
                        </div>`;
@@ -2200,7 +2158,7 @@
                     <td>${u.nombre}</td>
                     <td><span class="badge badge-${u.perfil}">${u.perfil}</span></td>
                     <td>${(u.permisos || []).join(', ')}</td>
-                    <td style="font-size:0.7rem; color:#64748b;">${ultimaAct}</td>
+                    <td style="font-size:0.65rem; color:#64748b;">${ultimaAct}</td>
                     <td>
                         <button class="btn btn-primary btn-sm" onclick="editarUsuario(${u.id})" ${hasPermission('administracion') ? '' : 'disabled'}>
                             <span class="icon">✏️</span>
@@ -2380,11 +2338,11 @@
             
             tbody.innerHTML = filtered.slice().reverse().slice(0, 200).map(h => `
                 <tr>
-                    <td style="font-size:0.7rem; color:#64748b;">${h.fecha}</td>
-                    <td><strong>${h.usuario}</strong> <span style="font-size:0.55rem; color:#94a3b8;">(${h.perfil || 'sistema'})</span></td>
+                    <td style="font-size:0.65rem; color:#64748b;">${h.fecha}</td>
+                    <td><strong>${h.usuario}</strong> <span style="font-size:0.5rem; color:#94a3b8;">(${h.perfil || 'sistema'})</span></td>
                     <td>${accionLabels[h.accion] || h.accion}</td>
                     <td><strong>${h.codigo || '-'}</strong></td>
-                    <td style="font-size:0.75rem;">${h.detalle || '-'}</td>
+                    <td style="font-size:0.7rem;">${h.detalle || '-'}</td>
                 </tr>
             `).join('');
         }
@@ -2395,39 +2353,6 @@
             localStorage.setItem(STORAGE_KEY_HISTORIAL, JSON.stringify([]));
             renderHistorialCompleto();
             mostrarToast('🗑️ Historial limpiado', 'warning');
-        }
-
-        // ============================================================
-        // CONFIGURACIÓN
-        // ============================================================
-        function renderConfig() {
-            const config = getConfig();
-            if (config.mapImage) document.getElementById('mapImage').src = config.mapImage;
-        }
-
-        function renderPlano() {
-            const config = getConfig();
-            if (config.mapImage) {
-                document.getElementById('mapImage').src = config.mapImage;
-            }
-            // Overlay vacío para no interferir
-            document.getElementById('mapOverlay').innerHTML = '';
-        }
-
-        function subirImagenLayout(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const config = getConfig();
-                config.mapImage = e.target.result;
-                setConfig(config);
-                renderPlano();
-                renderConfig();
-                mostrarToast('✅ Imagen del layout actualizada', 'success');
-                registrarHistorial('EDITAR', 'LAYOUT', 'Imagen del layout actualizada');
-            };
-            reader.readAsDataURL(file);
         }
 
         // ============================================================
@@ -2456,7 +2381,6 @@
                     if (firstSheet && excelData[firstSheet].length > 0) {
                         const mappedData = mapearDatosExcel(excelData[firstSheet]);
                         setMantenedor(mappedData);
-                        // También actualizar productos
                         sincronizarMantenedorProductos(mappedData);
                     }
                     
@@ -2638,19 +2562,13 @@
             document.getElementById('modalTitle').textContent = titulo;
             document.getElementById('modalBody').innerHTML = contenido;
             document.getElementById('modal').classList.add('active');
-            if (granTamaño) {
-                document.querySelector('.modal-content').style.maxWidth = '800px';
-            } else {
-                document.querySelector('.modal-content').style.maxWidth = '600px';
-            }
-            // Mostrar el botón de guardar por defecto
+            document.querySelector('.modal-content').style.maxWidth = granTamaño ? '700px' : '550px';
             document.getElementById('modalActionBtn').style.display = 'inline-flex';
         }
 
         function cerrarModal() {
             document.getElementById('modal').classList.remove('active');
             modalCallback = null;
-            detenerScannerUbicacion();
         }
 
         function ejecutarModal() {
@@ -2669,12 +2587,15 @@
                     const tabId = this.dataset.tab;
                     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-                    document.getElementById('tab-' + tabId).classList.add('active');
+                    const tab = document.getElementById('tab-' + tabId);
+                    if (tab) tab.classList.add('active');
                     this.classList.add('active');
                     
                     if (tabId === 'inventario') renderInventarioUnificado();
+                    if (tabId === 'layout') renderLayout();
                     if (tabId === 'movimientos') renderHistorialCompleto();
                     if (tabId === 'usuarios') renderUsuarios();
+                    if (tabId === 'config') renderConfig();
                 });
             });
             
@@ -2692,9 +2613,7 @@
                 if (e.target === this) cerrarModal();
             });
             
-            // Responsive: ajustar edición según tamaño
             window.addEventListener('resize', function() {
-                // Si estamos en móvil y editMode está activo, desactivarlo
                 if (window.innerWidth < 768 && editMode) {
                     editMode = false;
                     document.getElementById('editModeLabel').textContent = 'Editar';
@@ -2707,4 +2626,4 @@
         });
     </script>
 </body>
-                        </html>
+</html>
