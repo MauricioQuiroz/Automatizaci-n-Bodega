@@ -205,10 +205,6 @@
         .layout-cell.despacho { background:rgba(251,191,36,0.2); border-color:rgba(251,191,36,0.25); color:#92400e; }
         .layout-cell.ocupado { background:rgba(22,163,74,0.15) !important; border-color:rgba(22,163,74,0.3) !important; }
         .layout-cell.ocupado::after { content:'●'; position:absolute; top:2px; right:4px; font-size:0.4rem; color:#22c55e; }
-        .layout-legend { display:flex; flex-wrap:wrap; gap:12px; margin:12px 0 8px; padding:10px 14px; background:var(--white); border-radius:var(--radius-sm); border:1px solid #e2e8f0; font-size:0.6rem; align-items:center; }
-        .layout-legend .legend-item { display:flex; align-items:center; gap:5px; }
-        .layout-legend .color-box { width:14px; height:14px; border-radius:3px; border:1px solid rgba(0,0,0,0.1); }
-        .layout-legend .dot { width:8px; height:8px; border-radius:50%; background:#22c55e; display:inline-block; }
 
         /* TOAST */
         .toast-container { position:fixed; bottom:16px; right:16px; z-index:9999; display:flex; flex-direction:column; gap:6px; max-width:300px; width:100%; }
@@ -271,8 +267,6 @@
             .layout-cell .cell-zone { font-size:0.5rem; }
             .layout-cell .cell-level { font-size:0.35rem; }
             .layout-cell .cell-label { font-size:0.3rem; }
-            .layout-legend { font-size:0.5rem; padding:6px 10px; gap:8px; }
-            .layout-legend .color-box { width:10px; height:10px; }
             .toast-container { bottom:8px; right:8px; left:8px; max-width:100%; }
             .toast { font-size:0.7rem; padding:8px 12px; }
             #loginModal .login-box { padding:16px; margin:10px; }
@@ -305,8 +299,6 @@
             .layout-cell .cell-zone { font-size:0.4rem; }
             .layout-cell .cell-level { font-size:0.25rem; }
             .layout-cell .cell-label { display:none; }
-            .layout-legend { font-size:0.45rem; padding:4px 8px; gap:4px; }
-            .layout-legend .color-box { width:8px; height:8px; }
         }
 
         ::-webkit-scrollbar { width:5px; height:5px; }
@@ -337,8 +329,9 @@
             <div class="hospital-sub">Unidad de Bodega de Abastecimiento</div>
             <div class="divider"></div>
             <h2>Automatización Almacenamiento</h2> 
-            <div class="divider"></div><span>"Diseñado por Mauricio Quiroz Ayala"</span></div>            
-            <p>Ingresa tus credenciales para acceder al sistema.</p>
+            <div class="divider"></div>
+            <span style="font-size:0.75rem; color:#64748b;">"Diseñado por Mauricio Quiroz Ayala"</span>
+            <p style="margin-top:12px;">Ingresa tus credenciales para acceder al sistema.</p>
             <label>Usuario</label>
             <input type="text" id="loginUser" placeholder="Ej: admin" value="admin">
             <label>Contraseña</label>
@@ -588,7 +581,7 @@
         //  CONFIGURACIÓN INDEXEDDB
         // ============================================================
         const DB_NAME = 'WMS_DB';
-        const DB_VERSION = 3; // Aumentamos versión para agregar store de configuraciones de layout por bodega
+        const DB_VERSION = 3;
 
         let db = null;
 
@@ -617,7 +610,6 @@
                     if (!db.objectStoreNames.contains('config')) {
                         db.createObjectStore('config', { keyPath: 'key' });
                     }
-                    // Nuevo store para layout por bodega
                     if (!db.objectStoreNames.contains('layoutImages')) {
                         db.createObjectStore('layoutImages', { keyPath: 'bodega' });
                     }
@@ -632,7 +624,6 @@
             });
         }
 
-        // Funciones de acceso a datos con IndexedDB (promesas)
         function dbGetAll(storeName) {
             return new Promise((resolve, reject) => {
                 if (!db) return reject(new Error('Base de datos no abierta'));
@@ -720,7 +711,7 @@
         const STORAGE_KEY_SESSION = 'wms_session_user';
         const STORAGE_KEY_ACTIVE_USERS = 'wms_active_users';
         const STORAGE_KEY_MODIFIED = 'wms_data_modified';
-        const STORAGE_KEY_BODEGAS = 'wms_bodegas_list'; // Lista de nombres de bodegas
+        const STORAGE_KEY_BODEGAS = 'wms_bodegas_list';
 
         // ============================================================
         //  INICIALIZACIÓN (async)
@@ -728,7 +719,6 @@
         async function initData() {
             await abrirDB();
 
-            // Usuarios (se mantienen en localStorage por simplicidad)
             if (!localStorage.getItem(STORAGE_KEY_USERS)) {
                 localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify([
                     { id: 1, nombre: 'Admin', perfil: 'Admin', password: 'admin', permisos: ['lectura','escritura','administracion'], ultimaActividad: new Date().toISOString() },
@@ -737,17 +727,14 @@
                 ]));
             }
 
-            // Config
             if (!localStorage.getItem(STORAGE_KEY_CONFIG)) {
                 localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify({ mapImage: '' }));
             }
 
-            // Lista de bodegas por defecto
             if (!localStorage.getItem(STORAGE_KEY_BODEGAS)) {
                 localStorage.setItem(STORAGE_KEY_BODEGAS, JSON.stringify(['Farmacos', 'Insumos', 'Economato', 'Controlados', 'Suturas', 'Alimentos', 'Mezclas']));
             }
 
-            // Productos de ejemplo si no hay
             const products = await dbGetAll('products');
             if (products.length === 0) {
                 const sample = [
@@ -758,7 +745,6 @@
                 await dbPutAll('products', sample);
             }
 
-            // Movimientos
             const movements = await dbGetAll('movements');
             if (movements.length === 0) {
                 await dbPut('movements', {
@@ -772,7 +758,6 @@
                 });
             }
 
-            // Historial
             const historial = await dbGetAll('historial');
             if (historial.length === 0) {
                 await dbPut('historial', {
@@ -824,7 +809,6 @@
             marcarDatosModificados();
         }
 
-        // Layout images por bodega
         async function getLayoutImage(bodega) {
             const result = await dbGet('layoutImages', bodega);
             return result ? result.imagen : null;
@@ -834,7 +818,6 @@
             marcarDatosModificados();
         }
 
-        // Usuarios
         function getUsers() { return JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]'); }
         function setUsers(u) {
             localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(u));
@@ -851,7 +834,6 @@
         function setBodegasList(list) {
             localStorage.setItem(STORAGE_KEY_BODEGAS, JSON.stringify(list));
             marcarDatosModificados();
-            // Actualizar select de bodegas en header y config
             actualizarSelectBodegas();
             actualizarSelectConfigBodegas();
         }
@@ -1280,17 +1262,15 @@
             const grid = document.getElementById('layoutGrid');
             if (!grid) return;
 
-            // Obtener imagen de la bodega actual
             const bodegaActual = currentWarehouse === 'TODAS' ? 'default' : currentWarehouse;
             const layoutImg = await getLayoutImage(bodegaActual);
 
-            // Si hay imagen, mostrarla como fondo
             if (layoutImg) {
                 grid.style.backgroundImage = `url(${layoutImg})`;
                 grid.style.backgroundSize = 'cover';
                 grid.style.backgroundPosition = 'center';
                 grid.style.minHeight = '500px';
-                grid.innerHTML = ''; // Limpiar celdas
+                grid.innerHTML = '';
                 return;
             } else {
                 grid.style.backgroundImage = 'none';
@@ -1299,7 +1279,6 @@
                 grid.style.minHeight = '400px';
             }
 
-            // Si no hay imagen, mostrar el layout por defecto
             const products = await getProducts();
 
             const layoutData = [
@@ -1458,7 +1437,6 @@
             const bodegas = getBodegasList();
             const newList = bodegas.filter(b => b !== nombre);
             setBodegasList(newList);
-            // Eliminar productos de esa bodega
             (async () => {
                 const products = await getAllProducts();
                 const filtered = products.filter(p => p.bodega !== nombre);
@@ -2181,7 +2159,6 @@
             const products = await getProducts();
             if (products.length === 0) return alert('No hay productos');
 
-            // Obtener ubicaciones únicas
             const ubicacionesSet = new Set();
             products.forEach(p => {
                 p.ubicaciones.forEach(u => {
