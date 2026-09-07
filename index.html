@@ -517,12 +517,9 @@
     <!-- TOAST -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- ============================================================ -->
-    // SDKs MODERNOS DE FIREBASE V10 (Modular ESM via unpkg)
-    <!-- ============================================================ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc, addDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBwOEE8j6KvPxeWA04Ydas_PqGj-5oi4nU",
@@ -537,15 +534,11 @@
         const app = initializeApp(firebaseConfig);
         const cloudDB = getFirestore(app);
 
-        // Exponer funciones globales para que funcionen con los botones HTML
         window.cloudDB = cloudDB;
-        window.firebaseMod = { collection, getDocs, getDoc, doc, setDoc, deleteDoc, addDoc, writeBatch };
-        
-        // Disparar evento de carga completa de Firebase
+        window.firebaseMod = { collection, getDocs, getDoc, doc, setDoc, deleteDoc, addDoc };
         window.dispatchEvent(new Event('firebase-ready'));
     </script>
 
-    <!-- SCRIPT PRINCIPAL DE LA APLICACIÓN -->
     <script>
         let currentWarehouse = 'TODAS';
         let currentUserId = null;
