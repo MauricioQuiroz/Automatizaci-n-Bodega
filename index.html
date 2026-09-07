@@ -70,8 +70,11 @@
         header .user-info .btn-warning:hover { background:var(--warning-hover); }
         header .user-info .btn-purple { background:var(--purple); }
         header .user-info .btn-purple:hover { background:var(--purple-hover); }
+        header .user-info .btn-danger { background:var(--danger); }
+        header .user-info .btn-danger:hover { background:var(--danger-hover); }
         header .user-info .user-name { color:#94a3b8; font-size:0.65rem; }
         header .user-info .online-indicator { display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e; margin-right:4px; animation:pulse 1.5s ease-in-out infinite; }
+        header .user-info .perfil-badge { font-size:0.5rem; padding:2px 6px; border-radius:10px; background:#334155; color:#94a3b8; }
         @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
 
         /* NAV */
@@ -82,6 +85,7 @@
         nav button:hover { color:#0f172a; background:#f1f5f9; }
         nav button.active { color:var(--primary); border-bottom-color:var(--primary); }
         nav button .badge-nav { background:var(--primary); color:var(--white); font-size:0.5rem; padding:1px 6px; border-radius:10px; margin-left:4px; }
+        nav button:disabled { opacity:0.4; cursor:not-allowed; }
 
         /* TABS */
         .tab-content { display:none; padding:14px; animation:fadeIn 0.3s ease; }
@@ -109,6 +113,7 @@
         .badge-admin { background:#fee2e2; color:#b91c1c; }
         .badge-supervisor { background:#fef3c7; color:#92400e; }
         .badge-operario { background:#dbeafe; color:#1e40af; }
+        .badge-invitado { background:#e2e8f0; color:#475569; }
         .badge-bodega { display:inline-block; padding:2px 8px; border-radius:6px; font-size:0.5rem; font-weight:700; color:var(--white); }
         .badge-farmacos { background:#2563eb; }
         .badge-insumos { background:var(--success); }
@@ -151,6 +156,7 @@
         .btn-sm .icon { font-size:0.7rem; }
         .btn-xs { padding:2px 6px; font-size:0.5rem; }
         .btn-xs .icon { font-size:0.6rem; }
+        .btn:disabled { opacity:0.4; cursor:not-allowed; transform:none !important; }
 
         /* TOOLBAR */
         .toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:10px 14px; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; margin-bottom:10px; }
@@ -243,6 +249,8 @@
 
         /* BODEGAS */
         .bodega-color { display:inline-block; width:16px; height:16px; border-radius:4px; border:1px solid rgba(0,0,0,0.1); vertical-align:middle; margin-right:4px; }
+
+        .permiso-denegado { color:#dc2626; font-size:0.65rem; display:flex; align-items:center; gap:4px; }
 
         /* RESPONSIVE */
         @media (max-width:1024px) { .tab-content { padding:10px; } .card-grid { grid-template-columns:repeat(auto-fit, minmax(90px,1fr)); } .modal-content { max-width:95%; padding:16px; } .layout-grid { min-height:350px; } }
@@ -350,10 +358,10 @@
             <div class="hospital-logo">
                 <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='60' viewBox='0 0 200 60'%3E%3Crect width='200' height='60' fill='%230f172a' rx='8'/%3E%3Ctext x='100' y='35' font-family='Arial' font-size='18' fill='white' text-anchor='middle' font-weight='bold'%3EHospital San Juan de Dios%3C/text%3E%3Ctext x='100' y='52' font-family='Arial' font-size='10' fill='%2360a5fa' text-anchor='middle'%3E%22El Primero de Chile%22%3C/text%3E%3C/svg%3E" alt="Hospital San Juan de Dios - CDT">
             </div>
-            <div class="hospital-name">Hospital San Juan de Dios</div>
+            <div class="hospital-name">Automatización Almacenamiento</div>
             <div class="hospital-sub"><span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
             <div class="divider"></div>
-            <h2>Automatización Almacenamiento  Unidad de Bodega de Abastecimiento</h2>
+            <h2>Bodega de Abastecimiento</h2>
             <p>Ingresa tus credenciales para acceder al sistema.</p>
             <label>Usuario</label>
             <input type="text" id="loginUser" placeholder="Ej: admin" value="admin">
@@ -370,28 +378,29 @@
         <header>
             <div class="header-left">
                 <div>
-                    <div class="header-title">Automatización Almacenamiento - Bodega Central</div>
+                    <div class="header-title">Automatización Almacenamiento - Bodega Central de Abastecimiento</div>
                     <div class="header-sub">Hospital San Juan de Dios · <span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
                 </div>
             </div>
             <div class="user-info">
                 <span class="online-indicator"></span>
                 <span class="user-name" id="currentUserDisplay">👤 Admin</span>
+                <span class="perfil-badge" id="perfilBadge">Admin</span>
                 <select id="warehouseSelect" onchange="cambiarBodega()">
                     <option value="TODAS">🏢 Todas</option>
                 </select>
-                <button class="btn btn-success" onclick="document.getElementById('fileInput').click()">
-                    <span class="icon">📂</span> Cargar Archivo
+                <button class="btn btn-success" id="btnCargarArchivo" onclick="document.getElementById('fileInput').click()">
+                    <span class="icon"></span> Cargar Archivo
                 </button>
                 <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event)">
-                <button class="btn btn-warning" onclick="exportarExcelCompleto()">
-                    <span class="icon">📤</span> Exportar Archivo
+                <button class="btn btn-warning" id="btnExportarArchivo" onclick="exportarExcelCompleto()">
+                    <span class="icon"></span> Exportar Archivo
                 </button>
-                <button class="btn btn-purple" onclick="generarQRUbicaciones()">
-                    <span class="icon">📱</span> QR Ubicaciones
+                <button class="btn btn-purple" id="btnQRUbicaciones" onclick="generarQRUbicaciones()">
+                    <span class="icon"></span> QR Ubicaciones
                 </button>
                 <button class="btn" onclick="logout()">
-                    <span class="icon">🚪</span>Salir
+                    <span class="icon"></span>Salir
                 </button>
             </div>
         </header>
@@ -410,11 +419,11 @@
         <!-- DASHBOARD -->
         <div id="tab-dashboard" class="tab-content active">
             <div class="card-grid">
-                <div class="card"><span class="card-icon">📦</span><div class="number" id="totalProductos">0</div><div class="label">Total productos</div></div>
-                <div class="card"><span class="card-icon">📍</span><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones ocupadas</div></div>
-                <div class="card"><span class="card-icon">🔄</span><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos totales</div></div>
-                <div class="card"><span class="card-icon">👥</span><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios activos</div></div>
-                <div class="card"><span class="card-icon">🟢</span><div class="number" id="usuariosConectados">0</div><div class="label">Conectados ahora</div></div>
+                <div class="card"><span class="card-icon"></span><div class="number" id="totalProductos">0</div><div class="label">Total productos</div></div>
+                <div class="card"><span class="card-icon"></span><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones ocupadas</div></div>
+                <div class="card"><span class="card-icon"></span><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos totales</div></div>
+                <div class="card"><span class="card-icon"></span><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios activos</div></div>
+                <div class="card"><span class="card-icon"></span><div class="number" id="usuariosConectados">0</div><div class="label">Conectados ahora</div></div>
             </div>
             <h3 style="font-size:0.9rem; margin-bottom:6px;">📋 Últimos movimientos</h3>
             <div class="table-wrap">
@@ -429,13 +438,13 @@
         <div id="tab-inventario" class="tab-content">
             <div class="toolbar">
                 <div class="toolbar-left">
-                    <button class="btn btn-primary btn-sm" onclick="toggleEditMode()">
+                    <button class="btn btn-primary btn-sm" id="btnEditar" onclick="toggleEditMode()">
                         <span class="icon">✏️</span> <span id="editModeLabel">Editar</span>
                     </button>
-                    <button class="btn btn-orange btn-sm" onclick="abrirModalAlmacenamiento()">
+                    <button class="btn btn-orange btn-sm" id="btnAlmacenar" onclick="abrirModalAlmacenamiento()">
                         <span class="icon">📥</span> Recepción → Almacenar
                     </button>
-                    <button class="btn btn-warning btn-sm" onclick="exportarSeleccionados()">
+                    <button class="btn btn-warning btn-sm" id="btnExportarSeleccionados" onclick="exportarSeleccionados()">
                         <span class="icon">📥</span> Exportar
                     </button>
                 </div>
@@ -455,8 +464,8 @@
 
             <div id="bulkActions">
                 <span class="selected-count" id="selectedCount">0 seleccionados</span>
-                <button class="btn btn-warning btn-sm" onclick="moverSeleccionados()"><span class="icon">🔄</span> Mover</button>
-                <button class="btn btn-danger btn-sm" onclick="eliminarSeleccionados()"><span class="icon">🗑️</span> Eliminar</button>
+                <button class="btn btn-warning btn-sm" id="btnMoverSeleccionados" onclick="moverSeleccionados()"><span class="icon">🔄</span> Mover</button>
+                <button class="btn btn-danger btn-sm" id="btnEliminarSeleccionados" onclick="eliminarSeleccionados()"><span class="icon">🗑️</span> Eliminar</button>
                 <button class="btn btn-outline btn-sm" onclick="deseleccionarTodos()"><span class="icon">✖️</span></button>
             </div>
 
@@ -490,7 +499,6 @@
             <h3 style="font-size:0.95rem; margin-bottom:8px;">🗺️ Plano de la bodega</h3>
             <p style="color:#64748b; margin-bottom:10px; font-size:0.8rem;">Visualiza la distribución de las zonas en tu bodega.</p>
 
-            <!-- Imagen del layout por bodega -->
             <div class="layout-image-container" id="layoutImageContainer">
                 <div id="layoutImageContent">
                     <span class="no-image">📷 No hay imagen cargada para esta bodega</span>
@@ -528,7 +536,7 @@
                     <option value="MOVIMIENTO">🔄 Movimiento</option>
                     <option value="ALMACENAR">📥 Almacenar</option>
                 </select>
-                <button class="btn btn-danger btn-sm" onclick="limpiarHistorialCompleto()"><span class="icon">🗑️</span> Limpiar</button>
+                <button class="btn btn-danger btn-sm" id="btnLimpiarHistorial" onclick="limpiarHistorialCompleto()"><span class="icon">🗑️</span> Limpiar</button>
             </div>
             <div class="table-wrap">
                 <table>
@@ -541,7 +549,7 @@
         <!-- USUARIOS -->
         <div id="tab-usuarios" class="tab-content">
             <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
-                <button class="btn btn-primary" onclick="mostrarModalUsuario()"><span class="icon">➕</span> Nuevo usuario</button>
+                <button class="btn btn-primary" id="btnNuevoUsuario" onclick="mostrarModalUsuario()"><span class="icon">➕</span> Nuevo usuario</button>
                 <button class="btn btn-outline" onclick="renderUsuarios()"><span class="icon">🔄</span> Actualizar</button>
             </div>
             <div class="table-wrap">
@@ -552,10 +560,10 @@
             </div>
         </div>
 
-        <!-- BODEGAS - NUEVA PESTAÑA -->
+        <!-- BODEGAS -->
         <div id="tab-bodegas" class="tab-content">
             <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
-                <button class="btn btn-primary" onclick="mostrarModalBodega()"><span class="icon">➕</span> Nueva Bodega</button>
+                <button class="btn btn-primary" id="btnNuevaBodega" onclick="mostrarModalBodega()"><span class="icon">➕</span> Nueva Bodega</button>
                 <button class="btn btn-outline" onclick="renderBodegas()"><span class="icon">🔄</span> Actualizar</button>
             </div>
             <div class="table-wrap">
@@ -581,9 +589,9 @@
                     <p style="font-size:0.65rem; color:#64748b; margin-top:3px;">Sube una imagen del plano real para la bodega seleccionada.</p>
                 </div>
                 <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                    <button class="btn btn-primary" onclick="resetData()"><span class="icon">🔄</span> Reiniciar</button>
-                    <button class="btn btn-warning" onclick="exportarDatos()"><span class="icon">📤</span> Exportar JSON</button>
-                    <button class="btn btn-success" onclick="document.getElementById('importFile').click()"><span class="icon">📥</span> Importar JSON</button>
+                    <button class="btn btn-primary" id="btnReiniciar" onclick="resetData()"><span class="icon">🔄</span> Reiniciar</button>
+                    <button class="btn btn-warning" id="btnExportarJSON" onclick="exportarDatos()"><span class="icon">📤</span> Exportar JSON</button>
+                    <button class="btn btn-success" id="btnImportarJSON" onclick="document.getElementById('importFile').click()"><span class="icon">📥</span> Importar JSON</button>
                     <input type="file" id="importFile" accept=".json" style="display:none" onchange="cargarImport(event)">
                 </div>
             </div>
@@ -642,11 +650,9 @@
                     if (!db.objectStoreNames.contains('config')) {
                         db.createObjectStore('config', { keyPath: 'key' });
                     }
-                    // NUEVO: Store para bodegas
                     if (!db.objectStoreNames.contains('warehouses')) {
                         db.createObjectStore('warehouses', { keyPath: 'id' });
                     }
-                    // NUEVO: Store para imágenes de layout por bodega
                     if (!db.objectStoreNames.contains('layout_images')) {
                         db.createObjectStore('layout_images', { keyPath: 'bodegaId' });
                     }
@@ -732,6 +738,37 @@
         }
 
         // ============================================================
+        //  USUARIOS POR DEFECTO
+        // ============================================================
+        const DEFAULT_USERS = [
+            { id: 1, nombre: 'admin', perfil: 'Admin', password: 'admin', permisos: ['lectura', 'escritura', 'administracion', 'gestion_usuarios', 'gestion_bodegas'], ultimaActividad: new Date().toISOString() },
+            { id: 2, nombre: 'supervisor', perfil: 'supervisor', password: '1234', permisos: ['lectura', 'escritura', 'administracion'], ultimaActividad: new Date().toISOString() },
+            { id: 3, nombre: 'operario', perfil: 'operario', password: '1234', permisos: ['lectura', 'escritura'], ultimaActividad: new Date().toISOString() },
+            { id: 4, nombre: 'invitado', perfil: 'invitado', password: 'invitado', permisos: ['lectura'], ultimaActividad: new Date().toISOString() }
+        ];
+
+        const DEFAULT_WAREHOUSES = [
+            { id: 'Farmacos', nombre: 'Bodega de Fármacos', descripcion: 'Medicamentos y fármacos', zonas: ['A','B','C','D','E','F','G','H','I','J'], color: '#2563eb' },
+            { id: 'Insumos', nombre: 'Bodega de Insumos Clínicos', descripcion: 'Insumos médicos y clínicos', zonas: ['A','B','C','D','E','F','G','H','I','J'], color: '#059669' },
+            { id: 'Economato', nombre: 'Bodega de Economato', descripcion: 'Materiales y suministros generales', zonas: ['A','B','C','D','E','F','G','H','I','J'], color: '#d97706' }
+        ];
+
+        // ============================================================
+        //  FUNCIÓN PARA CARGAR USUARIOS POR DEFECTO EN INDEXEDDB
+        // ============================================================
+        async function cargarUsuariosPorDefecto() {
+            const users = await dbGetAll('users');
+            if (users.length === 0) {
+                await dbPutAll('users', DEFAULT_USERS);
+            }
+            // También mantener en localStorage para compatibilidad
+            const localUsers = JSON.parse(localStorage.getItem('wms_users') || '[]');
+            if (localUsers.length === 0) {
+                localStorage.setItem('wms_users', JSON.stringify(DEFAULT_USERS));
+            }
+        }
+
+        // ============================================================
         //  VARIABLES GLOBALES
         // ============================================================
         let currentWarehouse = 'TODAS';
@@ -749,12 +786,83 @@
         const STORAGE_KEY_ACTIVE_USERS = 'wms_active_users';
         const STORAGE_KEY_MODIFIED = 'wms_data_modified';
 
-        // Bodegas por defecto
-        const DEFAULT_WAREHOUSES = [
-            { id: 'Farmacos', nombre: 'Bodega de Fármacos', descripcion: 'Medicamentos y fármacos', zonas: ['A','B','C','D','E','F','G','H','I','J'], color: '#2563eb' },
-            { id: 'Insumos', nombre: 'Bodega de Insumos Clínicos', descripcion: 'Insumos médicos y clínicos', zonas: ['A','B','C','D','E','F','G','H','I','J'], color: '#059669' },
-            { id: 'Economato', nombre: 'Bodega de Economato', descripcion: 'Materiales y suministros generales', zonas: ['A','B','C','D','E','F','G','H','I','J'], color: '#d97706' }
-        ];
+        // ============================================================
+        //  FUNCIONES DE PERMISOS
+        // ============================================================
+        function getCurrentUser() {
+            if (currentUserId === null) return null;
+            const users = getUsers();
+            return users.find(u => u.id === currentUserId) || null;
+        }
+
+        function hasPermission(perm) {
+            const user = getCurrentUser();
+            if (!user) return false;
+            return user.permisos.includes(perm);
+        }
+
+        function tieneEscritura() { return hasPermission('escritura'); }
+        function tieneAdministracion() { return hasPermission('administracion'); }
+        function tieneGestionUsuarios() { return hasPermission('gestion_usuarios'); }
+        function tieneGestionBodegas() { return hasPermission('gestion_bodegas'); }
+        function puedeCargarArchivos() { return hasPermission('administracion') || hasPermission('gestion_usuarios') || hasPermission('gestion_bodegas'); }
+
+        // ============================================================
+        //  ACTUALIZAR INTERFAZ SEGÚN PERMISOS
+        // ============================================================
+        function actualizarPermisosUI() {
+            const user = getCurrentUser();
+            if (!user) return;
+
+            const perfil = user.perfil;
+            const permisos = user.permisos || [];
+
+            // Mostrar perfil
+            document.getElementById('perfilBadge').textContent = perfil.charAt(0).toUpperCase() + perfil.slice(1);
+
+            // Botones del header
+            document.getElementById('btnCargarArchivo').style.display = puedeCargarArchivos() ? 'inline-flex' : 'none';
+            document.getElementById('btnExportarArchivo').style.display = puedeCargarArchivos() ? 'inline-flex' : 'none';
+            document.getElementById('btnQRUbicaciones').style.display = puedeCargarArchivos() ? 'inline-flex' : 'none';
+
+            // Botones de inventario
+            document.getElementById('btnEditar').style.display = tieneEscritura() ? 'inline-flex' : 'none';
+            document.getElementById('btnAlmacenar').style.display = tieneEscritura() ? 'inline-flex' : 'none';
+            document.getElementById('btnExportarSeleccionados').style.display = tieneEscritura() ? 'inline-flex' : 'none';
+
+            // Botones de selección múltiple
+            document.getElementById('btnMoverSeleccionados').style.display = tieneEscritura() ? 'inline-flex' : 'none';
+            document.getElementById('btnEliminarSeleccionados').style.display = tieneEscritura() ? 'inline-flex' : 'none';
+
+            // Pestañas
+            const navButtons = document.querySelectorAll('#mainNav button');
+            navButtons.forEach(btn => {
+                const tab = btn.dataset.tab;
+                if (tab === 'usuarios' && !tieneGestionUsuarios()) {
+                    btn.style.display = 'none';
+                } else if (tab === 'bodegas' && !tieneGestionBodegas()) {
+                    btn.style.display = 'none';
+                } else if (tab === 'config' && !tieneAdministracion()) {
+                    btn.style.display = 'none';
+                } else {
+                    btn.style.display = 'inline-flex';
+                }
+            });
+
+            // Botones de usuarios
+            document.getElementById('btnNuevoUsuario').style.display = tieneGestionUsuarios() ? 'inline-flex' : 'none';
+
+            // Botones de bodegas
+            document.getElementById('btnNuevaBodega').style.display = tieneGestionBodegas() ? 'inline-flex' : 'none';
+
+            // Botones de config
+            document.getElementById('btnReiniciar').style.display = tieneAdministracion() ? 'inline-flex' : 'none';
+            document.getElementById('btnExportarJSON').style.display = tieneAdministracion() ? 'inline-flex' : 'none';
+            document.getElementById('btnImportarJSON').style.display = tieneAdministracion() ? 'inline-flex' : 'none';
+
+            // Botón limpiar historial
+            document.getElementById('btnLimpiarHistorial').style.display = tieneAdministracion() ? 'inline-flex' : 'none';
+        }
 
         // ============================================================
         //  INICIALIZACIÓN
@@ -762,19 +870,28 @@
         async function initData() {
             await abrirDB();
 
-            if (!localStorage.getItem(STORAGE_KEY_USERS)) {
-                localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify([
-                    { id: 1, nombre: 'Admin', perfil: 'Admin', password: 'admin', permisos: ['lectura','escritura','administracion'], ultimaActividad: new Date().toISOString() },
-                    { id: 2, nombre: 'Supervisor', perfil: 'supervisor', password: '1234', permisos: ['lectura','escritura'], ultimaActividad: new Date().toISOString() },
-                    { id: 3, nombre: 'Operario', perfil: 'operario', password: '1234', permisos: ['lectura'], ultimaActividad: new Date().toISOString() }
-                ]));
+            // Cargar usuarios por defecto en IndexedDB
+            await cargarUsuariosPorDefecto();
+
+            // Sincronizar usuarios de IndexedDB a localStorage para compatibilidad
+            const usersDB = await dbGetAll('users');
+            if (usersDB.length > 0) {
+                localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(usersDB));
+            }
+
+            // Sincronizar localStorage a IndexedDB si hay usuarios en localStorage pero no en IndexedDB
+            const localUsers = JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]');
+            if (localUsers.length > 0) {
+                const dbUsers = await dbGetAll('users');
+                if (dbUsers.length === 0) {
+                    await dbPutAll('users', localUsers);
+                }
             }
 
             if (!localStorage.getItem(STORAGE_KEY_CONFIG)) {
                 localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify({ mapImage: '' }));
             }
 
-            // Inicializar bodegas si no existen
             const warehouses = await dbGetAll('warehouses');
             if (warehouses.length === 0) {
                 await dbPutAll('warehouses', DEFAULT_WAREHOUSES);
@@ -815,7 +932,6 @@
                 });
             }
 
-            // Actualizar select de bodegas
             await actualizarSelectBodegas();
         }
 
@@ -872,7 +988,6 @@
         }
         async function deleteWarehouse(id) {
             await dbDelete('warehouses', id);
-            // También eliminar la imagen asociada
             await dbDelete('layout_images', id);
             marcarDatosModificados();
             await actualizarSelectBodegas();
@@ -887,9 +1002,29 @@
             marcarDatosModificados();
         }
 
-        function getUsers() { return JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]'); }
-        function setUsers(u) {
+        // USUARIOS - sincronizados entre IndexedDB y localStorage
+        async function getUsersFromDB() {
+            const users = await dbGetAll('users');
+            if (users.length > 0) {
+                localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(users));
+                return users;
+            }
+            const localUsers = JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]');
+            if (localUsers.length > 0) {
+                await dbPutAll('users', localUsers);
+                return localUsers;
+            }
+            return DEFAULT_USERS;
+        }
+
+        function getUsers() {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]');
+        }
+
+        async function setUsers(u) {
             localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(u));
+            await dbClear('users');
+            if (u.length > 0) await dbPutAll('users', u);
             marcarDatosModificados();
             broadcastCambios('USUARIO', 'Usuarios actualizados');
         }
@@ -922,7 +1057,6 @@
                 select.appendChild(opt);
             });
 
-            // Si la bodega actual ya no existe, resetear a TODAS
             if (currentValue !== 'TODAS' && !warehouses.find(w => w.id === currentValue)) {
                 select.value = 'TODAS';
                 currentWarehouse = 'TODAS';
@@ -975,7 +1109,6 @@
                     renderUsuarios();
                 }
 
-                // Verificar cambios en bodegas
                 getAllWarehouses().then(warehouses => {
                     const currentWhHash = JSON.stringify(warehouses);
                     if (currentWhHash !== lastWarehouseHash) {
@@ -1011,18 +1144,6 @@
         // ============================================================
         //  AUTENTICACIÓN
         // ============================================================
-        function getCurrentUser() {
-            if (currentUserId === null) return null;
-            const users = getUsers();
-            return users.find(u => u.id === currentUserId) || null;
-        }
-
-        function hasPermission(perm) {
-            const user = getCurrentUser();
-            if (!user) return false;
-            return user.permisos.includes(perm) || user.permisos.includes('administracion');
-        }
-
         function handleLogin() {
             const username = document.getElementById('loginUser').value.trim();
             const password = document.getElementById('loginPass').value.trim();
@@ -1036,9 +1157,10 @@
                 initBroadcastChannel();
                 renderAll();
                 document.getElementById('loginError').style.display = 'none';
-                mostrarToast('👋 Bienvenido ' + user.nombre, 'success');
+                mostrarToast('👋 Bienvenido ' + user.nombre + ' (' + user.perfil + ')', 'success');
                 setInterval(actualizarUsuariosConectados, 30000);
                 registrarHistorial('LOGIN', user.nombre, 'Inicio de sesión');
+                actualizarPermisosUI();
             } else {
                 document.getElementById('loginError').style.display = 'block';
                 document.getElementById('loginError').textContent = '❌ Usuario o contraseña incorrectos.';
@@ -1072,6 +1194,7 @@
                     document.getElementById('loginModal').style.display = 'none';
                     document.getElementById('app').style.display = 'block';
                     initBroadcastChannel();
+                    actualizarPermisosUI();
                     return true;
                 }
             }
@@ -1157,6 +1280,8 @@
         async function renderAll() {
             const user = getCurrentUser();
             document.getElementById('currentUserDisplay').textContent = user ? '👤 ' + user.nombre + ' (' + user.perfil + ')' : '👤 Invitado';
+            document.getElementById('perfilBadge').textContent = user ? user.perfil.charAt(0).toUpperCase() + user.perfil.slice(1) : 'Invitado';
+
             const sel = document.getElementById('warehouseSelect');
             if (sel.value !== currentWarehouse) sel.value = currentWarehouse;
 
@@ -1167,17 +1292,18 @@
             renderUsuarios();
             renderBodegas();
             renderConfig();
-            actualizarUsuariosConectados();
 
-            // Cargar imagen del layout para la bodega actual
+            // Cargar imagen del layout
             cargarImagenLayout(currentWarehouse);
 
-            // Actualizar nombre de bodega en config
             const wh = await getWarehouse(currentWarehouse);
             document.getElementById('configBodegaNombre').textContent = wh ? wh.nombre : 'Todas';
 
             const products = await getProducts();
             document.getElementById('inventoryBadge').textContent = products.length;
+
+            actualizarPermisosUI();
+            actualizarUsuariosConectados();
         }
 
         // ============================================================
@@ -1210,6 +1336,12 @@
         //  CARGA DE EXCEL
         // ============================================================
         function cargarExcel(event) {
+            if (!puedeCargarArchivos()) {
+                mostrarToast('⛔ No tienes permisos para cargar archivos', 'error');
+                event.target.value = '';
+                return;
+            }
+
             const file = event.target.files[0];
             if (!file) return;
 
@@ -1435,7 +1567,6 @@
             });
         }
 
-        // Cargar imagen del layout para una bodega específica
         async function cargarImagenLayout(bodegaId) {
             const container = document.getElementById('layoutImageContent');
             if (!container) return;
@@ -1454,12 +1585,16 @@
             }
         }
 
-        // Subir imagen del layout desde configuración
         function subirImagenLayout(event) {
+            if (!tieneEscritura()) {
+                mostrarToast('⛔ No tienes permisos para subir imágenes', 'error');
+                event.target.value = '';
+                return;
+            }
+
             const file = event.target.files[0];
             if (!file) return;
 
-            // Usar la bodega actual seleccionada
             const bodegaId = currentWarehouse;
             if (bodegaId === 'TODAS') {
                 mostrarToast('⚠️ Selecciona una bodega específica para subir su imagen', 'warning');
@@ -1486,7 +1621,6 @@
         //  CONFIG
         // ============================================================
         function renderConfig() {
-            // Actualizar nombre de bodega
             getAllWarehouses().then(warehouses => {
                 const wh = warehouses.find(w => w.id === currentWarehouse);
                 document.getElementById('configBodegaNombre').textContent = wh ? wh.nombre : 'Todas';
@@ -1497,6 +1631,11 @@
         //  MODAL ALMACENAMIENTO
         // ============================================================
         function abrirModalAlmacenamiento() {
+            if (!tieneEscritura()) {
+                mostrarToast('⛔ No tienes permisos para almacenar productos', 'error');
+                return;
+            }
+
             const products = getProducts();
             mostrarModal('📥 Recepción y Almacenamiento', `
                 <p style="color:#64748b; font-size:0.85rem; margin-bottom:12px;">Registra un producto desde recepción a su ubicación final en la bodega.</p>
@@ -1728,6 +1867,7 @@
             }
 
             const isMobile = window.innerWidth < 768;
+            const puedeEditar = tieneEscritura();
 
             tbody.innerHTML = products.map((p, idx) => {
                 const isEditing = editingRows.has(p.codigo);
@@ -1739,13 +1879,14 @@
                 const estadoClass = estado === 'recepcion' ? 'badge-recepcion' : 'badge-almacenado';
                 const estadoLabel = estado === 'recepcion' ? '📥 Recepción' : '✅ Almacenado';
 
-                const showInlineEdit = editMode && !isMobile;
+                const showInlineEdit = editMode && !isMobile && puedeEditar;
 
                 return `
                 <tr class="${isEditing ? 'row-editing' : ''}" data-codigo="${p.codigo}">
                     <td>
                         <input type="checkbox" class="row-selector" data-codigo="${p.codigo}"
-                               ${isSelected ? 'checked' : ''} onchange="toggleRowSelection('${p.codigo}')">
+                               ${isSelected ? 'checked' : ''} onchange="toggleRowSelection('${p.codigo}')"
+                               ${puedeEditar ? '' : 'disabled'}>
                     </td>
                     <td>
                         ${showInlineEdit ?
@@ -1805,15 +1946,19 @@
                                     <span class="icon">❌</span>
                                 </button>
                             ` : `
-                                <button class="btn btn-primary btn-xs" onclick="editarProductoModal('${p.codigo}')" title="Editar">
-                                    <span class="icon">✏️</span>
-                                </button>
-                                <button class="btn btn-warning btn-xs" onclick="moverProductoModal('${p.codigo}')" title="Mover">
-                                    <span class="icon">🔄</span>
-                                </button>
-                                <button class="btn btn-danger btn-xs" onclick="eliminarProducto('${p.codigo}')" title="Eliminar">
-                                    <span class="icon">🗑️</span>
-                                </button>
+                                ${puedeEditar ? `
+                                    <button class="btn btn-primary btn-xs" onclick="editarProductoModal('${p.codigo}')" title="Editar">
+                                        <span class="icon">✏️</span>
+                                    </button>
+                                    <button class="btn btn-warning btn-xs" onclick="moverProductoModal('${p.codigo}')" title="Mover">
+                                        <span class="icon">🔄</span>
+                                    </button>
+                                    <button class="btn btn-danger btn-xs" onclick="eliminarProducto('${p.codigo}')" title="Eliminar">
+                                        <span class="icon">🗑️</span>
+                                    </button>
+                                ` : `
+                                    <span class="permiso-denegado">🔒 Solo lectura</span>
+                                `}
                             `}
                         </div>
                     </td>
@@ -1821,7 +1966,7 @@
             }).join('');
 
             const bulkActions = document.getElementById('bulkActions');
-            if (selectedRows.size > 0) {
+            if (selectedRows.size > 0 && puedeEditar) {
                 bulkActions.style.display = 'flex';
                 document.getElementById('selectedCount').textContent = selectedRows.size + ' seleccionados';
             } else {
@@ -1833,6 +1978,10 @@
         //  EDICIÓN INLINE
         // ============================================================
         function toggleEditMode() {
+            if (!tieneEscritura()) {
+                mostrarToast('⛔ No tienes permisos para editar', 'error');
+                return;
+            }
             editMode = !editMode;
             document.getElementById('editModeLabel').textContent = editMode ? 'Cancelar' : 'Editar';
             if (!editMode) {
@@ -1842,6 +1991,11 @@
         }
 
         async function guardarCambioInline(codigo, campo, valor) {
+            if (!tieneEscritura()) {
+                mostrarToast('⛔ No tienes permisos para editar', 'error');
+                return;
+            }
+
             const products = await getAllProducts();
             const index = products.findIndex(p => p.codigo === codigo);
             if (index === -1) return;
@@ -1880,10 +2034,13 @@
         }
 
         // ============================================================
-        //  EDICIÓN MODAL - CON ESCÁNER QR
+        //  EDICIÓN MODAL
         // ============================================================
         async function editarProductoModal(codigo) {
-            if (!hasPermission('escritura')) return alert('No tienes permisos');
+            if (!tieneEscritura()) {
+                mostrarToast('⛔ No tienes permisos para editar', 'error');
+                return;
+            }
 
             const products = await getAllProducts();
             const p = products.find(prod => prod.codigo === codigo);
@@ -2048,7 +2205,10 @@
         //  MOVER PRODUCTO
         // ============================================================
         async function moverProductoModal(codigo) {
-            if (!hasPermission('escritura')) return alert('No tienes permisos');
+            if (!tieneEscritura()) {
+                mostrarToast('⛔ No tienes permisos para mover productos', 'error');
+                return;
+            }
 
             const products = await getAllProducts();
             const p = products.find(prod => prod.codigo === codigo);
@@ -2193,7 +2353,10 @@
         //  ELIMINAR PRODUCTO
         // ============================================================
         async function eliminarProducto(codigo) {
-            if (!hasPermission('escritura')) return alert('No tienes permisos');
+            if (!tieneEscritura()) {
+                mostrarToast('⛔ No tienes permisos para eliminar productos', 'error');
+                return;
+            }
             if (!confirm('¿Estás seguro de eliminar el producto ' + codigo + '?')) return;
 
             const products = await getAllProducts();
@@ -2212,6 +2375,7 @@
         //  SELECCIÓN MÚLTIPLE
         // ============================================================
         function toggleRowSelection(codigo) {
+            if (!tieneEscritura()) return;
             if (selectedRows.has(codigo)) {
                 selectedRows.delete(codigo);
             } else {
@@ -2221,6 +2385,7 @@
         }
 
         function toggleSelectAll() {
+            if (!tieneEscritura()) return;
             const checked = document.getElementById('selectAll').checked;
             const products = getProducts();
             if (checked) {
@@ -2238,6 +2403,10 @@
         }
 
         async function moverSeleccionados() {
+            if (!tieneEscritura()) {
+                mostrarToast('⛔ No tienes permisos para mover productos', 'error');
+                return;
+            }
             if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
 
             mostrarModal('🔄 Mover Seleccionados', `
@@ -2359,6 +2528,10 @@
         }
 
         async function eliminarSeleccionados() {
+            if (!tieneEscritura()) {
+                mostrarToast('⛔ No tienes permisos para eliminar productos', 'error');
+                return;
+            }
             if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
             if (!confirm('¿Estás seguro de eliminar ' + selectedRows.size + ' productos?')) return;
 
@@ -2373,6 +2546,10 @@
         }
 
         async function exportarSeleccionados() {
+            if (!tieneEscritura()) {
+                mostrarToast('⛔ No tienes permisos para exportar', 'error');
+                return;
+            }
             if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
 
             const products = await getProducts();
@@ -2450,6 +2627,11 @@
         }
 
         async function generarQRUbicaciones() {
+            if (!puedeCargarArchivos()) {
+                mostrarToast('⛔ No tienes permisos para generar QR', 'error');
+                return;
+            }
+
             const products = await getAllProducts();
             const ubicacionesMap = new Map();
             products.forEach(p => {
@@ -2510,6 +2692,7 @@
                 tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No hay usuarios registrados</td></tr>';
                 return;
             }
+            const puedeEditarUsuarios = tieneGestionUsuarios();
             tbody.innerHTML = users.map(u => {
                 const ultimaAct = u.ultimaActividad ? new Date(u.ultimaActividad).toLocaleString() : 'Nunca';
                 return `<tr>
@@ -2519,10 +2702,10 @@
                     <td>${(u.permisos || []).join(', ')}</td>
                     <td style="font-size:0.65rem; color:#64748b;">${ultimaAct}</td>
                     <td>
-                        <button class="btn btn-primary btn-sm" onclick="editarUsuario(${u.id})" ${hasPermission('administracion') ? '' : 'disabled'}>
+                        <button class="btn btn-primary btn-sm" onclick="editarUsuario(${u.id})" ${puedeEditarUsuarios ? '' : 'disabled'}>
                             <span class="icon">✏️</span>
                         </button>
-                        <button class="btn btn-danger btn-sm" onclick="eliminarUsuario(${u.id})" ${hasPermission('administracion') && u.id !== currentUserId ? '' : 'disabled'}>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarUsuario(${u.id})" ${puedeEditarUsuarios && u.id !== currentUserId ? '' : 'disabled'}>
                             <span class="icon">🗑️</span>
                         </button>
                     </td>
@@ -2531,7 +2714,10 @@
         }
 
         function mostrarModalUsuario() {
-            if (!hasPermission('administracion')) return alert('No tienes permisos');
+            if (!tieneGestionUsuarios()) {
+                mostrarToast('⛔ No tienes permisos para gestionar usuarios', 'error');
+                return;
+            }
 
             mostrarModal('➕ Nuevo Usuario', `
                 <div class="form-grid">
@@ -2549,11 +2735,13 @@
                             <option value="admin">Admin</option>
                             <option value="supervisor">Supervisor</option>
                             <option value="operario">Operario</option>
+                            <option value="invitado">Invitado</option>
                         </select>
                     </div>
                     <div>
                         <label>Permisos</label>
                         <input id="userPermisos" placeholder="lectura, escritura, administracion" value="lectura">
+                        <small style="color:#64748b; font-size:0.55rem;">Permisos: lectura, escritura, administracion, gestion_usuarios, gestion_bodegas</small>
                     </div>
                 </div>
             `);
@@ -2590,7 +2778,10 @@
         }
 
         function editarUsuario(id) {
-            if (!hasPermission('administracion')) return alert('No tienes permisos');
+            if (!tieneGestionUsuarios()) {
+                mostrarToast('⛔ No tienes permisos para gestionar usuarios', 'error');
+                return;
+            }
 
             const users = getUsers();
             const u = users.find(user => user.id === id);
@@ -2612,11 +2803,13 @@
                             <option value="admin" ${u.perfil === 'admin' ? 'selected' : ''}>Admin</option>
                             <option value="supervisor" ${u.perfil === 'supervisor' ? 'selected' : ''}>Supervisor</option>
                             <option value="operario" ${u.perfil === 'operario' ? 'selected' : ''}>Operario</option>
+                            <option value="invitado" ${u.perfil === 'invitado' ? 'selected' : ''}>Invitado</option>
                         </select>
                     </div>
                     <div>
                         <label>Permisos</label>
                         <input id="editUserPermisos" value="${(u.permisos || []).join(', ')}">
+                        <small style="color:#64748b; font-size:0.55rem;">Permisos: lectura, escritura, administracion, gestion_usuarios, gestion_bodegas</small>
                     </div>
                 </div>
             `);
@@ -2649,7 +2842,10 @@
         }
 
         function eliminarUsuario(id) {
-            if (!hasPermission('administracion')) return alert('No tienes permisos');
+            if (!tieneGestionUsuarios()) {
+                mostrarToast('⛔ No tienes permisos para gestionar usuarios', 'error');
+                return;
+            }
             if (id === currentUserId) return alert('⚠️ No puedes eliminar tu propio usuario');
 
             const users = getUsers();
@@ -2686,6 +2882,8 @@
                 return;
             }
 
+            const puedeEditarBodegas = tieneGestionBodegas();
+
             tbody.innerHTML = warehouses.map(w => `
                 <tr>
                     <td><strong>${w.id}</strong></td>
@@ -2696,10 +2894,10 @@
                     ).join(' ')}</td>
                     <td><span class="bodega-color" style="background:${w.color || '#64748b'};"></span> ${w.color || '#64748b'}</td>
                     <td>
-                        <button class="btn btn-primary btn-sm" onclick="editarBodega('${w.id}')" ${hasPermission('administracion') ? '' : 'disabled'}>
+                        <button class="btn btn-primary btn-sm" onclick="editarBodega('${w.id}')" ${puedeEditarBodegas ? '' : 'disabled'}>
                             <span class="icon">✏️</span>
                         </button>
-                        <button class="btn btn-danger btn-sm" onclick="eliminarBodega('${w.id}')" ${hasPermission('administracion') ? '' : 'disabled'}>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarBodega('${w.id}')" ${puedeEditarBodegas ? '' : 'disabled'}>
                             <span class="icon">🗑️</span>
                         </button>
                     </td>
@@ -2708,7 +2906,10 @@
         }
 
         function mostrarModalBodega() {
-            if (!hasPermission('administracion')) return alert('No tienes permisos');
+            if (!tieneGestionBodegas()) {
+                mostrarToast('⛔ No tienes permisos para gestionar bodegas', 'error');
+                return;
+            }
 
             mostrarModal('🏢 Nueva Bodega', `
                 <div class="form-grid">
@@ -2752,7 +2953,6 @@
                 if (!nombre) return alert('El nombre es requerido');
                 if (zonas.length === 0) return alert('Selecciona al menos una zona');
 
-                // Verificar que el ID no exista
                 const existing = await getWarehouse(id);
                 if (existing) return alert('Ya existe una bodega con ese ID');
 
@@ -2768,7 +2968,10 @@
         }
 
         async function editarBodega(id) {
-            if (!hasPermission('administracion')) return alert('No tienes permisos');
+            if (!tieneGestionBodegas()) {
+                mostrarToast('⛔ No tienes permisos para gestionar bodegas', 'error');
+                return;
+            }
 
             const wh = await getWarehouse(id);
             if (!wh) return alert('Bodega no encontrada');
@@ -2834,12 +3037,14 @@
         }
 
         async function eliminarBodega(id) {
-            if (!hasPermission('administracion')) return alert('No tienes permisos');
+            if (!tieneGestionBodegas()) {
+                mostrarToast('⛔ No tienes permisos para gestionar bodegas', 'error');
+                return;
+            }
 
             const wh = await getWarehouse(id);
             if (!wh) return alert('Bodega no encontrada');
 
-            // Verificar si hay productos en esta bodega
             const products = await getAllProducts();
             const tieneProductos = products.some(p => p.bodega === id);
             if (tieneProductos) {
@@ -2853,7 +3058,6 @@
             registrarHistorial('ELIMINAR', 'BODEGA_' + id, 'Bodega eliminada: ' + wh.nombre);
             mostrarToast('🗑️ Bodega ' + wh.nombre + ' eliminada', 'error');
 
-            // Si la bodega actual era la eliminada, cambiar a TODAS
             if (currentWarehouse === id) {
                 currentWarehouse = 'TODAS';
                 document.getElementById('warehouseSelect').value = 'TODAS';
@@ -2907,7 +3111,10 @@
         }
 
         async function limpiarHistorialCompleto() {
-            if (!hasPermission('administracion')) return alert('No tienes permisos');
+            if (!tieneAdministracion()) {
+                mostrarToast('⛔ No tienes permisos para limpiar el historial', 'error');
+                return;
+            }
             if (!confirm('¿Estás seguro de limpiar todo el historial?')) return;
             await setHistorial([]);
             renderHistorialCompleto();
@@ -2918,6 +3125,11 @@
         //  EXPORTAR EXCEL
         // ============================================================
         async function exportarExcelCompleto() {
+            if (!puedeCargarArchivos()) {
+                mostrarToast('⛔ No tienes permisos para exportar', 'error');
+                return;
+            }
+
             const products = await getAllProducts();
             if (products.length === 0) return alert('No hay datos para exportar');
 
@@ -2947,6 +3159,11 @@
         }
 
         async function exportarDatos() {
+            if (!tieneAdministracion()) {
+                mostrarToast('⛔ No tienes permisos para exportar datos', 'error');
+                return;
+            }
+
             const products = await getAllProducts();
             const movements = await getAllMovements();
             const historial = await getAllHistorial();
@@ -2971,6 +3188,12 @@
         }
 
         async function cargarImport(event) {
+            if (!tieneAdministracion()) {
+                mostrarToast('⛔ No tienes permisos para importar datos', 'error');
+                event.target.value = '';
+                return;
+            }
+
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
@@ -2981,7 +3204,7 @@
                     if (data.movements) await setMovements(data.movements);
                     if (data.historial) await setHistorial(data.historial);
                     if (data.warehouses) await setWarehouses(data.warehouses);
-                    if (data.users) setUsers(data.users);
+                    if (data.users) await setUsers(data.users);
                     if (data.config) setConfig(data.config);
                     renderAll();
                     await registrarHistorial('AGREGAR', 'BACKUP_IMPORT', 'Backup JSON importado');
@@ -2995,16 +3218,18 @@
         }
 
         async function resetData() {
-            if (!hasPermission('administracion')) return alert('No tienes permisos');
+            if (!tieneAdministracion()) {
+                mostrarToast('⛔ No tienes permisos para reiniciar datos', 'error');
+                return;
+            }
             if (!confirm('⚠️ ¿Estás seguro de reiniciar todos los datos?')) return;
 
             await setProducts([]);
             await setMovements([]);
             await setHistorial([]);
             await setWarehouses(DEFAULT_WAREHOUSES);
-            localStorage.removeItem(STORAGE_KEY_USERS);
+            await setUsers(DEFAULT_USERS);
             localStorage.removeItem(STORAGE_KEY_CONFIG);
-            // Limpiar imágenes de layout
             await dbClear('layout_images');
             initData();
             renderAll();
