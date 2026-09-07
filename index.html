@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WMS Bodega Central</title>
+    <title>Automatización Almacenamiento - Bodega Central</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.2/umd/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.1/umd/index.min.js"></script>
@@ -333,10 +333,10 @@
             <div class="hospital-logo">
                 <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='60' viewBox='0 0 200 60'%3E%3Crect width='200' height='60' fill='%230f172a' rx='8'/%3E%3Ctext x='100' y='35' font-family='Arial' font-size='18' fill='white' text-anchor='middle' font-weight='bold'%3EHospital San Juan de Dios%3C/text%3E%3Ctext x='100' y='52' font-family='Arial' font-size='10' fill='%2360a5fa' text-anchor='middle'%3E%22El Primero de Chile%22%3C/text%3E%3C/svg%3E" alt="Hospital San Juan de Dios - CDT">
             </div>
-            <div class="hospital-name">Hospital San Juan de Dios - CDT</div>
-            <div class="hospital-sub">Asistencial Docente · <span>"El Primero de Chile"</span></div>
+            <div class="hospital-name">Hospital San Juan de Dios</div>
+            <div class="hospital-sub">Unidad de Bodega de Abastecimiento · <span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
             <div class="divider"></div>
-            <h2>📦 WMS Bodega Central</h2>
+            <h2>Automatización Almacenamiento - Bodega Central</h2>
             <p>Ingresa tus credenciales para acceder al sistema.</p>
             <label>Usuario</label>
             <input type="text" id="loginUser" placeholder="Ej: admin" value="admin">
@@ -353,8 +353,8 @@
         <header>
             <div class="header-left">
                 <div>
-                    <div class="header-title">📦 WMS Bodega Central</div>
-                    <div class="header-sub">Hospital San Juan de Dios · <span>"El Primero de Chile"</span></div>
+                    <div class="header-title">Automatización Almacenamiento - Bodega Central</div>
+                    <div class="header-sub">Hospital San Juan de Dios · <span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
                 </div>
             </div>
             <div class="user-info">
@@ -362,9 +362,9 @@
                 <span class="user-name" id="currentUserDisplay">👤 Admin</span>
                 <select id="warehouseSelect" onchange="cambiarBodega()">
                     <option value="TODAS">🏢 Todas</option>
-                    <option value="Farmacos">💊 Fármacos</option>
-                    <option value="Insumos">🧪 Insumos</option>
-                    <option value="Economato">📦 Economato</option>
+                    <option value="Farmacos">Bodega de Fármacos</option>
+                    <option value="Insumos">Bodega de Insumos Clínicos</option>
+                    <option value="Economato">Bodega de Economato</option>
                 </select>
                 <button class="btn btn-success" onclick="document.getElementById('fileInput').click()">
                     <span class="icon">📤</span> Cargar
@@ -713,7 +713,7 @@
             // Usuarios (se mantienen en localStorage por simplicidad, pero se pueden migrar a IndexedDB si se desea)
             if (!localStorage.getItem(STORAGE_KEY_USERS)) {
                 localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify([
-                    { id: 1, nombre: 'Admin', perfil: 'admin', password: 'admin', permisos: ['lectura','escritura','administracion'], ultimaActividad: new Date().toISOString() },
+                    { id: 1, nombre: 'Admin', perfil: 'Admin', password: 'admin', permisos: ['lectura','escritura','administracion'], ultimaActividad: new Date().toISOString() },
                     { id: 2, nombre: 'Supervisor', perfil: 'supervisor', password: '1234', permisos: ['lectura','escritura'], ultimaActividad: new Date().toISOString() },
                     { id: 3, nombre: 'Operario', perfil: 'operario', password: '1234', permisos: ['lectura'], ultimaActividad: new Date().toISOString() }
                 ]));
