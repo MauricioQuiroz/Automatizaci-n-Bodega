@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WMS Bodega Central - Gestor de Inventario</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', system-ui, sans-serif; }
+        body { 
+            background:#f4f6f9; 
+            color:#1e293b; 
+            padding:20px; 
+            min-height:100vh; 
+            display:flex; 
+            align-items:flex-start;
+            justify-content:center; 
+        }
+        .app { 
+            max-width:1400px; 
+            margin:0 auto; 
+            background:white; 
+            border-radius:20px; 
+            box-shadow:0 10px 30px rgba(0,0,0,0.08); 
+            overflow:hidden; 
+            width:100%; 
+            margin-top:10px;
+        }
+        
+        header {
+            background: #0f172a;
+            color: white;
+            padding: 10px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        header .header-left { display:flex; align-items:center; gap:14px; }
+        header .header-left .header-title {
+            font-weight:700; font-size:1.1rem; color:white; letter-spacing:-0.2px;
+        }
+        header .header-left .header-sub {
+            font-size:0.65rem; color:#94a3b8; font-weight:400;
+        }
+        header .header-left .header-sub span { color:#60a5fa; }
+        header .user-info {
+            display:flex; align-items:center; gap:10px; font-size:0.8rem; flex-wrap:wrap;
+        }
+        header .user-info .btn {
+            background:#334155; color:white; border:none; padding:4px 12px;
+            border-radius:8px; cursor:pointer; font-weight:500; transition:0.15s; font-size:0.75rem;
+        }
+        header .user-info .btn:hover { background:#475569; }
+        header .user-info .btn-success { background:#16a34a; }
+        header .user-info .btn-success:hover { background:#15803d; }
+        header .user-info .btn-warning { background:#f59e0b; color:#0f172a; }
+        header .user-info .btn-warning:hover { background:#d97706; }
+        header .user-info .user-name { color:#94a3b8; font-size:0.75rem; }
+
+        .btn { padding:5px 14px; border:none; border-radius:8px; font-weight:600; font-size:0.75rem; cursor:pointer; transition:0.15s; display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
+        .btn-primary { background:#2563eb; color:white; }
+        .btn-primary:hover { background:#1d4ed8; }
+        .btn-success { background:#16a34a; color:white; }
+        .btn-success:hover { background:#15803d; }
+        .btn-danger { background:#dc2626; color:white; }
+        .btn-danger:hover { background:#b91c1c; }
+        .btn-warning { background:#f59e0b; color:white; }
+        .btn-warning:hover { background:#d97706; }
+        .btn-outline { background:transparent; border:1px solid #d1d5db; color:#334155; }
+        .btn-outline:hover { background:#f1f5f9; }
+        .btn-sm { padding:3px 10px; font-size:0.65rem; }
+
+        .flex { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+        .mt-2 { margin-top:12px; }
+        .mb-2 { margin-bottom:12px; }
+        .p-2 { padding:12px; }
+
+        input, select, textarea { 
+            padding:6px 10px; 
+            border:1px solid #d1d5db; 
+            border-radius:8px; 
+            font-size:0.85rem; 
+            background:white; 
+            min-height:32px; 
+        }
+        input:focus, select:focus, textarea:focus { outline:2px solid #2563eb; outline-offset:1px; }
+
+        .table-wrap { overflow-x:auto; }
+        table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+        th { background:#f1f5f9; text-align:left; padding:8px 10px; font-weight:600; color:#334155; white-space:nowrap; position:sticky; top:0; z-index:10; }
+        td { padding:6px 10px; border-bottom:1px solid #e2e8f0; vertical-align:middle; }
+        tr:hover td { background:#f8fafc; }
+        .table-container { max-height:70vh; overflow:auto; border-radius:12px; border:1px solid #e2e8f0; }
+
+        .badge-bodega { display:inline-block; padding:2px 8px; border-radius:10px; font-size:0.6rem; font-weight:700; color:white; }
+        .badge-farmacos { background:#2563eb; }
+        .badge-insumos { background:#16a34a; }
+        .badge-economato { background:#f59e0b; color:#0f172a; }
+
+        .zone-tag { 
+            display:inline-block; 
+            padding:1px 6px; 
+            border-radius:4px; 
+            font-size:0.6rem; 
+            font-weight:700; 
+            background:#e2e8f0; 
+            color:#475569; 
+        }
+        .zone-tag-a { background:#dbeafe; color:#1e40af; }
+        .zone-tag-b { background:#dcfce7; color:#166534; }
+        .zone-tag-c { background:#fef3c7; color:#92400e; }
+        .zone-tag-d { background:#f3e8ff; color:#6b21a8; }
+        .zone-tag-e { background:#fce7f3; color:#9d174d; }
+        .zone-tag-f { background:#fecaca; color:#991b1b; }
+        .zone-tag-g { background:#cffafe; color:#0e7490; }
+        .zone-tag-h { background:#e0f2fe; color:#0369a1; }
+        .zone-tag-i { background:#fed7aa; color:#9a3412; }
+        .zone-tag-j { background:#e9d5ff; color:#5b21b6; }
+
+        .empty-state { color:#94a3b8; text-align:center; padding:30px 0; }
+
+        .sheet-tabs {
+            display:flex;
+            flex-wrap:wrap;
+            gap:4px;
+            padding:8px 12px;
+            background:#f8fafc;
+            border-bottom:1px solid #e2e8f0;
+        }
+        .sheet-tabs button {
+            background:transparent;
+            border:none;
+            padding:6px 12px;
+            font-size:0.7rem;
+            font-weight:600;
+            color:#64748b;
+            cursor:pointer;
+            border-radius:6px;
+            transition:0.15s;
+        }
+        .sheet-tabs button:hover { background:#e2e8f0; color:#0f172a; }
+        .sheet-tabs button.active { background:#2563eb; color:white; }
+
+        .tab-content { display:none; padding:12px; }
+        .tab-content.active { display:block; }
+
+        .stats-bar {
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(120px,1fr));
+            gap:10px;
+            margin-bottom:12px;
+        }
+        .stats-bar .stat {
+            background:#f8fafc;
+            padding:8px 12px;
+            border-radius:10px;
+            border:1px solid #e2e8f0;
+            text-align:center;
+        }
+        .stats-bar .stat .num { font-size:1.2rem; font-weight:700; color:#0f172a; }
+        .stats-bar .stat .label { font-size:0.6rem; color:#64748b; }
+
+        .modal {
+            display:none;
+            position:fixed;
+            top:0; left:0;
+            width:100%; height:100%;
+            background:rgba(15,23,42,0.5);
+            backdrop-filter:blur(4px);
+            align-items:center;
+            justify-content:center;
+            z-index:1000;
+        }
+        .modal.active { display:flex; }
+        .modal-content {
+            background:white;
+            border-radius:16px;
+            padding:20px;
+            max-width:800px;
+            width:95%;
+            max-height:90vh;
+            overflow-y:auto;
+            box-shadow:0 20px 60px rgba(0,0,0,0.3);
+        }
+        .modal-content h3 { margin-bottom:10px; font-size:1.1rem; }
+        .modal-content .flex { margin-top:12px; justify-content:flex-end; }
+        .modal-content label { display:block; margin:8px 0 3px; font-weight:600; font-size:0.8rem; }
+        .modal-content input, .modal-content select { width:100%; }
+
+        .editable-cell input { 
+            width:100%; 
+            border:none; 
+            background:transparent; 
+            padding:2px 4px;
+            font-size:0.8rem;
+            border-radius:4px;
+        }
+        .editable-cell input:focus { background:white; border:1px solid #2563eb; outline:none; }
+
+        .highlight-changed { background:#fef3c7 !important; }
+        .highlight-changed td { background:#fef3c7 !important; }
+
+        @media (max-width:768px) {
+            body { padding:10px; }
+            header { flex-direction:column; align-items:stretch; gap:6px; padding:10px 16px; }
+            header .header-left { justify-content:center; flex-wrap:wrap; }
+            header .header-left .header-title { font-size:0.85rem; text-align:center; }
+            header .header-left .header-sub { font-size:0.55rem; text-align:center; }
+            header .user-info { justify-content:center; flex-wrap:wrap; }
+            .table-container { max-height:50vh; }
+            .modal-content { padding:14px; max-width:98%; }
+            .sheet-tabs button { font-size:0.6rem; padding:4px 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header>
+            <div class="header-left">
+                <div>
+                    <div class="header-title">📦 WMS Bodega Central</div>
+                    <div class="header-sub">Hospital San Juan de Dios · <span>"El Primero de Chile"</span></div>
+                </div>
+            </div>
+            <div class="user-info">
+                <span class="user-name" id="currentUserDisplay">👤 Administrador</span>
+                <button class="btn btn-success" onclick="document.getElementById('fileInput').click()">📤 Cargar Excel</button>
+                <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event)">
+                <button class="btn btn-warning" onclick="exportarExcel()">📥 Exportar Excel</button>
+                <button class="btn" onclick="resetData()">🔄 Limpiar</button>
+            </div>
+        </header>
+
+        <div id="sheetTabs" class="sheet-tabs">
+            <button class="active" data-sheet="dashboard">📊 Dashboard</button>
+        </div>
+
+        <div id="sheetContent">
+            <div id="tab-dashboard" class="tab-content active">
+                <div class="stats-bar" id="statsBar">
+                    <div class="stat"><div class="num" id="totalRows">0</div><div class="label">Registros</div></div>
+                    <div class="stat"><div class="num" id="totalSheets">0</div><div class="label">Hojas</div></div>
+                    <div class="stat"><div class="num" id="totalZonas">0</div><div class="label">Zonas</div></div>
+                    <div class="stat"><div class="num" id="totalUbicaciones">0</div><div class="label">Ubicaciones</div></div>
+                </div>
+                <div style="padding:15px; background:#f8fafc; border-radius:12px; border:1px solid #e2e8f0; text-align:center;">
+                    <p style="color:#64748b; font-size:0.9rem;">📂 Carga un archivo Excel para visualizar y editar el inventario.</p>
+                    <button class="btn btn-primary mt-2" onclick="document.getElementById('fileInput').click()">📤 Seleccionar archivo</button>
+                </div>
+                <div id="dataPreview"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Editar</h3>
+            <div id="modalBody"></div>
+            <div class="flex">
+                <button class="btn btn-outline" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn btn-primary" id="modalSaveBtn" onclick="guardarEdicion()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  DATOS GLOBALES
+        // ============================================================
+        let workbookData = null;
+        let currentSheet = 'dashboard';
+        let sheetData = {};
+        let originalData = {};
+        let cambios = {};
+        let editingRow = null;
+
+        // Mapeo de zonas a colores
+        const ZONE_COLORS = {
+            'A': 'zone-tag-a',
+            'B': 'zone-tag-b',
+            'C': 'zone-tag-c',
+            'D': 'zone-tag-d',
+            'E': 'zone-tag-e',
+            'F': 'zone-tag-f',
+            'G': 'zone-tag-g',
+            'H': 'zone-tag-h',
+            'I': 'zone-tag-i',
+            'J': 'zone-tag-j'
+        };
+
+        // ============================================================
+        //  FUNCIONES PRINCIPALES
+        // ============================================================
+
+        function cargarExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    workbookData = workbook;
+                    
+                    // Procesar todas las hojas
+                    sheetData = {};
+                    originalData = {};
+                    workbook.SheetNames.forEach(name => {
+                        const sheet = workbook.Sheets[name];
+                        const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+                        sheetData[name] = json;
+                        originalData[name] = JSON.parse(JSON.stringify(json));
+                    });
+
+                    renderTabs();
+                    renderDashboard();
+                    document.getElementById('fileInput').value = '';
+                    alert(`✅ Archivo cargado: ${file.name}\n📄 ${workbook.SheetNames.length} hojas cargadas.`);
+                } catch (error) {
+                    alert('❌ Error al leer el archivo: ' + error.message);
+                    console.error(error);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function renderTabs() {
+            const container = document.getElementById('sheetTabs');
+            container.innerHTML = '';
+            
+            // Dashboard siempre primero
+            const dashBtn = document.createElement('button');
+            dashBtn.className = 'active';
+            dashBtn.dataset.sheet = 'dashboard';
+            dashBtn.textContent = '📊 Dashboard';
+            dashBtn.onclick = () => cambiarTab('dashboard');
+            container.appendChild(dashBtn);
+
+            if (workbookData) {
+                workbookData.SheetNames.forEach(name => {
+                    const btn = document.createElement('button');
+                    btn.dataset.sheet = name;
+                    btn.textContent = name.length > 15 ? name.slice(0,15)+'…' : name;
+                    btn.onclick = () => cambiarTab(name);
+                    container.appendChild(btn);
+                });
+            }
+
+            currentSheet = 'dashboard';
+        }
+
+        function cambiarTab(sheetName) {
+            document.querySelectorAll('#sheetTabs button').forEach(b => b.classList.remove('active'));
+            document.querySelector(`#sheetTabs button[data-sheet="${sheetName}"]`)?.classList.add('active');
+            
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            
+            let tabId = `tab-${sheetName}`;
+            let tab = document.getElementById(tabId);
+            
+            if (!tab) {
+                tab = document.createElement('div');
+                tab.id = tabId;
+                tab.className = 'tab-content';
+                document.getElementById('sheetContent').appendChild(tab);
+            }
+            
+            tab.classList.add('active');
+            currentSheet = sheetName;
+            
+            if (sheetName === 'dashboard') {
+                renderDashboard();
+            } else {
+                renderSheet(sheetName);
+            }
+        }
+
+        function renderDashboard() {
+            const stats = document.getElementById('statsBar');
+            const preview = document.getElementById('dataPreview');
+            
+            if (!workbookData) {
+                document.getElementById('totalRows').textContent = '0';
+                document.getElementById('totalSheets').textContent = '0';
+                document.getElementById('totalZonas').textContent = '0';
+                document.getElementById('totalUbicaciones').textContent = '0';
+                preview.innerHTML = `
+                    <div style="padding:30px; text-align:center; color:#94a3b8;">
+                        <p style="font-size:1.2rem;">📂 No hay datos cargados</p>
+                        <p style="font-size:0.85rem;">Carga un archivo Excel para comenzar</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let totalRows = 0;
+            let ubicaciones = new Set();
+            let zonas = new Set();
+
+            workbookData.SheetNames.forEach(name => {
+                const data = sheetData[name] || [];
+                totalRows += data.length;
+                data.forEach(row => {
+                    // Buscar columnas de ubicación y zona
+                    Object.keys(row).forEach(key => {
+                        const val = String(row[key] || '');
+                        if (key.toLowerCase().includes('ubicacion') || key.toLowerCase().includes('ubicación')) {
+                            if (val) ubicaciones.add(val);
+                        }
+                        if (key.toLowerCase().includes('zona')) {
+                            if (val) zonas.add(val);
+                        }
+                    });
+                });
+            });
+
+            document.getElementById('totalRows').textContent = totalRows;
+            document.getElementById('totalSheets').textContent = workbookData.SheetNames.length;
+            document.getElementById('totalZonas').textContent = zonas.size || 'N/A';
+            document.getElementById('totalUbicaciones').textContent = ubicaciones.size || 'N/A';
+
+            // Resumen de hojas
+            let html = '<h4 style="margin:15px 0 10px;">📄 Resumen de hojas</h4>';
+            html += `<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:8px;">`;
+            workbookData.SheetNames.forEach(name => {
+                const count = sheetData[name]?.length || 0;
+                html += `
+                    <div style="background:#f8fafc; padding:10px 14px; border-radius:10px; border:1px solid #e2e8f0; cursor:pointer;" onclick="cambiarTab('${name}')">
+                        <div style="font-weight:600; font-size:0.85rem;">${name}</div>
+                        <div style="color:#64748b; font-size:0.7rem;">${count} registros</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            preview.innerHTML = html;
+        }
+
+        function renderSheet(sheetName) {
+            const data = sheetData[sheetName] || [];
+            const container = document.getElementById(`tab-${sheetName}`);
+            if (!container) return;
+
+            if (data.length === 0) {
+                container.innerHTML = `<p class="empty-state">📭 Esta hoja no contiene datos.</p>`;
+                return;
+            }
+
+            // Detectar columnas clave
+            const headers = Object.keys(data[0]);
+            const hasCodigo = headers.some(h => /codigo|hermes|sku/i.test(h));
+            const hasGlosa = headers.some(h => /glosa|nombre|descripcion/i.test(h));
+            const hasZona = headers.some(h => /zona/i.test(h));
+            const hasUbicacion = headers.some(h => /ubicacion|ubicación|posicion|rack/i.test(h));
+
+            // Si la hoja tiene datos de inventario, mostrar tabla editable
+            let html = `
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:10px;">
+                    <div>
+                        <span style="font-weight:600; font-size:0.9rem;">📄 ${sheetName}</span>
+                        <span style="color:#64748b; font-size:0.75rem; margin-left:8px;">${data.length} registros</span>
+                    </div>
+                    <div class="flex">
+                        <button class="btn btn-sm btn-warning" onclick="marcarCambios('${sheetName}')">🔄 Marcar cambios</button>
+                        <button class="btn btn-sm btn-primary" onclick="guardarHoja('${sheetName}')">💾 Guardar cambios</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead><tr>`;
+            
+            // Cabeceras
+            headers.forEach(h => {
+                html += `<th>${h}</th>`;
+            });
+            html += `<th style="min-width:60px;">Acciones</th></tr></thead><tbody>`;
+
+            // Filas
+            data.forEach((row, idx) => {
+                const rowId = `${sheetName}_${idx}`;
+                const isChanged = cambios[rowId] || false;
+                html += `<tr class="${isChanged ? 'highlight-changed' : ''}" data-rowid="${rowId}">`;
+                
+                headers.forEach(h => {
+                    const value = row[h] !== undefined ? String(row[h]) : '';
+                    const isKey = /codigo|hermes|sku/i.test(h);
+                    const isZona = /zona/i.test(h);
+                    const isUbicacion = /ubicacion|ubicación/i.test(h);
+                    
+                    html += `<td class="editable-cell">`;
+                    if (isKey) {
+                        html += `<strong>${value}</strong>`;
+                    } else if (isZona && ZONE_COLORS[value]) {
+                        html += `<span class="zone-tag ${ZONE_COLORS[value] || ''}">${value}</span>`;
+                    } else if (isUbicacion && value) {
+                        html += `<span style="font-family:monospace; font-size:0.75rem;">${value}</span>`;
+                    } else {
+                        html += `<input type="text" value="${escapeHtml(value)}" 
+                                    onchange="celdaEditada('${sheetName}', ${idx}, '${escapeHtml(h)}', this.value)"
+                                    placeholder="-" style="font-size:0.75rem;">`;
+                    }
+                    html += `</td>`;
+                });
+                
+                html += `<td>
+                    <button class="btn btn-sm btn-primary" onclick="editarFila('${sheetName}', ${idx})">✏️</button>
+                </td></tr>`;
+            });
+
+            html += '</tbody></table></div>';
+            
+            // Mostrar estadísticas de cambios
+            const cambiosCount = Object.keys(cambios).filter(k => k.startsWith(sheetName)).length;
+            if (cambiosCount > 0) {
+                html += `<div style="margin-top:10px; padding:8px 14px; background:#fef3c7; border-radius:8px; font-size:0.8rem; color:#92400e;">
+                    ⚡ ${cambiosCount} cambios pendientes en esta hoja.
+                </div>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function celdaEditada(sheetName, rowIdx, colName, value) {
+            const data = sheetData[sheetName];
+            if (!data || rowIdx >= data.length) return;
+            
+            const oldValue = data[rowIdx][colName];
+            const newValue = value;
+            
+            if (oldValue !== newValue) {
+                data[rowIdx][colName] = newValue;
+                const rowId = `${sheetName}_${rowIdx}`;
+                cambios[rowId] = true;
+                
+                // Actualizar resaltado visual
+                const row = document.querySelector(`tr[data-rowid="${rowId}"]`);
+                if (row) row.classList.add('highlight-changed');
+            }
+        }
+
+        function editarFila(sheetName, idx) {
+            const data = sheetData[sheetName];
+            if (!data || idx >= data.length) return;
+            
+            const row = data[idx];
+            editingRow = { sheet: sheetName, idx: idx };
+            
+            let html = `<div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">`;
+            Object.keys(row).forEach(key => {
+                const val = row[key] !== undefined ? String(row[key]) : '';
+                const isZona = /zona/i.test(key);
+                html += `<div>
+                    <label>${key}</label>
+                    ${isZona ? `
+                        <select id="edit_${key}" onchange="celdaEditada('${sheetName}', ${idx}, '${escapeHtml(key)}', this.value)">
+                            ${['A','B','C','D','E','F','G','H','I','J',''].map(z => 
+                                `<option value="${z}" ${val === z ? 'selected' : ''}>${z || 'Sin zona'}</option>`
+                            ).join('')}
+                        </select>
+                    ` : `
+                        <input id="edit_${key}" value="${escapeHtml(val)}" 
+                               onchange="celdaEditada('${sheetName}', ${idx}, '${escapeHtml(key)}', this.value)">
+                    `}
+                </div>`;
+            });
+            html += '</div>';
+            
+            document.getElementById('modalTitle').textContent = `✏️ Editando fila ${idx+1} - ${sheetName}`;
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function guardarEdicion() {
+            // Ya se guardan en tiempo real con onchange
+            cerrarModal();
+            const sheetName = editingRow?.sheet;
+            if (sheetName) {
+                renderSheet(sheetName);
+            }
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal').classList.remove('active');
+            editingRow = null;
+        }
+
+        function marcarCambios(sheetName) {
+            // Resaltar todas las filas con cambios
+            Object.keys(cambios).forEach(rowId => {
+                if (rowId.startsWith(sheetName)) {
+                    const row = document.querySelector(`tr[data-rowid="${rowId}"]`);
+                    if (row) row.classList.add('highlight-changed');
+                }
+            });
+            
+            const count = Object.keys(cambios).filter(k => k.startsWith(sheetName)).length;
+            if (count === 0) {
+                alert('✅ No hay cambios pendientes en esta hoja.');
+            } else {
+                alert(`⚡ ${count} cambios pendientes en esta hoja.`);
+            }
+        }
+
+        function guardarHoja(sheetName) {
+            const cambiosCount = Object.keys(cambios).filter(k => k.startsWith(sheetName)).length;
+            if (cambiosCount === 0) {
+                alert('✅ No hay cambios pendientes en esta hoja.');
+                return;
+            }
+            
+            // Los datos ya están actualizados en sheetData
+            // Limpiar marca de cambios para esta hoja
+            Object.keys(cambios).forEach(k => {
+                if (k.startsWith(sheetName)) delete cambios[k];
+            });
+            
+            renderSheet(sheetName);
+            alert(`✅ ${cambiosCount} cambios guardados en "${sheetName}".`);
+        }
+
+        function guardarTodos() {
+            const total = Object.keys(cambios).length;
+            if (total === 0) {
+                alert('✅ No hay cambios pendientes.');
+                return;
+            }
+            
+            // Limpiar todos los cambios
+            cambios = {};
+            
+            // Re-renderizar todas las hojas
+            workbookData?.SheetNames.forEach(name => {
+                renderSheet(name);
+            });
+            
+            alert(`✅ ${total} cambios guardados en todas las hojas.`);
+        }
+
+        // ============================================================
+        //  EXPORTAR EXCEL
+        // ============================================================
+        function exportarExcel() {
+            if (!workbookData) {
+                alert('⚠️ No hay datos para exportar. Carga un archivo primero.');
+                return;
+            }
+
+            try {
+                // Actualizar el workbook con los datos modificados
+                workbookData.SheetNames.forEach(name => {
+                    const data = sheetData[name];
+                    if (data && data.length > 0) {
+                        const ws = XLSX.utils.json_to_sheet(data);
+                        workbookData.Sheets[name] = ws;
+                    }
+                });
+
+                // Generar archivo
+                const wbout = XLSX.write(workbookData, { 
+                    bookType: 'xlsx', 
+                    type: 'array',
+                    bookSST: false,
+                    cellStyles: true
+                });
+                
+                const blob = new Blob([wbout], { type: 'application/octet-stream' });
+                const link = document.createElement('a');
+                const fileName = `inventario_bodega_${new Date().toISOString().slice(0,10)}.xlsx`;
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+                
+                alert(`✅ Archivo exportado: ${fileName}`);
+            } catch (error) {
+                alert('❌ Error al exportar: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        function resetData() {
+            if (!confirm('¿Estás seguro de limpiar todos los datos cargados?')) return;
+            workbookData = null;
+            sheetData = {};
+            originalData = {};
+            cambios = {};
+            document.getElementById('dataPreview').innerHTML = '';
+            document.getElementById('sheetTabs').innerHTML = `
+                <button class="active" data-sheet="dashboard" onclick="cambiarTab('dashboard')">📊 Dashboard</button>
+            `;
+            document.querySelectorAll('.tab-content').forEach(t => t.remove());
+            renderDashboard();
+            alert('✅ Datos limpiados.');
+        }
+
+        // ============================================================
+        //  UTILIDADES
+        // ============================================================
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+                .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function findZonaColumn(headers) {
+            return headers.find(h => /zona/i.test(h));
+        }
+
+        function findUbicacionColumn(headers) {
+            return headers.find(h => /ubicacion|ubicación|posicion|rack/i.test(h));
+        }
+
+        // ============================================================
+        //  INICIALIZACIÓN
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            renderDashboard();
+            
+            // Cerrar modal con ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') cerrarModal();
+            });
+            
+            // Cerrar modal al hacer clic fuera
+            document.getElementById('modal').addEventListener('click', function(e) {
+                if (e.target === this) cerrarModal();
+            });
+        });
+
+        // ============================================================
+        //  DRAG AND DROP PARA CARGAR ARCHIVOS
+        // ============================================================
+        document.addEventListener('dragover', function(e) {
+            e.preventDefault();
+        });
+        document.addEventListener('drop', function(e) {
+            e.preventDefault();
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.name.match(/\.(xlsx|xls)$/i)) {
+                    const input = document.getElementById('fileInput');
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    input.files = dt.files;
+                    input.dispatchEvent(new Event('change'));
+                } else {
+                    alert('⚠️ Por favor, sube un archivo Excel (.xlsx o .xls)');
+                }
+            }
+        });
+
+        console.log('📦 WMS Bodega Central - Gestor de Inventario');
+        console.log('💡 Carga un archivo Excel para comenzar a editar.');
+    </script>
+</body>
+</html>
