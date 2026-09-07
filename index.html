@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WMS · Bodega Central Abastecimiento</title>
+    <title>WMS · Hospital San Juan de Dios</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.2/umd/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.1/umd/index.min.js"></script>
     <style>
+        /* -------- RESET Y ESTILOS GENERALES -------- */
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', system-ui, sans-serif; }
-        body { background:#f4f6f9; color:#1e293b; padding:10px; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+        body { background:#f4f6f9; color:#1e293b; padding:10px; min-height:100vh; display:block; }
         .app { max-width:1400px; margin:0 auto; background:white; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.08); overflow:hidden; width:100%; display:flex; flex-direction:column; }
         
+        /* -------- LOGIN MODAL -------- */
         #loginModal {
             position:fixed; top:0; left:0; width:100%; height:100%;
             background:rgba(15,23,42,0.85); backdrop-filter:blur(8px);
@@ -19,73 +21,163 @@
         }
         #loginModal .login-box {
             background:white; padding:30px 25px; border-radius:20px;
-            max-width:380px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.3); text-align:center;
+            max-width:380px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.3);
+            animation:fade 0.3s ease; text-align:center;
         }
-        #loginModal .login-box .hospital-logo img { max-width:90px; height:auto; border-radius:10px; }
-        #loginModal .login-box .hospital-name { font-size:1rem; font-weight:700; color:#0f172a; margin-top:8px; }
-        #loginModal .login-box .hospital-sub { font-size:0.7rem; color:#64748b; margin-bottom:12px; font-weight:500; }
+        #loginModal .login-box .hospital-logo img {
+            max-width:90px; height:auto; border-radius:12px;
+            background:white; padding:4px; box-shadow:0 2px 8px rgba(0,0,0,0.1);
+        }
+        #loginModal .login-box .hospital-name {
+            font-size:1.15rem; font-weight:700; color:#0f172a; margin-top:8px;
+            letter-spacing:-0.3px;
+        }
+        #loginModal .login-box .hospital-sub {
+            font-size:0.75rem; color:#64748b; margin-bottom:12px;
+            font-weight:500;
+        }
         #loginModal .login-box .hospital-sub span { color:#2563eb; }
-        #loginModal .divider { width:50px; height:3px; background:#2563eb; margin:8px auto 14px; border-radius:4px; }
+        #loginModal .login-box .divider {
+            width:50px; height:3px; background:#2563eb; margin:10px auto 16px;
+            border-radius:4px;
+        }
         #loginModal h2 { margin-bottom:4px; font-size:1.25rem; color:#0f172a; }
         #loginModal p { color:#64748b; margin-bottom:16px; font-size:0.85rem; }
         #loginModal label { display:block; font-weight:600; margin:10px 0 4px; font-size:0.75rem; text-align:left; color:#334155; }
-        #loginModal input { width:100%; padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:0.9rem; }
+        #loginModal input { width:100%; padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:0.9rem; transition:0.15s; }
+        #loginModal input:focus { outline:2px solid #2563eb; outline-offset:1px; border-color:transparent; }
         #loginModal .btn { width:100%; margin-top:16px; padding:10px; font-size:0.95rem; border-radius:8px; }
+        .login-error { color:#dc2626; font-size:0.8rem; margin-top:8px; display:none; text-align:center; }
+        @keyframes fade { from { opacity:0.5; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
+        /* -------- HEADER -------- */
         header {
-            background: #0f172a; color: white; padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: #0f172a;
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
-        header .header-title { font-weight: 700; font-size: 0.95rem; color: white; }
-        header .header-sub { font-size: 0.6rem; color: #94a3b8; }
-        header .header-sub span { color: #60a5fa; }
-        header .user-info { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; flex-wrap: wrap; }
-        header .user-info select { padding: 4px 8px; border-radius: 6px; border: none; background: #1e293b; color: white; font-size: 0.75rem; }
-        header .user-info .btn { background: #334155; color: white; border: none; padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; }
+        header .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        header .header-left .header-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: white;
+            letter-spacing: -0.2px;
+        }
+        header .header-left .header-sub {
+            font-size: 0.6rem;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+        header .header-left .header-sub span { color: #60a5fa; }
+        header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            flex-wrap: wrap;
+        }
+        header .user-info select {
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: none;
+            background: #1e293b;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+        header .user-info .btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.15s;
+            font-size: 0.75rem;
+        }
+        header .user-info .btn:hover { background: #475569; }
+        header .user-info .user-name { color: #94a3b8; font-size: 0.75rem; }
 
-        nav { display:flex; background:#f8fafc; border-bottom:1px solid #e2e8f0; flex-wrap:wrap; padding:0 10px; overflow-x:auto; }
-        nav button { background:transparent; border:none; padding:10px 14px; font-weight:600; font-size:0.75rem; color:#64748b; cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap; }
+        /* -------- NAV -------- */
+        nav {
+            display:flex; background:#f8fafc; border-bottom:1px solid #e2e8f0;
+            flex-wrap:wrap; padding:0 10px; overflow-x:auto;
+        }
+        nav button {
+            background:transparent; border:none; padding:10px 14px;
+            font-weight:600; font-size:0.75rem; color:#64748b;
+            cursor:pointer; transition:0.2s; border-bottom:3px solid transparent;
+            flex:0 1 auto; white-space:nowrap;
+        }
         nav button:hover { color:#0f172a; background:#f1f5f9; }
         nav button.active { color:#2563eb; border-bottom-color:#2563eb; }
 
+        /* -------- TABS -------- */
         .tab-content { display:none; padding:15px; animation:fade 0.25s ease; }
         .tab-content.active { display:block; }
-        @keyframes fade { from { opacity:0.4; } to { opacity:1; } }
 
+        /* -------- COMPONENTES -------- */
         .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px,1fr)); gap:12px; margin-bottom:15px; }
         .card { background:#f8fafc; padding:12px; border-radius:12px; text-align:center; border:1px solid #e2e8f0; }
         .card .number { font-size:1.6rem; font-weight:700; color:#0f172a; }
         .card .label { color:#64748b; font-size:0.75rem; margin-top:4px; }
-
         .table-wrap { overflow-x:auto; margin-top:10px; border-radius:8px; border:1px solid #e2e8f0; }
         table { width:100%; border-collapse:collapse; font-size:0.8rem; background:white; }
         th { background:#f1f5f9; text-align:left; padding:8px 10px; font-weight:600; color:#334155; white-space:nowrap; }
         td { padding:8px 10px; border-bottom:1px solid #e2e8f0; vertical-align:middle; }
+        tr:hover td { background:#f8fafc; }
 
-        .badge-bodega { display:inline-block; padding:2px 6px; border-radius:8px; font-size:0.55rem; font-weight:700; color:white; background:#2563eb; }
-        .location-link { cursor: pointer; text-decoration: underline; color: #2563eb; font-weight: 600; }
-        .location-link:hover { color: #1d4ed8; }
+        /* -------- BADGES Y ALERTAS -------- */
+        .badge { display:inline-block; padding:2px 8px; border-radius:50px; font-size:0.65rem; font-weight:600; }
+        .badge-admin { background:#fee2e2; color:#b91c1c; }
+        .badge-supervisor { background:#fef3c7; color:#92400e; }
+        .badge-operario { background:#dbeafe; color:#1e40af; }
+        .badge-bodega { display:inline-block; padding:2px 6px; border-radius:8px; font-size:0.55rem; font-weight:700; color:white; }
+        .badge-farmacos { background:#2563eb; }
+        .badge-insumos { background:#16a34a; }
+        .badge-economato { background:#f59e0b; color:#0f172a; }
 
-        .btn { padding:5px 12px; border:none; border-radius:6px; font-weight:600; font-size:0.75rem; cursor:pointer; display:inline-flex; align-items:center; gap:4px; transition:0.15s; }
+        .alert-tag { display:inline-flex; align-items:center; gap:3px; padding:2px 8px; border-radius:10px; font-size:0.55rem; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; margin:2px 4px 2px 0; border:1px solid rgba(0,0,0,0.08); }
+        .alert-tag-cold { background:#e0f2fe; color:#0369a1; border-color:#7dd3fc; }
+        .alert-tag-controlled { background:#fee2e2; color:#b91c1c; border-color:#fca5a5; }
+        .alert-tag-lrs { background:#f3e8ff; color:#6b21a8; border-color:#d8b4fe; }
+        .alert-tag-pm { background:#ccfbf1; color:#0f766e; border-color:#5eead4; }
+        .alert-tag-icon { font-size:0.65rem; }
+        .alert-bar { background:#fefce8; border-left:4px solid #eab308; padding:8px 12px; border-radius:6px; margin:8px 0; display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-size:0.75rem; border:1px solid #fde68a; }
+        .alert-bar-warning { background:#fef2f2; border-left-color:#dc2626; border-color:#fecaca; }
+
+        .btn { padding:5px 12px; border:none; border-radius:6px; font-weight:600; font-size:0.75rem; cursor:pointer; transition:0.15s; display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
         .btn-primary { background:#2563eb; color:white; }
         .btn-primary:hover { background:#1d4ed8; }
         .btn-success { background:#16a34a; color:white; }
         .btn-success:hover { background:#15803d; }
-        .btn-outline { background:transparent; border:1px solid #d1d5db; color:#334155; }
-        .btn-outline:hover { background:#f1f5f9; }
         .btn-danger { background:#dc2626; color:white; }
         .btn-danger:hover { background:#b91c1c; }
         .btn-warning { background:#f59e0b; color:white; }
         .btn-warning:hover { background:#d97706; }
         .btn-sm { padding:2px 8px; font-size:0.65rem; }
+        .btn-outline { background:transparent; border:1px solid #d1d5db; color:#334155; }
+        .btn-outline:hover { background:#f1f5f9; }
 
         .flex { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
         .mt-2 { margin-top:10px; }
         .mb-2 { margin-bottom:10px; }
-        input, select { padding:6px 10px; border:1px solid #d1d5db; border-radius:6px; font-size:0.85rem; background:white; min-height:36px; width:100%; }
+        input, select { padding:6px 10px; border:1px solid #d1d5db; border-radius:6px; font-size:0.85rem; background:white; min-height:36px; width:100%; max-width:100%; }
+        input:focus, select:focus { outline:2px solid #2563eb; outline-offset:1px; }
 
         /* ============================================================ */
-        /* MAPA INTERACTIVO RESPONSIVO Y FLUIDO */
+        /* MAPA CALIBRADO EXACTO CON LAS COORDENADAS DEL PLANO DE FONDO */
         /* ============================================================ */
         .map-container {
             position: relative;
@@ -119,23 +211,40 @@
             border-radius: 4px;
         }
         .map-zone:hover {
-            background-color: rgba(37, 99, 235, 0.22);
-            box-shadow: inset 0 0 12px rgba(37,99,235,0.3);
+            background-color: rgba(37, 99, 235, 0.25);
+            box-shadow: inset 0 0 12px rgba(37,99,235,0.4);
         }
         .map-zone.highlight-search {
-            background-color: rgba(37, 99, 235, 0.45) !important;
-            box-shadow: inset 0 0 20px rgba(37,99,235,0.7), 0 0 12px rgba(37,99,235,0.5);
+            background-color: rgba(34, 197, 94, 0.45) !important;
+            box-shadow: inset 0 0 20px rgba(34,197,94,0.8), 0 0 12px rgba(34,197,94,0.6);
             animation: pulse-glow 1.5s infinite;
             z-index: 25;
         }
+        .map-zone.highlight-putaway {
+            background-color: rgba(22, 163, 74, 0.6) !important;
+            box-shadow: inset 0 0 20px rgba(22,163,74,0.8);
+            animation: pulse-glow 1.5s infinite;
+            z-index: 25;
+        }
+        .map-zone.highlight-origin {
+            background-color: rgba(220, 38, 38, 0.6) !important;
+            box-shadow: inset 0 0 20px rgba(220,38,38,0.8);
+            z-index: 25;
+        }
+        .map-zone.highlight-destiny {
+            background-color: rgba(245, 158, 11, 0.6) !important;
+            box-shadow: inset 0 0 20px rgba(245,158,11,0.8);
+            z-index: 25;
+        }
 
-        .zone-d { top: 7%; left: 2%; width: 38%; height: 20%; }
-        .zone-e { top: 29%; left: 2%; width: 38%; height: 18%; }
-        .zone-f { top: 48%; left: 2%; width: 38%; height: 24%; }
-        .zone-g { top: 73%; left: 2%; width: 38%; height: 23%; }
-        .zone-c { top: 7%; left: 42%; width: 56%; height: 35%; }
-        .zone-h { top: 44%; left: 42%; width: 28%; height: 52%; }
-        .zone-office { top: 44%; left: 71%; width: 27%; height: 52%; }
+        /* Coordenadas calibradas con el plano real */
+        .zone-d { top: 16%; left: 37%; width: 12%; height: 13%; } /* Zona D (Pasillo Estrecho) */
+        .zone-e { top: 29%; left: 24%; width: 25%; height: 16%; } /* Zona E (Palletizado Masivo) */
+        .zone-f { top: 46%; left: 24%; width: 25%; height: 26%; } /* Zona F (Anaqueles) */
+        .zone-g { top: 73%; left: 24%; width: 14%; height: 23%; } /* Zona G (Full Space) */
+        .zone-c { top: 16%; left: 51%; width: 44%; height: 21%; } /* Zona C (Tránsito) */
+        .zone-h { top: 62%; left: 4%; width: 20%; height: 35%; }  /* Zona H (Cámara de Frío) */
+        .zone-office { top: 42%; left: 79%; width: 20%; height: 56%; } /* Oficinas & Despacho */
 
         .map-legend {
             display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; padding: 8px 12px;
@@ -145,11 +254,23 @@
         .map-legend .color-box { width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.1); }
         @keyframes pulse-glow { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
 
+        /* -------- MODAL -------- */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.5); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:1500; padding:15px; }
         .modal.active { display:flex; }
         .modal-content { background:white; border-radius:16px; padding:20px; max-width:550px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.3); max-height:90vh; overflow-y:auto; }
+        .modal-content h3 { margin-bottom:10px; font-size:1.1rem; }
+        .modal-content label { display:block; margin:8px 0 3px; font-weight:600; font-size:0.75rem; color:#334155; }
+        .modal-content .qr-reader-container { width:100%; max-width:280px; margin-top:8px; display:none; background:#0f172a; border-radius:10px; overflow:hidden; }
         .empty-state { color:#94a3b8; text-align:center; padding:15px 0; font-size:0.85rem; }
         .result-card { background:#f8fafc; border-radius:12px; padding:12px; margin-bottom:10px; border:1px solid #e2e8f0; }
+        .result-card h4 { display:flex; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap; font-size:0.9rem; }
+        .result-card .ubicacion-tag { font-size:0.75rem; }
+        .location-badge { display:inline-block; padding:2px 6px; border-radius:10px; font-size:0.6rem; font-weight:600; margin-right:4px; }
+        .location-master { background:#dbeafe; color:#1e40af; }
+        .location-comercial { background:#fef3c7; color:#92400e; }
+        #gtin-scanner-container { width:100%; max-width:350px; margin:8px auto; border-radius:10px; overflow:hidden; background:#0f172a; min-height:180px; }
+        #gtin-scanner-status { color:#64748b; font-size:0.8rem; text-align:center; margin:6px 0; }
+        .image-preview { max-width:100%; max-height:180px; border-radius:10px; margin:8px 0; border:1px solid #d1d5db; }
 
         @media (max-width: 768px) {
             body { padding: 4px; }
@@ -160,10 +281,13 @@
     </style>
 </head>
 <body>
+    <!-- ============================================================ -->
+    <!-- LOGIN MODAL -->
+    <!-- ============================================================ -->
     <div id="loginModal">
         <div class="login-box">
             <div class="hospital-logo">
-                <img src="banner.png" alt="WMS Bodega Central Abastecimiento">
+                <img src="banner.png" alt="Hospital San Juan de Dios - CDT">
             </div>
             <div class="hospital-name">WMS Bodega Central Abastecimiento</div>
             <div class="hospital-sub">Hospital San Juan de Dios · <span>"El Primero de Chile"</span></div>
@@ -171,25 +295,31 @@
             <h2>🔐 Iniciar sesión</h2>
             <p>Ingresa tus credenciales para acceder al sistema.</p>
             <label>Usuario</label>
-            <input type="text" id="loginUser" value="admin">
+            <input type="text" id="loginUser" placeholder="Ej: admin" value="admin">
             <label>Contraseña</label>
-            <input type="password" id="loginPass" value="admin" onkeydown="if(event.key==='Enter') handleLogin()">
+            <input type="password" id="loginPass" placeholder="••••••••" value="admin" onkeydown="if(event.key==='Enter') handleLogin()">
+            <div id="loginError" class="login-error">Usuario o contraseña incorrectos.</div>
             <button class="btn btn-primary" onclick="handleLogin()">Ingresar</button>
         </div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- APLICACIÓN PRINCIPAL -->
+    <!-- ============================================================ -->
     <div class="app" id="app" style="display:none;">
         <header>
-            <div>
-                <div class="header-title">WMS Bodega Central Abastecimiento</div>
-                <div class="header-sub">Hospital San Juan de Dios · <span>"El Primero de Chile"</span></div>
+            <div class="header-left">
+                <div>
+                    <div class="header-title">WMS Bodega Central Abastecimiento</div>
+                    <div class="header-sub">Hospital San Juan de Dios · <span>"El Primero de Chile"</span></div>
+                </div>
             </div>
             <div class="user-info">
                 <span class="user-name" id="currentUserDisplay">👤 Admin</span>
                 <select id="warehouseSelect" onchange="cambiarBodega()">
-                    <option value="TODAS">🏢 Todas las Bodegas</option>
+                    <option value="TODAS">🏢 Todas</option>
                     <option value="Farmacos" selected>💊 Fármacos</option>
-                    <option value="Insumos">🧪 Insumos Clínicos</option>
+                    <option value="Insumos">🧪 Insumos</option>
                     <option value="Economato">📦 Economato</option>
                 </select>
                 <button class="btn" onclick="logout()">🚪 Salir</button>
@@ -206,55 +336,54 @@
             <button data-tab="config">⚙️ Config</button>
         </nav>
 
-        <!-- DASHBOARD -->
+        <!-- ============ TAB DASHBOARD ============ -->
         <div id="tab-dashboard" class="tab-content active">
-            <div class="card-grid">
+            <div class="card-grid" id="dashboardCards">
                 <div class="card"><div class="number" id="totalProductos">0</div><div class="label">Total productos</div></div>
-                <div class="card"><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones activas</div></div>
-                <div class="card"><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos</div></div>
-                <div class="card"><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios</div></div>
+                <div class="card"><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones ocupadas</div></div>
+                <div class="card"><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos totales</div></div>
+                <div class="card"><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios activos</div></div>
             </div>
             <h3>📋 Últimos movimientos</h3>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Fecha</th><th>Producto</th><th>Bodega</th><th>Desde</th><th>Hacia</th><th>Usuario</th></tr></thead>
+                    <thead><tr><th>Fecha</th><th>Producto</th><th>Desde</th><th>Hacia</th><th>Usuario</th></tr></thead>
                     <tbody id="ultimosMovimientos"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- BUSCADOR -->
+        <!-- ============ TAB BUSCADOR ============ -->
         <div id="tab-buscador" class="tab-content">
             <h3>🔎 Buscador de ubicación y trazabilidad</h3>
-            <p style="color:#64748b; font-size:0.8rem; margin-bottom:8px;">Busca por código interno, glosa o GTIN. Haz clic en la ubicación para verla resaltada en el plano.</p>
+            <p style="color:#64748b; margin-bottom:8px; font-size:0.8rem;">Busca por código interno, glosa o GTIN/EAN. Haz clic en la ubicación para verla resaltada en el plano.</p>
             <div class="flex mb-2">
-                <input type="text" id="searchUbicacion" placeholder="Escribe código, glosa o GTIN..." style="flex:2;" oninput="buscarUbicacion()">
+                <input type="text" id="searchUbicacion" placeholder="Escribe código, glosa o GTIN..." style="flex:2; min-width:160px;" oninput="buscarUbicacion()">
                 <button class="btn btn-success" onclick="abrirLectorGTINBusqueda()">📷 Escanear GTIN</button>
                 <button class="btn btn-outline" onclick="document.getElementById('searchUbicacion').value=''; buscarUbicacion();">🧹 Limpiar</button>
             </div>
-            <div id="resultadosBusqueda"><p class="empty-state">Introduce un término de búsqueda para comenzar.</p></div>
+            <div id="resultadosBusqueda">
+                <p class="empty-state">Introduce un término de búsqueda para comenzar.</p>
+            </div>
         </div>
 
-        <!-- MAPA INTERACTIVO -->
+        <!-- ============ TAB MAPA ============ -->
         <div id="tab-mapa" class="tab-content">
             <h3>📍 Plano Interactivo · Bodega Central</h3>
-            <p style="color:#64748b; font-size:0.8rem; margin-bottom:8px;">Haz clic en cualquier zona para consultar qué productos se encuentran almacenados allí.</p>
-            
+            <p style="color:#64748b; margin-bottom:8px; font-size:0.8rem;">Haz clic en cualquier zona para consultar qué productos se encuentran almacenados allí.</p>
             <div class="map-legend">
-                <span class="legend-item"><span class="color-box" style="background:rgba(168,85,247,0.4);"></span> Zona D</span>
-                <span class="legend-item"><span class="color-box" style="background:rgba(59,130,246,0.4);"></span> Zona E</span>
-                <span class="legend-item"><span class="color-box" style="background:rgba(244,63,94,0.4);"></span> Zona F</span>
-                <span class="legend-item"><span class="color-box" style="background:rgba(245,158,11,0.4);"></span> Zona G</span>
-                <span class="legend-item"><span class="color-box" style="background:rgba(37,99,235,0.4);"></span> Zona C</span>
-                <span class="legend-item"><span class="color-box" style="background:rgba(6,182,212,0.4);"></span> Zona H (Frío)</span>
+                <span class="legend-item"><span class="color-box" style="background:rgba(168,85,247,0.4);"></span> Zona D (Pasillo Estrecho)</span>
+                <span class="legend-item"><span class="color-box" style="background:rgba(59,130,246,0.4);"></span> Zona E (Palletizado Masivo)</span>
+                <span class="legend-item"><span class="color-box" style="background:rgba(244,63,94,0.4);"></span> Zona F (Anaqueles)</span>
+                <span class="legend-item"><span class="color-box" style="background:rgba(245,158,11,0.4);"></span> Zona G (Full Space)</span>
+                <span class="legend-item"><span class="color-box" style="background:rgba(37,99,235,0.4);"></span> Zona C (Tránsito)</span>
+                <span class="legend-item"><span class="color-box" style="background:rgba(6,182,212,0.4);"></span> Zona H (Cámara de Frío)</span>
             </div>
-
             <div class="flex mb-2">
-                <input type="text" id="mapProductSearch" placeholder="Buscar producto en plano..." style="flex:1;">
+                <input type="text" id="mapProductSearch" placeholder="Buscar producto en plano..." style="flex:1; min-width:140px;">
                 <button class="btn btn-primary" onclick="buscarProductoEnMapa()">🔍 Buscar</button>
                 <button class="btn btn-outline" onclick="limpiarMapa()">🧹 Limpiar</button>
             </div>
-            
             <div class="map-container" id="mapContainer">
                 <img id="mapImage" src="image_3178e5.jpg" alt="Plano Bodega Central">
                 <div class="map-overlay">
@@ -267,42 +396,41 @@
                     <div class="map-zone zone-office" data-zone="Office" title="Oficinas & Despacho" onclick="filtrarPorZona('Office')"></div>
                 </div>
             </div>
-
             <div id="mapProductList" class="mt-2">
                 <h4>📌 Contenido de la Zona Seleccionada</h4>
                 <div id="mapProducts"><p class="empty-state">Selecciona una zona del plano o busca un producto.</p></div>
             </div>
         </div>
 
-        <!-- INVENTARIO -->
+        <!-- ============ TAB INVENTARIO ============ -->
         <div id="tab-inventario" class="tab-content">
             <div class="flex mb-2">
-                <input type="text" id="searchInventario" placeholder="Buscar por código o glosa..." style="flex:1;" oninput="renderInventario()">
+                <input type="text" id="searchInventario" placeholder="Buscar por código o glosa..." style="flex:1; min-width:140px;" oninput="renderInventario()">
                 <button class="btn btn-primary" onclick="agregarProducto()">➕ Nuevo</button>
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Código</th><th>Glosa / Descripción</th><th>Bodega</th><th>Zona / Ubicación</th><th>Acciones</th></tr></thead>
+                    <thead><tr><th>Código</th><th>Glosa</th><th>Bodega</th><th>Alertas</th><th>Ubicaciones</th><th>Acciones</th></tr></thead>
                     <tbody id="inventarioBody"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- HISTORIAL -->
+        <!-- ============ TAB HISTORIAL ============ -->
         <div id="tab-historial" class="tab-content">
             <div class="flex mb-2">
-                <input type="text" id="filterHistorial" placeholder="Filtrar por código..." style="flex:1;" oninput="renderHistorial()">
-                <button class="btn btn-danger btn-sm" onclick="limpiarHistorial()">🗑️ Limpiar Historial</button>
+                <input type="text" id="filterHistorial" placeholder="Filtrar por código..." style="flex:1; min-width:140px;" oninput="renderHistorial()">
+                <button class="btn btn-danger btn-sm" onclick="limpiarHistorial()">🗑️ Limpiar</button>
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Fecha</th><th>Código</th><th>Bodega</th><th>Desde</th><th>Hacia</th><th>Usuario</th></tr></thead>
+                    <thead><tr><th>Fecha</th><th>Producto</th><th>Bodega</th><th>Desde</th><th>Hacia</th><th>Usuario</th></tr></thead>
                     <tbody id="historialBody"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- USUARIOS -->
+        <!-- ============ TAB USUARIOS ============ -->
         <div id="tab-usuarios" class="tab-content">
             <div class="flex mb-2">
                 <button class="btn btn-primary" onclick="mostrarModalUsuario()">➕ Nuevo usuario</button>
@@ -315,177 +443,277 @@
             </div>
         </div>
 
-        <!-- CONFIG -->
+        <!-- ============ TAB CONFIG ============ -->
         <div id="tab-config" class="tab-content">
             <h3>⚙️ Configuración del Sistema WMS</h3>
             <div style="max-width:500px;">
                 <div class="mb-2">
                     <label><strong>Actualizar Imagen del Plano / Layout</strong></label>
-                    <input type="file" accept="image/*" onchange="subirImagenLayout(event)">
+                    <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="width:100%;">
+                    <p style="font-size:0.7rem; color:#64748b; margin-top:3px;">Reemplaza la imagen por tu plano real de la bodega.</p>
                 </div>
                 <div class="mt-2 flex">
-                    <button class="btn btn-primary" onclick="resetData()">🔄 Reiniciar Datos</button>
+                    <button class="btn btn-primary" onclick="resetData()">🔄 Reiniciar</button>
                     <button class="btn btn-warning" onclick="exportarDatos()">📤 Exportar JSON</button>
-                    <button class="btn btn-success" onclick="document.getElementById('importFile').click()">📥 Importar</button>
+                    <button class="btn btn-success" onclick="document.getElementById('importFile').click()">📥 Importar JSON</button>
                     <input type="file" id="importFile" accept=".json" style="display:none" onchange="cargarImport(event)">
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL GENERAL -->
+    <!-- ============================================================ -->
+    <!-- MODAL GENÉRICO -->
+    <!-- ============================================================ -->
     <div class="modal" id="modal">
-        <div class="modal-content">
+        <div class="modal-content" id="modalContent">
             <h3 id="modalTitle">Título</h3>
             <div id="modalBody"></div>
-            <div class="flex" style="margin-top:15px; justify-content:flex-end;">
-                <button class="btn btn-danger" onclick="cerrarModal()">Cerrar</button>
-                <button class="btn btn-primary" id="modalActionBtn" onclick="ejecutarModal()" style="display:none;">Guardar</button>
+            <div class="flex" style="margin-top:12px; justify-content:flex-end;">
+                <button class="btn btn-danger" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn btn-primary" id="modalActionBtn" onclick="ejecutarModal()">Guardar</button>
             </div>
         </div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- SCRIPT PRINCIPAL -->
+    <!-- ============================================================ -->
     <script>
-        const STORAGE_PRODUCTS = 'wms_central_products_v1';
-        const STORAGE_MOVEMENTS = 'wms_central_movements_v1';
-        const STORAGE_USERS = 'wms_central_users_v1';
-        const STORAGE_CONFIG = 'wms_central_config_v1';
+        const STORAGE_KEY_PRODUCTS = 'wms_products_v7';
+        const STORAGE_KEY_MOVEMENTS = 'wms_movements_v7';
+        const STORAGE_KEY_USERS = 'wms_users_v7';
+        const STORAGE_KEY_CONFIG = 'wms_config_v7';
+        const STORAGE_KEY_SESSION = 'wms_session_v7';
 
         let currentWarehouse = 'Farmacos';
-        let currentUserId = 1;
+        let selectedZona = null;
 
-        const ZONE_NAMES = {
-            'D': 'Zona D (Pasillo Estrecho)',
-            'E': 'Zona E (Palletizado Masivo)',
-            'F': 'Zona F (Anaqueles)',
-            'G': 'Zona G (Full Space)',
-            'C': 'Zona C (Tránsito)',
-            'H': 'Zona H (Cámara de Frío)',
-            'Office': 'Oficinas & Despacho'
+        const ZONE_CONFIG = {
+            'D': { name: 'Zona D (Pasillo Estrecho)', short: 'Zona D', color: 'zone-d' },
+            'E': { name: 'Zona E (Palletizado Masivo)', short: 'Zona E', color: 'zone-e' },
+            'F': { name: 'Zona F (Anaqueles)', short: 'Zona F', color: 'zone-f' },
+            'G': { name: 'Zona G (Full Space)', short: 'Zona G', color: 'zone-g' },
+            'C': { name: 'Zona C (Tránsito)', short: 'Zona C', color: 'zone-c' },
+            'H': { name: 'Zona H (Cámara de Frío)', short: 'Zona H', color: 'zone-h' },
+            'Office': { name: 'Oficinas & Despacho', short: 'Oficinas', color: 'zone-office' }
         };
 
+        const ALERT_CONFIG = {
+            'Cámara de Frío': { class: 'alert-tag-cold', icon: '🧊', message: 'Requiere cadena de frío (2-8°C)', description: 'Producto termolábil. Mantener en cámara de frío.' },
+            'Fármaco Controlado': { class: 'alert-tag-controlled', icon: '⚠️', message: 'Medicamento controlado - Seguimiento especial', description: 'Requiere registro de dispensación y doble firma.' },
+            'Ley Ricarte Soto (LRS)': { class: 'alert-tag-lrs', icon: '📋', message: 'Ley Ricarte Soto - Alto costo', description: 'Requiere autorización especial y registro de paciente.' },
+            'Programa Ministerial (PM)': { class: 'alert-tag-pm', icon: '🏛️', message: 'Programa Ministerial - Seguimiento especial', description: 'Requiere registro en programa ministerial.' }
+        };
+
+        function getProductAlertsHTML(product) {
+            if (!product.tags || product.tags.length === 0) return '';
+            return product.tags.map(tag => {
+                const config = ALERT_CONFIG[tag];
+                if (!config) return '';
+                return `<span class="alert-tag ${config.class}"><span class="alert-tag-icon">${config.icon}</span> ${tag}</span>`;
+            }).join('');
+        }
+
+        function getProductAlertMessages(product) {
+            if (!product.tags || product.tags.length === 0) return [];
+            return product.tags.map(tag => {
+                const config = ALERT_CONFIG[tag];
+                if (!config) return null;
+                return `${config.icon} ${config.description}`;
+            }).filter(Boolean);
+        }
+
         function initData() {
-            if (!localStorage.getItem(STORAGE_USERS)) {
-                localStorage.setItem(STORAGE_USERS, JSON.stringify([
+            if (!localStorage.getItem(STORAGE_KEY_USERS)) {
+                localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify([
                     { id: 1, nombre: 'Admin', perfil: 'admin', password: 'admin', permisos: ['lectura','escritura','administracion'] }
                 ]));
             }
-            if (!localStorage.getItem(STORAGE_PRODUCTS)) {
-                localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify([
-                    { codigo: '01-001-212-024', gtin: '7801234567999', glosa: 'FENTANILO 0,5 MG/10 ML SOL INY AM 10 ML', bodega: 'Farmacos', zona: 'H', ubicacion: 'Cámara Frío 2' },
-                    { codigo: '01-001-216-026', gtin: '7801234567890', glosa: 'METRONIDAZOL 500 MG/100 ML SOL INY FA 100 ML', bodega: 'Farmacos', zona: 'G', ubicacion: 'Full Space G-1' },
-                    { codigo: '02-001-003-050', gtin: '7801234567100', glosa: 'TORULA GASA GRANEL (Insumo Clínico)', bodega: 'Insumos', zona: 'F', ubicacion: 'Anaquel F-5' },
-                    { codigo: '02-002-001-038', gtin: '7801234567200', glosa: 'TONER BROTHER 2140 (Oficina)', bodega: 'Economato', zona: 'Office', ubicacion: 'Pallet D-3' }
+            if (!localStorage.getItem(STORAGE_KEY_PRODUCTS)) {
+                localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify([
+                    { codigo: '01-001-212-024', gtin: '7801234567999', glosa: 'FENTANILO 0,5 MG/10 ML SOL INY AM 10 ML', bodega: 'Farmacos', tags: ['Fármaco Controlado', 'Cámara de Frío'], ubicaciones: [{ tipo: 'master', ubicacion: 'Cámara Frío 2', zona: 'H' }] },
+                    { codigo: '01-001-216-026', gtin: '7801234567890', glosa: 'METRONIDAZOL 500 MG/100 ML SOL INY FA 100 ML', bodega: 'Farmacos', tags: ['Ley Ricarte Soto (LRS)'], ubicaciones: [{ tipo: 'master', ubicacion: 'Full Space G-1', zona: 'G' }] },
+                    { codigo: '02-001-003-050', gtin: '7801234567100', glosa: 'TORULA GASA GRANEL (Insumo Clínico)', bodega: 'Insumos', tags: [], ubicaciones: [{ tipo: 'master', ubicacion: 'Anaquel F-5', zona: 'F' }] },
+                    { codigo: '02-002-001-038', gtin: '7801234567200', glosa: 'TONER BROTHER 2140 (Oficina)', bodega: 'Economato', tags: [], ubicaciones: [{ tipo: 'master', ubicacion: 'Pallet D-3', zona: 'D' }] }
                 ]));
             }
-            if (!localStorage.getItem(STORAGE_MOVEMENTS)) {
-                localStorage.setItem(STORAGE_MOVEMENTS, JSON.stringify([
+            if (!localStorage.getItem(STORAGE_KEY_MOVEMENTS)) {
+                localStorage.setItem(STORAGE_KEY_MOVEMENTS, JSON.stringify([
                     { fecha: '2026-06-07 10:30', codigo: '01-001-212-024', bodega: 'Farmacos', desde: 'RECEPCIÓN', hacia: 'Cámara Frío 2 (Zona H)', usuario: 'Admin' }
                 ]));
             }
-            if (!localStorage.getItem(STORAGE_CONFIG)) {
-                localStorage.setItem(STORAGE_CONFIG, JSON.stringify({ mapImage: 'image_3178e5.jpg' }));
+            if (!localStorage.getItem(STORAGE_KEY_CONFIG)) {
+                localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify({ mapImage: 'image_3178e5.jpg' }));
             }
         }
 
+        function getAllProducts() { return JSON.parse(localStorage.getItem(STORAGE_KEY_PRODUCTS) || '[]'); }
+        function setProducts(p) { localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(p)); }
         function getProducts() {
-            const all = JSON.parse(localStorage.getItem(STORAGE_PRODUCTS) || '[]');
+            const all = getAllProducts();
             if (currentWarehouse === 'TODAS') return all;
             return all.filter(p => p.bodega === currentWarehouse);
         }
-        function getAllProducts() { return JSON.parse(localStorage.getItem(STORAGE_PRODUCTS) || '[]'); }
-        function setProducts(p) { localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(p)); }
 
+        function getAllMovements() { return JSON.parse(localStorage.getItem(STORAGE_KEY_MOVEMENTS) || '[]'); }
+        function setMovements(m) { localStorage.setItem(STORAGE_KEY_MOVEMENTS, JSON.stringify(m)); }
         function getMovements() {
-            const all = JSON.parse(localStorage.getItem(STORAGE_MOVEMENTS) || '[]');
+            const all = getAllMovements();
             if (currentWarehouse === 'TODAS') return all;
             return all.filter(m => m.bodega === currentWarehouse);
         }
-        function getAllMovements() { return JSON.parse(localStorage.getItem(STORAGE_MOVEMENTS) || '[]'); }
-        function setMovements(m) { localStorage.setItem(STORAGE_MOVEMENTS, JSON.stringify(m)); }
 
-        function getUsers() { return JSON.parse(localStorage.getItem(STORAGE_USERS) || '[]'); }
-        function setUsers(u) { localStorage.setItem(STORAGE_USERS, JSON.stringify(u)); }
+        function getUsers() { return JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]'); }
+        function setUsers(u) { localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(u)); }
+        function getConfig() { return JSON.parse(localStorage.getItem(STORAGE_KEY_CONFIG) || '{}'); }
+        function setConfig(c) { localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify(c)); }
+
+        let currentUserId = null;
+
+        function getCurrentUser() {
+            if (currentUserId === null) return null;
+            return getUsers().find(u => u.id === currentUserId) || null;
+        }
+
+        function hasPermission(perm) {
+            const user = getCurrentUser();
+            if (!user) return false;
+            return user.permisos.includes(perm) || user.permisos.includes('administracion');
+        }
+
+        function handleLogin() {
+            const username = document.getElementById('loginUser').value.trim();
+            const password = document.getElementById('loginPass').value.trim();
+            const users = getUsers();
+            const user = users.find(u => u.nombre.toLowerCase() === username.toLowerCase() && u.password === password);
+            if (user) {
+                currentUserId = user.id;
+                localStorage.setItem(STORAGE_KEY_SESSION, user.id);
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('app').style.display = 'flex';
+                renderAll();
+                document.getElementById('loginError').style.display = 'none';
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        function logout() {
+            currentUserId = null;
+            localStorage.removeItem(STORAGE_KEY_SESSION);
+            document.getElementById('app').style.display = 'none';
+            document.getElementById('loginModal').style.display = 'flex';
+            document.getElementById('loginPass').value = '';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        function checkSession() {
+            const savedId = localStorage.getItem(STORAGE_KEY_SESSION);
+            if (savedId) {
+                const users = getUsers();
+                if (users.find(u => u.id === parseInt(savedId))) {
+                    currentUserId = parseInt(savedId);
+                    document.getElementById('loginModal').style.display = 'none';
+                    document.getElementById('app').style.display = 'flex';
+                    return true;
+                }
+            }
+            document.getElementById('loginModal').style.display = 'flex';
+            document.getElementById('app').style.display = 'none';
+            return false;
+        }
 
         function cambiarBodega() {
             currentWarehouse = document.getElementById('warehouseSelect').value;
             renderAll();
         }
 
-        function handleLogin() {
-            document.getElementById('loginModal').style.display = 'none';
-            document.getElementById('app').style.display = 'flex';
-            renderAll();
-        }
-        function logout() {
-            document.getElementById('app').style.display = 'none';
-            document.getElementById('loginModal').style.display = 'flex';
-        }
-
-        function renderAll() {
+        function actualizarUI() {
+            const user = getCurrentUser();
+            document.getElementById('currentUserDisplay').textContent = user ? `👤 ${user.nombre} (${user.perfil})` : '👤 Invitado';
+            const sel = document.getElementById('warehouseSelect');
+            if (sel.value !== currentWarehouse) sel.value = currentWarehouse;
+            
             renderDashboard();
             renderInventario();
             renderHistorial();
             renderUsuarios();
-            limpiarIluminacionMapa();
+            renderMapa();
         }
 
+        function renderAll() { actualizarUI(); }
+
         function renderDashboard() {
-            const prods = getProducts();
-            const movs = getMovements();
-            document.getElementById('totalProductos').textContent = prods.length;
-            document.getElementById('totalUbicaciones').textContent = prods.length;
-            document.getElementById('totalMovimientos').textContent = movs.length;
-            document.getElementById('totalUsuarios').textContent = getUsers().length;
+            const products = getProducts();
+            const movements = getMovements();
+            const users = getUsers();
+            document.getElementById('totalProductos').textContent = products.length;
+            const ubicaciones = new Set();
+            products.forEach(p => p.ubicaciones.forEach(u => ubicaciones.add(u.ubicacion)));
+            document.getElementById('totalUbicaciones').textContent = ubicaciones.size;
+            document.getElementById('totalMovimientos').textContent = movements.length;
+            document.getElementById('totalUsuarios').textContent = users.length;
 
             const tbody = document.getElementById('ultimosMovimientos');
-            const recent = movs.slice(-5).reverse();
-            tbody.innerHTML = recent.length ? recent.map(m => `
+            const recent = movements.slice(-5).reverse();
+            tbody.innerHTML = recent.map(m => `
                 <tr>
                     <td>${m.fecha}</td>
                     <td><strong>${m.codigo}</strong></td>
-                    <td><span class="badge-bodega">${m.bodega}</span></td>
                     <td>${m.desde || '-'}</td>
                     <td>${m.hacia || '-'}</td>
-                    <td>${m.usuario || 'Admin'}</td>
+                    <td>${m.usuario || 'Sistema'}</td>
                 </tr>
-            `).join('') : '<tr><td colspan="6" class="empty-state">No hay movimientos recientes</td></tr>';
+            `).join('') || '<tr><td colspan="5" class="empty-state">No hay movimientos recientes</td></tr>';
         }
 
-        function limpiarIluminacionMapa() {
-            document.querySelectorAll('.map-zone').forEach(z => z.classList.remove('highlight-search'));
-        }
-
-        function verEnMapa(zona) {
-            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-            document.querySelector('nav button[data-tab="mapa"]').classList.add('active');
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab-mapa').classList.add('active');
+        function renderMapa(highlightZona = null) {
+            const config = getConfig();
+            document.getElementById('mapImage').src = config.mapImage || 'image_3178e5.jpg';
             
-            filtrarPorZona(zona);
-            document.getElementById('mapContainer').scrollIntoView({ behavior: 'smooth' });
+            document.querySelectorAll('.map-zone').forEach(z => {
+                z.classList.remove('highlight-search', 'highlight-putaway', 'highlight-origin', 'highlight-destiny');
+                if (highlightZona && z.dataset.zone === highlightZona) {
+                    z.classList.add('highlight-search');
+                }
+            });
         }
 
         function filtrarPorZona(zona) {
-            limpiarIluminacionMapa();
+            selectedZona = zona;
+            const products = getProducts();
+            const filtrados = products.filter(p => p.ubicaciones.some(u => u.zona === zona));
+            const container = document.getElementById('mapProducts');
+            const zoneName = ZONE_CONFIG[zona] ? ZONE_CONFIG[zona].name : `Zona ${zona}`;
+            
+            document.querySelectorAll('.map-zone').forEach(z => z.classList.remove('highlight-search'));
             const zoneEl = document.querySelector(`.map-zone[data-zone="${zona}"]`);
             if (zoneEl) zoneEl.classList.add('highlight-search');
 
-            const products = getProducts().filter(p => p.zona === zona);
-            const zoneName = ZONE_NAMES[zona] || zona;
-            
-            document.getElementById('mapProducts').innerHTML = products.length ? 
-                `<h4>📍 ${zoneName} (${products.length} productos)</h4>` + products.map(p => `
-                    <div style="margin-top:6px; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #e2e8f0;">
-                        <strong>${p.codigo}</strong>: ${p.glosa} <br>
-                        <span style="color:#2563eb; font-size:0.8rem; font-weight:600;">Ubicación: ${p.ubicacion} (${p.bodega})</span>
-                    </div>
-                `).join('') : 
-                `<p class="empty-state">No hay productos asignados en ${zoneName} para esta bodega.</p>`;
+            if (filtrados.length === 0) {
+                container.innerHTML = `<p class="empty-state">No hay productos en ${zoneName} para esta bodega.</p>`;
+            } else {
+                container.innerHTML = `<h4 style="margin-bottom:6px;">📍 ${zoneName} (${filtrados.length} productos)</h4>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px; margin-top:6px;">
+                    ${filtrados.map(p => `
+                        <div style="background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #e2e8f0;">
+                            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:4px; margin-bottom:4px;">
+                                <strong>${p.codigo}</strong>
+                                ${getProductAlertsHTML(p)}
+                            </div>
+                            <div style="font-size:0.75rem;">${p.glosa}</div>
+                            <span style="color:#2563eb; font-size:0.75rem; font-weight:600;">📍 ${p.ubicaciones.map(u => u.ubicacion).join(', ')}</span>
+                        </div>
+                    `).join('')}
+                    </div>`;
+            }
+            document.getElementById('mapProductList').scrollIntoView({ behavior: 'smooth' });
         }
 
         function limpiarMapa() {
-            limpiarIluminacionMapa();
+            document.querySelectorAll('.map-zone').forEach(z => z.classList.remove('highlight-search', 'highlight-putaway', 'highlight-origin', 'highlight-destiny'));
+            selectedZona = null;
             document.getElementById('mapProducts').innerHTML = '<p class="empty-state">Selecciona una zona del plano o busca un producto.</p>';
             document.getElementById('mapProductSearch').value = '';
         }
@@ -493,123 +721,409 @@
         function buscarProductoEnMapa() {
             const query = document.getElementById('mapProductSearch').value.trim().toLowerCase();
             if (!query) return;
-            const prod = getProducts().find(p => p.codigo.toLowerCase().includes(query) || p.glosa.toLowerCase().includes(query));
-            if (prod) {
-                verEnMapa(prod.zona);
-            } else {
-                alert('Producto no encontrado en la bodega seleccionada.');
-            }
+            const products = getProducts();
+            const prod = products.find(p => p.codigo.toLowerCase().includes(query) || p.glosa.toLowerCase().includes(query));
+            if (!prod) { alert('Producto no encontrado en la bodega seleccionada.'); return; }
+            
+            document.querySelectorAll('.map-zone').forEach(z => z.classList.remove('highlight-search'));
+            prod.ubicaciones.forEach(u => {
+                if (u.zona) {
+                    const zoneEl = document.querySelector(`.map-zone[data-zone="${u.zona}"]`);
+                    if (zoneEl) zoneEl.classList.add('highlight-search');
+                }
+            });
+
+            const container = document.getElementById('mapProducts');
+            container.innerHTML = `<h4 style="margin-bottom:6px;">🎯 ${prod.codigo} - ${prod.glosa}</h4>
+                <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:8px; margin-top:6px;">
+                    ${prod.ubicaciones.map(u => `
+                        <div style="background:#dbeafe; padding:10px; border-radius:8px; border:2px solid #2563eb;">
+                            <strong>${u.ubicacion}</strong><br>
+                            <span style="color:#1e40af; font-size:0.75rem;">${ZONE_CONFIG[u.zona] ? ZONE_CONFIG[u.zona].name : u.zona}</span>
+                        </div>
+                    `).join('')}
+                </div>`;
+            document.getElementById('mapProductList').scrollIntoView({ behavior: 'smooth' });
         }
 
         function buscarUbicacion() {
             const query = document.getElementById('searchUbicacion').value.trim().toLowerCase();
             const container = document.getElementById('resultadosBusqueda');
-            if (!query) { container.innerHTML = '<p class="empty-state">Introduce un término de búsqueda.</p>'; return; }
-            const products = getProducts().filter(p => p.codigo.toLowerCase().includes(query) || p.glosa.toLowerCase().includes(query) || (p.gtin && p.gtin.includes(query)));
             
-            container.innerHTML = products.length ? products.map(p => `
-                <div class="result-card">
-                    <h4><span>${p.codigo}</span> <span class="badge-bodega">${p.bodega}</span></h4>
-                    <p>${p.glosa}</p>
-                    <p style="margin-top:6px; font-size:0.85rem;">
-                        <strong>📍 Ubicación:</strong> 
-                        <span class="location-link" onclick="verEnMapa('${p.zona}')">${p.ubicacion} (${ZONE_NAMES[p.zona] || p.zona}) 🗺️ [Ver en el plano]</span>
-                    </p>
+            document.querySelectorAll('.map-zone').forEach(z => z.classList.remove('highlight-search'));
+            
+            if (!query) {
+                container.innerHTML = '<p class="empty-state">Introduce un término de búsqueda para comenzar.</p>';
+                return;
+            }
+
+            const products = getProducts();
+            const resultados = products.filter(p => 
+                p.codigo.toLowerCase().includes(query) || 
+                p.glosa.toLowerCase().includes(query) || 
+                (p.gtin && p.gtin.includes(query)) ||
+                p.ubicaciones.some(u => u.ubicacion.toLowerCase().includes(query) || u.zona.toLowerCase().includes(query))
+            );
+
+            if (resultados.length === 0) {
+                container.innerHTML = `<p class="empty-state">❌ No se encontraron productos que coincidan con "${query}".</p>`;
+                return;
+            }
+
+            container.innerHTML = `<p style="margin-bottom:8px; color:#64748b; font-size:0.8rem;">Se encontraron ${resultados.length} producto(s):</p>`;
+            container.innerHTML += resultados.map(p => {
+                const alertBadges = getProductAlertsHTML(p);
+                const ubicacionesHtml = p.ubicaciones.map(u => {
+                    const zoneName = ZONE_CONFIG[u.zona] ? ZONE_CONFIG[u.zona].short : u.zona;
+                    return `<span class="location-badge ${u.tipo === 'master' ? 'location-master' : 'location-comercial'}">${u.tipo.toUpperCase()}</span> 
+                            <strong>${u.ubicacion}</strong> (${zoneName})`;
+                }).join('<br>') || '<span style="color:#94a3b8;">Sin ubicaciones asignadas</span>';
+
+                const bodegaClass = p.bodega === 'Farmacos' ? 'badge-farmacos' : p.bodega === 'Insumos' ? 'badge-insumos' : 'badge-economato';
+
+                return `<div class="result-card">
+                    <h4>
+                        <span>${p.codigo}</span>
+                        <span class="badge-bodega ${bodegaClass}">${p.bodega}</span>
+                        ${alertBadges}
+                        <button class="btn btn-primary btn-sm" onclick="reubicarProducto('${p.codigo}')" style="margin-left:auto;" ${hasPermission('escritura') ? '' : 'disabled'}>🔄 Reubicar</button>
+                    </h4>
+                    <p style="margin-bottom:4px; font-size:0.85rem;">${p.glosa}</p>
+                    <div class="ubicacion-tag">
+                        <strong>📍 Ubicaciones:</strong><br>
+                        ${ubicacionesHtml}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        let html5QRScanner = null;
+
+        function abrirLectorGTINBusqueda() {
+            mostrarModal('Escanear GTIN / EAN', `
+                <p style="font-size:0.8rem;">Escanea el código de barras del producto o usa una imagen.</p>
+                <div id="gtin-scanner-container"></div>
+                <div id="gtin-scanner-status">📷 Presiona "Iniciar cámara" para comenzar.</div>
+                <div class="flex" style="justify-content:center; margin-top:8px;">
+                    <button class="btn btn-primary" onclick="iniciarLectorGTIN()">📷 Iniciar cámara</button>
+                    <button class="btn btn-warning" onclick="document.getElementById('gtinImageInput').click()">🖼️ Subir imagen</button>
+                    <input type="file" id="gtinImageInput" accept="image/*" style="display:none" onchange="leerGTINDesdeImagen(this.files[0])">
                 </div>
-            `).join('') : '<p class="empty-state">No se encontraron coincidencias.</p>';
+                <div id="imagePreviewContainer" style="display:none; margin-top:8px; text-align:center;">
+                    <img id="imagePreview" class="image-preview" src="#" alt="Vista previa">
+                </div>
+                <label style="margin-top:10px;">O escribe el GTIN/EAN manualmente:</label>
+                <div style="display:flex; gap:8px;">
+                    <input id="manualGTIN" placeholder="Ej: 7801234567890" style="flex:1;">
+                    <button class="btn btn-primary" onclick="const v=document.getElementById('manualGTIN').value; if(v) manejarLecturaGTIN(v);">🔍 Buscar</button>
+                </div>
+            `, null, true);
+            
+            document.getElementById('modalActionBtn').textContent = 'Cerrar';
+            document.getElementById('modalActionBtn').onclick = function() {
+                detenerLectorGTIN();
+                cerrarModal();
+            };
+        }
+
+        function iniciarLectorGTIN() {
+            const container = document.getElementById('gtin-scanner-container');
+            const status = document.getElementById('gtin-scanner-status');
+            if (!container) return;
+
+            if (html5QRScanner) {
+                html5QRScanner.stop().then(() => {
+                    html5QRScanner = null;
+                    iniciarHtml5Scanner(container, status);
+                }).catch(() => {
+                    html5QRScanner = null;
+                    iniciarHtml5Scanner(container, status);
+                });
+            } else {
+                iniciarHtml5Scanner(container, status);
+            }
+        }
+
+        function iniciarHtml5Scanner(container, status) {
+            status.textContent = '📷 Solicitando acceso a la cámara...';
+            try {
+                html5QRScanner = new Html5Qrcode("gtin-scanner-container");
+                html5QRScanner.start(
+                    { facingMode: "environment" },
+                    { fps: 10, qrbox: { width: 220, height: 90 } },
+                    (decodedText) => {
+                        status.textContent = '✅ Código detectado: ' + decodedText;
+                        manejarLecturaGTIN(decodedText);
+                        detenerLectorGTIN();
+                        cerrarModal();
+                    },
+                    (error) => {}
+                ).then(() => {
+                    status.textContent = '📷 Cámara activa. Apunta al código.';
+                }).catch((err) => {
+                    status.textContent = '❌ No se pudo iniciar la cámara. Usa "Subir imagen".';
+                });
+            } catch (err) {
+                status.textContent = '❌ Error al crear el escáner.';
+            }
+        }
+
+        function detenerLectorGTIN() {
+            if (html5QRScanner) {
+                html5QRScanner.stop().then(() => {
+                    html5QRScanner = null;
+                }).catch(() => { html5QRScanner = null; });
+            }
+        }
+
+        function leerGTINDesdeImagen(file) {
+            if (!file) return;
+            const status = document.getElementById('gtin-scanner-status');
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            const previewImg = document.getElementById('imagePreview');
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewContainer.style.display = 'block';
+                status.textContent = '📤 Procesando imagen...';
+            };
+            reader.readAsDataURL(file);
+
+            setTimeout(async () => {
+                try {
+                    const codeReader = new ZXing.BrowserMultiFormatReader();
+                    const result = await codeReader.decodeFromImage(previewImg);
+                    if (result) {
+                        status.textContent = '✅ Código detectado en imagen.';
+                        manejarLecturaGTIN(result.getText());
+                        cerrarModal();
+                    }
+                } catch (err) {
+                    status.textContent = '❌ No se detectó ningún código.';
+                    alert('No se pudo leer ningún código en la imagen.');
+                }
+            }, 500);
+        }
+
+        function manejarLecturaGTIN(texto) {
+            let gtin = texto.replace(/\s/g, '');
+            document.getElementById('searchUbicacion').value = gtin;
+            buscarUbicacion();
+            document.querySelector('nav button[data-tab="buscador"]').click();
         }
 
         function renderInventario() {
             const search = document.getElementById('searchInventario').value.toLowerCase();
-            const prods = getProducts().filter(p => p.codigo.toLowerCase().includes(search) || p.glosa.toLowerCase().includes(search));
+            const products = getProducts();
+            const filtered = products.filter(p => 
+                p.codigo.toLowerCase().includes(search) || p.glosa.toLowerCase().includes(search)
+            );
             const tbody = document.getElementById('inventarioBody');
-            tbody.innerHTML = prods.length ? prods.map(p => `
-                <tr>
+            tbody.innerHTML = filtered.map(p => {
+                const bodegaClass = p.bodega === 'Farmacos' ? 'badge-farmacos' : p.bodega === 'Insumos' ? 'badge-insumos' : 'badge-economato';
+                const alertBadges = getProductAlertsHTML(p);
+                return `<tr>
                     <td><strong>${p.codigo}</strong></td>
                     <td>${p.glosa}</td>
-                    <td><span class="badge-bodega">${p.bodega}</span></td>
-                    <td><span class="location-link" onclick="verEnMapa('${p.zona}')">${p.ubicacion} (${ZONE_NAMES[p.zona] || p.zona}) 🗺️</span></td>
-                    <td>
-                        <button class="btn btn-danger btn-sm" onclick="eliminarProducto('${p.codigo}')">🗑️</button>
+                    <td><span class="badge-bodega ${bodegaClass}">${p.bodega}</span></td>
+                    <td>${alertBadges || '<span style="color:#94a3b8; font-size:0.6rem;">Sin alertas</span>'}</td>
+                    <td style="font-size:0.75rem;">
+                        ${p.ubicaciones.map(u => {
+                            const zoneName = ZONE_CONFIG[u.zona] ? ZONE_CONFIG[u.zona].short : u.zona;
+                            return `<span class="location-badge ${u.tipo === 'master' ? 'location-master' : 'location-comercial'}">${u.tipo.toUpperCase()}</span> ${u.ubicacion} (${zoneName})`;
+                        }).join(' | ') || 'Sin asignar'}
                     </td>
-                </tr>
-            `).join('') : '<tr><td colspan="5" class="empty-state">No hay productos registrados</td></tr>';
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="reubicarProducto('${p.codigo}')" ${hasPermission('escritura') ? '' : 'disabled'}>🔄</button>
+                        <button class="btn btn-warning btn-sm" onclick="verHistorial('${p.codigo}')">📜</button>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarProducto('${p.codigo}')" ${hasPermission('administracion') ? '' : 'disabled'}>🗑️</button>
+                    </td>
+                </tr>`;
+            }).join('') || '<tr><td colspan="6" class="empty-state">No hay productos</td></tr>';
         }
 
         function agregarProducto() {
+            if (!hasPermission('escritura')) { alert('No tienes permisos.'); return; }
+            const zoneOptions = Object.entries(ZONE_CONFIG).map(([key, val]) => 
+                `<option value="${key}">${val.name}</option>`
+            ).join('');
             mostrarModal('Nuevo producto', `
-                <label>Código Interno</label>
-                <input id="modCodigo" placeholder="Ej: 01-001-216-026">
+                <label>Código</label>
+                <input id="modalCodigo" placeholder="Ej: 01-001-216-026">
                 <label>GTIN (EAN-13)</label>
-                <input id="modGtin" placeholder="7801234567890">
-                <label>Glosa / Descripción</label>
-                <input id="modGlosa" placeholder="Descripción del artículo">
+                <input id="modalGtin" placeholder="7801234567890">
+                <label>Glosa</label>
+                <input id="modalGlosa" placeholder="Descripción del producto">
                 <label>Bodega</label>
-                <select id="modBodega">
-                    <option value="Farmacos">Fármacos</option>
-                    <option value="Insumos">Insumos Clínicos</option>
-                    <option value="Economato">Economato</option>
+                <select id="modalBodega">
+                    <option value="Farmacos">💊 Fármacos</option>
+                    <option value="Insumos">🧪 Insumos Clínicos</option>
+                    <option value="Economato">📦 Economato</option>
                 </select>
-                <label>Zona en el Plano</label>
-                <select id="modZona">
-                    <option value="D">Zona D (Pasillo Estrecho)</option>
-                    <option value="E">Zona E (Palletizado Masivo)</option>
-                    <option value="F">Zona F (Anaqueles)</option>
-                    <option value="G">Zona G (Full Space)</option>
-                    <option value="C">Zona C (Tránsito)</option>
-                    <option value="H">Zona H (Cámara de Frío)</option>
-                    <option value="Office">Oficinas & Despacho</option>
+                <label>Alertas</label>
+                <select id="modalTags" multiple style="height:auto; min-height:50px;">
+                    <option value="Cámara de Frío">🧊 Cámara de Frío</option>
+                    <option value="Fármaco Controlado">⚠️ Fármaco Controlado</option>
+                    <option value="Ley Ricarte Soto (LRS)">📋 Ley Ricarte Soto (LRS)</option>
+                    <option value="Programa Ministerial (PM)">🏛️ Programa Ministerial (PM)</option>
                 </select>
-                <label>Ubicación Específica</label>
-                <input id="modUbicacion" placeholder="Ej: Cámara Frío 1">
+                <label>Zona</label>
+                <select id="modalZona">${zoneOptions}</select>
+                <label>Ubicación Master (Pallet/Rack)</label>
+                <input id="modalUbicMaster" placeholder="Ej: Cámara Frío 1">
             `, () => {
-                const codigo = document.getElementById('modCodigo').value.trim();
-                const gtin = document.getElementById('modGtin').value.trim();
-                const glosa = document.getElementById('modGlosa').value.trim();
-                const bodega = document.getElementById('modBodega').value;
-                const zona = document.getElementById('modZona').value;
-                const ubicacion = document.getElementById('modUbicacion').value.trim();
-                if (!codigo || !glosa) { alert('Código y glosa son obligatorios.'); return false; }
-                
-                const all = getAllProducts();
-                all.push({ codigo, gtin, glosa, bodega, zona, ubicacion });
-                setProducts(all);
-                
-                const movs = getAllMovements();
-                movs.push({ fecha: new Date().toLocaleString(), codigo, bodega, desde: 'NUEVO_REGISTRO', hacia: `${ubicacion} (${ZONE_NAMES[zona]})`, usuario: 'Admin' });
-                setMovements(movs);
-                
+                const codigo = document.getElementById('modalCodigo').value.trim();
+                const gtin = document.getElementById('modalGtin').value.trim();
+                const glosa = document.getElementById('modalGlosa').value.trim();
+                const bodega = document.getElementById('modalBodega').value;
+                const zona = document.getElementById('modalZona').value;
+                const tags = Array.from(document.getElementById('modalTags').selectedOptions).map(opt => opt.value);
+                const master = document.getElementById('modalUbicMaster').value.trim();
+                if (!codigo || !glosa) { alert('Código y glosa son obligatorios'); return false; }
+                const products = getAllProducts();
+                if (products.find(p => p.codigo === codigo)) { alert('El código ya existe.'); return false; }
+                const ubicaciones = [];
+                if (master) ubicaciones.push({ tipo: 'master', ubicacion: master, zona });
+                products.push({ codigo, gtin, glosa, bodega, tags, ubicaciones });
+                setProducts(products);
+                const mov = getAllMovements();
+                mov.push({ fecha: new Date().toLocaleString(), codigo, bodega, desde: 'ALTA', hacia: master || 'SIN_UBICACION', usuario: getCurrentUser().nombre });
+                setMovements(mov);
                 renderAll();
                 cerrarModal();
-            }, true);
+            });
+        }
+
+        let html5QrCode = null;
+
+        function escaneoQR() {
+            const readerContainer = document.getElementById('qr-reader');
+            if (!readerContainer) return;
+            readerContainer.style.display = 'block';
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    html5QrCode.clear();
+                    iniciarLectorQR(readerContainer);
+                }).catch(() => iniciarLectorQR(readerContainer));
+            } else {
+                iniciarLectorQR(readerContainer);
+            }
+        }
+
+        function iniciarLectorQR(container) {
+            html5QrCode = new Html5Qrcode("qr-reader");
+            html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 220, height: 220 } },
+                (decodedText) => {
+                    const input = document.getElementById('modalNuevaUbic');
+                    if (input) input.value = decodedText;
+                    html5QrCode.stop().then(() => {
+                        html5QrCode.clear();
+                        container.style.display = 'none';
+                    }).catch(() => container.style.display = 'none');
+                },
+                (error) => {}
+            ).catch(err => {
+                alert('No se pudo acceder a la cámara.');
+                container.style.display = 'none';
+                html5QrCode = null;
+            });
+        }
+
+        function reubicarProducto(codigo) {
+            if (!hasPermission('escritura')) { alert('No tienes permisos.'); return; }
+            const products = getAllProducts();
+            const prod = products.find(p => p.codigo === codigo);
+            if (!prod) return;
+
+            const alertMessages = getProductAlertMessages(prod);
+            let alertHtml = '';
+            if (alertMessages.length > 0) {
+                alertHtml = `<div class="alert-bar alert-bar-warning">
+                    <span style="font-weight:700; color:#b91c1c;">⚠️ ALERTAS DE SEGURIDAD</span>
+                    <div style="display:flex; flex-wrap:wrap; gap:4px;">
+                        ${alertMessages.map(msg => `<span style="background:#fee2e2; padding:2px 8px; border-radius:10px; font-size:0.7rem; color:#b91c1c;">${msg}</span>`).join('')}
+                    </div>
+                </div>`;
+            }
+
+            const zoneOptions = Object.entries(ZONE_CONFIG).map(([key, val]) => 
+                `<option value="${key}">${val.name}</option>`
+            ).join('');
+
+            mostrarModal('Reubicar producto', `
+                <input type="hidden" id="modalCodigoReubicacion" value="${codigo}">
+                ${alertHtml}
+                <p style="font-size:0.85rem;"><strong>${prod.codigo}</strong> - ${prod.glosa}</p>
+                <label>Zona destino</label>
+                <select id="modalZonaDestino">${zoneOptions}</select>
+                <label>Nueva ubicación</label>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <input id="modalNuevaUbic" placeholder="Escribe o escanea QR" style="flex:1;" autofocus>
+                    <button type="button" class="btn btn-primary" onclick="escaneoQR()">📷 QR</button>
+                </div>
+                <div id="qr-reader" class="qr-reader-container"></div>
+            `, () => {
+                const nuevaZona = document.getElementById('modalZonaDestino').value;
+                const nueva = document.getElementById('modalNuevaUbic').value.trim();
+                if (!nueva) { alert('Debes indicar una ubicación.'); return false; }
+                const desde = prod.ubicaciones[0]?.ubicacion || 'SIN_UBICACION';
+                if (prod.ubicaciones.length > 0) {
+                    prod.ubicaciones[0] = { tipo: 'master', ubicacion: nueva, zona: nuevaZona };
+                } else {
+                    prod.ubicaciones.push({ tipo: 'master', ubicacion: nueva, zona: nuevaZona });
+                }
+                setProducts(products);
+                const mov = getAllMovements();
+                mov.push({ fecha: new Date().toLocaleString(), codigo, bodega: prod.bodega, desde, hacia: nueva, usuario: getCurrentUser().nombre });
+                setMovements(mov);
+                renderAll();
+                cerrarModal();
+            });
+        }
+
+        function verHistorial(codigo) {
+            const mov = getMovements().filter(m => m.codigo === codigo);
+            if (mov.length === 0) { alert('No hay movimientos para este producto.'); return; }
+            let html = `<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Bodega</th><th>Desde</th><th>Hacia</th><th>Usuario</th></tr></thead><tbody>`;
+            mov.forEach(m => {
+                html += `<tr><td>${m.fecha}</td><td><span class="badge-bodega badge-farmacos">${m.bodega}</span></td><td>${m.desde || '-'}</td><td>${m.hacia || '-'}</td><td>${m.usuario || 'Sistema'}</td></tr>`;
+            });
+            html += `</tbody></table></div>`;
+            mostrarModal(`Historial de ${codigo}`, html, null, true);
         }
 
         function eliminarProducto(codigo) {
+            if (!hasPermission('administracion')) { alert('No tienes permisos.'); return; }
             if (!confirm(`¿Eliminar producto ${codigo}?`)) return;
-            let all = getAllProducts().filter(p => p.codigo !== codigo);
-            setProducts(all);
+            let products = getAllProducts();
+            products = products.filter(p => p.codigo !== codigo);
+            setProducts(products);
             renderAll();
         }
 
         function renderHistorial() {
             const filter = document.getElementById('filterHistorial').value.trim();
-            let movs = getMovements();
-            if (filter) movs = movs.filter(m => m.codigo.includes(filter));
+            let mov = getMovements();
+            if (filter) mov = mov.filter(m => m.codigo.includes(filter));
             const tbody = document.getElementById('historialBody');
-            tbody.innerHTML = movs.length ? movs.map(m => `
+            tbody.innerHTML = mov.map(m => `
                 <tr>
                     <td>${m.fecha}</td>
                     <td><strong>${m.codigo}</strong></td>
-                    <td><span class="badge-bodega">${m.bodega}</span></td>
+                    <td><span class="badge-bodega ${m.bodega === 'Farmacos' ? 'badge-farmacos' : m.bodega === 'Insumos' ? 'badge-insumos' : 'badge-economato'}">${m.bodega}</span></td>
                     <td>${m.desde || '-'}</td>
                     <td>${m.hacia || '-'}</td>
-                    <td>${m.usuario || 'Admin'}</td>
+                    <td>${m.usuario || 'Sistema'}</td>
                 </tr>
-            `).join('') : '<tr><td colspan="6" class="empty-state">No hay historial de movimientos</td></tr>';
+            `).join('') || '<tr><td colspan="6" class="empty-state">No hay movimientos</td></tr>';
         }
 
         function limpiarHistorial() {
-            if (!confirm('¿Limpiar historial de movimientos?')) return;
+            if (!hasPermission('administracion')) { alert('No tienes permisos.'); return; }
+            if (!confirm('¿Eliminar historial?')) return;
             setMovements([]);
             renderAll();
         }
@@ -621,87 +1135,165 @@
                 <tr>
                     <td>${u.id}</td>
                     <td>${u.nombre}</td>
-                    <td>${u.perfil}</td>
+                    <td><span class="badge badge-${u.perfil}">${u.perfil}</span></td>
                     <td>${u.permisos.join(', ')}</td>
-                    <td><span style="color:#64748b; font-size:0.75rem;">Protegido</span></td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="editarUsuario(${u.id})" ${hasPermission('administracion') ? '' : 'disabled'}>✏️</button>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarUsuario(${u.id})" ${hasPermission('administracion') ? '' : 'disabled'}>🗑️</button>
+                    </td>
                 </tr>
-            `).join('');
+            `).join('') || '<tr><td colspan="5" class="empty-state">No hay usuarios</td></tr>';
         }
 
-        function mostrarModalUsuario() {
-            alert('Gestión de usuarios habilitada para administradores.');
+        function mostrarModalUsuario(usuario = null) {
+            if (!hasPermission('administracion')) { alert('No tienes permisos.'); return; }
+            const isEdit = !!usuario;
+            const title = isEdit ? 'Editar usuario' : 'Nuevo usuario';
+            const nombre = isEdit ? usuario.nombre : '';
+            const perfil = isEdit ? usuario.perfil : 'operario';
+            const permisos = isEdit ? usuario.permisos.join(', ') : 'lectura';
+            mostrarModal(title, `
+                <label>Nombre</label>
+                <input id="modalUserNombre" value="${nombre}">
+                <label>Contraseña</label>
+                <input id="modalUserPass" type="password" placeholder="${isEdit ? 'Dejar en blanco para mantener' : 'Contraseña'}">
+                <label>Perfil</label>
+                <select id="modalUserPerfil">
+                    <option value="admin" ${perfil==='admin'?'selected':''}>Administrador</option>
+                    <option value="supervisor" ${perfil==='supervisor'?'selected':''}>Supervisor</option>
+                    <option value="operario" ${perfil==='operario'?'selected':''}>Operario</option>
+                </select>
+                <label>Permisos</label>
+                <input id="modalUserPermisos" value="${permisos}" placeholder="lectura, escritura, administracion">
+                <input type="hidden" id="modalUserId" value="${isEdit ? usuario.id : ''}">
+            `, () => {
+                const nombre = document.getElementById('modalUserNombre').value.trim();
+                const password = document.getElementById('modalUserPass').value.trim();
+                const perfil = document.getElementById('modalUserPerfil').value;
+                const permisosStr = document.getElementById('modalUserPermisos').value.trim();
+                const permisos = permisosStr.split(',').map(p => p.trim()).filter(Boolean);
+                if (!nombre) { alert('El nombre es obligatorio'); return false; }
+                let users = getUsers();
+                const userId = document.getElementById('modalUserId').value;
+                if (userId) {
+                    const idx = users.findIndex(u => u.id === parseInt(userId));
+                    if (idx !== -1) {
+                        const updated = { ...users[idx], nombre, perfil, permisos };
+                        if (password) updated.password = password;
+                        users[idx] = updated;
+                    }
+                } else {
+                    if (!password) { alert('Contraseña obligatoria.'); return false; }
+                    const newId = users.length ? Math.max(...users.map(u => u.id)) + 1 : 1;
+                    users.push({ id: newId, nombre, password, perfil, permisos });
+                }
+                setUsers(users);
+                renderAll();
+                cerrarModal();
+            });
         }
 
-        function subirImagenLayout(e) {
-            const file = e.target.files[0];
+        function editarUsuario(id) {
+            const users = getUsers();
+            const user = users.find(u => u.id === id);
+            if (user) mostrarModalUsuario(user);
+        }
+
+        function eliminarUsuario(id) {
+            if (!hasPermission('administracion')) { alert('No tienes permisos.'); return; }
+            if (!confirm('¿Eliminar usuario?')) return;
+            let users = getUsers();
+            users = users.filter(u => u.id !== id);
+            setUsers(users);
+            if (currentUserId === id) logout();
+            else renderAll();
+        }
+
+        function subirImagenLayout(event) {
+            const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(evt) {
-                document.getElementById('mapImage').src = evt.target.result;
-                alert('Plano actualizado con éxito.');
+            reader.onload = function(e) {
+                const config = getConfig();
+                config.mapImage = e.target.result;
+                setConfig(config);
+                renderMapa();
+                alert('Imagen del layout actualizada.');
             };
             reader.readAsDataURL(file);
         }
 
         function exportarDatos() {
-            const data = { products: getAllProducts(), movements: getAllMovements(), users: getUsers() };
+            const data = { products: getAllProducts(), movements: getAllMovements(), users: getUsers(), config: getConfig() };
             const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = 'wms_bodega_central_backup.json';
+            a.download = 'wms_backup.json';
             a.click();
         }
 
-        function cargarImport(e) {
-            const file = e.target.files[0];
+        function cargarImport(event) {
+            const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(evt) {
+            reader.onload = function(e) {
                 try {
-                    const data = JSON.parse(evt.target.result);
+                    const data = JSON.parse(e.target.result);
                     if (data.products) setProducts(data.products);
                     if (data.movements) setMovements(data.movements);
                     if (data.users) setUsers(data.users);
+                    if (data.config) setConfig(data.config);
                     alert('Datos importados correctamente.');
                     renderAll();
-                } catch(err) { alert('Error al importar archivo.'); }
+                } catch (err) { alert('Error al importar.'); }
             };
             reader.readAsText(file);
+            event.target.value = '';
         }
 
         function resetData() {
-            if (!confirm('¿Reiniciar todos los datos de fábrica?')) return;
-            localStorage.removeItem(STORAGE_PRODUCTS);
-            localStorage.removeItem(STORAGE_MOVEMENTS);
-            localStorage.removeItem(STORAGE_USERS);
+            if (!confirm('¿Reiniciar todos los datos?')) return;
+            localStorage.clear();
             initData();
             renderAll();
             alert('Sistema restablecido.');
         }
 
-        function abrirLectorGTINBusqueda() {
-            alert('Escáner GTIN por cámara activado.');
-        }
-
         let modalCallback = null;
-        function mostrarModal(title, bodyHTML, onSave, showBtn = false) {
+
+        function mostrarModal(title, bodyHTML, onSave, isView = false) {
             document.getElementById('modalTitle').textContent = title;
             document.getElementById('modalBody').innerHTML = bodyHTML;
             const actionBtn = document.getElementById('modalActionBtn');
-            if (showBtn) {
-                actionBtn.style.display = 'inline-block';
-                modalCallback = onSave;
-            } else {
+            if (isView || !onSave) {
                 actionBtn.style.display = 'none';
                 modalCallback = null;
+            } else {
+                actionBtn.style.display = 'inline-block';
+                modalCallback = onSave;
             }
             document.getElementById('modal').classList.add('active');
         }
 
-        function cerrarModal() { document.getElementById('modal').classList.remove('active'); modalCallback = null; }
-        function ejecutarModal() { if (modalCallback) modalCallback(); }
+        function cerrarModal() {
+            document.getElementById('modal').classList.remove('active');
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    html5QrCode.clear();
+                    html5QrCode = null;
+                }).catch(() => { html5QrCode = null; });
+            }
+            detenerLectorGTIN();
+            modalCallback = null;
+        }
 
-        initData();
+        function ejecutarModal() {
+            if (modalCallback) {
+                const res = modalCallback();
+                if (res === false) return;
+            }
+            cerrarModal();
+        }
 
         document.querySelectorAll('nav button').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -709,9 +1301,18 @@
                 this.classList.add('active');
                 const tabId = this.dataset.tab;
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-                document.getElementById(`tab-${tabId}`).classList.add('active');
-                if (tabId === 'mapa') limpiarIluminacionMapa();
+                const target = document.getElementById(`tab-${tabId}`);
+                if (target) target.classList.add('active');
+                if (tabId === 'mapa') renderMapa();
+                if (tabId === 'buscador') buscarUbicacion();
             });
+        });
+
+        initData();
+        if (checkSession()) renderAll();
+
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) cerrarModal();
         });
     </script>
 </body>
