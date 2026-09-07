@@ -183,6 +183,7 @@
         .modal-content input:focus, .modal-content select:focus, .modal-content textarea:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(79,70,229,0.15); }
         .modal-content .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
         .modal-content .form-grid .full-width { grid-column:1/-1; }
+        .modal-content .image-preview { max-width:100%; max-height:300px; border-radius:8px; border:1px solid #e2e8f0; margin-top:8px; object-fit:contain; }
 
         /* LAYOUT */
         .layout-container { width:100%; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; overflow:hidden; padding:16px; }
@@ -210,6 +211,11 @@
         .layout-legend .color-box { width:14px; height:14px; border-radius:3px; border:1px solid rgba(0,0,0,0.1); }
         .layout-legend .dot { width:8px; height:8px; border-radius:50%; background:#22c55e; display:inline-block; }
 
+        /* LAYOUT IMAGEN */
+        .layout-image-container { width:100%; margin-top:10px; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; overflow:hidden; padding:12px; text-align:center; min-height:100px; display:flex; align-items:center; justify-content:center; flex-direction:column; }
+        .layout-image-container img { max-width:100%; max-height:500px; border-radius:8px; object-fit:contain; }
+        .layout-image-container .no-image { color:#94a3b8; font-size:0.85rem; }
+
         /* TOAST */
         .toast-container { position:fixed; bottom:16px; right:16px; z-index:9999; display:flex; flex-direction:column; gap:6px; max-width:300px; width:100%; }
         .toast { background:#0f172a; color:var(--white); padding:10px 14px; border-radius:var(--radius); font-size:0.8rem; animation:slideIn 0.3s ease; box-shadow:0 4px 12px rgba(0,0,0,0.2); border-left:4px solid var(--primary); display:flex; align-items:center; gap:8px; }
@@ -234,6 +240,9 @@
         .qr-card { border:2px solid #e2e8f0; border-radius:8px; padding:8px; text-align:center; background:white; }
         .qr-card .qr-code { font-weight:700; font-size:0.8rem; margin-top:4px; }
         .qr-card .qr-ubicacion { font-size:0.6rem; color:#64748b; }
+
+        /* BODEGAS */
+        .bodega-color { display:inline-block; width:16px; height:16px; border-radius:4px; border:1px solid rgba(0,0,0,0.1); vertical-align:middle; margin-right:4px; }
 
         /* RESPONSIVE */
         @media (max-width:1024px) { .tab-content { padding:10px; } .card-grid { grid-template-columns:repeat(auto-fit, minmax(90px,1fr)); } .modal-content { max-width:95%; padding:16px; } .layout-grid { min-height:350px; } }
@@ -282,6 +291,7 @@
             .toast-container { bottom:8px; right:8px; left:8px; max-width:100%; }
             .toast { font-size:0.7rem; padding:8px 12px; }
             #loginModal .login-box { padding:16px; margin:10px; }
+            .layout-image-container img { max-height:250px; }
         }
         @media (max-width:480px) {
             body { padding:4px; }
@@ -313,6 +323,7 @@
             .layout-cell .cell-label { display:none; }
             .layout-legend { font-size:0.45rem; padding:4px 8px; gap:4px; }
             .layout-legend .color-box { width:8px; height:8px; }
+            .layout-image-container img { max-height:180px; }
         }
 
         ::-webkit-scrollbar { width:5px; height:5px; }
@@ -368,9 +379,6 @@
                 <span class="user-name" id="currentUserDisplay">👤 Admin</span>
                 <select id="warehouseSelect" onchange="cambiarBodega()">
                     <option value="TODAS">🏢 Todas</option>
-                    <option value="Farmacos">Bodega de Fármacos</option>
-                    <option value="Insumos">Bodega de Insumos Clínicos</option>
-                    <option value="Economato">Bodega de Economato</option>
                 </select>
                 <button class="btn btn-success" onclick="document.getElementById('fileInput').click()">
                     <span class="icon">📂</span> Cargar Archivo
@@ -379,7 +387,6 @@
                 <button class="btn btn-warning" onclick="exportarExcelCompleto()">
                     <span class="icon">📤</span> Exportar Archivo
                 </button>
-                <!-- QR Ubicaciones - reemplaza al antiguo Generar QR -->
                 <button class="btn btn-purple" onclick="generarQRUbicaciones()">
                     <span class="icon">📱</span> QR Ubicaciones
                 </button>
@@ -396,6 +403,7 @@
             <button data-tab="layout"><span class="nav-icon">🗺️</span> Layout</button>
             <button data-tab="movimientos"><span class="nav-icon">🔄</span> Movimientos</button>
             <button data-tab="usuarios"><span class="nav-icon">👥</span> Usuarios</button>
+            <button data-tab="bodegas"><span class="nav-icon">🏢</span> Bodegas</button>
             <button data-tab="config"><span class="nav-icon">⚙️</span> Config</button>
         </nav>
 
@@ -447,7 +455,6 @@
 
             <div id="bulkActions">
                 <span class="selected-count" id="selectedCount">0 seleccionados</span>
-                <!-- Eliminado el botón QR de selección masiva -->
                 <button class="btn btn-warning btn-sm" onclick="moverSeleccionados()"><span class="icon">🔄</span> Mover</button>
                 <button class="btn btn-danger btn-sm" onclick="eliminarSeleccionados()"><span class="icon">🗑️</span> Eliminar</button>
                 <button class="btn btn-outline btn-sm" onclick="deseleccionarTodos()"><span class="icon">✖️</span></button>
@@ -465,7 +472,6 @@
                             <th>Ubicación</th>
                             <th>Zona</th>
                             <th>Estado</th>
-                            <!-- Eliminada la columna QR -->
                             <th style="min-width:130px;">Acciones</th>
                         </tr>
                     </thead>
@@ -483,6 +489,13 @@
         <div id="tab-layout" class="tab-content">
             <h3 style="font-size:0.95rem; margin-bottom:8px;">🗺️ Plano de la bodega</h3>
             <p style="color:#64748b; margin-bottom:10px; font-size:0.8rem;">Visualiza la distribución de las zonas en tu bodega.</p>
+
+            <!-- Imagen del layout por bodega -->
+            <div class="layout-image-container" id="layoutImageContainer">
+                <div id="layoutImageContent">
+                    <span class="no-image">📷 No hay imagen cargada para esta bodega</span>
+                </div>
+            </div>
 
             <div class="layout-container">
                 <div class="layout-grid" id="layoutGrid"></div>
@@ -539,14 +552,33 @@
             </div>
         </div>
 
+        <!-- BODEGAS - NUEVA PESTAÑA -->
+        <div id="tab-bodegas" class="tab-content">
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
+                <button class="btn btn-primary" onclick="mostrarModalBodega()"><span class="icon">➕</span> Nueva Bodega</button>
+                <button class="btn btn-outline" onclick="renderBodegas()"><span class="icon">🔄</span> Actualizar</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>ID</th><th>Nombre</th><th>Descripción</th><th>Zonas</th><th>Color</th><th>Acciones</th></tr></thead>
+                    <tbody id="bodegasBody"></tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- CONFIG -->
         <div id="tab-config" class="tab-content">
             <h3>⚙️ Configuración</h3>
             <div style="max-width:600px;">
                 <div style="margin-bottom:10px;">
-                    <label style="font-weight:600; font-size:0.8rem; display:block; margin-bottom:4px;"><strong>📐 Sube tu imagen del layout</strong></label>
+                    <label style="font-weight:600; font-size:0.8rem; display:block; margin-bottom:4px;">
+                        <strong>📐 Sube la imagen del layout para la bodega seleccionada</strong>
+                    </label>
+                    <p style="font-size:0.7rem; color:#64748b; margin-bottom:6px;">
+                        Bodega actual: <strong id="configBodegaNombre">Todas</strong>
+                    </p>
                     <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="width:100%; padding:6px; border:2px solid #d1d5db; border-radius:var(--radius-sm);">
-                    <p style="font-size:0.65rem; color:#64748b; margin-top:3px;">Reemplaza la imagen de referencia por tu plano real de la bodega.</p>
+                    <p style="font-size:0.65rem; color:#64748b; margin-top:3px;">Sube una imagen del plano real para la bodega seleccionada.</p>
                 </div>
                 <div style="display:flex; gap:6px; flex-wrap:wrap;">
                     <button class="btn btn-primary" onclick="resetData()"><span class="icon">🔄</span> Reiniciar</button>
@@ -574,14 +606,14 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- ============================================================ -->
-    <!-- SCRIPT PRINCIPAL CON INDEXEDDB Y BROADCAST + POLLING -->
+    <!-- SCRIPT PRINCIPAL -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
         //  CONFIGURACIÓN INDEXEDDB
         // ============================================================
         const DB_NAME = 'WMS_DB';
-        const DB_VERSION = 2;
+        const DB_VERSION = 3;
 
         let db = null;
 
@@ -610,6 +642,14 @@
                     if (!db.objectStoreNames.contains('config')) {
                         db.createObjectStore('config', { keyPath: 'key' });
                     }
+                    // NUEVO: Store para bodegas
+                    if (!db.objectStoreNames.contains('warehouses')) {
+                        db.createObjectStore('warehouses', { keyPath: 'id' });
+                    }
+                    // NUEVO: Store para imágenes de layout por bodega
+                    if (!db.objectStoreNames.contains('layout_images')) {
+                        db.createObjectStore('layout_images', { keyPath: 'bodegaId' });
+                    }
                 };
                 request.onsuccess = function(event) {
                     db = event.target.result;
@@ -627,6 +667,17 @@
                 const tx = db.transaction(storeName, 'readonly');
                 const store = tx.objectStore(storeName);
                 const request = store.getAll();
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        function dbGet(storeName, key) {
+            return new Promise((resolve, reject) => {
+                if (!db) return reject(new Error('Base de datos no abierta'));
+                const tx = db.transaction(storeName, 'readonly');
+                const store = tx.objectStore(storeName);
+                const request = store.get(key);
                 request.onsuccess = () => resolve(request.result);
                 request.onerror = () => reject(request.error);
             });
@@ -698,8 +749,15 @@
         const STORAGE_KEY_ACTIVE_USERS = 'wms_active_users';
         const STORAGE_KEY_MODIFIED = 'wms_data_modified';
 
+        // Bodegas por defecto
+        const DEFAULT_WAREHOUSES = [
+            { id: 'Farmacos', nombre: 'Bodega de Fármacos', descripcion: 'Medicamentos y fármacos', zonas: ['A','B','C','D','E','F','G','H','I','J'], color: '#2563eb' },
+            { id: 'Insumos', nombre: 'Bodega de Insumos Clínicos', descripcion: 'Insumos médicos y clínicos', zonas: ['A','B','C','D','E','F','G','H','I','J'], color: '#059669' },
+            { id: 'Economato', nombre: 'Bodega de Economato', descripcion: 'Materiales y suministros generales', zonas: ['A','B','C','D','E','F','G','H','I','J'], color: '#d97706' }
+        ];
+
         // ============================================================
-        //  INICIALIZACIÓN (async)
+        //  INICIALIZACIÓN
         // ============================================================
         async function initData() {
             await abrirDB();
@@ -714,6 +772,12 @@
 
             if (!localStorage.getItem(STORAGE_KEY_CONFIG)) {
                 localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify({ mapImage: '' }));
+            }
+
+            // Inicializar bodegas si no existen
+            const warehouses = await dbGetAll('warehouses');
+            if (warehouses.length === 0) {
+                await dbPutAll('warehouses', DEFAULT_WAREHOUSES);
             }
 
             const products = await dbGetAll('products');
@@ -750,10 +814,13 @@
                     perfil: 'sistema'
                 });
             }
+
+            // Actualizar select de bodegas
+            await actualizarSelectBodegas();
         }
 
         // ============================================================
-        //  FUNCIONES DE ACCESO A DATOS (async)
+        //  FUNCIONES DE ACCESO A DATOS
         // ============================================================
         async function getAllProducts() { return await dbGetAll('products'); }
         async function setProducts(data) {
@@ -790,6 +857,36 @@
             marcarDatosModificados();
         }
 
+        async function getAllWarehouses() { return await dbGetAll('warehouses'); }
+        async function getWarehouse(id) { return await dbGet('warehouses', id); }
+        async function setWarehouses(data) {
+            await dbClear('warehouses');
+            if (data && data.length > 0) await dbPutAll('warehouses', data);
+            marcarDatosModificados();
+            await actualizarSelectBodegas();
+        }
+        async function addWarehouse(wh) {
+            await dbPut('warehouses', wh);
+            marcarDatosModificados();
+            await actualizarSelectBodegas();
+        }
+        async function deleteWarehouse(id) {
+            await dbDelete('warehouses', id);
+            // También eliminar la imagen asociada
+            await dbDelete('layout_images', id);
+            marcarDatosModificados();
+            await actualizarSelectBodegas();
+        }
+
+        async function getLayoutImage(bodegaId) {
+            const result = await dbGet('layout_images', bodegaId);
+            return result ? result.imageData : null;
+        }
+        async function setLayoutImage(bodegaId, imageData) {
+            await dbPut('layout_images', { bodegaId, imageData });
+            marcarDatosModificados();
+        }
+
         function getUsers() { return JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]'); }
         function setUsers(u) {
             localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(u));
@@ -809,6 +906,30 @@
         }
 
         // ============================================================
+        //  SELECT DE BODEGAS
+        // ============================================================
+        async function actualizarSelectBodegas() {
+            const select = document.getElementById('warehouseSelect');
+            const warehouses = await getAllWarehouses();
+            const currentValue = select.value;
+
+            select.innerHTML = '<option value="TODAS">🏢 Todas</option>';
+            warehouses.forEach(wh => {
+                const opt = document.createElement('option');
+                opt.value = wh.id;
+                opt.textContent = '🏢 ' + wh.nombre;
+                if (wh.id === currentValue) opt.selected = true;
+                select.appendChild(opt);
+            });
+
+            // Si la bodega actual ya no existe, resetear a TODAS
+            if (currentValue !== 'TODAS' && !warehouses.find(w => w.id === currentValue)) {
+                select.value = 'TODAS';
+                currentWarehouse = 'TODAS';
+            }
+        }
+
+        // ============================================================
         //  BROADCAST CHANNEL + POLLING
         // ============================================================
         function initBroadcastChannel() {
@@ -816,10 +937,14 @@
                 broadcastChannel = new BroadcastChannel('wms_channel');
                 broadcastChannel.onmessage = function(event) {
                     const data = event.data;
-                    if (data.type === 'CAMBIOS' || data.type === 'USUARIO') {
+                    if (data.type === 'CAMBIOS' || data.type === 'USUARIO' || data.type === 'BODEGA') {
                         if (data.type === 'USUARIO') {
                             renderUsuarios();
                             mostrarToast('👥 ' + (data.usuario || 'Alguien') + ' actualizó usuarios', 'info');
+                        } else if (data.type === 'BODEGA') {
+                            renderBodegas();
+                            actualizarSelectBodegas();
+                            mostrarToast('🏢 ' + (data.usuario || 'Alguien') + ' actualizó bodegas', 'info');
                         } else {
                             renderAll();
                             mostrarToast('🔄 ' + (data.usuario || 'Alguien') + ' realizó cambios', 'warning');
@@ -839,15 +964,26 @@
         function iniciarPolling() {
             if (pollingInterval) return;
             let lastUserHash = '';
+            let lastWarehouseHash = '';
             let lastModified = localStorage.getItem(STORAGE_KEY_MODIFIED);
 
             pollingInterval = setInterval(() => {
                 const users = getUsers();
-                const currentHash = JSON.stringify(users);
-                if (currentHash !== lastUserHash) {
-                    lastUserHash = currentHash;
+                const currentUserHash = JSON.stringify(users);
+                if (currentUserHash !== lastUserHash) {
+                    lastUserHash = currentUserHash;
                     renderUsuarios();
                 }
+
+                // Verificar cambios en bodegas
+                getAllWarehouses().then(warehouses => {
+                    const currentWhHash = JSON.stringify(warehouses);
+                    if (currentWhHash !== lastWarehouseHash) {
+                        lastWarehouseHash = currentWhHash;
+                        renderBodegas();
+                        actualizarSelectBodegas();
+                    }
+                });
 
                 const modified = localStorage.getItem(STORAGE_KEY_MODIFIED);
                 if (modified === 'true') {
@@ -1026,11 +1162,19 @@
 
             await renderDashboard();
             await renderInventarioUnificado();
-            renderLayoutVisual();
+            await renderLayoutVisualWithProducts(await getProducts());
             await renderHistorialCompleto();
             renderUsuarios();
+            renderBodegas();
             renderConfig();
             actualizarUsuariosConectados();
+
+            // Cargar imagen del layout para la bodega actual
+            cargarImagenLayout(currentWarehouse);
+
+            // Actualizar nombre de bodega en config
+            const wh = await getWarehouse(currentWarehouse);
+            document.getElementById('configBodegaNombre').textContent = wh ? wh.nombre : 'Todas';
 
             const products = await getProducts();
             document.getElementById('inventoryBadge').textContent = products.length;
@@ -1063,7 +1207,7 @@
         }
 
         // ============================================================
-        //  CARGA DE EXCEL CON INDEXEDDB
+        //  CARGA DE EXCEL
         // ============================================================
         function cargarExcel(event) {
             const file = event.target.files[0];
@@ -1214,12 +1358,10 @@
         }
 
         // ============================================================
-        //  LAYOUT VISUAL
+        //  LAYOUT VISUAL Y CARGA DE IMAGEN
         // ============================================================
         function renderLayoutVisual() {
-            const grid = document.getElementById('layoutGrid');
-            if (!grid) return;
-            // Se actualiza en renderAll con los productos obtenidos
+            // Se renderiza con los productos en renderLayoutVisualWithProducts
         }
 
         async function renderLayoutVisualWithProducts(products) {
@@ -1293,26 +1435,62 @@
             });
         }
 
+        // Cargar imagen del layout para una bodega específica
+        async function cargarImagenLayout(bodegaId) {
+            const container = document.getElementById('layoutImageContent');
+            if (!container) return;
+
+            if (bodegaId === 'TODAS') {
+                container.innerHTML = '<span class="no-image">📷 Mostrando vista general - selecciona una bodega para ver su plano</span>';
+                return;
+            }
+
+            const imageData = await getLayoutImage(bodegaId);
+            if (imageData) {
+                container.innerHTML = `<img src="${imageData}" alt="Layout de ${bodegaId}" style="max-width:100%; max-height:500px; border-radius:8px; object-fit:contain;">`;
+            } else {
+                const wh = await getWarehouse(bodegaId);
+                container.innerHTML = `<span class="no-image">📷 No hay imagen cargada para ${wh ? wh.nombre : bodegaId}<br><small style="color:#94a3b8;">Sube una imagen desde la pestaña Configuración</small></span>`;
+            }
+        }
+
+        // Subir imagen del layout desde configuración
+        function subirImagenLayout(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Usar la bodega actual seleccionada
+            const bodegaId = currentWarehouse;
+            if (bodegaId === 'TODAS') {
+                mostrarToast('⚠️ Selecciona una bodega específica para subir su imagen', 'warning');
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    await setLayoutImage(bodegaId, e.target.result);
+                    await cargarImagenLayout(bodegaId);
+                    mostrarToast('✅ Imagen del layout subida para ' + bodegaId, 'success');
+                    registrarHistorial('EDITAR', 'LAYOUT_' + bodegaId, 'Imagen del layout actualizada para ' + bodegaId);
+                } catch (error) {
+                    mostrarToast('❌ Error al guardar la imagen: ' + error.message, 'error');
+                }
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        }
+
         // ============================================================
         //  CONFIG
         // ============================================================
         function renderConfig() {
-            const config = getConfig();
-            // no-op
-        }
-
-        function subirImagenLayout(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const config = getConfig();
-                config.mapImage = e.target.result;
-                setConfig(config);
-                mostrarToast('✅ Imagen del layout actualizada', 'success');
-                registrarHistorial('EDITAR', 'LAYOUT', 'Imagen del layout actualizada');
-            };
-            reader.readAsDataURL(file);
+            // Actualizar nombre de bodega
+            getAllWarehouses().then(warehouses => {
+                const wh = warehouses.find(w => w.id === currentWarehouse);
+                document.getElementById('configBodegaNombre').textContent = wh ? wh.nombre : 'Todas';
+            });
         }
 
         // ============================================================
@@ -1341,9 +1519,7 @@
                     <div>
                         <label>Bodega</label>
                         <select id="almacenarBodega">
-                            <option value="Farmacos">💊 Fármacos</option>
-                            <option value="Insumos">🧪 Insumos</option>
-                            <option value="Economato">📦 Economato</option>
+                            ${DEFAULT_WAREHOUSES.map(w => `<option value="${w.id}">${w.nombre}</option>`).join('')}
                         </select>
                     </div>
                     <div>
@@ -1484,7 +1660,6 @@
                         (decodedText) => {
                             status.textContent = '✅ Ubicación detectada: ' + decodedText;
                             document.getElementById('almacenarUbicacion').value = decodedText;
-                            // Auto-detectar zona
                             const match = decodedText.match(/([A-J])(?:_|\s|$)/);
                             if (match && ['A','B','C','D','E','F','G','H','I','J'].includes(match[1])) {
                                 const zonaSelect = document.getElementById('almacenarZona');
@@ -1519,7 +1694,7 @@
         }
 
         // ============================================================
-        //  INVENTARIO UNIFICADO (async) - SIN COLUMNA QR
+        //  INVENTARIO UNIFICADO
         // ============================================================
         async function renderInventarioUnificado() {
             const search = document.getElementById('searchInventarioUnificado')?.value?.toLowerCase() || '';
@@ -1593,9 +1768,9 @@
                     <td>
                         ${showInlineEdit ?
                             `<select class="edit-field-select" data-field="bodega" data-codigo="${p.codigo}" onchange="guardarCambioInline('${p.codigo}', 'bodega', this.value)">
-                                <option value="Farmacos" ${p.bodega === 'Farmacos' ? 'selected' : ''}>💊 Fármacos</option>
-                                <option value="Insumos" ${p.bodega === 'Insumos' ? 'selected' : ''}>🧪 Insumos</option>
-                                <option value="Economato" ${p.bodega === 'Economato' ? 'selected' : ''}>📦 Economato</option>
+                                ${(await getAllWarehouses()).map(w =>
+                                    `<option value="${w.id}" ${p.bodega === w.id ? 'selected' : ''}>${w.nombre}</option>`
+                                ).join('')}
                             </select>` :
                             `<span class="badge-bodega ${bodegaClass}">${p.bodega}</span>`
                         }
@@ -1716,6 +1891,7 @@
 
             const ubicacion = p.ubicaciones[0]?.ubicacion || '';
             const zona = p.ubicaciones[0]?.zona || '';
+            const warehouses = await getAllWarehouses();
 
             mostrarModal('✏️ Editar Producto', `
                 <div class="form-grid">
@@ -1730,9 +1906,9 @@
                     <div>
                         <label>Bodega</label>
                         <select id="editBodega">
-                            <option value="Farmacos" ${p.bodega === 'Farmacos' ? 'selected' : ''}>Bodega de Fármacos</option>
-                            <option value="Insumos" ${p.bodega === 'Insumos' ? 'selected' : ''}>Bodega de Insumos Clínicos</option>
-                            <option value="Economato" ${p.bodega === 'Economato' ? 'selected' : ''}>Bodega de Economato</option>
+                            ${warehouses.map(w =>
+                                `<option value="${w.id}" ${p.bodega === w.id ? 'selected' : ''}>${w.nombre}</option>`
+                            ).join('')}
                         </select>
                     </div>
                     <div class="full-width">
@@ -1835,7 +2011,6 @@
                         (decodedText) => {
                             status.textContent = '✅ Ubicación detectada: ' + decodedText;
                             document.getElementById('editUbicacion').value = decodedText;
-                            // Auto-detectar zona
                             const match = decodedText.match(/([A-J])(?:_|\s|$)/);
                             if (match && ['A','B','C','D','E','F','G','H','I','J'].includes(match[1])) {
                                 const zonaSelect = document.getElementById('editZona');
@@ -1870,7 +2045,7 @@
         }
 
         // ============================================================
-        //  MOVER PRODUCTO - CON ESCÁNER QR Y AUTO-DETECCIÓN DE ZONA
+        //  MOVER PRODUCTO
         // ============================================================
         async function moverProductoModal(codigo) {
             if (!hasPermission('escritura')) return alert('No tienes permisos');
@@ -1955,7 +2130,7 @@
         }
 
         // ============================================================
-        //  ESCÁNER PARA MOVER (con auto-detección de zona)
+        //  ESCÁNER PARA MOVER
         // ============================================================
         let scannerMover = null;
 
@@ -1981,7 +2156,6 @@
                         (decodedText) => {
                             status.textContent = '✅ Ubicación detectada: ' + decodedText;
                             document.getElementById('moverNuevaUbic').value = decodedText;
-                            // Auto-detectar zona
                             const match = decodedText.match(/([A-J])(?:_|\s|$)/);
                             if (match && ['A','B','C','D','E','F','G','H','I','J'].includes(match[1])) {
                                 const zonaSelect = document.getElementById('moverNuevaZona');
@@ -2127,7 +2301,6 @@
             document.getElementById('modalActionBtn').textContent = 'Mover todos';
         }
 
-        // Escáner para movimiento masivo
         let scannerMasivo = null;
 
         function escanearUbicacionMasivo() {
@@ -2229,7 +2402,7 @@
         }
 
         // ============================================================
-        //  QR - SOLO PARA UBICACIONES (eliminadas las funciones de QR por producto)
+        //  QR - SOLO PARA UBICACIONES
         // ============================================================
         function generarQRCanvas(canvasId, data, size = 120) {
             const canvas = document.getElementById(canvasId);
@@ -2276,7 +2449,6 @@
             });
         }
 
-        // NUEVA FUNCIÓN: QR solo para ubicaciones
         async function generarQRUbicaciones() {
             const products = await getAllProducts();
             const ubicacionesMap = new Map();
@@ -2329,7 +2501,7 @@
         }
 
         // ============================================================
-        //  USUARIOS (CON BROADCAST Y SINCRONIZACIÓN)
+        //  USUARIOS
         // ============================================================
         function renderUsuarios() {
             const users = getUsers();
@@ -2503,6 +2675,193 @@
         }
 
         // ============================================================
+        //  BODEGAS - ADMINISTRADOR DE BODEGAS
+        // ============================================================
+        async function renderBodegas() {
+            const warehouses = await getAllWarehouses();
+            const tbody = document.getElementById('bodegasBody');
+
+            if (warehouses.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No hay bodegas registradas</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = warehouses.map(w => `
+                <tr>
+                    <td><strong>${w.id}</strong></td>
+                    <td>${w.nombre}</td>
+                    <td style="font-size:0.75rem; color:#64748b;">${w.descripcion || '-'}</td>
+                    <td>${(w.zonas || ['A','B','C','D','E','F','G','H','I','J']).map(z =>
+                        `<span class="zone-tag zone-tag-${z}">${z}</span>`
+                    ).join(' ')}</td>
+                    <td><span class="bodega-color" style="background:${w.color || '#64748b'};"></span> ${w.color || '#64748b'}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="editarBodega('${w.id}')" ${hasPermission('administracion') ? '' : 'disabled'}>
+                            <span class="icon">✏️</span>
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarBodega('${w.id}')" ${hasPermission('administracion') ? '' : 'disabled'}>
+                            <span class="icon">🗑️</span>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function mostrarModalBodega() {
+            if (!hasPermission('administracion')) return alert('No tienes permisos');
+
+            mostrarModal('🏢 Nueva Bodega', `
+                <div class="form-grid">
+                    <div class="full-width">
+                        <label>ID (identificador único)</label>
+                        <input id="bodegaId" placeholder="Ej: Farmacos, Insumos, Economato">
+                    </div>
+                    <div class="full-width">
+                        <label>Nombre</label>
+                        <input id="bodegaNombre" placeholder="Ej: Bodega de Fármacos">
+                    </div>
+                    <div class="full-width">
+                        <label>Descripción</label>
+                        <input id="bodegaDescripcion" placeholder="Descripción de la bodega">
+                    </div>
+                    <div class="full-width">
+                        <label>Zonas disponibles</label>
+                        <select id="bodegaZonas" multiple style="height:80px;">
+                            ${['A','B','C','D','E','F','G','H','I','J'].map(z =>
+                                `<option value="${z}" selected>Zona ${z}</option>`
+                            ).join('')}
+                        </select>
+                        <small style="color:#64748b; font-size:0.6rem;">Mantén presionado Ctrl/Cmd para seleccionar múltiples zonas</small>
+                    </div>
+                    <div class="full-width">
+                        <label>Color representativo</label>
+                        <input id="bodegaColor" type="color" value="#2563eb" style="height:40px; padding:4px;">
+                    </div>
+                </div>
+            `, true);
+
+            modalCallback = async () => {
+                const id = document.getElementById('bodegaId').value.trim();
+                const nombre = document.getElementById('bodegaNombre').value.trim();
+                const descripcion = document.getElementById('bodegaDescripcion').value.trim();
+                const zonasSelect = document.getElementById('bodegaZonas');
+                const zonas = Array.from(zonasSelect.selectedOptions).map(opt => opt.value);
+                const color = document.getElementById('bodegaColor').value;
+
+                if (!id) return alert('El ID es requerido');
+                if (!nombre) return alert('El nombre es requerido');
+                if (zonas.length === 0) return alert('Selecciona al menos una zona');
+
+                // Verificar que el ID no exista
+                const existing = await getWarehouse(id);
+                if (existing) return alert('Ya existe una bodega con ese ID');
+
+                const newWarehouse = { id, nombre, descripcion, zonas, color };
+                await addWarehouse(newWarehouse);
+                broadcastCambios('BODEGA', 'Bodega creada: ' + nombre);
+                registrarHistorial('AGREGAR', 'BODEGA_' + id, 'Bodega creada: ' + nombre);
+                mostrarToast('✅ Bodega ' + nombre + ' creada', 'success');
+                renderAll();
+                cerrarModal();
+            };
+            document.getElementById('modalActionBtn').textContent = 'Crear Bodega';
+        }
+
+        async function editarBodega(id) {
+            if (!hasPermission('administracion')) return alert('No tienes permisos');
+
+            const wh = await getWarehouse(id);
+            if (!wh) return alert('Bodega no encontrada');
+
+            mostrarModal('✏️ Editar Bodega', `
+                <div class="form-grid">
+                    <div class="full-width">
+                        <label>ID</label>
+                        <input id="editBodegaId" value="${wh.id}" readonly style="background:#f1f5f9;">
+                    </div>
+                    <div class="full-width">
+                        <label>Nombre</label>
+                        <input id="editBodegaNombre" value="${wh.nombre}">
+                    </div>
+                    <div class="full-width">
+                        <label>Descripción</label>
+                        <input id="editBodegaDescripcion" value="${wh.descripcion || ''}">
+                    </div>
+                    <div class="full-width">
+                        <label>Zonas disponibles</label>
+                        <select id="editBodegaZonas" multiple style="height:80px;">
+                            ${['A','B','C','D','E','F','G','H','I','J'].map(z =>
+                                `<option value="${z}" ${(wh.zonas || []).includes(z) ? 'selected' : ''}>Zona ${z}</option>`
+                            ).join('')}
+                        </select>
+                        <small style="color:#64748b; font-size:0.6rem;">Mantén presionado Ctrl/Cmd para seleccionar múltiples zonas</small>
+                    </div>
+                    <div class="full-width">
+                        <label>Color representativo</label>
+                        <input id="editBodegaColor" type="color" value="${wh.color || '#2563eb'}" style="height:40px; padding:4px;">
+                    </div>
+                </div>
+            `, true);
+
+            modalCallback = async () => {
+                const nombre = document.getElementById('editBodegaNombre').value.trim();
+                const descripcion = document.getElementById('editBodegaDescripcion').value.trim();
+                const zonasSelect = document.getElementById('editBodegaZonas');
+                const zonas = Array.from(zonasSelect.selectedOptions).map(opt => opt.value);
+                const color = document.getElementById('editBodegaColor').value;
+
+                if (!nombre) return alert('El nombre es requerido');
+                if (zonas.length === 0) return alert('Selecciona al menos una zona');
+
+                const warehouses = await getAllWarehouses();
+                const index = warehouses.findIndex(w => w.id === id);
+                if (index === -1) return alert('Bodega no encontrada');
+
+                const oldNombre = warehouses[index].nombre;
+                warehouses[index].nombre = nombre;
+                warehouses[index].descripcion = descripcion;
+                warehouses[index].zonas = zonas;
+                warehouses[index].color = color;
+
+                await setWarehouses(warehouses);
+                broadcastCambios('BODEGA', 'Bodega editada: ' + nombre);
+                registrarHistorial('EDITAR', 'BODEGA_' + id, 'Bodega editada: ' + oldNombre + ' → ' + nombre);
+                mostrarToast('✏️ Bodega ' + nombre + ' actualizada', 'warning');
+                renderAll();
+                cerrarModal();
+            };
+            document.getElementById('modalActionBtn').textContent = 'Actualizar';
+        }
+
+        async function eliminarBodega(id) {
+            if (!hasPermission('administracion')) return alert('No tienes permisos');
+
+            const wh = await getWarehouse(id);
+            if (!wh) return alert('Bodega no encontrada');
+
+            // Verificar si hay productos en esta bodega
+            const products = await getAllProducts();
+            const tieneProductos = products.some(p => p.bodega === id);
+            if (tieneProductos) {
+                return alert('⚠️ No se puede eliminar la bodega "' + wh.nombre + '" porque tiene productos asociados. Reasigna los productos primero.');
+            }
+
+            if (!confirm('¿Estás seguro de eliminar la bodega "' + wh.nombre + '"?')) return;
+
+            await deleteWarehouse(id);
+            broadcastCambios('BODEGA', 'Bodega eliminada: ' + wh.nombre);
+            registrarHistorial('ELIMINAR', 'BODEGA_' + id, 'Bodega eliminada: ' + wh.nombre);
+            mostrarToast('🗑️ Bodega ' + wh.nombre + ' eliminada', 'error');
+
+            // Si la bodega actual era la eliminada, cambiar a TODAS
+            if (currentWarehouse === id) {
+                currentWarehouse = 'TODAS';
+                document.getElementById('warehouseSelect').value = 'TODAS';
+            }
+            renderAll();
+        }
+
+        // ============================================================
         //  HISTORIAL
         // ============================================================
         async function renderHistorialCompleto() {
@@ -2591,10 +2950,12 @@
             const products = await getAllProducts();
             const movements = await getAllMovements();
             const historial = await getAllHistorial();
+            const warehouses = await getAllWarehouses();
             const data = {
                 products: products,
                 movements: movements,
                 historial: historial,
+                warehouses: warehouses,
                 users: getUsers(),
                 config: getConfig(),
                 exportDate: new Date().toISOString()
@@ -2619,6 +2980,7 @@
                     if (data.products) await setProducts(data.products);
                     if (data.movements) await setMovements(data.movements);
                     if (data.historial) await setHistorial(data.historial);
+                    if (data.warehouses) await setWarehouses(data.warehouses);
                     if (data.users) setUsers(data.users);
                     if (data.config) setConfig(data.config);
                     renderAll();
@@ -2639,8 +3001,11 @@
             await setProducts([]);
             await setMovements([]);
             await setHistorial([]);
+            await setWarehouses(DEFAULT_WAREHOUSES);
             localStorage.removeItem(STORAGE_KEY_USERS);
             localStorage.removeItem(STORAGE_KEY_CONFIG);
+            // Limpiar imágenes de layout
+            await dbClear('layout_images');
             initData();
             renderAll();
             await registrarHistorial('ELIMINAR', 'RESET', 'Todos los datos reiniciados');
@@ -2688,9 +3053,13 @@
                         this.classList.add('active');
 
                         if (tabId === 'inventario') renderInventarioUnificado();
-                        if (tabId === 'layout') renderLayoutVisual();
+                        if (tabId === 'layout') {
+                            renderLayoutVisual();
+                            cargarImagenLayout(currentWarehouse);
+                        }
                         if (tabId === 'movimientos') renderHistorialCompleto();
                         if (tabId === 'usuarios') renderUsuarios();
+                        if (tabId === 'bodegas') renderBodegas();
                         if (tabId === 'config') renderConfig();
                     });
                 });
