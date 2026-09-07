@@ -410,7 +410,7 @@
             </div>
         </div>
 
-        <!-- INVENTARIO (SIN IMPORTAR) -->
+        <!-- INVENTARIO -->
         <div id="tab-inventario" class="tab-content">
             <div class="toolbar">
                 <div class="toolbar-left">
@@ -579,20 +579,22 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- ============================================================ -->
-    <!-- SCRIPT -->
+    <!-- SCRIPT CON INDEXEDDB -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
         // CONSTANTES Y VARIABLES
         // ============================================================
-        const STORAGE_KEY_PRODUCTS = 'wms_products_v17';
-        const STORAGE_KEY_MOVEMENTS = 'wms_movements_v17';
-        const STORAGE_KEY_HISTORIAL = 'wms_historial_v6';
+        const DB_NAME = 'WMSDatabase';
+        const DB_VERSION = 1;
+        const STORE_PRODUCTS = 'products';
+        const STORE_MOVEMENTS = 'movements';
+        const STORE_HISTORIAL = 'historial';
+        const STORE_EXCEL = 'excelData';
+
         const STORAGE_KEY_USERS = 'wms_users';
         const STORAGE_KEY_CONFIG = 'wms_config';
         const STORAGE_KEY_SESSION = 'wms_session_user';
-        const STORAGE_KEY_MANTENEDOR = 'wms_mantenedor_v8';
-        const STORAGE_KEY_EXCEL_DATA = 'wms_excel_data';
         const STORAGE_KEY_ACTIVE_USERS = 'wms_active_users';
 
         let currentWarehouse = 'TODAS';
@@ -602,81 +604,345 @@
         let editingRows = new Set();
         let modalCallback = null;
         let broadcastChannel = null;
+        let db = null;
 
         // ============================================================
-        // INICIALIZACIÓN
+        // INDEXEDDB
         // ============================================================
-        function initData() {
-            if (!localStorage.getItem(STORAGE_KEY_USERS)) {
-                localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify([
-                    { id: 1, nombre: 'Admin', perfil: 'admin', password: 'admin', permisos: ['lectura','escritura','administracion'], ultimaActividad: new Date().toISOString() },
-                    { id: 2, nombre: 'Supervisor', perfil: 'supervisor', password: '1234', permisos: ['lectura','escritura'], ultimaActividad: new Date().toISOString() },
-                    { id: 3, nombre: 'Operario', perfil: 'operario', password: '1234', permisos: ['lectura'], ultimaActividad: new Date().toISOString() }
-                ]));
+        function openDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onupgradeneeded = function(event) {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains(STORE_PRODUCTS)) {
+                        db.createObjectStore(STORE_PRODUCTS, { keyPath: 'id', autoIncrement: true });
+                    }
+                    if (!db.objectStoreNames.contains(STORE_MOVEMENTS)) {
+                        db.createObjectStore(STORE_MOVEMENTS, { keyPath: 'id', autoIncrement: true });
+                    }
+                    if (!db.objectStoreNames.contains(STORE_HISTORIAL)) {
+                        db.createObjectStore(STORE_HISTORIAL, { keyPath: 'id', autoIncrement: true });
+                    }
+                    if (!db.objectStoreNames.contains(STORE_EXCEL)) {
+                        db.createObjectStore(STORE_EXCEL, { keyPath: 'id', autoIncrement: true });
+                    }
+                };
+                request.onsuccess = function(event) {
+                    db = event.target.result;
+                    resolve(db);
+                };
+                request.onerror = function(event) {
+                    reject(event.target.error);
+                };
+            });
+        }
+
+        function dbGetAll(storeName) {
+            return new Promise((resolve, reject) => {
+                if (!db) return reject('DB not open');
+                const tx = db.transaction(storeName, 'readonly');
+                const store = tx.objectStore(storeName);
+                const request = store.getAll();
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        function dbPut(storeName, data) {
+            return new Promise((resolve, reject) => {
+                if (!db) return reject('DB not open');
+                const tx = db.transaction(storeName, 'readwrite');
+                const store = tx.objectStore(storeName);
+                const request = store.put(data);
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        function dbPutAll(storeName, dataArray) {
+            return new Promise((resolve, reject) => {
+                if (!db) return reject('DB not open');
+                const tx = db.transaction(storeName, 'readwrite');
+                const store = tx.objectStore(storeName);
+                let count = 0;
+                dataArray.forEach(item => {
+                    const request = store.put(item);
+                    request.onsuccess = () => { count++; if (count === dataArray.length) resolve(count); };
+                    request.onerror = () => reject(request.error);
+                });
+                if (dataArray.length === 0) resolve(0);
+            });
+        }
+
+        function dbClear(storeName) {
+            return new Promise((resolve, reject) => {
+                if (!db) return reject('DB not open');
+                const tx = db.transaction(storeName, 'readwrite');
+                const store = tx.objectStore(storeName);
+                const request = store.clear();
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        function dbDelete(storeName, id) {
+            return new Promise((resolve, reject) => {
+                if (!db) return reject('DB not open');
+                const tx = db.transaction(storeName, 'readwrite');
+                const store = tx.objectStore(storeName);
+                const request = store.delete(id);
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        // ============================================================
+        // FUNCIONES DE ACCESO A DATOS CON INDEXEDDB
+        // ============================================================
+        async function getAllProducts() {
+            try {
+                const data = await dbGetAll(STORE_PRODUCTS);
+                return data;
+            } catch (e) {
+                console.error('Error getting products:', e);
+                return [];
             }
-            if (!localStorage.getItem(STORAGE_KEY_PRODUCTS)) {
-                localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify([
-                    { codigo: '01-001-216-026', gtin: '7801234567890', glosa: 'METRONIDAZOL 500 MG/100 ML', bodega: 'Farmacos', ubicaciones: [{ tipo: 'master', ubicacion: 'PALLET_A_1', zona: 'A' }], estado: 'almacenado' },
-                    { codigo: '01-001-212-024', gtin: '7801234567999', glosa: 'FENTANILO 0,5 MG/10 ML', bodega: 'Farmacos', ubicaciones: [{ tipo: 'master', ubicacion: 'PALLET_C_2', zona: 'C' }], estado: 'almacenado' },
-                    { codigo: '01-001-213-076', gtin: '7801234567894', glosa: 'DEXAMETASONA 4 MG/ML SOL INY', bodega: 'Farmacos', ubicaciones: [{ tipo: 'master', ubicacion: 'SELECTIVO_E_1', zona: 'E' }], estado: 'almacenado' }
-                ]));
+        }
+
+        async function setAllProducts(products) {
+            try {
+                await dbClear(STORE_PRODUCTS);
+                if (products.length > 0) {
+                    await dbPutAll(STORE_PRODUCTS, products);
+                }
+            } catch (e) {
+                console.error('Error setting products:', e);
+                throw e;
             }
-            if (!localStorage.getItem(STORAGE_KEY_MOVEMENTS)) {
-                localStorage.setItem(STORAGE_KEY_MOVEMENTS, JSON.stringify([
-                    { fecha: new Date().toISOString().replace('T', ' ').slice(0, 19), codigo: '01-001-216-026', bodega: 'Farmacos', desde: 'RECEPCION', hacia: 'PALLET_A_1', usuario: 'Admin', tipo: 'ALMACENAR' }
-                ]));
+        }
+
+        async function addProduct(product) {
+            try {
+                return await dbPut(STORE_PRODUCTS, product);
+            } catch (e) {
+                console.error('Error adding product:', e);
+                throw e;
             }
-            if (!localStorage.getItem(STORAGE_KEY_HISTORIAL)) {
-                localStorage.setItem(STORAGE_KEY_HISTORIAL, JSON.stringify([]));
+        }
+
+        async function updateProduct(product) {
+            try {
+                return await dbPut(STORE_PRODUCTS, product);
+            } catch (e) {
+                console.error('Error updating product:', e);
+                throw e;
             }
-            if (!localStorage.getItem(STORAGE_KEY_CONFIG)) {
-                localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify({ mapImage: '' }));
+        }
+
+        async function deleteProduct(id) {
+            try {
+                await dbDelete(STORE_PRODUCTS, id);
+            } catch (e) {
+                console.error('Error deleting product:', e);
+                throw e;
             }
-            if (!localStorage.getItem(STORAGE_KEY_MANTENEDOR)) {
-                localStorage.setItem(STORAGE_KEY_MANTENEDOR, JSON.stringify([]));
+        }
+
+        async function getAllMovements() {
+            try {
+                return await dbGetAll(STORE_MOVEMENTS);
+            } catch (e) {
+                console.error('Error getting movements:', e);
+                return [];
             }
-            if (!localStorage.getItem(STORAGE_KEY_EXCEL_DATA)) {
-                localStorage.setItem(STORAGE_KEY_EXCEL_DATA, JSON.stringify({}));
+        }
+
+        async function setAllMovements(movements) {
+            try {
+                await dbClear(STORE_MOVEMENTS);
+                if (movements.length > 0) {
+                    await dbPutAll(STORE_MOVEMENTS, movements);
+                }
+            } catch (e) {
+                console.error('Error setting movements:', e);
+                throw e;
             }
-            if (!localStorage.getItem(STORAGE_KEY_ACTIVE_USERS)) {
-                localStorage.setItem(STORAGE_KEY_ACTIVE_USERS, JSON.stringify({}));
+        }
+
+        async function addMovement(movement) {
+            try {
+                return await dbPut(STORE_MOVEMENTS, movement);
+            } catch (e) {
+                console.error('Error adding movement:', e);
+                throw e;
+            }
+        }
+
+        async function getAllHistorial() {
+            try {
+                return await dbGetAll(STORE_HISTORIAL);
+            } catch (e) {
+                console.error('Error getting historial:', e);
+                return [];
+            }
+        }
+
+        async function setAllHistorial(historial) {
+            try {
+                await dbClear(STORE_HISTORIAL);
+                if (historial.length > 0) {
+                    await dbPutAll(STORE_HISTORIAL, historial);
+                }
+            } catch (e) {
+                console.error('Error setting historial:', e);
+                throw e;
+            }
+        }
+
+        async function addHistorialEntry(entry) {
+            try {
+                return await dbPut(STORE_HISTORIAL, entry);
+            } catch (e) {
+                console.error('Error adding historial entry:', e);
+                throw e;
+            }
+        }
+
+        async function getAllExcelData() {
+            try {
+                return await dbGetAll(STORE_EXCEL);
+            } catch (e) {
+                console.error('Error getting excel data:', e);
+                return [];
+            }
+        }
+
+        async function setAllExcelData(data) {
+            try {
+                await dbClear(STORE_EXCEL);
+                if (data.length > 0) {
+                    await dbPutAll(STORE_EXCEL, data);
+                }
+            } catch (e) {
+                console.error('Error setting excel data:', e);
+                throw e;
             }
         }
 
         // ============================================================
-        // ACCESO A DATOS
+        // WRAPPER PARA MANTENER COMPATIBILIDAD CON CÓDIGO ANTERIOR
         // ============================================================
-        function getAllProducts() { return JSON.parse(localStorage.getItem(STORAGE_KEY_PRODUCTS) || '[]'); }
-        function setProducts(p) { localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(p)); }
-        function getProducts() {
-            const all = getAllProducts();
+        let cachedProducts = [];
+        let cachedMovements = [];
+        let cachedHistorial = [];
+        let cachedExcelData = [];
+
+        async function loadCache() {
+            cachedProducts = await getAllProducts();
+            cachedMovements = await getAllMovements();
+            cachedHistorial = await getAllHistorial();
+            const excelData = await getAllExcelData();
+            cachedExcelData = excelData.length > 0 ? excelData[0]?.data || {} : {};
+        }
+
+        function getProductsSync() {
+            const all = cachedProducts;
             if (currentWarehouse === 'TODAS') return all;
             return all.filter(p => p.bodega === currentWarehouse);
         }
 
-        function getAllMovements() { return JSON.parse(localStorage.getItem(STORAGE_KEY_MOVEMENTS) || '[]'); }
-        function setMovements(m) { localStorage.setItem(STORAGE_KEY_MOVEMENTS, JSON.stringify(m)); }
-        function getMovements() {
-            const all = getAllMovements();
+        function getAllProductsSync() {
+            return cachedProducts;
+        }
+
+        function getAllMovementsSync() {
+            return cachedMovements;
+        }
+
+        function getMovementsSync() {
+            const all = cachedMovements;
             if (currentWarehouse === 'TODAS') return all;
             return all.filter(m => m.bodega === currentWarehouse);
         }
 
-        function getUsers() { return JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]'); }
-        function setUsers(u) { localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(u)); }
-        function getConfig() { return JSON.parse(localStorage.getItem(STORAGE_KEY_CONFIG) || '{}'); }
-        function setConfig(c) { localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify(c)); }
-        function getMantenedor() { return JSON.parse(localStorage.getItem(STORAGE_KEY_MANTENEDOR) || '[]'); }
-        function setMantenedor(data) { localStorage.setItem(STORAGE_KEY_MANTENEDOR, JSON.stringify(data)); }
-        function getExcelData() { return JSON.parse(localStorage.getItem(STORAGE_KEY_EXCEL_DATA) || '{}'); }
-        function setExcelData(data) { localStorage.setItem(STORAGE_KEY_EXCEL_DATA, JSON.stringify(data)); }
+        function getHistorialSync() {
+            return cachedHistorial;
+        }
+
+        function getExcelDataSync() {
+            return cachedExcelData;
+        }
 
         // ============================================================
-        // AUTENTICACIÓN
+        // INICIALIZACIÓN
+        // ============================================================
+        async function initData() {
+            try {
+                await openDB();
+                await loadCache();
+
+                if (!localStorage.getItem(STORAGE_KEY_USERS)) {
+                    localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify([
+                        { id: 1, nombre: 'Admin', perfil: 'admin', password: 'admin', permisos: ['lectura','escritura','administracion'], ultimaActividad: new Date().toISOString() },
+                        { id: 2, nombre: 'Supervisor', perfil: 'supervisor', password: '1234', permisos: ['lectura','escritura'], ultimaActividad: new Date().toISOString() },
+                        { id: 3, nombre: 'Operario', perfil: 'operario', password: '1234', permisos: ['lectura'], ultimaActividad: new Date().toISOString() }
+                    ]));
+                }
+
+                if (cachedProducts.length === 0) {
+                    const sampleProducts = [
+                        { codigo: '01-001-216-026', gtin: '7801234567890', glosa: 'METRONIDAZOL 500 MG/100 ML', bodega: 'Farmacos', ubicaciones: [{ tipo: 'master', ubicacion: 'PALLET_A_1', zona: 'A' }], estado: 'almacenado' },
+                        { codigo: '01-001-212-024', gtin: '7801234567999', glosa: 'FENTANILO 0,5 MG/10 ML', bodega: 'Farmacos', ubicaciones: [{ tipo: 'master', ubicacion: 'PALLET_C_2', zona: 'C' }], estado: 'almacenado' },
+                        { codigo: '01-001-213-076', gtin: '7801234567894', glosa: 'DEXAMETASONA 4 MG/ML SOL INY', bodega: 'Farmacos', ubicaciones: [{ tipo: 'master', ubicacion: 'SELECTIVO_E_1', zona: 'E' }], estado: 'almacenado' }
+                    ];
+                    await setAllProducts(sampleProducts);
+                    await loadCache();
+                }
+
+                if (cachedMovements.length === 0) {
+                    const sampleMov = [
+                        { fecha: new Date().toISOString().replace('T', ' ').slice(0, 19), codigo: '01-001-216-026', bodega: 'Farmacos', desde: 'RECEPCION', hacia: 'PALLET_A_1', usuario: 'Admin', tipo: 'ALMACENAR' }
+                    ];
+                    await setAllMovements(sampleMov);
+                    await loadCache();
+                }
+
+                if (cachedHistorial.length === 0) {
+                    await setAllHistorial([]);
+                    await loadCache();
+                }
+
+                if (Object.keys(cachedExcelData).length === 0) {
+                    await setAllExcelData([{ id: 1, data: {} }]);
+                    await loadCache();
+                }
+
+                if (!localStorage.getItem(STORAGE_KEY_CONFIG)) {
+                    localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify({ mapImage: '' }));
+                }
+                if (!localStorage.getItem(STORAGE_KEY_ACTIVE_USERS)) {
+                    localStorage.setItem(STORAGE_KEY_ACTIVE_USERS, JSON.stringify({}));
+                }
+
+            } catch (e) {
+                console.error('Error initializing data:', e);
+                mostrarToast('Error inicializando base de datos: ' + e.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // FUNCIONES DE ACTUALIZACIÓN DE CACHE
+        // ============================================================
+        async function refreshCache() {
+            await loadCache();
+        }
+
+        // ============================================================
+        // SISTEMA DE AUTENTICACIÓN
         // ============================================================
         function getCurrentUser() {
             if (currentUserId === null) return null;
-            const users = getUsers();
+            const users = JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]');
             return users.find(u => u.id === currentUserId) || null;
         }
 
@@ -689,7 +955,7 @@
         function handleLogin() {
             const username = document.getElementById('loginUser').value.trim();
             const password = document.getElementById('loginPass').value.trim();
-            const users = getUsers();
+            const users = JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]');
             const user = users.find(u => u.nombre === username && u.password === password);
             if (user) {
                 currentUserId = user.id;
@@ -725,7 +991,7 @@
         function checkSession() {
             const savedId = localStorage.getItem(STORAGE_KEY_SESSION);
             if (savedId) {
-                const users = getUsers();
+                const users = JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]');
                 if (users.find(u => u.id === parseInt(savedId))) {
                     currentUserId = parseInt(savedId);
                     document.getElementById('loginModal').style.display = 'none';
@@ -748,8 +1014,10 @@
                 broadcastChannel.onmessage = function(event) {
                     const data = event.data;
                     if (data.type === 'CAMBIOS') {
-                        renderAll();
-                        mostrarToast('🔄 Actualización: ' + data.usuario + ' realizó cambios', 'warning');
+                        refreshCache().then(() => {
+                            renderAll();
+                            mostrarToast('🔄 Actualización: ' + data.usuario + ' realizó cambios', 'warning');
+                        });
                     }
                 };
             } catch (e) {}
@@ -792,10 +1060,9 @@
         // ============================================================
         // HISTORIAL
         // ============================================================
-        function registrarHistorial(accion, codigo, detalle, bodega = null) {
+        async function registrarHistorial(accion, codigo, detalle, bodega = null) {
             const user = getCurrentUser();
-            const historial = JSON.parse(localStorage.getItem(STORAGE_KEY_HISTORIAL) || '[]');
-            historial.push({
+            const entry = {
                 fecha: new Date().toISOString().replace('T', ' ').slice(0, 19),
                 usuario: user ? user.nombre : 'Sistema',
                 accion: accion,
@@ -803,13 +1070,14 @@
                 bodega: bodega || '',
                 detalle: detalle,
                 perfil: user ? user.perfil : 'sistema'
-            });
-            localStorage.setItem(STORAGE_KEY_HISTORIAL, JSON.stringify(historial));
+            };
+            await addHistorialEntry(entry);
+            await refreshCache();
             
             if (user) {
-                const users = getUsers();
+                const users = JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]');
                 const u = users.find(u => u.id === user.id);
-                if (u) { u.ultimaActividad = new Date().toISOString(); setUsers(users); }
+                if (u) { u.ultimaActividad = new Date().toISOString(); localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(users)); }
             }
             broadcastCambios(accion, detalle);
         }
@@ -844,12 +1112,13 @@
             renderAll();
         }
 
-        function renderAll() {
+        async function renderAll() {
             const user = getCurrentUser();
             document.getElementById('currentUserDisplay').textContent = user ? '👤 ' + user.nombre + ' (' + user.perfil + ')' : '👤 Invitado';
             const sel = document.getElementById('warehouseSelect');
             if (sel.value !== currentWarehouse) sel.value = currentWarehouse;
             
+            await refreshCache();
             renderDashboard();
             renderInventarioUnificado();
             renderLayoutVisual();
@@ -858,7 +1127,7 @@
             renderConfig();
             actualizarUsuariosConectados();
             
-            const products = getProducts();
+            const products = getProductsSync();
             document.getElementById('inventoryBadge').textContent = products.length;
         }
 
@@ -866,9 +1135,9 @@
         // DASHBOARD
         // ============================================================
         function renderDashboard() {
-            const products = getProducts();
-            const movements = getMovements();
-            const users = getUsers();
+            const products = getProductsSync();
+            const movements = getMovementsSync();
+            const users = JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]');
             document.getElementById('totalProductos').textContent = products.length;
             const ubicaciones = new Set();
             products.forEach(p => p.ubicaciones.forEach(u => ubicaciones.add(u.ubicacion)));
@@ -889,7 +1158,7 @@
         }
 
         // ============================================================
-        // MODAL ALMACENAMIENTO (RECEPCIÓN → NUEVA UBICACIÓN)
+        // MODAL ALMACENAMIENTO
         // ============================================================
         function abrirModalAlmacenamiento() {
             mostrarModal('📥 Recepción y Almacenamiento', `
@@ -899,7 +1168,7 @@
                         <label>Código del producto</label>
                         <input id="almacenarCodigo" placeholder="Ej: 01-001-216-026" list="productosList">
                         <datalist id="productosList">
-                            ${getProducts().map(p => `<option value="${p.codigo}">${p.codigo} - ${p.glosa}</option>`).join('')}
+                            ${getProductsSync().map(p => `<option value="${p.codigo}">${p.codigo} - ${p.glosa}</option>`).join('')}
                         </datalist>
                     </div>
                     <div class="full-width">
@@ -954,10 +1223,9 @@
                 </div>
             `, true);
 
-            // Auto-completar glosa al escribir código
             document.getElementById('almacenarCodigo').addEventListener('input', function() {
                 const codigo = this.value.trim();
-                const products = getProducts();
+                const products = getProductsSync();
                 const found = products.find(p => p.codigo === codigo);
                 if (found) {
                     document.getElementById('almacenarGlosa').value = found.glosa;
@@ -970,7 +1238,7 @@
                 }
             });
 
-            modalCallback = () => {
+            modalCallback = async () => {
                 const codigo = document.getElementById('almacenarCodigo').value.trim();
                 const glosa = document.getElementById('almacenarGlosa').value.trim();
                 const gtin = document.getElementById('almacenarGTIN').value.trim();
@@ -981,11 +1249,10 @@
                 if (!codigo) return alert('El código del producto es requerido');
                 if (!ubicacion) return alert('La ubicación destino es requerida');
 
-                const products = getAllProducts();
+                const products = getAllProductsSync();
                 let existing = products.find(p => p.codigo === codigo);
 
                 if (existing) {
-                    // Actualizar ubicación
                     if (existing.ubicaciones.length > 0) {
                         existing.ubicaciones[0].ubicacion = ubicacion;
                         existing.ubicaciones[0].zona = zona;
@@ -996,9 +1263,9 @@
                     if (gtin) existing.gtin = gtin;
                     if (glosa) existing.glosa = glosa;
                     if (bodega) existing.bodega = bodega;
+                    await updateProduct(existing);
                 } else {
-                    // Crear nuevo producto
-                    products.push({
+                    const newProduct = {
                         codigo: codigo,
                         gtin: gtin || '',
                         glosa: glosa || codigo,
@@ -1006,26 +1273,25 @@
                         tags: [],
                         ubicaciones: [{ tipo: 'master', ubicacion: ubicacion, zona: zona }],
                         estado: 'almacenado'
-                    });
+                    };
+                    await addProduct(newProduct);
                 }
 
-                setProducts(products);
+                await refreshCache();
 
-                // Registrar movimiento
-                const movements = getAllMovements();
-                const user = getCurrentUser();
-                movements.push({
+                const movement = {
                     fecha: new Date().toISOString().replace('T', ' ').slice(0, 19),
                     codigo: codigo,
                     bodega: bodega,
                     desde: 'RECEPCION',
                     hacia: ubicacion,
-                    usuario: user ? user.nombre : 'Sistema',
+                    usuario: getCurrentUser() ? getCurrentUser().nombre : 'Sistema',
                     tipo: 'ALMACENAR'
-                });
-                setMovements(movements);
+                };
+                await addMovement(movement);
+                await refreshCache();
 
-                registrarHistorial('ALMACENAR', codigo, 'Producto almacenado desde RECEPCIÓN → ' + ubicacion + ' (' + zona + ')', bodega);
+                await registrarHistorial('ALMACENAR', codigo, 'Producto almacenado desde RECEPCIÓN → ' + ubicacion + ' (' + zona + ')', bodega);
                 mostrarToast('📥 Producto ' + codigo + ' almacenado en ' + ubicacion, 'success');
                 renderAll();
                 cerrarModal();
@@ -1104,7 +1370,7 @@
 
             grid.innerHTML = '';
 
-            const products = getProducts();
+            const products = getProductsSync();
             const zonasOcupadas = new Set();
             products.forEach(p => {
                 p.ubicaciones.forEach(u => {
@@ -1162,7 +1428,7 @@
         // CONFIG
         // ============================================================
         function renderConfig() {
-            const config = getConfig();
+            const config = JSON.parse(localStorage.getItem(STORAGE_KEY_CONFIG) || '{}');
         }
 
         function subirImagenLayout(event) {
@@ -1170,9 +1436,9 @@
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
-                const config = getConfig();
+                const config = JSON.parse(localStorage.getItem(STORAGE_KEY_CONFIG) || '{}');
                 config.mapImage = e.target.result;
-                setConfig(config);
+                localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify(config));
                 mostrarToast('✅ Imagen del layout actualizada', 'success');
                 registrarHistorial('EDITAR', 'LAYOUT', 'Imagen del layout actualizada');
             };
@@ -1180,20 +1446,21 @@
         }
 
         // ============================================================
-        // CARGA DE EXCEL
+        // CARGA DE EXCEL CON INDEXEDDB
         // ============================================================
-        function cargarExcel(event) {
+        async function cargarExcel(event) {
             const file = event.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
 
                     const excelData = {};
                     let totalItems = 0;
+                    let allProducts = [];
 
                     workbook.SheetNames.forEach(name => {
                         const sheet = workbook.Sheets[name];
@@ -1203,16 +1470,23 @@
                         if (json.length > 0) {
                             const mappedData = mapearDatosExcel(json);
                             if (mappedData.length > 0) {
-                                sincronizarMantenedorProductos(mappedData);
+                                allProducts = allProducts.concat(mappedData);
                                 totalItems += mappedData.length;
                             }
                         }
                     });
 
-                    setExcelData(excelData);
+                    // Guardar en IndexedDB
+                    await setAllExcelData([{ id: 1, data: excelData }]);
+                    await refreshCache();
+
+                    // Sincronizar productos
+                    await sincronizarMantenedorProductos(allProducts);
+                    await refreshCache();
+
                     renderAll();
                     document.getElementById('fileInput').value = '';
-                    registrarHistorial('AGREGAR', 'EXCEL_IMPORT', 'Archivo importado: ' + file.name + ' (' + workbook.SheetNames.length + ' hojas, ' + totalItems + ' productos)');
+                    await registrarHistorial('AGREGAR', 'EXCEL_IMPORT', 'Archivo importado: ' + file.name + ' (' + workbook.SheetNames.length + ' hojas, ' + totalItems + ' productos)');
                     mostrarToast('✅ Archivo cargado: ' + totalItems + ' productos de ' + file.name, 'success');
                 } catch (error) {
                     alert('❌ Error al leer el archivo: ' + error.message);
@@ -1300,12 +1574,12 @@
         }
 
         // ============================================================
-        // SINCronizar MANTENEDOR
+        // SINCronizar MANTENEDOR CON INDEXEDDB
         // ============================================================
-        function sincronizarMantenedorProductos(items) {
+        async function sincronizarMantenedorProductos(items) {
             if (!items || items.length === 0) return;
 
-            const products = getAllProducts();
+            let products = getAllProductsSync();
             let count = 0;
 
             items.forEach(item => {
@@ -1345,7 +1619,9 @@
                 count++;
             });
 
-            setProducts(products);
+            // Guardar en IndexedDB
+            await setAllProducts(products);
+            await refreshCache();
         }
 
         // ============================================================
@@ -1355,7 +1631,7 @@
             const search = document.getElementById('searchInventarioUnificado')?.value?.toLowerCase() || '';
             const filterZona = document.getElementById('filterZona')?.value || 'TODAS';
 
-            let products = getProducts();
+            let products = getProductsSync();
 
             if (search) {
                 products = products.filter(p =>
@@ -1501,8 +1777,8 @@
             renderInventarioUnificado();
         }
 
-        function guardarCambioInline(codigo, campo, valor) {
-            const products = getAllProducts();
+        async function guardarCambioInline(codigo, campo, valor) {
+            let products = getAllProductsSync();
             const index = products.findIndex(p => p.codigo === codigo);
             if (index === -1) return;
 
@@ -1520,11 +1796,12 @@
                 products[index][campo] = valor;
             }
 
-            setProducts(products);
+            await setAllProducts(products);
+            await refreshCache();
             editingRows.add(codigo);
 
             if (oldValor !== valor) {
-                registrarHistorial('EDITAR', codigo, campo + ': ' + oldValor + ' → ' + valor);
+                await registrarHistorial('EDITAR', codigo, campo + ': ' + oldValor + ' → ' + valor);
             }
         }
 
@@ -1545,7 +1822,7 @@
         function editarProductoModal(codigo) {
             if (!hasPermission('escritura')) return alert('No tienes permisos');
 
-            const products = getAllProducts();
+            const products = getAllProductsSync();
             const p = products.find(prod => prod.codigo === codigo);
             if (!p) return alert('Producto no encontrado');
 
@@ -1597,7 +1874,7 @@
                 </div>
             `, true);
 
-            modalCallback = () => {
+            modalCallback = async () => {
                 const glosa = document.getElementById('editGlosa').value.trim();
                 const bodega = document.getElementById('editBodega').value;
                 const gtin = document.getElementById('editGTIN').value.trim();
@@ -1607,25 +1884,25 @@
 
                 if (!glosa) return alert('La glosa es requerida');
 
-                const productos = getAllProducts();
-                const index = productos.findIndex(prod => prod.codigo === codigo);
+                let products = getAllProductsSync();
+                const index = products.findIndex(prod => prod.codigo === codigo);
                 if (index === -1) return alert('Producto no encontrado');
 
-                productos[index].glosa = glosa;
-                productos[index].bodega = bodega;
-                productos[index].gtin = gtin;
-                productos[index].estado = estado;
+                products[index].glosa = glosa;
+                products[index].bodega = bodega;
+                products[index].gtin = gtin;
+                products[index].estado = estado;
 
-                if (productos[index].ubicaciones.length > 0) {
-                    productos[index].ubicaciones[0].ubicacion = ubicacion || productos[index].ubicaciones[0].ubicacion;
-                    productos[index].ubicaciones[0].zona = zona || productos[index].ubicaciones[0].zona;
+                if (products[index].ubicaciones.length > 0) {
+                    products[index].ubicaciones[0].ubicacion = ubicacion || products[index].ubicaciones[0].ubicacion;
+                    products[index].ubicaciones[0].zona = zona || products[index].ubicaciones[0].zona;
                 } else if (ubicacion) {
-                    productos[index].ubicaciones.push({ tipo: 'master', ubicacion: ubicacion, zona: zona || 'A' });
+                    products[index].ubicaciones.push({ tipo: 'master', ubicacion: ubicacion, zona: zona || 'A' });
                 }
 
-                setProducts(productos);
-
-                registrarHistorial('EDITAR', codigo, 'Producto editado: ' + glosa, bodega);
+                await setAllProducts(products);
+                await refreshCache();
+                await registrarHistorial('EDITAR', codigo, 'Producto editado: ' + glosa, bodega);
                 mostrarToast('✏️ Producto ' + codigo + ' actualizado', 'warning');
                 renderAll();
                 cerrarModal();
@@ -1639,7 +1916,7 @@
         function moverProductoModal(codigo) {
             if (!hasPermission('escritura')) return alert('No tienes permisos');
 
-            const products = getAllProducts();
+            const products = getAllProductsSync();
             const p = products.find(prod => prod.codigo === codigo);
             if (!p) return alert('Producto no encontrado');
 
@@ -1676,41 +1953,41 @@
                 </div>
             `, true);
 
-            modalCallback = () => {
+            modalCallback = async () => {
                 const nuevaUbic = document.getElementById('moverNuevaUbic').value.trim();
                 const nuevaZona = document.getElementById('moverNuevaZona').value;
 
                 if (!nuevaUbic) return alert('La nueva ubicación es requerida');
 
-                const productos = getAllProducts();
-                const index = productos.findIndex(prod => prod.codigo === codigo);
+                let products = getAllProductsSync();
+                const index = products.findIndex(prod => prod.codigo === codigo);
                 if (index === -1) return alert('Producto no encontrado');
 
-                const oldUbic = productos[index].ubicaciones.map(u => u.ubicacion).join(', ');
+                const oldUbic = products[index].ubicaciones.map(u => u.ubicacion).join(', ');
 
-                if (productos[index].ubicaciones.length > 0) {
-                    productos[index].ubicaciones[0].ubicacion = nuevaUbic;
-                    if (nuevaZona) productos[index].ubicaciones[0].zona = nuevaZona;
+                if (products[index].ubicaciones.length > 0) {
+                    products[index].ubicaciones[0].ubicacion = nuevaUbic;
+                    if (nuevaZona) products[index].ubicaciones[0].zona = nuevaZona;
                 } else {
-                    productos[index].ubicaciones.push({ tipo: 'master', ubicacion: nuevaUbic, zona: nuevaZona || 'A' });
+                    products[index].ubicaciones.push({ tipo: 'master', ubicacion: nuevaUbic, zona: nuevaZona || 'A' });
                 }
 
-                setProducts(productos);
+                await setAllProducts(products);
+                await refreshCache();
 
-                const movements = getAllMovements();
-                const user = getCurrentUser();
-                movements.push({
+                const movement = {
                     fecha: new Date().toISOString().replace('T', ' ').slice(0, 19),
                     codigo: codigo,
-                    bodega: productos[index].bodega,
+                    bodega: products[index].bodega,
                     desde: oldUbic || 'N/A',
                     hacia: nuevaUbic,
-                    usuario: user ? user.nombre : 'Sistema',
+                    usuario: getCurrentUser() ? getCurrentUser().nombre : 'Sistema',
                     tipo: 'MOVIMIENTO'
-                });
-                setMovements(movements);
+                };
+                await addMovement(movement);
+                await refreshCache();
 
-                registrarHistorial('MOVIMIENTO', codigo, 'Reubicado: ' + (oldUbic || 'N/A') + ' → ' + nuevaUbic);
+                await registrarHistorial('MOVIMIENTO', codigo, 'Reubicado: ' + (oldUbic || 'N/A') + ' → ' + nuevaUbic);
                 mostrarToast('🔄 Producto reubicado a ' + nuevaUbic, 'success');
                 renderAll();
                 cerrarModal();
@@ -1771,18 +2048,18 @@
         // ============================================================
         // ELIMINAR PRODUCTO
         // ============================================================
-        function eliminarProducto(codigo) {
+        async function eliminarProducto(codigo) {
             if (!hasPermission('escritura')) return alert('No tienes permisos');
             if (!confirm('¿Estás seguro de eliminar el producto ' + codigo + '?')) return;
 
-            const products = getAllProducts();
+            let products = getAllProductsSync();
             const p = products.find(prod => prod.codigo === codigo);
             if (!p) return alert('Producto no encontrado');
 
-            const newProducts = products.filter(prod => prod.codigo !== codigo);
-            setProducts(newProducts);
-
-            registrarHistorial('ELIMINAR', codigo, 'Producto eliminado: ' + p.glosa, p.bodega);
+            products = products.filter(prod => prod.codigo !== codigo);
+            await setAllProducts(products);
+            await refreshCache();
+            await registrarHistorial('ELIMINAR', codigo, 'Producto eliminado: ' + p.glosa, p.bodega);
             mostrarToast('🗑️ Producto ' + codigo + ' eliminado', 'error');
             renderAll();
         }
@@ -1801,7 +2078,7 @@
 
         function toggleSelectAll() {
             const checked = document.getElementById('selectAll').checked;
-            const products = getProducts();
+            const products = getProductsSync();
             if (checked) {
                 products.forEach(p => selectedRows.add(p.codigo));
             } else {
@@ -1819,7 +2096,7 @@
         function generarQRSeleccionados() {
             if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
 
-            const products = getProducts();
+            const products = getProductsSync();
             const seleccionados = products.filter(p => selectedRows.has(p.codigo));
 
             let qrHtml = `<h3>📱 Códigos QR (${seleccionados.length})</h3>
@@ -1855,7 +2132,7 @@
             document.getElementById('modalActionBtn').style.display = 'none';
         }
 
-        function moverSeleccionados() {
+        async function moverSeleccionados() {
             if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
 
             mostrarModal('🔄 Mover Seleccionados', `
@@ -1877,13 +2154,13 @@
                 </div>
             `, true);
 
-            modalCallback = () => {
+            modalCallback = async () => {
                 const nuevaUbic = document.getElementById('moverMasivoUbic').value.trim();
                 const nuevaZona = document.getElementById('moverMasivoZona').value;
 
                 if (!nuevaUbic) return alert('La nueva ubicación es requerida');
 
-                const products = getAllProducts();
+                let products = getAllProductsSync();
                 let count = 0;
 
                 selectedRows.forEach(codigo => {
@@ -1899,8 +2176,9 @@
                     }
                 });
 
-                setProducts(products);
-                registrarHistorial('MOVIMIENTO', 'MULTIPLE', count + ' productos reubicados a ' + nuevaUbic);
+                await setAllProducts(products);
+                await refreshCache();
+                await registrarHistorial('MOVIMIENTO', 'MULTIPLE', count + ' productos reubicados a ' + nuevaUbic);
                 mostrarToast('🔄 ' + count + ' productos reubicados a ' + nuevaUbic, 'success');
                 selectedRows.clear();
                 renderAll();
@@ -1909,15 +2187,15 @@
             document.getElementById('modalActionBtn').textContent = 'Mover todos';
         }
 
-        function eliminarSeleccionados() {
+        async function eliminarSeleccionados() {
             if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
             if (!confirm('¿Estás seguro de eliminar ' + selectedRows.size + ' productos?')) return;
 
-            const products = getAllProducts();
-            const newProducts = products.filter(p => !selectedRows.has(p.codigo));
-            setProducts(newProducts);
-
-            registrarHistorial('ELIMINAR', 'MULTIPLE', selectedRows.size + ' productos eliminados');
+            let products = getAllProductsSync();
+            products = products.filter(p => !selectedRows.has(p.codigo));
+            await setAllProducts(products);
+            await refreshCache();
+            await registrarHistorial('ELIMINAR', 'MULTIPLE', selectedRows.size + ' productos eliminados');
             mostrarToast('🗑️ ' + selectedRows.size + ' productos eliminados', 'error');
             selectedRows.clear();
             renderAll();
@@ -1926,7 +2204,7 @@
         function exportarSeleccionados() {
             if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
 
-            const products = getProducts();
+            const products = getProductsSync();
             const seleccionados = products.filter(p => selectedRows.has(p.codigo));
 
             const ws = XLSX.utils.json_to_sheet(seleccionados.map(p => ({
@@ -2001,7 +2279,7 @@
         }
 
         function generarQRProducto(codigo) {
-            const products = getAllProducts();
+            const products = getAllProductsSync();
             const p = products.find(prod => prod.codigo === codigo);
             if (!p) return alert('Producto no encontrado');
 
@@ -2028,7 +2306,7 @@
         }
 
         function generarTodosQR() {
-            const products = getProducts();
+            const products = getProductsSync();
             if (products.length === 0) return alert('No hay productos');
 
             let qrHtml = `<h3>📱 Códigos QR (${products.length})</h3>
@@ -2069,7 +2347,7 @@
         // USUARIOS
         // ============================================================
         function renderUsuarios() {
-            const users = getUsers();
+            const users = JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]');
             const tbody = document.getElementById('usuariosBody');
             if (users.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No hay usuarios registrados</td></tr>';
@@ -2131,10 +2409,10 @@
 
                 if (!nombre || !password) return alert('Nombre y contraseña son requeridos');
 
-                const users = getUsers();
+                const users = JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]');
                 const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
                 users.push({ id: newId, nombre, password, perfil, permisos, ultimaActividad: new Date().toISOString() });
-                setUsers(users);
+                localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(users));
 
                 registrarHistorial('AGREGAR', 'USUARIO_' + nombre, 'Usuario creado: ' + nombre + ' (' + perfil + ')');
                 mostrarToast('✅ Usuario ' + nombre + ' creado', 'success');
@@ -2147,7 +2425,7 @@
         function editarUsuario(id) {
             if (!hasPermission('administracion')) return alert('No tienes permisos');
 
-            const users = getUsers();
+            const users = JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]');
             const u = users.find(user => user.id === id);
             if (!u) return alert('Usuario no encontrado');
 
@@ -2184,7 +2462,7 @@
 
                 if (!nombre) return alert('El nombre es requerido');
 
-                const usersList = getUsers();
+                const usersList = JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]');
                 const index = usersList.findIndex(user => user.id === id);
                 if (index === -1) return alert('Usuario no encontrado');
 
@@ -2193,7 +2471,7 @@
                 if (password) usersList[index].password = password;
                 usersList[index].perfil = perfil;
                 usersList[index].permisos = permisos;
-                setUsers(usersList);
+                localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(usersList));
 
                 registrarHistorial('EDITAR', 'USUARIO_' + nombre, 'Usuario editado: ' + oldNombre + ' → ' + nombre + ' (' + perfil + ')');
                 mostrarToast('✏️ Usuario ' + nombre + ' actualizado', 'warning');
@@ -2207,7 +2485,7 @@
             if (!hasPermission('administracion')) return alert('No tienes permisos');
             if (id === currentUserId) return alert('⚠️ No puedes eliminar tu propio usuario');
 
-            const users = getUsers();
+            const users = JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]');
             const u = users.find(user => user.id === id);
             if (!u) return alert('Usuario no encontrado');
 
@@ -2215,9 +2493,9 @@
 
             registrarHistorial('ELIMINAR', 'USUARIO_' + u.nombre, 'Usuario eliminado: ' + u.nombre + ' (' + u.perfil + ')');
 
-            let usersList = getUsers();
+            let usersList = JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]');
             usersList = usersList.filter(user => user.id !== id);
-            setUsers(usersList);
+            localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(usersList));
 
             const activos = JSON.parse(localStorage.getItem(STORAGE_KEY_ACTIVE_USERS) || '{}');
             delete activos[id];
@@ -2233,7 +2511,7 @@
         function renderHistorialCompleto() {
             const filter = document.getElementById('filterHistorial').value.toLowerCase();
             const accionFilter = document.getElementById('filterHistorialAccion').value;
-            const historial = JSON.parse(localStorage.getItem(STORAGE_KEY_HISTORIAL) || '[]');
+            const historial = getHistorialSync();
 
             let filtered = historial;
             if (filter) {
@@ -2272,10 +2550,11 @@
             `).join('');
         }
 
-        function limpiarHistorialCompleto() {
+        async function limpiarHistorialCompleto() {
             if (!hasPermission('administracion')) return alert('No tienes permisos');
             if (!confirm('¿Estás seguro de limpiar todo el historial?')) return;
-            localStorage.setItem(STORAGE_KEY_HISTORIAL, JSON.stringify([]));
+            await setAllHistorial([]);
+            await refreshCache();
             renderHistorialCompleto();
             mostrarToast('🗑️ Historial limpiado', 'warning');
         }
@@ -2283,8 +2562,8 @@
         // ============================================================
         // EXPORTAR
         // ============================================================
-        function exportarExcelCompleto() {
-            const products = getAllProducts();
+        async function exportarExcelCompleto() {
+            const products = getAllProductsSync();
             if (products.length === 0) return alert('No hay datos para exportar');
 
             const exportData = products.map(p => ({
@@ -2308,47 +2587,51 @@
             link.click();
             URL.revokeObjectURL(link.href);
 
-            registrarHistorial('AGREGAR', 'EXCEL_EXPORT', 'Excel completo exportado');
+            await registrarHistorial('AGREGAR', 'EXCEL_EXPORT', 'Excel completo exportado');
             mostrarToast('✅ Excel exportado correctamente', 'success');
         }
 
         function exportarDatos() {
-            const data = {
-                products: getAllProducts(),
-                movements: getAllMovements(),
-                historial: JSON.parse(localStorage.getItem(STORAGE_KEY_HISTORIAL) || '[]'),
-                users: getUsers(),
-                config: getConfig(),
-                mantenedor: getMantenedor(),
-                excelData: getExcelData(),
-                exportDate: new Date().toISOString()
-            };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'wms_backup_' + new Date().toISOString().slice(0,10) + '.json';
-            link.click();
-            URL.revokeObjectURL(link.href);
-            registrarHistorial('AGREGAR', 'BACKUP', 'Backup JSON exportado');
-            mostrarToast('📤 Backup exportado', 'success');
+            // Exportar todos los datos como JSON (incluye IndexedDB)
+            getAllProducts().then(products => {
+                getAllMovements().then(movements => {
+                    getAllHistorial().then(historial => {
+                        const data = {
+                            products: products,
+                            movements: movements,
+                            historial: historial,
+                            users: JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]'),
+                            config: JSON.parse(localStorage.getItem(STORAGE_KEY_CONFIG) || '{}'),
+                            exportDate: new Date().toISOString()
+                        };
+                        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = 'wms_backup_' + new Date().toISOString().slice(0,10) + '.json';
+                        link.click();
+                        URL.revokeObjectURL(link.href);
+                        registrarHistorial('AGREGAR', 'BACKUP', 'Backup JSON exportado');
+                        mostrarToast('📤 Backup exportado', 'success');
+                    });
+                });
+            });
         }
 
         function cargarImport(event) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if (data.products) setProducts(data.products);
-                    if (data.movements) setMovements(data.movements);
-                    if (data.historial) localStorage.setItem(STORAGE_KEY_HISTORIAL, JSON.stringify(data.historial));
-                    if (data.users) setUsers(data.users);
-                    if (data.config) setConfig(data.config);
-                    if (data.mantenedor) setMantenedor(data.mantenedor);
-                    if (data.excelData) setExcelData(data.excelData);
+                    if (data.products) await setAllProducts(data.products);
+                    if (data.movements) await setAllMovements(data.movements);
+                    if (data.historial) await setAllHistorial(data.historial);
+                    if (data.users) localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(data.users));
+                    if (data.config) localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify(data.config));
+                    await refreshCache();
                     renderAll();
-                    registrarHistorial('AGREGAR', 'BACKUP_IMPORT', 'Backup JSON importado');
+                    await registrarHistorial('AGREGAR', 'BACKUP_IMPORT', 'Backup JSON importado');
                     mostrarToast('✅ Datos importados correctamente', 'success');
                 } catch (error) {
                     alert('❌ Error al importar: ' + error.message);
@@ -2358,18 +2641,19 @@
             event.target.value = '';
         }
 
-        function resetData() {
+        async function resetData() {
             if (!hasPermission('administracion')) return alert('No tienes permisos');
             if (!confirm('⚠️ ¿Estás seguro de reiniciar todos los datos?')) return;
 
-            localStorage.removeItem(STORAGE_KEY_PRODUCTS);
-            localStorage.removeItem(STORAGE_KEY_MOVEMENTS);
-            localStorage.removeItem(STORAGE_KEY_MANTENEDOR);
-            localStorage.removeItem(STORAGE_KEY_EXCEL_DATA);
-            localStorage.removeItem(STORAGE_KEY_HISTORIAL);
+            await setAllProducts([]);
+            await setAllMovements([]);
+            await setAllHistorial([]);
+            await setAllExcelData([{ id: 1, data: {} }]);
+            await refreshCache();
+            localStorage.removeItem(STORAGE_KEY_ACTIVE_USERS);
             initData();
             renderAll();
-            registrarHistorial('ELIMINAR', 'RESET', 'Todos los datos reiniciados');
+            await registrarHistorial('ELIMINAR', 'RESET', 'Todos los datos reiniciados');
             mostrarToast('🔄 Datos reiniciados correctamente', 'warning');
         }
 
@@ -2399,8 +2683,9 @@
         // NAVEGACIÓN
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
-            initData();
-            checkSession();
+            initData().then(() => {
+                checkSession();
+            });
 
             document.querySelectorAll('nav button').forEach(btn => {
                 btn.addEventListener('click', function() {
