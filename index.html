@@ -31,7 +31,7 @@
 
         /* LOGIN */
         #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:16px; }
-        #loginModal .login-box { background:var(--white); padding:28px 30px; border-radius:24px; max-width:420px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.3); text-align:center; }
+        #loginModal .login-box { background:var(--white); padding:28px 30px; border-radius:24px; max-width:420px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.3); text-align:center; position:relative; z-index:2001; }
         #loginModal .login-box .hospital-logo img { max-width:180px; height:auto; border-radius:8px; background:var(--white); padding:4px; box-shadow:0 2px 8px rgba(0,0,0,0.08); object-fit:contain; margin-bottom:10px; }
         #loginModal .login-box .hospital-name { font-size:0.95rem; font-weight:700; color:#0f172a; }
         #loginModal .login-box .hospital-sub { font-size:0.75rem; color:#64748b; margin-bottom:10px; font-weight:500; }
@@ -43,7 +43,7 @@
         #loginModal input:focus { outline:none; border-color:var(--primary); }
         #loginModal .btn { width:100%; margin-top:16px; padding:12px; font-size:1rem; border-radius:10px; }
         .login-error { color:var(--danger); font-size:0.85rem; margin-top:8px; display:none; }
-        .forgot-link { display:block; margin-top:10px; font-size:0.75rem; color:var(--primary); cursor:pointer; text-decoration:underline; font-weight:600; }
+        .forgot-link { display:inline-block; margin-top:10px; font-size:0.75rem; color:var(--primary); cursor:pointer; text-decoration:underline; font-weight:600; }
 
         /* HEADER */
         header { background: #0f172a; color: var(--white); padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
@@ -94,10 +94,10 @@
         .badge-invitado { background:#f1f5f9; color:#475569; }
         .badge-bodega { display:inline-block; padding:2px 8px; border-radius:6px; font-size:0.5rem; font-weight:700; color:var(--white); }
         .badge-farmacos { background:#2563eb; }
-        .badge-insumos { background:var(--success); }
-        .badge-economato { background:var(--warning); color:#0f172a; }
+        .badge-insumos { background:#059669; }
+        .badge-economato { background:#d97706; color:#0f172a; }
         
-        /* ZONAS Y UBICACIONES COMPACTAS */
+        /* UBICACIÓN LIMPIA (SIN COMAS) */
         .ubicacion-compacta-box { display:flex; flex-direction:column; gap:3px; }
         .ubicacion-row-item { display:flex; align-items:center; gap:6px; font-size:0.7rem; background:#f8fafc; padding:2px 6px; border-radius:4px; border:1px solid #e2e8f0; width:fit-content; }
         .zone-tag { display:inline-block; padding:1px 5px; border-radius:3px; font-size:0.6rem; font-weight:700; background:#dbeafe; color:#1e40af; }
@@ -107,27 +107,27 @@
         .gtin-tag { font-family:monospace; font-size:0.65rem; background:#fef9c3; color:#854d0e; padding:2px 6px; border-radius:4px; font-weight:600; }
 
         /* BOTONES */
-        .btn { padding:5px 12px; border:none; border-radius:var(--radius-sm); font-weight:600; font-size:0.7rem; cursor:pointer; display:inline-flex; align-items:center; gap:5px; text-decoration:none; color:var(--white); min-height:36px; }
-        .btn-primary { background:var(--primary); }
-        .btn-success { background:var(--success); }
-        .btn-warning { background:var(--warning); }
-        .btn-danger { background:var(--danger); }
-        .btn-purple { background:var(--purple); }
-        .btn-orange { background:var(--orange); }
-        .btn-outline { background:transparent; border:2px solid var(--gray); color:var(--gray); }
+        .btn { padding:5px 12px; border:none; border-radius:8px; font-weight:600; font-size:0.7rem; cursor:pointer; display:inline-flex; align-items:center; gap:5px; text-decoration:none; color:#ffffff; min-height:36px; }
+        .btn-primary { background:#4f46e5; }
+        .btn-success { background:#059669; }
+        .btn-warning { background:#d97706; }
+        .btn-danger { background:#dc2626; }
+        .btn-purple { background:#7c3aed; }
+        .btn-orange { background:#ea580c; }
+        .btn-outline { background:transparent; border:2px solid #6b7280; color:#6b7280; }
         .btn-sm { padding:3px 8px; font-size:0.6rem; min-height:30px; }
         .btn-xs { padding:2px 6px; font-size:0.5rem; min-height:26px; }
 
         /* TOOLBAR */
-        .toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:10px 14px; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; margin-bottom:10px; }
+        .toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:10px 14px; background:#f8fafc; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:10px; }
         .toolbar-left, .toolbar-right { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
-        .toolbar input { padding:6px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.8rem; background:white; }
-        .filter-select { padding:6px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.75rem; background:white; }
+        .toolbar input { padding:6px 10px; border:2px solid #d1d5db; border-radius:8px; font-size:0.8rem; background:white; }
+        .filter-select { padding:6px 10px; border:2px solid #d1d5db; border-radius:8px; font-size:0.75rem; background:white; }
 
-        /* MODAL */
-        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:1500; padding:16px; }
+        /* MODAL GENERAL */
+        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:16px; }
         .modal.active { display:flex; }
-        .modal-content { background:var(--white); border-radius:20px; padding:20px; max-width:650px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+        .modal-content { background:#ffffff; border-radius:20px; padding:20px; max-width:650px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
         .modal-content label { display:block; margin:8px 0 3px; font-weight:600; font-size:0.75rem; color:#475569; }
         .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:8px 12px; border:2px solid #d1d5db; border-radius:8px; font-size:0.85rem; }
         .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
@@ -137,14 +137,14 @@
         #qr-reader { width: 100%; max-width: 400px; margin: 10px auto; display: none; }
         #qr-reader video { border-radius: 8px; width: 100% !important; }
 
-        /* LAYOUT VISUAL PURO (IMAGEN) */
-        .layout-image-container { width:100%; margin-top:10px; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; padding:12px; text-align:center; min-height:150px; display:flex; align-items:center; justify-content:center; flex-direction:column; }
+        /* LAYOUT VISUAL PURO */
+        .layout-image-container { width:100%; margin-top:10px; background:#f8fafc; border-radius:12px; border:1px solid #e2e8f0; padding:12px; text-align:center; min-height:150px; display:flex; align-items:center; justify-content:center; flex-direction:column; }
         .layout-image-container img { max-width:100%; max-height:500px; border-radius:8px; object-fit:contain; }
         .no-image { color:#94a3b8; font-size:0.85rem; }
 
         /* TOAST */
         .toast-container { position:fixed; bottom:16px; right:16px; z-index:9999; display:flex; flex-direction:column; gap:6px; max-width:300px; width:100%; }
-        .toast { background:#0f172a; color:var(--white); padding:10px 14px; border-radius:var(--radius); font-size:0.8rem; border-left:4px solid var(--primary); box-shadow:0 4px 12px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:space-between; }
+        .toast { background:#0f172a; color:#ffffff; padding:10px 14px; border-radius:12px; font-size:0.8rem; border-left:4px solid #4f46e5; box-shadow:0 4px 12px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:space-between; }
         .empty-state { color:#94a3b8; text-align:center; padding:30px; font-size:0.85rem; }
 
         @media (max-width: 600px) {
@@ -252,7 +252,7 @@
                             <th>Glosa</th>
                             <th>Bodega</th>
                             <th>Jerarquía</th>
-                            <th>Zonas y Ubicaciones</th>
+                            <th>Ubicación</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -342,7 +342,7 @@
 
     <!-- SCRIPT PRINCIPAL OPTIMIZADO -->
     <script>
-        const STORAGE_KEY = 'wms_hsjd_full_data_v10';
+        const STORAGE_KEY = 'wms_hsjd_full_data_v11';
 
         const DEFAULT_DATA = {
             users: [
@@ -672,11 +672,11 @@
                 if(p.tipo === 'Unidad Máster') tipoIcon = '📦';
                 if(p.tipo === 'Unidad Mínima / Unidosis') tipoIcon = '💊';
 
-                // ZONAS Y UBICACIONES EN UNA SOLA COLUMNA CON POS. ABREVIADA
+                // UBICACIÓN LIMPIA (SIN COMAS)
                 const ubicsHtml = (p.ubicaciones || []).map(u => `
                     <div class="ubicacion-row-item">
                         <span class="zone-tag">Zona ${u.zona}</span> 
-                        <span>Anaquel ${u.anaquel},</span> 
+                        <span>Anaquel ${u.anaquel}</span> 
                         <span class="pos-tag">Pos. ${u.posicion}</span>
                     </div>
                 `).join('') || '<span style="color:#94a3b8;">Sin ubicaciones</span>';
@@ -706,7 +706,7 @@
             if(!confirm('¿Estás seguro de eliminar este registro del inventario?')) return;
             const db = getDB();
             const p = db.products.find(x => x.id === id);
-            db.products = db.products.filter(p => p.id !== id);
+            db.products = db.products.filter(item => item.id !== id);
             saveDB(db);
             if(p) registrarHistorial('Eliminación de producto', p.codigo, `Eliminado ítem con GTIN ${p.gtin}`);
             renderAll();
@@ -772,7 +772,7 @@
 
             let listHtml = (p.ubicaciones || []).map((u, index) => `
                 <div style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; padding:6px 10px; border-radius:6px; margin-bottom:4px; font-size:0.75rem;">
-                    <span>📍 <strong>Zona ${u.zona}</strong> - Anaquel ${u.anaquel}, Pos. ${u.posicion}</span>
+                    <span>📍 <strong>Zona ${u.zona}</strong> - Anaquel ${u.anaquel} Pos. ${u.posicion}</span>
                     <button class="btn btn-danger btn-xs" onclick="removerUbicacionDeProducto('${p.id}', ${index})">🗑️ Quitar</button>
                 </div>
             `).join('') || '<p style="color:#64748b; font-size:0.75rem;">Sin ubicaciones registradas.</p>';
@@ -925,7 +925,7 @@
             const matchPos = texto.match(/pos[i|c][i|o]n\s*([a-z0-9]+)/i) || texto.match(/,\s*([a-z]\d+)/i);
             if(matchPos) {
                 const posVal = matchPos[1].toUpperCase();
-                const inputPos = document.getElementById('mPosicion') || document.getElementById('nuevaPosicion');
+                const inputPos = document.getElementById('mPosicion') || document.getElementById('nuevoPosicion');
                 if(inputPos) inputPos.value = posVal;
             }
 
@@ -988,7 +988,7 @@
 
             let idx = 0;
             ubicsMap.forEach((val) => {
-                const labelTxt = `[${val.tipo}] Zona ${val.zona} - Anaquel ${val.anaquel}, Pos. ${val.posicion}`;
+                const labelTxt = `[${val.tipo}] Zona ${val.zona} - Anaquel ${val.anaquel} Pos. ${val.posicion}`;
                 html += `
                     <label style="border:1px solid #cbd5e1; padding:8px; border-radius:8px; background:white; display:flex; flex-direction:column; gap:4px; cursor:pointer; font-size:0.7rem;">
                         <div style="display:flex; align-items:center; justify-content:space-between;">
