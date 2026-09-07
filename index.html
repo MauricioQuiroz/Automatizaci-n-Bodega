@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Automatización Almacenamiento - Bodega Central</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.2/umd/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.1/umd/index.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root {
@@ -26,7 +29,7 @@
             --shadow-lg: 0 10px 30px rgba(0,0,0,0.15);
             --radius: 12px;
             --radius-sm: 8px;
-            --transition: all 0.2s ease;
+            --transition: all 0.25s ease;
         }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background:#f1f5f9; color:#1e293b; padding:8px; min-height:100vh; display:flex; align-items:flex-start; justify-content:center; }
@@ -34,94 +37,109 @@
 
         /* LOGIN */
         #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:16px; }
-        #loginModal .login-box { background:var(--white); padding:24px; border-radius:20px; max-width:380px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.3); text-align:center; }
-        #loginModal .login-box img { max-width:160px; height:auto; margin-bottom:10px; }
-        #loginModal h2 { font-size:1.1rem; color:#0f172a; margin-bottom:12px; }
-        #loginModal label { display:block; font-weight:600; margin:8px 0 4px; font-size:0.8rem; text-align:left; color:#334155; }
-        #loginModal input { width:100%; padding:10px 12px; border:2px solid #d1d5db; border-radius:8px; font-size:0.9rem; background:#fff; }
+        #loginModal .login-box { background:var(--white); padding:28px 30px; border-radius:24px; max-width:420px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.3); text-align:center; }
+        #loginModal .login-box .hospital-logo img { max-width:180px; height:auto; border-radius:8px; background:var(--white); padding:4px; box-shadow:0 2px 8px rgba(0,0,0,0.08); object-fit:contain; margin-bottom:10px; }
+        #loginModal .login-box .hospital-name { font-size:0.95rem; font-weight:700; color:#0f172a; }
+        #loginModal .login-box .hospital-sub { font-size:0.75rem; color:#64748b; margin-bottom:10px; font-weight:500; }
+        #loginModal .divider { width:50px; height:3px; background:var(--primary); margin:8px auto 14px; border-radius:4px; }
+        #loginModal h2 { margin-bottom:4px; font-size:1.1rem; color:#0f172a; }
+        #loginModal p { color:#64748b; margin-bottom:16px; font-size:0.85rem; }
+        #loginModal label { display:block; font-weight:600; margin:10px 0 4px; font-size:0.8rem; text-align:left; color:#334155; }
+        #loginModal input { width:100%; padding:10px 14px; border:2px solid #d1d5db; border-radius:10px; font-size:0.95rem; background:#fff; }
         #loginModal input:focus { outline:none; border-color:var(--primary); }
-        #loginModal .btn { width:100%; margin-top:14px; padding:10px; font-size:0.95rem; border-radius:8px; }
-        .login-error { color:var(--danger); font-size:0.8rem; margin-top:6px; display:none; }
+        #loginModal .btn { width:100%; margin-top:16px; padding:12px; font-size:1rem; border-radius:10px; }
+        .login-error { color:var(--danger); font-size:0.85rem; margin-top:8px; display:none; }
 
-        /* HEADER RESPONSIVE */
-        header { background: #0f172a; color: var(--white); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-        header .header-left .header-title { font-weight:700; font-size:0.9rem; color:var(--white); }
-        header .header-left .header-sub { font-size:0.5rem; color:#94a3b8; }
+        /* HEADER */
+        header { background: #0f172a; color: var(--white); padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+        header .header-left .header-title { font-weight:700; font-size:0.95rem; color:var(--white); }
+        header .header-left .header-sub { font-size:0.55rem; color:#94a3b8; }
         header .header-left .header-sub span { color:#60a5fa; }
         header .user-info { display:flex; align-items:center; gap:6px; font-size:0.7rem; flex-wrap:wrap; }
-        header .user-info select { padding:6px; border-radius:6px; border:none; background:#1e293b; color:var(--white); font-weight:500; font-size:0.7rem; }
-        
+        header .user-info select { padding:4px 8px; border-radius:6px; border:none; background:#1e293b; color:var(--white); font-weight:500; font-size:0.65rem; }
+        header .user-info .btn { background:#334155; color:var(--white); border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-weight:500; font-size:0.65rem; display:inline-flex; align-items:center; gap:4px; min-height:30px; }
+        header .user-info .btn-success { background:var(--success); }
+        header .user-info .btn-warning { background:var(--warning); }
+        header .user-info .btn-purple { background:var(--purple); }
+        header .user-info .user-name { color:#94a3b8; font-size:0.65rem; }
+        header .user-info .online-indicator { display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e; margin-right:4px; }
+
         /* NAV TACTIL FLUIDO */
-        nav { display:flex; background:#f8fafc; border-bottom:1px solid #e2e8f0; overflow-x:auto; -webkit-overflow-scrolling:touch; padding:4px; gap:4px; }
-        nav button { background:transparent; border:none; padding:10px 14px; font-weight:600; font-size:0.75rem; color:#64748b; cursor:pointer; border-bottom:3px solid transparent; flex:0 0 auto; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; min-height:44px; }
-        nav button.active { color:var(--primary); border-bottom-color:var(--primary); background:var(--white); border-radius:6px 6px 0 0; }
-        nav button .badge-nav { background:var(--primary); color:var(--white); font-size:0.55rem; padding:2px 6px; border-radius:10px; }
+        nav { display:flex; background:#f8fafc; border-bottom:1px solid #e2e8f0; overflow-x:auto; -webkit-overflow-scrolling:touch; padding:0 6px; }
+        nav button { background:transparent; border:none; padding:10px 12px; font-weight:600; font-size:0.7rem; color:#64748b; cursor:pointer; border-bottom:3px solid transparent; flex:0 0 auto; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; min-height:44px; }
+        nav button .nav-icon { font-size:0.9rem; }
+        nav button:hover { color:#0f172a; background:#f1f5f9; }
+        nav button.active { color:var(--primary); border-bottom-color:var(--primary); }
+        nav button .badge-nav { background:var(--primary); color:var(--white); font-size:0.5rem; padding:1px 6px; border-radius:10px; margin-left:4px; }
 
         /* TABS */
-        .tab-content { display:none; padding:12px; }
+        .tab-content { display:none; padding:14px; }
         .tab-content.active { display:block; }
 
         /* CARDS */
-        .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px,1fr)); gap:8px; margin-bottom:12px; }
-        .card { background:#f8fafc; padding:10px; border-radius:var(--radius); text-align:center; border:1px solid #e2e8f0; }
-        .card .number { font-size:1.4rem; font-weight:700; color:#0f172a; }
-        .card .label { color:#64748b; font-size:0.6rem; margin-top:2px; }
-        .card .card-icon { font-size:1.2rem; display:block; margin-bottom:2px; }
+        .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(100px,1fr)); gap:10px; margin-bottom:14px; }
+        .card { background:#f8fafc; padding:10px 14px; border-radius:var(--radius); text-align:center; border:1px solid #e2e8f0; }
+        .card .number { font-size:1.6rem; font-weight:700; color:#0f172a; }
+        .card .label { color:#64748b; font-size:0.65rem; margin-top:3px; }
+        .card .card-icon { font-size:1.3rem; display:block; margin-bottom:3px; }
 
         /* TABLAS Y CONTENEDORES */
-        .table-wrap { overflow-x:auto; margin-top:8px; -webkit-overflow-scrolling:touch; }
-        .table-container { max-height:55vh; overflow:auto; border-radius:var(--radius); border:1px solid #e2e8f0; -webkit-overflow-scrolling:touch; background:white; }
-        table { width:100%; border-collapse:collapse; font-size:0.75rem; min-width:600px; }
-        th { background:#f1f5f9; text-align:left; padding:8px; font-weight:600; color:#334155; position:sticky; top:0; z-index:10; font-size:0.65rem; text-transform:uppercase; }
-        td { padding:8px; border-bottom:1px solid #e2e8f0; vertical-align:middle; }
+        .table-wrap { overflow-x:auto; margin-top:10px; -webkit-overflow-scrolling:touch; }
+        .table-container { max-height:60vh; overflow:auto; border-radius:var(--radius); border:1px solid #e2e8f0; -webkit-overflow-scrolling:touch; background:white; }
+        table { width:100%; border-collapse:collapse; font-size:0.75rem; min-width:650px; }
+        th { background:#f1f5f9; text-align:left; padding:8px 10px; font-weight:600; color:#334155; position:sticky; top:0; z-index:10; font-size:0.65rem; text-transform:uppercase; }
+        td { padding:6px 8px; border-bottom:1px solid #e2e8f0; vertical-align:middle; }
         tr:hover td { background:#f8fafc; }
 
         /* BADGES & TAGS */
         .badge { display:inline-block; padding:2px 8px; border-radius:50px; font-size:0.6rem; font-weight:600; }
         .badge-admin { background:#fee2e2; color:#b91c1c; }
-        .badge-bodega { display:inline-block; padding:2px 8px; border-radius:6px; font-size:0.55rem; font-weight:700; color:var(--white); }
+        .badge-supervisor { background:#fef3c7; color:#92400e; }
+        .badge-operario { background:#dbeafe; color:#1e40af; }
+        .badge-invitado { background:#f1f5f9; color:#475569; }
+        .badge-bodega { display:inline-block; padding:2px 8px; border-radius:6px; font-size:0.5rem; font-weight:700; color:var(--white); }
         .badge-farmacos { background:#2563eb; }
         .badge-insumos { background:var(--success); }
         .badge-economato { background:var(--warning); color:#0f172a; }
-        .zone-tag { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.6rem; font-weight:700; background:#dbeafe; color:#1e40af; }
+        .zone-tag { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.55rem; font-weight:700; background:#dbeafe; color:#1e40af; }
         .ubicacion-tag { font-family:monospace; font-size:0.65rem; background:#f1f5f9; padding:2px 6px; border-radius:4px; }
 
-        /* BOTONES ADAPTADOS A TACTIL (Min 44px de altura para PDA/Celular) */
-        .btn { padding:8px 12px; border:none; border-radius:var(--radius-sm); font-weight:600; font-size:0.75rem; cursor:pointer; display:inline-flex; align-items:center; gap:5px; text-decoration:none; color:var(--white); min-height:38px; }
+        /* BOTONES */
+        .btn { padding:5px 12px; border:none; border-radius:var(--radius-sm); font-weight:600; font-size:0.7rem; cursor:pointer; display:inline-flex; align-items:center; gap:5px; text-decoration:none; color:var(--white); min-height:36px; }
         .btn-primary { background:var(--primary); }
         .btn-success { background:var(--success); }
-        .btn-warning { background:var(--warning); color:var(--white); }
+        .btn-warning { background:var(--warning); }
         .btn-danger { background:var(--danger); }
         .btn-purple { background:var(--purple); }
         .btn-orange { background:var(--orange); }
         .btn-outline { background:transparent; border:2px solid var(--gray); color:var(--gray); }
-        .btn-sm { padding:6px 10px; font-size:0.65rem; min-height:32px; }
+        .btn-sm { padding:3px 8px; font-size:0.6rem; min-height:30px; }
+        .btn-xs { padding:2px 6px; font-size:0.5rem; min-height:26px; }
 
         /* TOOLBAR */
-        .toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:8px 12px; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; margin-bottom:8px; }
+        .toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:10px 14px; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; margin-bottom:10px; }
         .toolbar-left, .toolbar-right { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
-        .toolbar input { padding:8px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.8rem; background:white; }
-        .filter-select { padding:8px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.75rem; background:white; }
+        .toolbar input { padding:6px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.8rem; background:white; }
+        .filter-select { padding:6px 10px; border:2px solid #d1d5db; border-radius:var(--radius-sm); font-size:0.75rem; background:white; }
 
         /* MODAL */
-        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:1500; padding:12px; }
+        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:1500; padding:16px; }
         .modal.active { display:flex; }
-        .modal-content { background:var(--white); border-radius:16px; padding:16px; max-width:550px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 40px rgba(0,0,0,0.3); }
-        .modal-content label { display:block; margin:6px 0 2px; font-weight:600; font-size:0.75rem; color:#475569; }
-        .modal-content input, .modal-content select { width:100%; padding:8px; border:2px solid #d1d5db; border-radius:6px; font-size:0.85rem; }
-        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+        .modal-content { background:var(--white); border-radius:20px; padding:20px; max-width:600px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+        .modal-content label { display:block; margin:8px 0 3px; font-weight:600; font-size:0.75rem; color:#475569; }
+        .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:8px 12px; border:2px solid #d1d5db; border-radius:8px; font-size:0.85rem; }
+        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
         .form-grid .full-width { grid-column:1/-1; }
 
-        /* LAYOUT RESPONSIVE */
-        .layout-container { width:100%; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; padding:12px; overflow-x:auto; }
-        .layout-grid { display:grid; grid-template-columns:repeat(10, minmax(35px, 1fr)); gap:3px; min-width:380px; }
-        .layout-cell { background:rgba(255,255,255,0.8); border-radius:3px; border:1px solid rgba(0,0,0,0.1); display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:0.5rem; font-weight:600; min-height:40px; text-align:center; padding:2px; }
-        .layout-cell.ocupado { background:rgba(22,163,74,0.2) !important; border-color:rgba(22,163,74,0.4); }
+        /* LAYOUT VISUAL PURO (IMAGEN) */
+        .layout-image-container { width:100%; margin-top:10px; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; padding:12px; text-align:center; min-height:150px; display:flex; align-items:center; justify-content:center; flex-direction:column; }
+        .layout-image-container img { max-width:100%; max-height:500px; border-radius:8px; object-fit:contain; }
+        .no-image { color:#94a3b8; font-size:0.85rem; }
 
         /* TOAST */
-        .toast-container { position:fixed; bottom:12px; right:12px; z-index:9999; display:flex; flex-direction:column; gap:6px; max-width:280px; width:100%; }
-        .toast { background:#0f172a; color:var(--white); padding:10px 12px; border-radius:8px; font-size:0.75rem; border-left:4px solid var(--primary); box-shadow:0 4px 12px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:space-between; }
-        .empty-state { color:#94a3b8; text-align:center; padding:24px; font-size:0.8rem; }
+        .toast-container { position:fixed; bottom:16px; right:16px; z-index:9999; display:flex; flex-direction:column; gap:6px; max-width:300px; width:100%; }
+        .toast { background:#0f172a; color:var(--white); padding:10px 14px; border-radius:var(--radius); font-size:0.8rem; border-left:4px solid var(--primary); box-shadow:0 4px 12px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:space-between; }
+        .empty-state { color:#94a3b8; text-align:center; padding:30px; font-size:0.85rem; }
 
         @media (max-width: 600px) {
             header { flex-direction:column; align-items:stretch; }
@@ -134,13 +152,19 @@
     <!-- LOGIN -->
     <div id="loginModal">
         <div class="login-box">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='70' viewBox='0 0 300 100'%3E%3Crect width='300' height='100' fill='white' rx='8'/%3E%3Cpath d='M70 30 h35 v12 h-20 v12 h18 v12 h-18 v14 h-15 z' fill='%23990000'/%3E%3Ccircle cx='87' cy='22' r='8' fill='%23990000'/%3E%3Cpath d='M110 20 h30 a25 25 0 0 1 0 50 h-30 z' fill='%230f4c5c'/%3E%3Ctext x='150' y='72' font-family='Arial' font-size='10' fill='%23333' text-anchor='middle' font-weight='bold'%3EHospital San Juan de Dios - CDT%3C/text%3E%3C/svg%3E" alt="Hospital San Juan de Dios">
-            <h2>Bodega Central WMS</h2>
+            <div class="hospital-logo">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='100' viewBox='0 0 300 100'%3E%3Crect width='300' height='100' fill='white' rx='8'/%3E%3Cpath d='M70 30 h35 v12 h-20 v12 h18 v12 h-18 v14 h-15 z' fill='%23990000'/%3E%3Ccircle cx='87' cy='22' r='8' fill='%23990000'/%3E%3Cpath d='M110 20 h30 a25 25 0 0 1 0 50 h-30 z' fill='%230f4c5c'/%3E%3Ctext x='150' y='72' font-family='Arial' font-size='10' fill='%23333' text-anchor='middle' font-weight='bold'%3EHospital San Juan de Dios - CDT%3C/text%3E%3Ctext x='150' y='84' font-family='Arial' font-size='9' fill='%23666' text-anchor='middle'%3EAsistencial Docente%3C/text%3E%3Ctext x='150' y='94' font-family='Arial' font-size='7' fill='%230f4c5c' text-anchor='middle' font-style='italic'%3E%22El Primero de Chile%22%3C/text%3E%3C/svg%3E" alt="Hospital San Juan de Dios">
+            </div>
+            <div class="hospital-name">Hospital San Juan de Dios - CDT Asistencial Docente</div>
+            <div class="hospital-sub">"El Primero de Chile"</div>
+            <div class="divider"></div>
+            <h2>Automatización Almacenamiento<br><span style="font-size:0.9rem; color:var(--primary); font-weight:600;">"Diseñado por Mauricio Quiroz Ayala"</span></h2>
+            <p>Ingresa tus credenciales para acceder al sistema.</p>
             <label>Usuario</label>
-            <input type="text" id="loginUser" placeholder="Usuario">
+            <input type="text" id="loginUser" placeholder="Ingresa tu usuario">
             <label>Contraseña</label>
             <input type="password" id="loginPass" placeholder="••••••••">
-            <div id="loginError" class="login-error">Credenciales incorrectas</div>
+            <div id="loginError" class="login-error">Usuario o contraseña incorrectos.</div>
             <button class="btn btn-primary" onclick="handleLogin()">Ingresar</button>
         </div>
     </div>
@@ -149,40 +173,44 @@
     <div class="app" id="app" style="display:none;">
         <header>
             <div class="header-left">
-                <div class="header-title">Automatización Almacenamiento</div>
-                <div class="header-sub">Hospital San Juan de Dios · <span>Mauricio Quiroz Ayala</span></div>
+                <div class="header-title">Automatización Almacenamiento - Bodega Central</div>
+                <div class="header-sub">Hospital San Juan de Dios · <span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
             </div>
             <div class="user-info">
+                <span class="online-indicator"></span>
+                <span class="user-name" id="currentUserDisplay">👤 Admin</span>
                 <select id="warehouseSelect" onchange="cambiarBodega()">
-                    <option value="TODAS">🏢 Todas las Bodegas</option>
+                    <option value="TODAS">🏢 Todas</option>
                 </select>
-                <button class="btn btn-success btn-sm" onclick="document.getElementById('fileInput').click()">
-                    📂 Cargar Excel
+                <button class="btn btn-success" id="btnCargarArchivo" onclick="document.getElementById('fileInput').click()">
+                    📂 Cargar Archivo
                 </button>
                 <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event)">
-                <button class="btn btn-warning btn-sm" onclick="exportarExcelCompleto()">📤 Exportar</button>
-                <button class="btn btn-danger btn-sm" onclick="logout()">Salir</button>
+                <button class="btn btn-warning" id="btnExportarArchivo" onclick="exportarExcelCompleto()">📤 Exportar</button>
+                <button class="btn btn-purple" onclick="generarQRUbicaciones()">📱 QR Ubicaciones</button>
+                <button class="btn" onclick="logout()">🚪 Salir</button>
             </div>
         </header>
 
         <nav id="mainNav">
-            <button class="active" data-tab="dashboard">📊 Dashboard</button>
-            <button data-tab="inventario">📦 Inventario <span class="badge-nav" id="inventoryBadge">0</span></button>
-            <button data-tab="layout">🗺️ Layout</button>
-            <button data-tab="movimientos">🔄 Movimientos</button>
-            <button data-tab="usuarios">👥 Usuarios</button>
-            <button data-tab="config">⚙️ Config</button>
+            <button class="active" data-tab="dashboard"><span class="nav-icon">📊</span> Dashboard</button>
+            <button data-tab="inventario"><span class="nav-icon">📦</span> Inventario <span class="badge-nav" id="inventoryBadge">0</span></button>
+            <button data-tab="layout"><span class="nav-icon">🗺️</span> Layout</button>
+            <button data-tab="movimientos"><span class="nav-icon">🔄</span> Movimientos</button>
+            <button data-tab="usuarios" id="navUsuarios"><span class="nav-icon">👥</span> Usuarios</button>
+            <button data-tab="bodegas" id="navBodegas"><span class="nav-icon">🏢</span> Bodegas</button>
+            <button data-tab="config"><span class="nav-icon">⚙️</span> Config</button>
         </nav>
 
         <!-- DASHBOARD -->
         <div id="tab-dashboard" class="tab-content active">
             <div class="card-grid">
                 <div class="card"><span class="card-icon">📦</span><div class="number" id="totalProductos">0</div><div class="label">Total productos</div></div>
-                <div class="card"><span class="card-icon">📍</span><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones</div></div>
-                <div class="card"><span class="card-icon">🔄</span><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos</div></div>
-                <div class="card"><span class="card-icon">👥</span><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios</div></div>
+                <div class="card"><span class="card-icon">📍</span><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones ocupadas</div></div>
+                <div class="card"><span class="card-icon">🔄</span><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos totales</div></div>
+                <div class="card"><span class="card-icon">👥</span><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios activos</div></div>
             </div>
-            <h3 style="font-size:0.85rem; margin-bottom:6px;">📋 Últimos Movimientos</h3>
+            <h3 style="font-size:0.9rem; margin-bottom:6px;">📋 Últimos movimientos</h3>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>Fecha</th><th>Producto</th><th>Desde</th><th>Hacia</th><th>Usuario</th></tr></thead>
@@ -195,7 +223,9 @@
         <div id="tab-inventario" class="tab-content">
             <div class="toolbar">
                 <div class="toolbar-left">
-                    <button class="btn btn-orange btn-sm" onclick="abrirModalAlmacenamiento()">📥 Recepción → Almacenar</button>
+                    <button class="btn btn-orange btn-sm" id="btnRecepcionAlmacenar" onclick="abrirModalAlmacenamiento()">
+                        📥 Recepción → Almacenar
+                    </button>
                 </div>
                 <div class="toolbar-right">
                     <input type="text" id="searchInventarioUnificado" placeholder="Buscar código o glosa..." oninput="renderInventarioUnificado()">
@@ -214,8 +244,8 @@
                             <th>GTIN</th>
                             <th>Glosa</th>
                             <th>Bodega</th>
-                            <th>Ubicación</th>
                             <th>Zona</th>
+                            <th>Ubicación</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -227,15 +257,17 @@
 
         <!-- LAYOUT -->
         <div id="tab-layout" class="tab-content">
-            <h3 style="font-size:0.9rem; margin-bottom:6px;">🗺️ Plano de Bodega</h3>
-            <div class="layout-container">
-                <div class="layout-grid" id="layoutGrid"></div>
+            <h3 style="font-size:0.95rem; margin-bottom:6px;">🗺️ Plano de la Bodega (Visual)</h3>
+            <div class="layout-image-container" id="layoutImageContainer">
+                <div id="layoutImageContent">
+                    <span class="no-image">📷 No hay imagen de plano cargada para esta bodega.<br><small>Sube una imagen desde la pestaña Configuración.</small></span>
+                </div>
             </div>
         </div>
 
         <!-- MOVIMIENTOS -->
         <div id="tab-movimientos" class="tab-content">
-            <h3 style="font-size:0.9rem; margin-bottom:6px;">📜 Historial Completo</h3>
+            <h3 style="font-size:0.9rem; margin-bottom:6px;">📜 Historial de cambios</h3>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Producto</th><th>Detalle</th></tr></thead>
@@ -246,10 +278,26 @@
 
         <!-- USUARIOS -->
         <div id="tab-usuarios" class="tab-content">
+            <div style="margin-bottom:8px;" id="divBtnNuevoUsr">
+                <button class="btn btn-primary btn-sm" onclick="mostrarModalUsuario()">➕ Nuevo Usuario</button>
+            </div>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>ID</th><th>Nombre</th><th>Perfil</th><th>Permisos</th></tr></thead>
+                    <thead><tr><th>ID</th><th>Nombre</th><th>Perfil</th><th>Permisos</th><th>Acciones</th></tr></thead>
                     <tbody id="usuariosBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- BODEGAS -->
+        <div id="tab-bodegas" class="tab-content">
+            <div style="margin-bottom:8px;" id="divBtnNuevaBodega">
+                <button class="btn btn-primary btn-sm" onclick="mostrarModalBodega()">➕ Nueva Bodega</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>ID</th><th>Nombre</th><th>Color</th><th>Acciones</th></tr></thead>
+                    <tbody id="bodegasBody"></tbody>
                 </table>
             </div>
         </div>
@@ -257,10 +305,16 @@
         <!-- CONFIG -->
         <div id="tab-config" class="tab-content">
             <h3>⚙️ Configuración del Sistema</h3>
-            <p style="font-size:0.75rem; color:#64748b; margin-top:6px;">Gestión de datos locales y respaldo offline optimizado.</p>
-            <div style="margin-top:12px; display:flex; gap:6px; flex-wrap:wrap;">
-                <button class="btn btn-warning btn-sm" onclick="exportarDatos()">📤 Exportar Backup JSON</button>
-                <button class="btn btn-danger btn-sm" onclick="resetData()">🔄 Reiniciar Base de Datos</button>
+            <div style="max-width:600px; margin-top:10px;">
+                <div style="margin-bottom:12px;" id="configLayoutSection">
+                    <label><strong>📐 Subir imagen del plano (layout visual) para la bodega actual</strong></label>
+                    <p style="font-size:0.7rem; color:#64748b; margin-bottom:4px;">Bodega seleccionada: <strong id="configBodegaNombre">Todas</strong></p>
+                    <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="padding:6px; width:100%; border:2px solid #d1d5db; border-radius:6px;">
+                </div>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <button class="btn btn-warning btn-sm" onclick="exportarDatos()">📤 Exportar Backup JSON</button>
+                    <button class="btn btn-danger btn-sm" onclick="resetData()">🔄 Reiniciar Datos</button>
+                </div>
             </div>
         </div>
     </div>
@@ -279,13 +333,16 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- SCRIPT PRINCIPAL OPTIMIZADO PARA NAVEGACIÓN FLUIDA EN MÓVIL Y PDA -->
     <script>
-        const STORAGE_KEY = 'wms_hsjd_data_v2';
-        
+        const STORAGE_KEY = 'wms_hsjd_full_data_v3';
+
         const DEFAULT_DATA = {
             users: [
                 { id: 1, nombre: 'Admin', perfil: 'admin', password: 'admin', permisos: ['lectura','escritura','administracion','carga','descarga'] },
-                { id: 2, nombre: 'Operario', perfil: 'operario', password: '1234', permisos: ['lectura','escritura'] }
+                { id: 2, nombre: 'Supervisor', perfil: 'supervisor', password: '1234', permisos: ['lectura','escritura','carga','descarga'] },
+                { id: 3, nombre: 'Operario', perfil: 'operario', password: '1234', permisos: ['lectura','escritura'] },
+                { id: 4, nombre: 'Invitado', perfil: 'invitado', password: '1234', permisos: ['lectura'] }
             ],
             warehouses: [
                 { id: 'Farmacos', nombre: 'Bodega de Fármacos', color: '#2563eb' },
@@ -293,10 +350,10 @@
                 { id: 'Economato', nombre: 'Bodega de Economato', color: '#d97706' }
             ],
             products: [
-                { codigo: '01-001-216-026', gtin: '7801234567890', glosa: 'METRONIDAZOL 500 MG/100 ML', bodega: 'Farmacos', ubicaciones: [{ ubicacion: 'PALLET_A_1', zona: 'A' }], estado: 'almacenado' }
+                { codigo: '01-001-216-026', gtin: '7801234567890', glosa: 'METRONIDAZOL 500 MG/100 ML', bodega: 'Farmacos', zona: 'A', ubicacion: 'PALLET_A_1', estado: 'Almacenado' }
             ],
             movements: [],
-            historial: []
+            layouts: {}
         };
 
         function getDB() {
@@ -316,7 +373,8 @@
         let currentUserId = null;
         let modalCallback = null;
 
-        document.addEventListener('DOMContentLoaded', () => {
+        // INICIALIZACIÓN NO BLOQUEANTE PARA MÓVILES Y PDA
+        setTimeout(() => {
             document.querySelectorAll('nav button').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -329,20 +387,22 @@
                     this.classList.add('active');
 
                     if (tabId === 'inventario') renderInventarioUnificado();
-                    if (tabId === 'layout') renderLayoutVisual();
+                    if (tabId === 'layout') cargarImagenLayout(currentWarehouse);
                     if (tabId === 'movimientos') renderHistorialCompleto();
                     if (tabId === 'usuarios') renderUsuarios();
+                    if (tabId === 'bodegas') renderBodegas();
+                    if (tabId === 'config') renderConfig();
                 });
             });
 
-            const savedUser = localStorage.getItem('wms_session');
+            const savedUser = localStorage.getItem('wms_session_user');
             if (savedUser) {
                 currentUserId = parseInt(savedUser);
                 document.getElementById('loginModal').style.display = 'none';
                 document.getElementById('app').style.display = 'block';
                 renderAll();
             }
-        });
+        }, 50);
 
         function handleLogin() {
             const u = document.getElementById('loginUser').value.trim();
@@ -352,36 +412,47 @@
             
             if (user) {
                 currentUserId = user.id;
-                localStorage.setItem('wms_session', user.id);
+                localStorage.setItem('wms_session_user', user.id);
                 document.getElementById('loginModal').style.display = 'none';
                 document.getElementById('app').style.display = 'block';
                 renderAll();
-                mostrarToast('Bienvenido ' + user.nombre);
+                mostrarToast('👋 Bienvenido ' + user.nombre + ' (' + user.perfil + ')');
             } else {
                 document.getElementById('loginError').style.display = 'block';
             }
         }
 
         function logout() {
-            localStorage.removeItem('wms_session');
+            localStorage.removeItem('wms_session_user');
             currentUserId = null;
             document.getElementById('app').style.display = 'none';
             document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        function getCurrentUser() {
+            const db = getDB();
+            return db.users.find(u => u.id === currentUserId) || null;
         }
 
         function mostrarToast(msg) {
             const c = document.getElementById('toastContainer');
             const t = document.createElement('div');
             t.className = 'toast';
-            t.innerHTML = `<span>${msg}</span>`;
+            t.innerHTML = `<span>${msg}</span><button style="background:none; border:none; color:white; cursor:pointer;" onclick="this.parentElement.remove()">✕</button>`;
             c.appendChild(t);
-            setTimeout(() => t.remove(), 3000);
+            setTimeout(() => t.remove(), 4000);
         }
 
         function renderAll() {
             const db = getDB();
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('currentUserDisplay').textContent = '👤 ' + user.nombre + ' (' + user.perfil + ')';
+                aplicarPermisosUI(user);
+            }
+
             const sel = document.getElementById('warehouseSelect');
-            sel.innerHTML = '<option value="TODAS">🏢 Todas las Bodegas</option>';
+            sel.innerHTML = '<option value="TODAS">🏢 Todas</option>';
             db.warehouses.forEach(w => {
                 sel.innerHTML += `<option value="${w.id}">${w.nombre}</option>`;
             });
@@ -389,11 +460,36 @@
 
             renderDashboard();
             renderInventarioUnificado();
-            renderLayoutVisual();
             renderHistorialCompleto();
             renderUsuarios();
+            renderBodegas();
+            renderConfig();
             
             document.getElementById('inventoryBadge').textContent = getProducts().length;
+        }
+
+        function aplicarPermisosUI(user) {
+            const perfil = user.perfil;
+            const btnCargar = document.getElementById('btnCargarArchivo');
+            const navUsr = document.getElementById('navUsuarios');
+            const navBod = document.getElementById('navBodegas');
+            const btnNewUsr = document.getElementById('divBtnNuevoUsr');
+            const btnNewBod = document.getElementById('divBtnNuevaBodega');
+            const secCfg = document.getElementById('configLayoutSection');
+
+            if (perfil === 'invitado') {
+                if(btnCargar) btnCargar.style.display = 'none';
+                if(navUsr) navUsr.style.display = 'none';
+                if(navBod) navBod.style.display = 'none';
+                if(secCfg) secCfg.style.display = 'none';
+            } else if (perfil === 'operario') {
+                if(btnCargar) btnCargar.style.display = 'none';
+                if(navUsr) navUsr.style.display = 'none';
+                if(secCfg) secCfg.style.display = 'none';
+            } else if (perfil === 'supervisor') {
+                if(btnNewUsr) btnNewUsr.style.display = 'none';
+                if(btnNewBod) btnNewBod.style.display = 'none';
+            }
         }
 
         function getProducts() {
@@ -413,7 +509,7 @@
             document.getElementById('totalProductos').textContent = prods.length;
             
             const ubics = new Set();
-            prods.forEach(p => p.ubicaciones.forEach(u => ubics.add(u.ubicacion)));
+            prods.forEach(p => { if(p.ubicacion) ubics.add(p.ubicacion); });
             document.getElementById('totalUbicaciones').textContent = ubics.size;
             document.getElementById('totalMovimientos').textContent = db.movements.length;
             document.getElementById('totalUsuarios').textContent = db.users.length;
@@ -424,6 +520,7 @@
             `).join('') || '<tr><td colspan="5" class="empty-state">Sin movimientos recientes</td></tr>';
         }
 
+        // CARGA EXCEL
         function cargarExcel(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -443,21 +540,24 @@
                             const codigo = row[keys.find(k => /COD|SKU|ID/i.test(k))] || `ITEM_${idx+1}`;
                             const glosa = row[keys.find(k => /GLOSA|NOMBRE|DESC/i.test(k))] || 'Sin descripción';
                             const gtin = row[keys.find(k => /GTIN|EAN/i.test(k))] || '';
-                            const ubicacion = row[keys.find(k => /UBICACION|RACK/i.test(k))] || 'A_1';
+                            const ubicacion = row[keys.find(k => /UBICACION|RACK/i.test(k))] || 'A1';
+                            const zona = row[keys.find(k => /ZONA/i.test(k))] || String(ubicacion)[0] || 'A';
                             
                             const existing = db.products.find(p => p.codigo === String(codigo).trim());
                             if (existing) {
                                 existing.glosa = String(glosa);
                                 existing.gtin = String(gtin);
-                                if(ubicacion) existing.ubicaciones = [{ ubicacion: String(ubicacion), zona: String(ubicacion)[0] || 'A' }];
+                                existing.ubicacion = String(ubicacion);
+                                existing.zona = String(zona);
                             } else {
                                 db.products.push({
                                     codigo: String(codigo).trim(),
                                     gtin: String(gtin),
                                     glosa: String(glosa),
                                     bodega: currentWarehouse === 'TODAS' ? 'Farmacos' : currentWarehouse,
-                                    ubicaciones: [{ ubicacion: String(ubicacion), zona: String(ubicacion)[0] || 'A' }],
-                                    estado: 'almacenado'
+                                    zona: String(zona),
+                                    ubicacion: String(ubicacion),
+                                    estado: 'Almacenado'
                                 });
                             }
                             count++;
@@ -484,8 +584,11 @@
                 prods = prods.filter(p => p.codigo.toLowerCase().includes(search) || p.glosa.toLowerCase().includes(search));
             }
             if (zona !== 'TODAS') {
-                prods = prods.filter(p => p.ubicaciones.some(u => u.zona === zona));
+                prods = prods.filter(p => p.zona === zona);
             }
+
+            const user = getCurrentUser();
+            const isAdmin = user && user.perfil === 'admin';
 
             const tbody = document.getElementById('inventarioUnificadoBody');
             tbody.innerHTML = prods.map(p => `
@@ -494,32 +597,24 @@
                     <td>${p.gtin || '-'}</td>
                     <td>${p.glosa}</td>
                     <td><span class="badge-bodega badge-${p.bodega.toLowerCase()}">${p.bodega}</span></td>
-                    <td><span class="ubicacion-tag">📍 ${p.ubicaciones[0]?.ubicacion || 'Sin ubicar'}</span></td>
-                    <td><span class="zone-tag">${p.ubicaciones[0]?.zona || 'A'}</span></td>
-                    <td><span class="badge" style="background:#dcfce7; color:#166534;">Almacenado</span></td>
+                    <td><span class="zone-tag">Zona ${p.zona || 'A'}</span></td>
+                    <td><span class="ubicacion-tag">📍 ${p.ubicacion || 'Sin ubicar'}</span></td>
+                    <td><span class="badge" style="background:#dcfce7; color:#166534;">${p.estado || 'Almacenado'}</span></td>
                     <td>
-                        <button class="btn btn-primary btn-sm" onclick="moverProductoModal('${p.codigo}')">🔄 Mover</button>
+                        <button class="btn btn-primary btn-xs" onclick="moverProductoModal('${p.codigo}')">🔄 Mover</button>
+                        ${isAdmin ? `<button class="btn btn-danger btn-xs" onclick="eliminarProducto('${p.codigo}')">🗑️</button>` : ''}
                     </td>
                 </tr>
             `).join('') || '<tr><td colspan="8" class="empty-state">No se encontraron productos</td></tr>';
         }
 
-        function renderLayoutVisual() {
-            const grid = document.getElementById('layoutGrid');
-            const prods = getProducts();
-            const ubicsOcupadas = new Set();
-            prods.forEach(p => p.ubicaciones.forEach(u => ubicsOcupadas.add(u.ubicacion)));
-
-            let html = '';
-            const zonas = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-            zonas.forEach(z => {
-                for(let i=1; i<=4; i++) {
-                    const code = `${z}${i}`;
-                    const ocupado = ubicsOcupadas.has(code) ? 'ocupado' : '';
-                    html += `<div class="layout-cell ${ocupado}"><span style="font-weight:700;">${z}</span><span style="font-size:0.45rem;">${i}</span></div>`;
-                }
-            });
-            grid.innerHTML = html;
+        function eliminarProducto(codigo) {
+            if(!confirm('¿Estás seguro de eliminar el producto ' + codigo + '?')) return;
+            const db = getDB();
+            db.products = db.products.filter(p => p.codigo !== codigo);
+            saveDB(db);
+            renderAll();
+            mostrarToast('🗑️ Producto eliminado');
         }
 
         function abrirModalAlmacenamiento() {
@@ -528,24 +623,25 @@
                     <div class="full-width"><label>Código del producto</label><input id="mCod" placeholder="Ej: 01-001"></div>
                     <div class="full-width"><label>Glosa / Descripción</label><input id="mGlosa" placeholder="Nombre del insumo"></div>
                     <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">Fármacos</option><option value="Insumos">Insumos</option><option value="Economato">Economato</option></select></div>
-                    <div><label>Ubicación Destino</label><input id="mUbic" placeholder="Ej: A_1"></div>
+                    <div><label>Zona</label><select id="mZona"><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
+                    <div class="full-width"><label>Ubicación (Ej: Anaquel 7, A2)</label><input id="mUbic" placeholder="Ej: Anaquel 7, A2"></div>
                 </div>
             `);
             modalCallback = () => {
                 const cod = document.getElementById('mCod').value.trim();
                 const glosa = document.getElementById('mGlosa').value.trim();
                 const bodega = document.getElementById('mBodega').value;
+                const zona = document.getElementById('mZona').value;
                 const ubic = document.getElementById('mUbic').value.trim();
 
                 if(!cod || !ubic) return alert('Completa los campos obligatorios');
 
                 const db = getDB();
                 db.products.push({
-                    codigo: cod, gtin: '', glosa: glosa || cod, bodega: bodega,
-                    ubicaciones: [{ ubicacion: ubic, zona: ubic[0] || 'A' }], estado: 'almacenado'
+                    codigo: cod, gtin: '', glosa: glosa || cod, bodega: bodega, zona: zona, ubicacion: ubic, estado: 'Almacenado'
                 });
                 db.movements.push({
-                    fecha: new Date().toLocaleString(), codigo: cod, desde: 'RECEPCION', hacia: ubic, usuario: 'Admin'
+                    fecha: new Date().toLocaleString(), codigo: cod, desde: 'RECEPCION', hacia: `Zona ${zona}, ${ubic}`, usuario: getCurrentUser()?.nombre || 'Admin'
                 });
                 saveDB(db);
                 renderAll();
@@ -557,17 +653,23 @@
         function moverProductoModal(codigo) {
             mostrarModal('🔄 Reubicar Producto', `
                 <p style="font-size:0.8rem; margin-bottom:8px;">Producto: <strong>${codigo}</strong></p>
-                <label>Nueva Ubicación</label><input id="nuevoUbicacion" placeholder="Ej: B_3">
+                <label>Nueva Zona</label>
+                <select id="nuevoZona"><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select>
+                <label style="margin-top:6px;">Nueva Ubicación (Ej: Anaquel 7, A2)</label>
+                <input id="nuevoUbicacion" placeholder="Ej: Anaquel 7, A2">
             `);
             modalCallback = () => {
-                const nueva = document.getElementById('nuevoUbicacion').value.trim();
-                if(!nueva) return alert('Ingresa la nueva ubicación');
+                const nuevaZona = document.getElementById('nuevoZona').value;
+                const nuevaUbic = document.getElementById('nuevoUbicacion').value.trim();
+                if(!nuevaUbic) return alert('Ingresa la nueva ubicación');
+                
                 const db = getDB();
                 const p = db.products.find(x => x.codigo === codigo);
                 if(p) {
-                    const viejo = p.ubicaciones[0]?.ubicacion || 'S/N';
-                    p.ubicaciones = [{ ubicacion: nueva, zona: nueva[0] || 'A' }];
-                    db.movements.push({ fecha: new Date().toLocaleString(), codigo: codigo, desde: viejo, hacia: nueva, usuario: 'Admin' });
+                    const viejo = `Zona ${p.zona}, ${p.ubicacion}`;
+                    p.zona = nuevaZona;
+                    p.ubicacion = nuevaUbic;
+                    db.movements.push({ fecha: new Date().toLocaleString(), codigo: codigo, desde: viejo, hacia: `Zona ${nuevaZona}, ${nuevaUbic}`, usuario: getCurrentUser()?.nombre || 'Admin' });
                     saveDB(db);
                     renderAll();
                     cerrarModal();
@@ -576,32 +678,193 @@
             };
         }
 
+        // LAYOUT VISUAL PURO (IMAGEN)
+        function subirImagenLayout(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const db = getDB();
+                if(!db.layouts) db.layouts = {};
+                db.layouts[currentWarehouse] = e.target.result;
+                saveDB(db);
+                cargarImagenLayout(currentWarehouse);
+                mostrarToast('✅ Imagen de plano actualizada');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function cargarImagenLayout(bodegaId) {
+            const container = document.getElementById('layoutImageContent');
+            const db = getDB();
+            const imgData = db.layouts ? db.layouts[bodegaId] : null;
+
+            if (imgData) {
+                container.innerHTML = `<img src="${imgData}" alt="Layout">`;
+            } else {
+                container.innerHTML = `<span class="no-image">📷 No hay imagen de plano cargada para ${bodegaId}.<br><small>Sube una imagen desde Configuración.</small></span>`;
+            }
+        }
+
+        // GENERADOR DE QR
+        function generarQRUbicaciones() {
+            const db = getDB();
+            const prods = getProducts();
+            const ubics = new Set();
+            prods.forEach(p => { if(p.ubicacion) ubics.add(`Zona ${p.zona}: ${p.ubicacion}`); });
+
+            if(ubics.size === 0) return alert('No hay ubicaciones registradas.');
+
+            let html = `<h3>📱 Códigos QR de Ubicaciones</h3><div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px,1fr)); gap:8px; margin-top:10px; max-height:60vh; overflow:auto;">`;
+            let idx = 0;
+            ubics.forEach(u => {
+                html += `<div style="border:1px solid #ddd; padding:8px; text-align:center; border-radius:6px; background:white;">
+                    <div id="qrc_${idx}" style="font-size:0.7rem; font-weight:bold; margin-bottom:4px;">📍 ${u}</div>
+                </div>`;
+                idx++;
+            });
+            html += `</div><div style="margin-top:10px; text-align:right;"><button class="btn btn-primary btn-sm" onclick="window.print()">🖨️ Imprimir</button></div>`;
+            mostrarModal('QR de Ubicaciones', html);
+            document.getElementById('modalActionBtn').style.display = 'none';
+        }
+
+        // MANTENEDOR DE USUARIOS
+        function renderUsuarios() {
+            const db = getDB();
+            const tbody = document.getElementById('usuariosBody');
+            const user = getCurrentUser();
+            const isAdmin = user && user.perfil === 'admin';
+
+            tbody.innerHTML = db.users.map(u => `
+                <tr>
+                    <td>${u.id}</td>
+                    <td>${u.nombre}</td>
+                    <td><span class="badge badge-${u.perfil}">${u.perfil}</span></td>
+                    <td>${u.permisos.join(', ')}</td>
+                    <td>${isAdmin && u.id !== 1 ? `<button class="btn btn-danger btn-xs" onclick="eliminarUsuario(${u.id})">🗑️</button>` : 'Principal'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function mostrarModalUsuario() {
+            mostrarModal('➕ Nuevo Usuario', `
+                <div class="form-grid">
+                    <div class="full-width"><label>Nombre</label><input id="uNombre" placeholder="Nombre"></div>
+                    <div class="full-width"><label>Contraseña</label><input id="uPass" type="password" placeholder="Contraseña"></div>
+                    <div><label>Perfil</label><select id="uPerfil"><option value="admin">Admin</option><option value="supervisor">Supervisor</option><option value="operario">Operario</option><option value="invitado">Invitado</option></select></div>
+                    <div><label>Permisos</label><input id="uPerm" value="lectura, escritura"></div>
+                </div>
+            `);
+            modalCallback = () => {
+                const nombre = document.getElementById('uNombre').value.trim();
+                const pass = document.getElementById('uPass').value.trim();
+                const perfil = document.getElementById('uPerfil').value;
+                const perm = document.getElementById('uPerm').value.split(',').map(s=>s.trim());
+                if(!nombre || !pass) return alert('Completa los campos');
+
+                const db = getDB();
+                const newId = db.users.length > 0 ? Math.max(...db.users.map(x=>x.id))+1 : 1;
+                db.users.push({ id: newId, nombre, password: pass, perfil, permisos: perm });
+                saveDB(db);
+                renderAll();
+                cerrarModal();
+                mostrarToast('Usuario creado con éxito');
+            };
+        }
+
+        function eliminarUsuario(id) {
+            if(!confirm('¿Eliminar usuario?')) return;
+            const db = getDB();
+            db.users = db.users.filter(u => u.id !== id);
+            saveDB(db);
+            renderAll();
+        }
+
+        // MANTENEDOR DE BODEGAS
+        function renderBodegas() {
+            const db = getDB();
+            const tbody = document.getElementById('bodegasBody');
+            const user = getCurrentUser();
+            const isAdmin = user && user.perfil === 'admin';
+
+            tbody.innerHTML = db.warehouses.map(w => `
+                <tr>
+                    <td><strong>${w.id}</strong></td>
+                    <td>${w.nombre}</td>
+                    <td><span style="display:inline-block; width:14px; height:14px; background:${w.color}; border-radius:3px;"></span></td>
+                    <td>${isAdmin ? `<button class="btn btn-danger btn-xs" onclick="eliminarBodega('${w.id}')">🗑️</button>` : 'Predeterminada'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function mostrarModalBodega() {
+            mostrarModal('🏢 Nueva Bodega', `
+                <div class="form-grid">
+                    <div class="full-width"><label>ID (Ej: Farmacos2)</label><input id="bId" placeholder="ID único"></div>
+                    <div class="full-width"><label>Nombre</label><input id="bNombre" placeholder="Nombre de bodega"></div>
+                    <div><label>Color</label><input id="bColor" type="color" value="#2563eb" style="height:36px; padding:2px;"></div>
+                </div>
+            `);
+            modalCallback = () => {
+                const id = document.getElementById('bId').value.trim();
+                const nombre = document.getElementById('bNombre').value.trim();
+                const color = document.getElementById('bColor').value;
+                if(!id || !nombre) return alert('Completa los campos');
+
+                const db = getDB();
+                if(db.warehouses.some(w => w.id === id)) return alert('Ya existe esa bodega');
+                db.warehouses.push({ id, nombre, color });
+                saveDB(db);
+                renderAll();
+                cerrarModal();
+                mostrarToast('Bodega creada');
+            };
+        }
+
+        function eliminarBodega(id) {
+            if(!confirm('¿Eliminar bodega?')) return;
+            const db = getDB();
+            db.warehouses = db.warehouses.filter(w => w.id !== id);
+            saveDB(db);
+            renderAll();
+        }
+
+        function renderConfig() {
+            const db = getDB();
+            const wh = db.warehouses.find(w => w.id === currentWarehouse);
+            document.getElementById('configBodegaNombre').textContent = wh ? wh.nombre : 'Todas';
+        }
+
         function renderHistorialCompleto() {
             const db = getDB();
             const tbody = document.getElementById('historialCompletoBody');
             tbody.innerHTML = db.movements.slice().reverse().map(m => `
                 <tr><td>${m.fecha}</td><td><strong>${m.usuario}</strong></td><td>MOVIMIENTO</td><td>${m.codigo}</td><td>${m.desde} → ${m.hacia}</td></tr>
-            `).join('') || '<tr><td colspan="5" class="empty-state">Sin historial disponible</td></tr>';
+            `).join('') || '<tr><td colspan="5" class="empty-state">Sin historial</td></tr>';
         }
 
-        function renderUsuarios() {
-            const db = getDB();
-            const tbody = document.getElementById('usuariosBody');
-            tbody.innerHTML = db.users.map(u => `
-                <tr><td>${u.id}</td><td>${u.nombre}</td><td><span class="badge badge-admin">${u.perfil}</span></td><td>${u.permisos.join(', ')}</td></tr>
-            `).join('');
+        function exportarExcelCompleto() {
+            const prods = getProducts();
+            if(prods.length === 0) return alert('No hay productos');
+            const ws = XLSX.utils.json_to_sheet(prods.map(p => ({
+                'Código': p.codigo, 'GTIN': p.gtin || '', 'Glosa': p.glosa, 'Bodega': p.bodega, 'Zona': p.zona, 'Ubicación': p.ubicacion, 'Estado': p.estado
+            })));
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
+            XLSX.writeFile(wb, 'inventario_bodega.xlsx');
+            mostrarToast('✅ Excel exportado');
         }
 
         function exportarDatos() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(localStorage.getItem(STORAGE_KEY));
-            const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", "wms_backup_hsjd.json");
-            dlAnchor.click();
+            const dl = document.createElement('a');
+            dl.setAttribute("href", dataStr);
+            dl.setAttribute("download", "wms_backup.json");
+            dl.click();
         }
 
         function resetData() {
-            if(confirm('¿Reiniciar toda la base de datos local?')) {
+            if(confirm('¿Reiniciar base de datos local?')) {
                 localStorage.removeItem(STORAGE_KEY);
                 location.reload();
             }
@@ -611,6 +874,7 @@
             document.getElementById('modalTitle').textContent = titulo;
             document.getElementById('modalBody').innerHTML = html;
             document.getElementById('modal').classList.add('active');
+            document.getElementById('modalActionBtn').style.display = 'inline-flex';
         }
 
         function cerrarModal() {
