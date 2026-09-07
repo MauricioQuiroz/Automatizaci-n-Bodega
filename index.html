@@ -96,7 +96,7 @@
         .badge-economato { background:var(--warning); color:#0f172a; }
         .zone-tag { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:700; background:#dbeafe; color:#1e40af; }
         .type-tag { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.6rem; font-weight:700; background:#f3e8ff; color:#7e22ce; }
-        .ubicacion-tag { font-family:monospace; font-size:0.65rem; background:#f1f5f9; padding:2px 6px; border-radius:4px; }
+        .ubicacion-tag { font-family:monospace; font-size:0.65rem; background:#f1f5f9; padding:2px 6px; border-radius:4px; margin-bottom:2px; display:inline-block; }
         .gtin-tag { font-family:monospace; font-size:0.65rem; background:#fef9c3; color:#854d0e; padding:2px 6px; border-radius:4px; font-weight:600; }
 
         /* BOTONES */
@@ -120,7 +120,7 @@
         /* MODAL */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:1500; padding:16px; }
         .modal.active { display:flex; }
-        .modal-content { background:var(--white); border-radius:20px; padding:20px; max-width:600px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+        .modal-content { background:var(--white); border-radius:20px; padding:20px; max-width:650px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
         .modal-content label { display:block; margin:8px 0 3px; font-weight:600; font-size:0.75rem; color:#475569; }
         .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:8px 12px; border:2px solid #d1d5db; border-radius:8px; font-size:0.85rem; }
         .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
@@ -245,8 +245,7 @@
                             <th>Glosa</th>
                             <th>Bodega</th>
                             <th>Jerarquía</th>
-                            <th>Zona</th>
-                            <th>Ubicación</th>
+                            <th>Zonas y Ubicaciones</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -336,7 +335,7 @@
 
     <!-- SCRIPT PRINCIPAL OPTIMIZADO -->
     <script>
-        const STORAGE_KEY = 'wms_hsjd_full_data_v8';
+        const STORAGE_KEY = 'wms_hsjd_full_data_v9';
 
         const DEFAULT_DATA = {
             users: [
@@ -351,7 +350,7 @@
                 { id: 'Economato', nombre: 'Bodega de Economato', color: '#d97706' }
             ],
             products: [
-                { id: '1', codigo: '01-001-216-026', gtin: '7801234567890', glosa: 'METRONIDAZOL 500 MG/100 ML', bodega: 'Farmacos', tipo: 'Full Space', zona: 'G', anaquel: '2', posicion: 'A4', estado: 'Almacenado' }
+                { id: '1', codigo: '01-001-216-026', gtin: '7801234567890', glosa: 'METRONIDAZOL 500 MG/100 ML', bodega: 'Farmacos', tipo: 'Unidad Comercial', ubicaciones: [{ zona: 'G', anaquel: '2', posicion: 'A4' }, { zona: 'G', anaquel: '2', posicion: 'B1' }], estado: 'Almacenado' }
             ],
             movements: [],
             layouts: {}
@@ -438,7 +437,7 @@
                 <label style="margin-top:6px;">Nueva Contraseña</label>
                 <input id="recPass" type="password" placeholder="Nueva contraseña">
             `);
-            modalActionBtn.textContent = 'Actualizar Contraseña';
+            document.getElementById('modalActionBtn').textContent = 'Actualizar Contraseña';
             modalCallback = () => {
                 const uName = document.getElementById('recUser').value.trim();
                 const nPass = document.getElementById('recPass').value.trim();
@@ -542,7 +541,11 @@
             document.getElementById('totalProductos').textContent = prods.length;
             
             const ubics = new Set();
-            prods.forEach(p => { if(p.anaquel || p.posicion) ubics.add(`${p.zona}-${p.anaquel}-${p.posicion}`); });
+            prods.forEach(p => { 
+                if(p.ubicaciones) {
+                    p.ubicaciones.forEach(u => ubics.add(`${u.zona}-${u.anaquel}-${u.posicion}`));
+                }
+            });
             document.getElementById('totalUbicaciones').textContent = ubics.size;
             document.getElementById('totalMovimientos').textContent = db.movements.length;
             document.getElementById('totalUsuarios').textContent = db.users.length;
@@ -572,12 +575,15 @@
                             const codigo = row[keys.find(k => /COD|SKU|ID/i.test(k))] || `ITEM_${idx+1}`;
                             const glosa = row[keys.find(k => /GLOSA|NOMBRE|DESC/i.test(k))] || 'Sin descripción';
                             const gtin = String(row[keys.find(k => /GTIN|EAN/i.test(k))] || ('780' + Math.floor(1000000000 + Math.random()*9000000000))).trim();
-                            const tipoRaw = row[keys.find(k => /TIPO|JERARQUIA|ALMACENAMIENTO/i.test(k))] || 'Full Space';
+                            const tipoRaw = row[keys.find(k => /TIPO|JERARQUIA|ALMACENAMIENTO/i.test(k))] || 'Unidad Comercial';
                             const zonaRaw = row[keys.find(k => /ZONA/i.test(k))] || 'A';
                             const anaquelRaw = row[keys.find(k => /ANAQUEL|RACK|ALTURA/i.test(k))] || '1';
                             const posicionRaw = row[keys.find(k => /POSICION|UBICACION/i.test(k))] || 'A1';
                             
-                            const tipo = /pallet|master|caja/i.test(tipoRaw) ? 'Pallet' : 'Full Space';
+                            let tipo = 'Unidad Comercial';
+                            if(/master|caja/i.test(tipoRaw)) tipo = 'Unidad Máster';
+                            else if(/minima|unidosis/i.test(tipoRaw)) tipo = 'Unidad Mínima / Unidosis';
+
                             const zona = String(zonaRaw).replace(/zona/gi, '').trim() || 'A';
                             const anaquel = String(anaquelRaw).replace(/anaquel/gi, '').trim() || '1';
                             const posicion = String(posicionRaw).trim();
@@ -587,9 +593,8 @@
                                 existing.codigo = String(codigo).trim();
                                 existing.glosa = String(glosa);
                                 existing.tipo = tipo;
-                                existing.zona = zona;
-                                existing.anaquel = anaquel;
-                                existing.posicion = posicion;
+                                if(!existing.ubicaciones) existing.ubicaciones = [];
+                                existing.ubicaciones.push({ zona, anaquel, posicion });
                             } else {
                                 const newId = '_' + Math.random().toString(36).substr(2, 9);
                                 db.products.push({
@@ -599,9 +604,7 @@
                                     glosa: String(glosa),
                                     bodega: currentWarehouse === 'TODAS' ? 'Farmacos' : currentWarehouse,
                                     tipo: tipo,
-                                    zona: zona,
-                                    anaquel: anaquel,
-                                    posicion: posicion,
+                                    ubicaciones: [{ zona, anaquel, posicion }],
                                     estado: 'Almacenado'
                                 });
                             }
@@ -629,7 +632,7 @@
                 prods = prods.filter(p => p.codigo.toLowerCase().includes(search) || p.glosa.toLowerCase().includes(search) || p.gtin.toLowerCase().includes(search));
             }
             if (zona !== 'TODAS') {
-                prods = prods.filter(p => p.zona === zona);
+                prods = prods.filter(p => p.ubicaciones && p.ubicaciones.some(u => u.zona === zona));
             }
 
             const user = getCurrentUser();
@@ -637,24 +640,29 @@
 
             const tbody = document.getElementById('inventarioUnificadoBody');
             tbody.innerHTML = prods.map(p => {
-                const tipoLbl = p.tipo === 'Pallet' ? '📦 Caja Máster / Pallet' : '🏗️ Unidad Comercial / Full Space';
-                const uText = `Anaquel ${p.anaquel || '1'}, ${p.posicion || 'A1'}`;
+                let tipoIcon = '🏗️';
+                if(p.tipo === 'Unidad Máster') tipoIcon = '📦';
+                if(p.tipo === 'Unidad Mínima / Unidosis') tipoIcon = '💊';
+
+                const ubicsHtml = (p.ubicaciones || []).map(u => `
+                    <div><span class="zone-tag">${u.zona}</span> <span class="ubicacion-tag">Anaquel ${u.anaquel}, ${u.posicion}</span></div>
+                `).join('') || '<span style="color:#94a3b8;">Sin ubicaciones</span>';
+
                 return `
                 <tr>
                     <td><strong>${p.codigo}</strong></td>
                     <td><span class="gtin-tag">${p.gtin || '-'}</span></td>
                     <td>${p.glosa}</td>
                     <td><span class="badge-bodega badge-${p.bodega.toLowerCase()}">${p.bodega}</span></td>
-                    <td><span class="type-tag">${tipoLbl}</span></td>
-                    <td><span class="zone-tag">${p.zona || 'A'}</span></td>
-                    <td><span class="ubicacion-tag">📍 ${uText}</span></td>
+                    <td><span class="type-tag">${tipoIcon} ${p.tipo || 'Unidad Comercial'}</span></td>
+                    <td>${ubicsHtml}</td>
                     <td><span class="badge" style="background:#dcfce7; color:#166534;">${p.estado || 'Almacenado'}</span></td>
                     <td>
-                        <button class="btn btn-primary btn-xs" onclick="moverProductoModal('${p.id}')">🔄 Mover</button>
-                        ${isAdmin ? `<button class="btn btn-danger btn-xs" onclick="eliminarProducto('${p.id}')">🗑️</button>` : ''}
+                        <button class="btn btn-primary btn-xs" onclick="gestionarUbicacionesModal('${p.id}')">📍 Gestionar Ubicaciones</button>
+                        ${isAdmin ? `<button class="btn btn-danger btn-xs" onclick="eliminarProducto('${p.id}')" style="margin-top:4px;">🗑️ Eliminar</button>` : ''}
                     </td>
                 </tr>
-            `}).join('') || '<tr><td colspan="9" class="empty-state">No se encontraron productos</td></tr>';
+            `}).join('') || '<tr><td colspan="8" class="empty-state">No se encontraron productos</td></tr>';
         }
 
         function eliminarProducto(id) {
@@ -678,7 +686,7 @@
                     <div class="full-width"><label>GTIN (GS1 / Código de Barras)</label><input id="mGtin" value="${defaultGtin}" placeholder="GTIN-13 o GTIN-14"></div>
                     <div class="full-width"><label>Glosa / Descripción</label><input id="mGlosa" placeholder="Nombre del insumo"></div>
                     <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">Fármacos</option><option value="Insumos">Insumos</option><option value="Economato">Economato</option></select></div>
-                    <div><label>Jerarquía / Tipo</label><select id="mTipo"><option value="Full Space">Full Space</option><option value="Pallet">Pallet / Caja Máster</option></select></div>
+                    <div><label>Jerarquía / Tipo</label><select id="mTipo"><option value="Unidad Comercial">Unidad Comercial</option><option value="Unidad Máster">Unidad Máster</option><option value="Unidad Mínima / Unidosis">Unidad Mínima / Unidosis</option></select></div>
                     <div><label>Zona</label><select id="mZona"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option><option value="I">I</option><option value="J">J</option></select></div>
                     <div><label>Nº de Anaquel / Rack / Altura</label><input id="mAnaquel" placeholder="Ej: 7"></div>
                     <div class="full-width"><label>Posición</label><input id="mPosicion" placeholder="Ej: A4"></div>
@@ -698,10 +706,17 @@
                 if(!cod || !gtin || !anaquel || !posicion) return alert('Completa los campos obligatorios');
 
                 const db = getDB();
-                const newId = '_' + Math.random().toString(36).substr(2, 9);
-                db.products.push({
-                    id: newId, codigo: cod, gtin: gtin, glosa: glosa || cod, bodega: bodega, tipo: tipo, zona: zona, anaquel: anaquel, posicion: posicion, estado: 'Almacenado'
-                });
+                const existing = db.products.find(p => p.gtin === gtin);
+                if (existing) {
+                    if(!existing.ubicaciones) existing.ubicaciones = [];
+                    existing.ubicaciones.push({ zona, anaquel, posicion });
+                    existing.tipo = tipo;
+                } else {
+                    const newId = '_' + Math.random().toString(36).substr(2, 9);
+                    db.products.push({
+                        id: newId, codigo: cod, gtin: gtin, glosa: glosa || cod, bodega: bodega, tipo: tipo, ubicaciones: [{ zona, anaquel, posicion }], estado: 'Almacenado'
+                    });
+                }
                 db.movements.push({
                     fecha: new Date().toLocaleString(), codigo: `${cod} (GTIN: ${gtin})`, desde: 'RECEPCION', hacia: `[${tipo}] Zona ${zona}, Anaquel ${anaquel}, ${posicion}`, usuario: getCurrentUser()?.nombre || 'Admin'
                 });
@@ -712,45 +727,76 @@
             };
         }
 
-        function moverProductoModal(id) {
+        // GESTIÓN DE MÚLTIPLES UBICACIONES DESDE ACCIONES
+        function gestionarUbicacionesModal(id) {
             const db = getDB();
             const p = db.products.find(x => x.id === id);
             if(!p) return;
 
-            mostrarModal('🔄 Reubicar Producto', `
-                <div style="margin-bottom:10px; background:#eef2ff; padding:8px; border-radius:8px; text-align:center;">
-                    <button class="btn btn-purple btn-sm" onclick="iniciarEscanerQR('reubicar')">📷 Escanear QR de Ubicación</button>
+            let listHtml = (p.ubicaciones || []).map((u, index) => `
+                <div style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; padding:6px 10px; border-radius:6px; margin-bottom:4px; font-size:0.75rem;">
+                    <span>📍 <strong>Zona ${u.zona}</strong> - Anaquel ${u.anaquel}, Pos. ${u.posicion}</span>
+                    <button class="btn btn-danger btn-xs" onclick="removerUbicacionDeProducto('${p.id}', ${index})">🗑️ Quitar</button>
+                </div>
+            `).join('') || '<p style="color:#64748b; font-size:0.75rem;">Sin ubicaciones registradas.</p>';
+
+            mostrarModal('📍 Gestionar Ubicaciones del Producto', `
+                <p style="font-size:0.8rem; margin-bottom:6px;"><strong>${p.glosa}</strong> (GTIN: <span class="gtin-tag">${p.gtin}</span>)</p>
+                <label>Jerarquía / Tipo</label>
+                <select id="editTipo" style="margin-bottom:8px;">
+                    <option value="Unidad Comercial" ${p.tipo==='Unidad Comercial'?'selected':''}>Unidad Comercial</option>
+                    <option value="Unidad Máster" ${p.tipo==='Unidad Máster'?'selected':''}>Unidad Máster</option>
+                    <option value="Unidad Mínima / Unidosis" ${p.tipo==='Unidad Mínima / Unidosis'?'selected':''}>Unidad Mínima / Unidosis</option>
+                </select>
+                <label>Ubicaciones Actuales:</label>
+                <div style="max-height:120px; overflow-y:auto; border:1px solid #e2e8f0; padding:6px; border-radius:8px; margin-bottom:10px;">
+                    ${listHtml}
+                </div>
+                <hr style="border:0; border-top:1px solid #e2e8f0; margin:10px 0;">
+                <h4 style="font-size:0.8rem; margin-bottom:6px;">➕ Agregar Nueva Ubicación</h4>
+                <div style="background:#eef2ff; padding:6px; border-radius:8px; text-align:center; margin-bottom:6px;">
+                    <button class="btn btn-purple btn-xs" onclick="iniciarEscanerQR('agregarUbicacion')">📷 Escanear QR para Agregar</button>
                     <div id="qr-reader"></div>
                 </div>
-                <p style="font-size:0.8rem; margin-bottom:8px;">Código: <strong>${p.codigo}</strong> | GTIN: <span class="gtin-tag">${p.gtin}</span></p>
-                <label>Jerarquía / Tipo</label>
-                <select id="nuevoTipo"><option value="Full Space" ${p.tipo==='Full Space'?'selected':''}>Full Space</option><option value="Pallet" ${p.tipo==='Pallet'?'selected':''}>Pallet / Caja Máster</option></select>
-                <label style="margin-top:6px;">Nueva Zona</label>
-                <select id="nuevoZona"><option value="${p.zona}">${p.zona}</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option><option value="I">I</option><option value="J">J</option></select>
-                <label style="margin-top:6px;">Nuevo Nº de Anaquel / Rack / Altura</label>
-                <input id="nuevoAnaquel" value="${p.anaquel || ''}" placeholder="Ej: 7">
-                <label style="margin-top:6px;">Nueva Posición</label>
-                <input id="nuevoPosicion" value="${p.posicion || ''}" placeholder="Ej: A4">
+                <div class="form-grid">
+                    <div><label>Zona</label><select id="nuevaZona"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option><option value="I">I</option><option value="J">J</option></select></div>
+                    <div><label>Nº Anaquel</label><input id="nuevoAnaquel" placeholder="Ej: 2"></div>
+                    <div class="full-width"><label>Posición</label><input id="nuevaPosicion" placeholder="Ej: B1"></div>
+                </div>
             `);
-            modalCallback = () => {
+
+            document.getElementById('modalActionBtn').textContent = '➕ Agregar Ubicación';
+            document.getElementById('modalActionBtn').onclick = () => {
                 detenerEscanerQR();
-                const nuevoTipo = document.getElementById('nuevoTipo').value;
-                const nuevaZona = document.getElementById('nuevoZona').value;
-                const nuevoAnaq = document.getElementById('nuevoAnaquel').value.trim();
-                const nuevaPos = document.getElementById('nuevoPosicion').value.trim();
-                if(!nuevoAnaq || !nuevaPos) return alert('Ingresa el anaquel y la posición');
-                
-                const viejo = `[${p.tipo || 'Full Space'}] Zona ${p.zona}, Anaquel ${p.anaquel}, ${p.posicion}`;
+                const zona = document.getElementById('nuevaZona').value;
+                const anaquel = document.getElementById('nuevoAnaquelCur' in window ? '' : 'nuevoAnaquel').value.trim();
+                const posicion = document.getElementById('nuevaPosicion').value.trim();
+                const nuevoTipo = document.getElementById('editTipo').value;
+
+                if(!anaquel || !posicion) return alert('Ingresa el anaquel y la posición');
+
                 p.tipo = nuevoTipo;
-                p.zona = nuevaZona;
-                p.anaquel = nuevoAnaq;
-                p.posicion = nuevaPos;
-                db.movements.push({ fecha: new Date().toLocaleString(), codigo: `${p.codigo} (GTIN: ${p.gtin})`, desde: viejo, hacia: `[${nuevoTipo}] Zona ${nuevaZona}, Anaquel ${nuevoAnaq}, ${nuevaPos}`, usuario: getCurrentUser()?.nombre || 'Admin' });
+                if(!p.ubicaciones) p.ubicaciones = [];
+                p.ubicaciones.push({ zona, anaquel, posicion });
+
+                db.movements.push({ fecha: new Date().toLocaleString(), codigo: `${p.codigo} (GTIN: ${p.gtin})`, desde: 'GESTION', hacia: `[${nuevoTipo}] Zona ${zona}, Anaquel ${anaquel}, ${posicion}`, usuario: getCurrentUser()?.nombre || 'Admin' });
                 saveDB(db);
+                gestionarUbicacionesModal(p.id); // Recargar modal
                 renderAll();
-                cerrarModal();
-                mostrarToast('Producto reubicado correctamente');
+                mostrarToast('✅ Ubicación agregada con éxito');
             };
+        }
+
+        function removerUbicacionDeProducto(prodId, index) {
+            const db = getDB();
+            const p = db.products.find(x => x.id === prodId);
+            if(p && p.ubicaciones) {
+                p.ubicaciones.splice(index, 1);
+                saveDB(db);
+                gestionarUbicacionesModal(prodId);
+                renderAll();
+                mostrarToast('🗑️ Ubicación eliminada');
+            }
         }
 
         // LÓGICA DE ESCANEO Y AUTO-ASIGNACIÓN QR
@@ -770,7 +816,7 @@
                     procesarTextoQR(decodedText);
                     detenerEscanerQR();
                 },
-                (errorMessage) => { /* Ignorar errores de escaneo continuo */ }
+                (errorMessage) => { }
             ).catch(err => {
                 alert("No se pudo encender la cámara: " + err);
             });
@@ -792,27 +838,42 @@
         function procesarTextoQR(texto) {
             try {
                 const parsed = JSON.parse(texto);
-                if(parsed.zona) document.getElementById(document.getElementById('mZona') ? 'mZona' : 'nuevoZona').value = parsed.zona;
-                if(parsed.tipo) document.getElementById(document.getElementById('mTipo') ? 'mTipo' : 'nuevoTipo').value = parsed.tipo;
-                if(parsed.anaquel) document.getElementById(document.getElementById('mAnaquel') ? 'mAnaquel' : 'nuevoAnaquel').value = parsed.anaquel;
-                if(parsed.posicion) document.getElementById(document.getElementById('mPosicion') ? 'mPosicion' : 'nuevoPosicion').value = parsed.posicion;
+                if(parsed.zona) {
+                    const el = document.getElementById('mZona') || document.getElementById('nuevaZona');
+                    if(el) el.value = parsed.zona;
+                }
+                if(parsed.tipo) {
+                    const el = document.getElementById('mTipo') || document.getElementById('editTipo');
+                    if(el) el.value = parsed.tipo;
+                }
+                if(parsed.anaquel) {
+                    const el = document.getElementById('mAnaquel') || document.getElementById('nuevoAnaquel');
+                    if(el) el.value = parsed.anaquel;
+                }
+                if(parsed.posicion) {
+                    const el = document.getElementById('mPosicion') || document.getElementById('nuevaPosicion');
+                    if(el) el.value = parsed.posicion;
+                }
                 mostrarToast('📍 Ubicación asignada por QR con éxito');
                 return;
             } catch(e) {}
 
             const txt = texto.toLowerCase();
-            if(txt.includes('pallet') || txt.includes('caja máster')) {
-                const sel = document.getElementById('mTipo') || document.getElementById('nuevoTipo');
-                if(sel) sel.value = 'Pallet';
-            } else if(txt.includes('full space') || txt.includes('unidad')) {
-                const sel = document.getElementById('mTipo') || document.getElementById('nuevoTipo');
-                if(sel) sel.value = 'Full Space';
+            if(txt.includes('máster') || txt.includes('caja')) {
+                const sel = document.getElementById('mTipo') || document.getElementById('editTipo');
+                if(sel) sel.value = 'Unidad Máster';
+            } else if(txt.includes('unidosis') || txt.includes('mínima')) {
+                const sel = document.getElementById('mTipo') || document.getElementById('editTipo');
+                if(sel) sel.value = 'Unidad Mínima / Unidosis';
+            } else if(txt.includes('comercial')) {
+                const sel = document.getElementById('mTipo') || document.getElementById('editTipo');
+                if(sel) sel.value = 'Unidad Comercial';
             }
 
             const matchZona = texto.match(/zona\s*([a-j])/i) || texto.match(/z([a-j])/i);
             if(matchZona) {
                 const zonaVal = matchZona[1].toUpperCase();
-                const selZona = document.getElementById('mZona') || document.getElementById('nuevoZona');
+                const selZona = document.getElementById('mZona') || document.getElementById('nuevaZona');
                 if(selZona) selZona.value = zonaVal;
             }
 
@@ -826,7 +887,7 @@
             const matchPos = texto.match(/pos[i|c][i|o]n\s*([a-z0-9]+)/i) || texto.match(/,\s*([a-z]\d+)/i);
             if(matchPos) {
                 const posVal = matchPos[1].toUpperCase();
-                const inputPos = document.getElementById('mPosicion') || document.getElementById('nuevoPosicion');
+                const inputPos = document.getElementById('mPosicion') || document.getElementById('nuevaPosicion');
                 if(inputPos) inputPos.value = posVal;
             }
 
@@ -866,9 +927,11 @@
             const ubicsMap = new Map();
             
             prods.forEach(p => {
-                if(p.zona && p.anaquel && p.posicion) {
-                    const key = `${p.tipo || 'Full Space'}|${p.zona}|${p.anaquel}|${p.posicion}`;
-                    ubicsMap.set(key, { tipo: p.tipo || 'Full Space', zona: p.zona, anaquel: p.anaquel, posicion: p.posicion });
+                if(p.ubicaciones) {
+                    p.ubicaciones.forEach(u => {
+                        const key = `${p.tipo || 'Unidad Comercial'}|${u.zona}|${u.anaquel}|${u.posicion}`;
+                        ubicsMap.set(key, { tipo: p.tipo || 'Unidad Comercial', zona: u.zona, anaquel: u.anaquel, posicion: u.posicion });
+                    });
                 }
             });
 
@@ -891,7 +954,7 @@
                 html += `
                     <label style="border:1px solid #cbd5e1; padding:8px; border-radius:8px; background:white; display:flex; flex-direction:column; gap:4px; cursor:pointer; font-size:0.7rem;">
                         <div style="display:flex; align-items:center; justify-content:space-between;">
-                            <span style="font-weight:700; color:var(--primary);">${val.tipo === 'Pallet' ? '📦 Caja Máster' : '🏗️ Full Space'}</span>
+                            <span style="font-weight:700; color:var(--primary);">${val.tipo}</span>
                             <input type="checkbox" class="qr-chk" value="${labelTxt}" checked style="width:16px; height:16px; cursor:pointer;">
                         </div>
                         <div style="color:#334155;"><strong>Zona ${val.zona}</strong><br>Anaquel ${val.anaquel}<br>Pos. ${val.posicion}</div>
@@ -956,17 +1019,24 @@
                 <div class="form-grid">
                     <div class="full-width"><label>Nombre</label><input id="uNombre" placeholder="Nombre de usuario"></div>
                     <div class="full-width"><label>Contraseña</label><input id="uPass" type="password" placeholder="Contraseña"></div>
-                    <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarSelectPermisos()"><option value="admin">Admin</option><option value="supervisor">Supervisor</option><option value="operario">Operario</option><option value="invitado">Invitado</option></select></div>
-                    <div class="full-width"><label>Permisos (Automáticos según perfil)</label><select id="uPermisosSelect"><option value="">Cargando permisos...</option></select></div>
+                    <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarChecksPermisos()"><option value="admin">Admin</option><option value="supervisor">Supervisor</option><option value="operario">Operario</option><option value="invitado">Invitado</option></select></div>
+                    <div class="full-width">
+                        <label>Permisos (Selecciona varios)</label>
+                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f8fafc; padding:8px; border-radius:8px; border:1px solid #cbd5e1;"></div>
+                    </div>
                 </div>
             `);
-            actualizarSelectPermisos();
+            actualizarChecksPermisos();
             modalCallback = () => {
                 const nombre = document.getElementById('uNombre').value.trim();
                 const pass = document.getElementById('uPass').value.trim();
                 const perfil = document.getElementById('uPerfil').value;
-                const permisos = PERFILES_CONFIG[perfil] || ['lectura'];
+                
+                const permisos = [];
+                document.querySelectorAll('.perm-chk:checked').forEach(chk => permisos.push(chk.value));
+
                 if(!nombre || !pass) return alert('Completa los campos obligatorios');
+                if(permisos.length === 0) return alert('Selecciona al menos un permiso');
 
                 const db = getDB();
                 if(db.users.some(x => x.nombre.toLowerCase() === nombre.toLowerCase())) return alert('Ya existe un usuario con ese nombre.');
@@ -988,18 +1058,25 @@
             mostrarModal('✏️ Editar Usuario / Perfil', `
                 <div class="form-grid">
                     <div class="full-width"><label>Nombre</label><input id="uNombre" value="${u.nombre}"></div>
-                    <div class="full-width"><label>Nueva Contraseña (dejar en blanco para mantener la actual)</label><input id="uPass" type="password" placeholder="••••••••"></div>
-                    <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarSelectPermisos()"><option value="admin" ${u.perfil==='admin'?'selected':''}>Admin</option><option value="supervisor" ${u.perfil==='supervisor'?'selected':''}>Supervisor</option><option value="operario" ${u.perfil==='operario'?'selected':''}>Operario</option><option value="invitado" ${u.perfil==='invitado'?'selected':''}>Invitado</option></select></div>
-                    <div class="full-width"><label>Permisos (Automáticos según perfil)</label><select id="uPermisosSelect"></select></div>
+                    <div class="full-width"><label>Nueva Contraseña (dejar en blanco para mantener actual)</label><input id="uPass" type="password" placeholder="••••••••"></div>
+                    <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarChecksPermisos()"><option value="admin" ${u.perfil==='admin'?'selected':''}>Admin</option><option value="supervisor" ${u.perfil==='supervisor'?'selected':''}>Supervisor</option><option value="operario" ${u.perfil==='operario'?'selected':''}>Operario</option><option value="invitado" ${u.perfil==='invitado'?'selected':''}>Invitado</option></select></div>
+                    <div class="full-width">
+                        <label>Permisos (Selecciona varios)</label>
+                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f8fafc; padding:8px; border-radius:8px; border:1px solid #cbd5e1;"></div>
+                    </div>
                 </div>
             `);
-            actualizarSelectPermisos();
+            actualizarChecksPermisos(u.permisos);
             modalCallback = () => {
                 const nombre = document.getElementById('uNombre').value.trim();
                 const pass = document.getElementById('uPass').value.trim();
                 const perfil = document.getElementById('uPerfil').value;
-                const permisos = PERFILES_CONFIG[perfil] || ['lectura'];
+                
+                const permisos = [];
+                document.querySelectorAll('.perm-chk:checked').forEach(chk => permisos.push(chk.value));
+
                 if(!nombre) return alert('El nombre no puede estar vacío');
+                if(permisos.length === 0) return alert('Selecciona al menos un permiso');
 
                 u.nombre = nombre;
                 if(pass) u.password = pass;
@@ -1013,20 +1090,26 @@
             };
         }
 
-        function actualizarSelectPermisos() {
+        function actualizarChecksPermisos(userPerms = null) {
             const perfilSel = document.getElementById('uPerfil');
-            const permSel = document.getElementById('uPermisosSelect');
-            if(!perfilSel || !permSel) return;
+            const container = document.getElementById('permisosCheckContainer');
+            if(!perfilSel || !container) return;
 
             const perfil = perfilSel.value;
-            const permisosAsignados = PERFILES_CONFIG[perfil] || [];
-            
-            permSel.innerHTML = '';
-            permisosAsignados.forEach(p => {
-                const opt = document.createElement('option');
-                opt.value = p;
-                opt.textContent = `✓ ${p.toUpperCase()} (Habilitado para ${perfil})`;
-                permSel.appendChild(opt);
+            const sugeridos = PERFILES_CONFIG[perfil] || ['lectura'];
+            const actualPerms = userPerms || sugeridos;
+
+            const todasOpciones = ['lectura', 'escritura', 'administracion', 'carga', 'descarga'];
+            container.innerHTML = '';
+
+            todasOpciones.forEach(opt => {
+                const isChecked = actualPerms.includes(opt) ? 'checked' : '';
+                container.innerHTML += `
+                    <label style="display:flex; align-items:center; gap:6px; font-size:0.75rem; cursor:pointer;">
+                        <input type="checkbox" class="perm-chk" value="${opt}" ${isChecked} style="width:14px; height:14px;">
+                        <span>${opt.toUpperCase()}</span>
+                    </label>
+                `;
             });
         }
 
@@ -1105,7 +1188,7 @@
             const prods = getProducts();
             if(prods.length === 0) return alert('No hay productos');
             const ws = XLSX.utils.json_to_sheet(prods.map(p => ({
-                'ID Registro': p.id, 'Código': p.codigo, 'GTIN': p.gtin, 'Glosa': p.glosa, 'Bodega': p.bodega, 'Jerarquía': p.tipo || 'Full Space', 'Zona': p.zona, 'Anaquel': p.anaquel, 'Posición': p.posicion, 'Estado': p.estado
+                'ID Registro': p.id, 'Código': p.codigo, 'GTIN': p.gtin, 'Glosa': p.glosa, 'Bodega': p.bodega, 'Jerarquía': p.tipo || 'Unidad Comercial', 'Ubicaciones': JSON.stringify(p.ubicaciones || []), 'Estado': p.estado
             })));
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
