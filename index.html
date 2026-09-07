@@ -10,70 +10,70 @@
     <style>
         /* -------- RESET Y ESTILOS GENERALES -------- */
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', system-ui, sans-serif; }
-        body { background:#f4f6f9; color:#1e293b; padding:10px; min-height:100vh; display:block; }
-        .app { max-width:1400px; margin:0 auto; background:white; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.08); overflow:hidden; width:100%; display:flex; flex-direction:column; }
+        body { background:#f4f6f9; color:#1e293b; padding:20px; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+        .app { max-width:1400px; margin:0 auto; background:white; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.08); overflow:hidden; width:100%; }
         
         /* -------- LOGIN MODAL -------- */
         #loginModal {
             position:fixed; top:0; left:0; width:100%; height:100%;
             background:rgba(15,23,42,0.85); backdrop-filter:blur(8px);
-            display:flex; align-items:center; justify-content:center; z-index:2000; padding:15px;
+            display:flex; align-items:center; justify-content:center; z-index:2000;
         }
         #loginModal .login-box {
-            background:white; padding:30px 25px; border-radius:20px;
-            max-width:380px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.3);
+            background:white; padding:35px 35px 40px; border-radius:24px;
+            max-width:400px; width:90%; box-shadow:0 25px 50px rgba(0,0,0,0.3);
             animation:fade 0.3s ease; text-align:center;
         }
         #loginModal .login-box .hospital-logo img {
-            max-width:90px; height:auto; border-radius:12px;
+            max-width:100px; height:auto; border-radius:12px;
             background:white; padding:4px; box-shadow:0 2px 8px rgba(0,0,0,0.1);
         }
         #loginModal .login-box .hospital-name {
-            font-size:1.15rem; font-weight:700; color:#0f172a; margin-top:8px;
+            font-size:1.1rem; font-weight:700; color:#0f172a; 
             letter-spacing:-0.3px;
         }
         #loginModal .login-box .hospital-sub {
-            font-size:0.75rem; color:#64748b; margin-bottom:12px;
+            font-size:0.75rem; color:#64748b; margin-bottom:16px;
             font-weight:500;
         }
         #loginModal .login-box .hospital-sub span { color:#2563eb; }
         #loginModal .login-box .divider {
-            width:50px; height:3px; background:#2563eb; margin:10px auto 16px;
+            width:60px; height:3px; background:#2563eb; margin:10px auto 16px;
             border-radius:4px;
         }
-        #loginModal h2 { margin-bottom:4px; font-size:1.25rem; color:#0f172a; }
-        #loginModal p { color:#64748b; margin-bottom:16px; font-size:0.85rem; }
-        #loginModal label { display:block; font-weight:600; margin:10px 0 4px; font-size:0.75rem; text-align:left; color:#334155; }
-        #loginModal input { width:100%; padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:0.9rem; transition:0.15s; }
+        #loginModal h2 { margin-bottom:4px; font-size:1.4rem; color:#0f172a; }
+        #loginModal p { color:#64748b; margin-bottom:20px; font-size:0.9rem; }
+        #loginModal label { display:block; font-weight:600; margin:12px 0 4px; font-size:0.8rem; text-align:left; color:#334155; }
+        #loginModal input { width:100%; padding:10px 14px; border:1px solid #d1d5db; border-radius:10px; font-size:0.95rem; transition:0.15s; }
         #loginModal input:focus { outline:2px solid #2563eb; outline-offset:1px; border-color:transparent; }
-        #loginModal .btn { width:100%; margin-top:16px; padding:10px; font-size:0.95rem; border-radius:8px; }
-        .login-error { color:#dc2626; font-size:0.8rem; margin-top:8px; display:none; text-align:center; }
+        #loginModal .btn { width:100%; margin-top:18px; padding:12px; font-size:1rem; border-radius:10px; }
+        .login-error { color:#dc2626; font-size:0.85rem; margin-top:8px; display:none; text-align:center; }
         @keyframes fade { from { opacity:0.5; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
         /* -------- HEADER -------- */
         header {
             background: #0f172a;
             color: white;
-            padding: 12px 20px;
+            padding: 10px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
         header .header-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
         header .header-left .header-title {
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 1rem;
             color: white;
             letter-spacing: -0.2px;
         }
         header .header-left .header-sub {
-            font-size: 0.6rem;
+            font-size: 0.65rem;
             color: #94a3b8;
             font-weight: 400;
         }
@@ -81,13 +81,13 @@
         header .user-info {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.75rem;
+            gap: 10px;
+            font-size: 0.8rem;
             flex-wrap: wrap;
         }
         header .user-info select {
-            padding: 4px 8px;
-            border-radius: 6px;
+            padding: 4px 10px;
+            border-radius: 8px;
             border: none;
             background: #1e293b;
             color: white;
@@ -99,8 +99,8 @@
             background: #334155;
             color: white;
             border: none;
-            padding: 5px 10px;
-            border-radius: 6px;
+            padding: 4px 12px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 500;
             transition: 0.15s;
@@ -112,11 +112,11 @@
         /* -------- NAV -------- */
         nav {
             display:flex; background:#f8fafc; border-bottom:1px solid #e2e8f0;
-            flex-wrap:wrap; padding:0 10px; overflow-x:auto;
+            flex-wrap:wrap; padding:0 10px;
         }
         nav button {
-            background:transparent; border:none; padding:10px 14px;
-            font-weight:600; font-size:0.75rem; color:#64748b;
+            background:transparent; border:none; padding:12px 16px;
+            font-weight:600; font-size:0.8rem; color:#64748b;
             cursor:pointer; transition:0.2s; border-bottom:3px solid transparent;
             flex:0 1 auto; white-space:nowrap;
         }
@@ -124,40 +124,42 @@
         nav button.active { color:#2563eb; border-bottom-color:#2563eb; }
 
         /* -------- TABS -------- */
-        .tab-content { display:none; padding:15px; animation:fade 0.25s ease; }
+        .tab-content { display:none; padding:20px; animation:fade 0.3s ease; }
         .tab-content.active { display:block; }
 
         /* -------- COMPONENTES -------- */
-        .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px,1fr)); gap:12px; margin-bottom:15px; }
-        .card { background:#f8fafc; padding:12px; border-radius:12px; text-align:center; border:1px solid #e2e8f0; }
-        .card .number { font-size:1.6rem; font-weight:700; color:#0f172a; }
-        .card .label { color:#64748b; font-size:0.75rem; margin-top:4px; }
-        .table-wrap { overflow-x:auto; margin-top:10px; border-radius:8px; border:1px solid #e2e8f0; }
-        table { width:100%; border-collapse:collapse; font-size:0.8rem; background:white; }
-        th { background:#f1f5f9; text-align:left; padding:8px 10px; font-weight:600; color:#334155; white-space:nowrap; }
-        td { padding:8px 10px; border-bottom:1px solid #e2e8f0; vertical-align:middle; }
+        .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:15px; margin-bottom:20px; }
+        .card { background:#f8fafc; padding:15px; border-radius:16px; text-align:center; border:1px solid #e2e8f0; }
+        .card .number { font-size:2rem; font-weight:700; color:#0f172a; }
+        .card .label { color:#64748b; font-size:0.8rem; margin-top:5px; }
+        .table-wrap { overflow-x:auto; margin-top:12px; }
+        table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+        th { background:#f1f5f9; text-align:left; padding:10px 12px; font-weight:600; color:#334155; white-space:nowrap; }
+        td { padding:8px 12px; border-bottom:1px solid #e2e8f0; vertical-align:middle; }
         tr:hover td { background:#f8fafc; }
 
         /* -------- BADGES Y ALERTAS -------- */
-        .badge { display:inline-block; padding:2px 8px; border-radius:50px; font-size:0.65rem; font-weight:600; }
+        .badge { display:inline-block; padding:2px 10px; border-radius:50px; font-size:0.7rem; font-weight:600; }
         .badge-admin { background:#fee2e2; color:#b91c1c; }
         .badge-supervisor { background:#fef3c7; color:#92400e; }
         .badge-operario { background:#dbeafe; color:#1e40af; }
-        .badge-bodega { display:inline-block; padding:2px 6px; border-radius:8px; font-size:0.55rem; font-weight:700; color:white; }
+        .badge-master { background:#dbeafe; color:#1e40af; }
+        .badge-comercial { background:#fef3c7; color:#92400e; }
+        .badge-bodega { display:inline-block; padding:2px 8px; border-radius:10px; font-size:0.6rem; font-weight:700; color:white; }
         .badge-farmacos { background:#2563eb; }
         .badge-insumos { background:#16a34a; }
         .badge-economato { background:#f59e0b; color:#0f172a; }
 
-        .alert-tag { display:inline-flex; align-items:center; gap:3px; padding:2px 8px; border-radius:10px; font-size:0.55rem; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; margin:2px 4px 2px 0; border:1px solid rgba(0,0,0,0.08); }
+        .alert-tag { display:inline-flex; align-items:center; gap:4px; padding:2px 10px; border-radius:12px; font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; margin:2px 4px 2px 0; border:1px solid rgba(0,0,0,0.08); }
         .alert-tag-cold { background:#e0f2fe; color:#0369a1; border-color:#7dd3fc; }
         .alert-tag-controlled { background:#fee2e2; color:#b91c1c; border-color:#fca5a5; }
         .alert-tag-lrs { background:#f3e8ff; color:#6b21a8; border-color:#d8b4fe; }
         .alert-tag-pm { background:#ccfbf1; color:#0f766e; border-color:#5eead4; }
-        .alert-tag-icon { font-size:0.65rem; }
-        .alert-bar { background:#fefce8; border-left:4px solid #eab308; padding:8px 12px; border-radius:6px; margin:8px 0; display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-size:0.75rem; border:1px solid #fde68a; }
+        .alert-tag-icon { font-size:0.7rem; }
+        .alert-bar { background:#fefce8; border-left:4px solid #eab308; padding:8px 14px; border-radius:8px; margin:8px 0; display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-size:0.8rem; border:1px solid #fde68a; }
         .alert-bar-warning { background:#fef2f2; border-left-color:#dc2626; border-color:#fecaca; }
 
-        .btn { padding:5px 12px; border:none; border-radius:6px; font-weight:600; font-size:0.75rem; cursor:pointer; transition:0.15s; display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
+        .btn { padding:5px 14px; border:none; border-radius:8px; font-weight:600; font-size:0.75rem; cursor:pointer; transition:0.15s; display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
         .btn-primary { background:#2563eb; color:white; }
         .btn-primary:hover { background:#1d4ed8; }
         .btn-success { background:#16a34a; color:white; }
@@ -166,27 +168,28 @@
         .btn-danger:hover { background:#b91c1c; }
         .btn-warning { background:#f59e0b; color:white; }
         .btn-warning:hover { background:#d97706; }
-        .btn-sm { padding:2px 8px; font-size:0.65rem; }
+        .btn-sm { padding:3px 10px; font-size:0.65rem; }
         .btn-outline { background:transparent; border:1px solid #d1d5db; color:#334155; }
         .btn-outline:hover { background:#f1f5f9; }
 
         .flex { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-        .mt-2 { margin-top:10px; }
-        .mb-2 { margin-bottom:10px; }
-        input, select { padding:6px 10px; border:1px solid #d1d5db; border-radius:6px; font-size:0.85rem; background:white; min-height:36px; width:100%; max-width:100%; }
+        .mt-2 { margin-top:12px; }
+        .mb-2 { margin-bottom:12px; }
+        input, select { padding:6px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:0.9rem; background:white; min-height:38px; width:100%; max-width:100%; }
         input:focus, select:focus { outline:2px solid #2563eb; outline-offset:1px; }
+        .search-box { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
 
         /* ============================================================ */
-        /* MAPA CALIBRADO EXACTO CON LAS COORDENADAS DEL PLANO DE FONDO */
+        /* PLANO ESTÁTICO DE LA BODEGA - SIN INTERACTIVIDAD */
         /* ============================================================ */
         .map-container {
             position: relative;
             max-width: 100%;
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
             border: 1px solid #e2e8f0;
-            background: #ffffff;
-            margin-top: 10px;
+            background: #f1f5f9;
+            min-height: 400px;
         }
         .map-container img {
             width: 100%;
@@ -201,82 +204,132 @@
             left: 0;
             width: 100%;
             height: 100%;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            pointer-events: none;
+            gap: 2px;
+            padding: 4px;
+        }
+        .map-cell {
+            pointer-events: none;
+            border: 1px solid rgba(255,255,255,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.5rem;
+            color: #1e293b;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.9);
+            border-radius: 4px;
+            text-align: center;
+            padding: 2px;
+            min-height: 40px;
+            opacity: 0.85;
+        }
+        .map-cell .cell-label {
+            font-size: 0.45rem;
+            font-weight: 700;
+            pointer-events: none;
+            line-height: 1.2;
+        }
+        .map-cell .cell-sub {
+            font-size: 0.35rem;
+            font-weight: 400;
+            opacity: 0.7;
             pointer-events: none;
         }
-        .map-zone {
+        .map-cell.occupied {
+            background: rgba(22, 163, 74, 0.2);
+            border-color: rgba(22, 163, 74, 0.3);
+        }
+        .map-cell.has-alert::after {
+            content: '⚠️';
             position: absolute;
-            pointer-events: auto;
-            cursor: pointer;
-            transition: background-color 0.25s ease, box-shadow 0.25s ease;
-            border-radius: 4px;
+            top: 0px;
+            right: 2px;
+            font-size: 0.45rem;
+            opacity: 0.9;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
         }
-        .map-zone:hover {
-            background-color: rgba(37, 99, 235, 0.25);
-            box-shadow: inset 0 0 12px rgba(37,99,235,0.4);
-        }
-        .map-zone.highlight-search {
-            background-color: rgba(34, 197, 94, 0.45) !important;
-            box-shadow: inset 0 0 20px rgba(34,197,94,0.8), 0 0 12px rgba(34,197,94,0.6);
-            animation: pulse-glow 1.5s infinite;
-            z-index: 25;
-        }
-        .map-zone.highlight-putaway {
-            background-color: rgba(22, 163, 74, 0.6) !important;
-            box-shadow: inset 0 0 20px rgba(22,163,74,0.8);
-            animation: pulse-glow 1.5s infinite;
-            z-index: 25;
-        }
-        .map-zone.highlight-origin {
-            background-color: rgba(220, 38, 38, 0.6) !important;
-            box-shadow: inset 0 0 20px rgba(220,38,38,0.8);
-            z-index: 25;
-        }
-        .map-zone.highlight-destiny {
-            background-color: rgba(245, 158, 11, 0.6) !important;
-            box-shadow: inset 0 0 20px rgba(245,158,11,0.8);
-            z-index: 25;
-        }
-
-        /* Coordenadas calibradas con el plano real */
-        .zone-d { top: 16%; left: 37%; width: 12%; height: 13%; } /* Zona D (Pasillo Estrecho) */
-        .zone-e { top: 29%; left: 24%; width: 25%; height: 16%; } /* Zona E (Palletizado Masivo) */
-        .zone-f { top: 46%; left: 24%; width: 25%; height: 26%; } /* Zona F (Anaqueles) */
-        .zone-g { top: 73%; left: 24%; width: 14%; height: 23%; } /* Zona G (Full Space) */
-        .zone-c { top: 16%; left: 51%; width: 44%; height: 21%; } /* Zona C (Tránsito) */
-        .zone-h { top: 62%; left: 4%; width: 20%; height: 35%; }  /* Zona H (Cámara de Frío) */
-        .zone-office { top: 42%; left: 79%; width: 20%; height: 56%; } /* Oficinas & Despacho */
+        /* Colores de fondo por zona (coinciden con tu layout) */
+        .map-cell.zone-a { background: rgba(37, 99, 235, 0.2); border-color: rgba(37, 99, 235, 0.3); }
+        .map-cell.zone-b { background: rgba(22, 163, 74, 0.2); border-color: rgba(22, 163, 74, 0.3); }
+        .map-cell.zone-c { background: rgba(245, 158, 11, 0.2); border-color: rgba(245, 158, 11, 0.3); }
+        .map-cell.zone-d { background: rgba(168, 85, 247, 0.2); border-color: rgba(168, 85, 247, 0.3); }
+        .map-cell.zone-e { background: rgba(236, 72, 153, 0.2); border-color: rgba(236, 72, 153, 0.3); }
+        .map-cell.zone-f { background: rgba(244, 63, 94, 0.2); border-color: rgba(244, 63, 94, 0.3); }
+        .map-cell.zone-g { background: rgba(6, 182, 212, 0.2); border-color: rgba(6, 182, 212, 0.3); }
+        .map-cell.zone-h { background: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.3); }
+        .map-cell.zone-i { background: rgba(251, 146, 60, 0.2); border-color: rgba(251, 146, 60, 0.3); }
+        .map-cell.zone-j { background: rgba(139, 92, 246, 0.2); border-color: rgba(139, 92, 246, 0.3); }
+        .map-cell.zone-office { background: rgba(148, 163, 184, 0.25); color: #475569; border-color: rgba(148, 163, 184, 0.3); }
+        .map-cell.zone-recepcion { background: rgba(148, 163, 184, 0.2); color: #475569; border-color: rgba(148, 163, 184, 0.3); }
 
         .map-legend {
-            display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; padding: 8px 12px;
-            background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 0.65rem; align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 10px 0 5px;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            font-size: 0.7rem;
+            align-items: center;
         }
-        .map-legend .legend-item { display: flex; align-items: center; gap: 4px; }
-        .map-legend .color-box { width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.1); }
-        @keyframes pulse-glow { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+        .map-legend .legend-item { display: flex; align-items: center; gap: 5px; }
+        .map-legend .color-box { width: 16px; height: 16px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.1); }
 
         /* -------- MODAL -------- */
-        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.5); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:1500; padding:15px; }
+        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.5); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:1500; }
         .modal.active { display:flex; }
-        .modal-content { background:white; border-radius:16px; padding:20px; max-width:550px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.3); max-height:90vh; overflow-y:auto; }
-        .modal-content h3 { margin-bottom:10px; font-size:1.1rem; }
-        .modal-content label { display:block; margin:8px 0 3px; font-weight:600; font-size:0.75rem; color:#334155; }
-        .modal-content .qr-reader-container { width:100%; max-width:280px; margin-top:8px; display:none; background:#0f172a; border-radius:10px; overflow:hidden; }
-        .empty-state { color:#94a3b8; text-align:center; padding:15px 0; font-size:0.85rem; }
-        .result-card { background:#f8fafc; border-radius:12px; padding:12px; margin-bottom:10px; border:1px solid #e2e8f0; }
-        .result-card h4 { display:flex; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap; font-size:0.9rem; }
-        .result-card .ubicacion-tag { font-size:0.75rem; }
-        .location-badge { display:inline-block; padding:2px 6px; border-radius:10px; font-size:0.6rem; font-weight:600; margin-right:4px; }
+        .modal-content { background:white; border-radius:20px; padding:25px; max-width:600px; width:92%; max-height:92vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); animation:fade 0.25s ease; }
+        .modal-content h3 { margin-bottom:12px; font-size:1.2rem; }
+        .modal-content .flex { margin-top:15px; justify-content:flex-end; }
+        .modal-content label { display:block; margin:10px 0 4px; font-weight:600; font-size:0.85rem; }
+        .modal-content .qr-reader-container { width:100%; max-width:300px; margin-top:10px; display:none; background:#0f172a; border-radius:12px; overflow:hidden; }
+        .modal-content textarea { width:100%; padding:8px; border:1px solid #d1d5db; border-radius:8px; font-size:0.85rem; }
+        .empty-state { color:#94a3b8; text-align:center; padding:20px 0; }
+        .result-card { background:#f8fafc; border-radius:16px; padding:16px; margin-bottom:12px; border:1px solid #e2e8f0; }
+        .result-card h4 { display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:wrap; }
+        .result-card .ubicacion-tag { font-size:0.8rem; }
+        .location-badge { display:inline-block; padding:2px 8px; border-radius:12px; font-size:0.65rem; font-weight:600; margin-right:4px; }
         .location-master { background:#dbeafe; color:#1e40af; }
         .location-comercial { background:#fef3c7; color:#92400e; }
-        #gtin-scanner-container { width:100%; max-width:350px; margin:8px auto; border-radius:10px; overflow:hidden; background:#0f172a; min-height:180px; }
-        #gtin-scanner-status { color:#64748b; font-size:0.8rem; text-align:center; margin:6px 0; }
-        .image-preview { max-width:100%; max-height:180px; border-radius:10px; margin:8px 0; border:1px solid #d1d5db; }
+        #gtin-scanner-container { width:100%; max-width:400px; margin:10px auto; border-radius:12px; overflow:hidden; background:#0f172a; min-height:200px; }
+        #gtin-scanner-status { color:#64748b; font-size:0.9rem; text-align:center; margin:8px 0; }
+        .image-preview { max-width:100%; max-height:200px; border-radius:12px; margin:10px 0; border:1px solid #d1d5db; }
 
-        @media (max-width: 768px) {
-            body { padding: 4px; }
-            header { padding: 10px 14px; }
-            nav button { padding: 8px 10px; font-size: 0.7rem; }
-            .tab-content { padding: 10px; }
+        @media (max-width:768px) {
+            body { padding:10px; }
+            header { flex-direction:column; align-items:stretch; gap:6px; padding:10px 16px; }
+            header .header-left { justify-content:center; flex-wrap:wrap; }
+            header .header-left .header-title { font-size:0.85rem; text-align:center; }
+            header .header-left .header-sub { font-size:0.55rem; text-align:center; }
+            header .user-info { justify-content:center; flex-wrap:wrap; }
+            nav button { padding:10px 12px; font-size:0.7rem; flex:1 1 auto; }
+            .tab-content { padding:12px; }
+            .card-grid { grid-template-columns:1fr 1fr; gap:10px; }
+            .modal-content { padding:18px; max-width:95%; }
+            .result-card h4 { flex-direction:column; align-items:flex-start; }
+            .map-cell { font-size:0.35rem; min-height:25px; }
+            .map-cell .cell-label { font-size:0.3rem; }
+            .map-cell .cell-sub { font-size:0.25rem; }
+            .map-legend { font-size:0.55rem; gap:6px; }
+            .map-overlay { grid-template-rows: repeat(6, 1fr); }
+        }
+        @media (max-width:480px) {
+            .card-grid { grid-template-columns:1fr; }
+            nav button { padding:6px 8px; font-size:0.6rem; }
+            .btn { font-size:0.6rem; padding:4px 8px; }
+            .modal-content { padding:14px; }
+            input, select { font-size:0.8rem; padding:5px 10px; min-height:32px; }
+            #loginModal .login-box { padding:25px 20px; }
+            #loginModal .login-box .hospital-name { font-size:0.95rem; }
+            #loginModal .login-box .hospital-logo img { max-width:70px; }
+            .map-overlay { grid-template-rows: repeat(5, 1fr); }
         }
     </style>
 </head>
@@ -289,8 +342,8 @@
             <div class="hospital-logo">
                 <img src="banner.png" alt="Hospital San Juan de Dios - CDT">
             </div>
-            <div class="hospital-name">WMS Bodega Central Abastecimiento</div>
-            <div class="hospital-sub">Hospital San Juan de Dios · <span>"El Primero de Chile"</span></div>
+            <div class="hospital-name">Hospital San Juan de Dios - CDT</div>
+            <div class="hospital-sub">Asistencial Docente · <span>"El Primero de Chile"</span></div>
             <div class="divider"></div>
             <h2>🔐 Iniciar sesión</h2>
             <p>Ingresa tus credenciales para acceder al sistema.</p>
@@ -310,15 +363,15 @@
         <header>
             <div class="header-left">
                 <div>
-                    <div class="header-title">WMS Bodega Central Abastecimiento</div>
-                    <div class="header-sub">Hospital San Juan de Dios · <span>"El Primero de Chile"</span></div>
+                    <div class="header-title">Hospital San Juan de Dios - CDT</div>
+                    <div class="header-sub">Asistencial Docente · <span>"El Primero de Chile"</span></div>
                 </div>
             </div>
             <div class="user-info">
                 <span class="user-name" id="currentUserDisplay">👤 Admin</span>
                 <select id="warehouseSelect" onchange="cambiarBodega()">
                     <option value="TODAS">🏢 Todas</option>
-                    <option value="Farmacos" selected>💊 Fármacos</option>
+                    <option value="Farmacos">💊 Fármacos</option>
                     <option value="Insumos">🧪 Insumos</option>
                     <option value="Economato">📦 Economato</option>
                 </select>
@@ -329,7 +382,7 @@
         <nav id="mainNav">
             <button class="active" data-tab="dashboard">📊 Dashboard</button>
             <button data-tab="buscador">🔎 Buscar</button>
-            <button data-tab="mapa">🗺️ Mapa</button>
+            <button data-tab="mapa">🗺️ Plano</button>
             <button data-tab="inventario">📦 Inventario</button>
             <button data-tab="historial">📜 Historial</button>
             <button data-tab="usuarios">👥 Usuarios</button>
@@ -355,8 +408,8 @@
 
         <!-- ============ TAB BUSCADOR ============ -->
         <div id="tab-buscador" class="tab-content">
-            <h3>🔎 Buscador de ubicación y trazabilidad</h3>
-            <p style="color:#64748b; margin-bottom:8px; font-size:0.8rem;">Busca por código interno, glosa o GTIN/EAN. Haz clic en la ubicación para verla resaltada en el plano.</p>
+            <h3>🔎 Buscador de ubicación</h3>
+            <p style="color:#64748b; margin-bottom:10px; font-size:0.9rem;">Busca por código interno, glosa o GTIN/EAN. Admite búsquedas parciales.</p>
             <div class="flex mb-2">
                 <input type="text" id="searchUbicacion" placeholder="Escribe código, glosa o GTIN..." style="flex:2; min-width:160px;" oninput="buscarUbicacion()">
                 <button class="btn btn-success" onclick="abrirLectorGTINBusqueda()">📷 Escanear GTIN</button>
@@ -367,46 +420,33 @@
             </div>
         </div>
 
-        <!-- ============ TAB MAPA ============ -->
+        <!-- ============ TAB PLANO ESTÁTICO ============ -->
         <div id="tab-mapa" class="tab-content">
-            <h3>📍 Plano Interactivo · Bodega Central</h3>
-            <p style="color:#64748b; margin-bottom:8px; font-size:0.8rem;">Haz clic en cualquier zona para consultar qué productos se encuentran almacenados allí.</p>
+            <h3>🗺️ Plano de la bodega</h3>
+            <p style="color:#64748b; margin-bottom:8px; font-size:0.9rem;">Visualiza la distribución de las zonas en tu bodega. Los colores indican los diferentes tipos de almacenamiento.</p>
             <div class="map-legend">
-                <span class="legend-item"><span class="color-box" style="background:rgba(168,85,247,0.4);"></span> Zona D (Pasillo Estrecho)</span>
-                <span class="legend-item"><span class="color-box" style="background:rgba(59,130,246,0.4);"></span> Zona E (Palletizado Masivo)</span>
-                <span class="legend-item"><span class="color-box" style="background:rgba(244,63,94,0.4);"></span> Zona F (Anaqueles)</span>
-                <span class="legend-item"><span class="color-box" style="background:rgba(245,158,11,0.4);"></span> Zona G (Full Space)</span>
-                <span class="legend-item"><span class="color-box" style="background:rgba(37,99,235,0.4);"></span> Zona C (Tránsito)</span>
-                <span class="legend-item"><span class="color-box" style="background:rgba(6,182,212,0.4);"></span> Zona H (Cámara de Frío)</span>
-            </div>
-            <div class="flex mb-2">
-                <input type="text" id="mapProductSearch" placeholder="Buscar producto en plano..." style="flex:1; min-width:140px;">
-                <button class="btn btn-primary" onclick="buscarProductoEnMapa()">🔍 Buscar</button>
-                <button class="btn btn-outline" onclick="limpiarMapa()">🧹 Limpiar</button>
+                <span class="legend-item"><span class="color-box" style="background:#2563eb;"></span> Palletizado (A-D)</span>
+                <span class="legend-item"><span class="color-box" style="background:#ec4899;"></span> Selectivo (E)</span>
+                <span class="legend-item"><span class="color-box" style="background:#f43f5e;"></span> Anaquel (F)</span>
+                <span class="legend-item"><span class="color-box" style="background:#06b6d4;"></span> Full Space (G)</span>
+                <span class="legend-item"><span class="color-box" style="background:#3b82f6;"></span> Cámara Frío (H)</span>
+                <span class="legend-item"><span class="color-box" style="background:#fb923c;"></span> Inyectables (I)</span>
+                <span class="legend-item"><span class="color-box" style="background:#8b5cf6;"></span> Mezclas (J)</span>
+                <span class="legend-item"><span class="color-box" style="background:#94a3b8;"></span> Oficinas / Recepción</span>
             </div>
             <div class="map-container" id="mapContainer">
-                <img id="mapImage" src="image_3178e5.jpg" alt="Plano Bodega Central">
-                <div class="map-overlay">
-                    <div class="map-zone zone-d" data-zone="D" title="Zona D (Pasillo Estrecho)" onclick="filtrarPorZona('D')"></div>
-                    <div class="map-zone zone-e" data-zone="E" title="Zona E (Palletizado Masivo)" onclick="filtrarPorZona('E')"></div>
-                    <div class="map-zone zone-f" data-zone="F" title="Zona F (Anaqueles)" onclick="filtrarPorZona('F')"></div>
-                    <div class="map-zone zone-g" data-zone="G" title="Zona G (Full Space)" onclick="filtrarPorZona('G')"></div>
-                    <div class="map-zone zone-c" data-zone="C" title="Zona C (Tránsito)" onclick="filtrarPorZona('C')"></div>
-                    <div class="map-zone zone-h" data-zone="H" title="Zona H (Cámara de Frío)" onclick="filtrarPorZona('H')"></div>
-                    <div class="map-zone zone-office" data-zone="Office" title="Oficinas & Despacho" onclick="filtrarPorZona('Office')"></div>
-                </div>
-            </div>
-            <div id="mapProductList" class="mt-2">
-                <h4>📌 Contenido de la Zona Seleccionada</h4>
-                <div id="mapProducts"><p class="empty-state">Selecciona una zona del plano o busca un producto.</p></div>
+                <img id="mapImage" src="https://via.placeholder.com/1200x800?text=Layout+Bodega+Farmacia" alt="Layout de bodega">
+                <div class="map-overlay" id="mapOverlay"></div>
             </div>
         </div>
 
         <!-- ============ TAB INVENTARIO ============ -->
         <div id="tab-inventario" class="tab-content">
             <div class="flex mb-2">
-                <input type="text" id="searchInventario" placeholder="Buscar por código o glosa..." style="flex:1; min-width:140px;" oninput="renderInventario()">
-                <button class="btn btn-primary" onclick="agregarProducto()">➕ Nuevo</button>
+                <div class="search-box">
+                    <input type="text" id="searchInventario" placeholder="Buscar por código o glosa..." style="flex:1; min-width:140px;" oninput="renderInventario()">
+                    <button class="btn btn-primary" onclick="agregarProducto()">➕ Nuevo</button>
+                </div>
             </div>
             <div class="table-wrap">
                 <table>
@@ -445,12 +485,12 @@
 
         <!-- ============ TAB CONFIG ============ -->
         <div id="tab-config" class="tab-content">
-            <h3>⚙️ Configuración del Sistema WMS</h3>
-            <div style="max-width:500px;">
+            <h3>⚙️ Configuración</h3>
+            <div style="max-width:600px;">
                 <div class="mb-2">
-                    <label><strong>Actualizar Imagen del Plano / Layout</strong></label>
+                    <label><strong>Sube tu imagen del layout</strong></label>
                     <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="width:100%;">
-                    <p style="font-size:0.7rem; color:#64748b; margin-top:3px;">Reemplaza la imagen por tu plano real de la bodega.</p>
+                    <p style="font-size:0.75rem; color:#64748b; margin-top:4px;">Reemplaza la imagen de referencia por tu plano real de la bodega.</p>
                 </div>
                 <div class="mt-2 flex">
                     <button class="btn btn-primary" onclick="resetData()">🔄 Reiniciar</button>
@@ -469,7 +509,7 @@
         <div class="modal-content" id="modalContent">
             <h3 id="modalTitle">Título</h3>
             <div id="modalBody"></div>
-            <div class="flex" style="margin-top:12px; justify-content:flex-end;">
+            <div class="flex">
                 <button class="btn btn-danger" onclick="cerrarModal()">Cancelar</button>
                 <button class="btn btn-primary" id="modalActionBtn" onclick="ejecutarModal()">Guardar</button>
             </div>
@@ -480,30 +520,62 @@
     <!-- SCRIPT PRINCIPAL -->
     <!-- ============================================================ -->
     <script>
+        // ============================================================
+        //  CONSTANTES Y CLAVES DE STORAGE
+        // ============================================================
         const STORAGE_KEY_PRODUCTS = 'wms_products_v7';
         const STORAGE_KEY_MOVEMENTS = 'wms_movements_v7';
-        const STORAGE_KEY_USERS = 'wms_users_v7';
-        const STORAGE_KEY_CONFIG = 'wms_config_v7';
-        const STORAGE_KEY_SESSION = 'wms_session_v7';
+        const STORAGE_KEY_USERS = 'wms_users';
+        const STORAGE_KEY_CONFIG = 'wms_config';
+        const STORAGE_KEY_SESSION = 'wms_session_user';
 
-        let currentWarehouse = 'Farmacos';
+        let currentWarehouse = 'TODAS';
         let selectedZona = null;
 
+        // ============================================================
+        //  CONFIGURACIÓN DEL PLANO
+        // ============================================================
         const ZONE_CONFIG = {
-            'D': { name: 'Zona D (Pasillo Estrecho)', short: 'Zona D', color: 'zone-d' },
-            'E': { name: 'Zona E (Palletizado Masivo)', short: 'Zona E', color: 'zone-e' },
-            'F': { name: 'Zona F (Anaqueles)', short: 'Zona F', color: 'zone-f' },
-            'G': { name: 'Zona G (Full Space)', short: 'Zona G', color: 'zone-g' },
-            'C': { name: 'Zona C (Tránsito)', short: 'Zona C', color: 'zone-c' },
-            'H': { name: 'Zona H (Cámara de Frío)', short: 'Zona H', color: 'zone-h' },
-            'Office': { name: 'Oficinas & Despacho', short: 'Oficinas', color: 'zone-office' }
+            'A': { name: 'Palletizado Masivo (Alta Rotación)', short: 'Palletizado A', color: 'zone-a', rows: 8 },
+            'B': { name: 'Palletizado Masivo (Baja Rotación)', short: 'Palletizado B', color: 'zone-b', rows: 8 },
+            'C': { name: 'Palletizado Controlados', short: 'Palletizado C', color: 'zone-c', rows: 8 },
+            'D': { name: 'Palletizado Pasillo Estrecho (VNA)', short: 'Palletizado D', color: 'zone-d', rows: 6 },
+            'E': { name: 'Almacenamiento Selectivo (Masivo)', short: 'Selectivo E', color: 'zone-e', rows: 6 },
+            'F': { name: 'Anaquel (Estanterías)', short: 'Anaquel F', color: 'zone-f', rows: 6 },
+            'G': { name: 'Full Space (Inyectables/Comprimidos)', short: 'Full Space G', color: 'zone-g', rows: 6 },
+            'H': { name: 'Cámara de Frío', short: 'Cámara Frío H', color: 'zone-h', rows: 4 },
+            'I': { name: 'Palletizado (Inyectables/Insumos)', short: 'Palletizado I', color: 'zone-i', rows: 4 },
+            'J': { name: 'Bodega Mezclas', short: 'Mezclas J', color: 'zone-j', rows: 4 }
         };
 
+        // ============================================================
+        //  CONFIGURACIÓN DE ALERTAS PARA FÁRMACOS
+        // ============================================================
         const ALERT_CONFIG = {
-            'Cámara de Frío': { class: 'alert-tag-cold', icon: '🧊', message: 'Requiere cadena de frío (2-8°C)', description: 'Producto termolábil. Mantener en cámara de frío.' },
-            'Fármaco Controlado': { class: 'alert-tag-controlled', icon: '⚠️', message: 'Medicamento controlado - Seguimiento especial', description: 'Requiere registro de dispensación y doble firma.' },
-            'Ley Ricarte Soto (LRS)': { class: 'alert-tag-lrs', icon: '📋', message: 'Ley Ricarte Soto - Alto costo', description: 'Requiere autorización especial y registro de paciente.' },
-            'Programa Ministerial (PM)': { class: 'alert-tag-pm', icon: '🏛️', message: 'Programa Ministerial - Seguimiento especial', description: 'Requiere registro en programa ministerial.' }
+            'Cámara de Frío': { 
+                class: 'alert-tag-cold', 
+                icon: '🧊', 
+                message: 'Requiere cadena de frío (2-8°C)',
+                description: 'Producto termolábil. Mantener en cámara de frío.'
+            },
+            'Fármaco Controlado': { 
+                class: 'alert-tag-controlled', 
+                icon: '⚠️', 
+                message: 'Medicamento controlado - Seguimiento especial',
+                description: 'Requiere registro de dispensación y doble firma.'
+            },
+            'Ley Ricarte Soto (LRS)': { 
+                class: 'alert-tag-lrs', 
+                icon: '📋', 
+                message: 'Ley Ricarte Soto - Alto costo',
+                description: 'Requiere autorización especial y registro de paciente.'
+            },
+            'Programa Ministerial (PM)': { 
+                class: 'alert-tag-pm', 
+                icon: '🏛️', 
+                message: 'Programa Ministerial - Seguimiento especial',
+                description: 'Requiere registro en programa ministerial y seguimiento.'
+            }
         };
 
         function getProductAlertsHTML(product) {
@@ -524,40 +596,156 @@
             }).filter(Boolean);
         }
 
+        // ============================================================
+        //  INICIALIZACIÓN DE DATOS DE EJEMPLO
+        // ============================================================
         function initData() {
             if (!localStorage.getItem(STORAGE_KEY_USERS)) {
-                localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify([
-                    { id: 1, nombre: 'Admin', perfil: 'admin', password: 'admin', permisos: ['lectura','escritura','administracion'] }
-                ]));
+                const sampleUsers = [
+                    { id: 1, nombre: 'Admin', perfil: 'admin', password: 'admin', permisos: ['lectura','escritura','administracion'] },
+                    { id: 2, nombre: 'Supervisor', perfil: 'supervisor', password: '1234', permisos: ['lectura','escritura'] },
+                    { id: 3, nombre: 'Operario', perfil: 'operario', password: '1234', permisos: ['lectura'] },
+                ];
+                localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(sampleUsers));
             }
             if (!localStorage.getItem(STORAGE_KEY_PRODUCTS)) {
-                localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify([
-                    { codigo: '01-001-212-024', gtin: '7801234567999', glosa: 'FENTANILO 0,5 MG/10 ML SOL INY AM 10 ML', bodega: 'Farmacos', tags: ['Fármaco Controlado', 'Cámara de Frío'], ubicaciones: [{ tipo: 'master', ubicacion: 'Cámara Frío 2', zona: 'H' }] },
-                    { codigo: '01-001-216-026', gtin: '7801234567890', glosa: 'METRONIDAZOL 500 MG/100 ML SOL INY FA 100 ML', bodega: 'Farmacos', tags: ['Ley Ricarte Soto (LRS)'], ubicaciones: [{ tipo: 'master', ubicacion: 'Full Space G-1', zona: 'G' }] },
-                    { codigo: '02-001-003-050', gtin: '7801234567100', glosa: 'TORULA GASA GRANEL (Insumo Clínico)', bodega: 'Insumos', tags: [], ubicaciones: [{ tipo: 'master', ubicacion: 'Anaquel F-5', zona: 'F' }] },
-                    { codigo: '02-002-001-038', gtin: '7801234567200', glosa: 'TONER BROTHER 2140 (Oficina)', bodega: 'Economato', tags: [], ubicaciones: [{ tipo: 'master', ubicacion: 'Pallet D-3', zona: 'D' }] }
-                ]));
+                const sampleProducts = [
+                    { 
+                        codigo: '01-001-216-026', 
+                        gtin: '7801234567890',
+                        glosa: 'METRONIDAZOL 500 MG/100 ML SOL INY FA 100 ML', 
+                        bodega: 'Farmacos',
+                        tags: ['Ley Ricarte Soto (LRS)'],
+                        ubicaciones: [
+                            { tipo: 'master', ubicacion: 'PALLET_A_1', zona: 'A' },
+                            { tipo: 'comercial', ubicacion: 'FS_G_1', zona: 'G' }
+                        ]
+                    },
+                    { 
+                        codigo: '01-001-212-024', 
+                        gtin: '7801234567999',
+                        glosa: 'FENTANILO 0,5 MG/10 ML SOL INY AM 10 ML', 
+                        bodega: 'Farmacos',
+                        tags: ['Fármaco Controlado', 'Cámara de Frío'],
+                        ubicaciones: [
+                            { tipo: 'master', ubicacion: 'PALLET_C_2', zona: 'C' },
+                            { tipo: 'comercial', ubicacion: 'FS_G_2', zona: 'G' }
+                        ]
+                    },
+                    { 
+                        codigo: '01-001-230-001', 
+                        gtin: '7801234567901',
+                        glosa: 'ANFOTERICINA-B LIPOSOMAL FA 50 MG POLV LIOF', 
+                        bodega: 'Farmacos',
+                        tags: ['Cámara de Frío', 'Ley Ricarte Soto (LRS)'],
+                        ubicaciones: [
+                            { tipo: 'master', ubicacion: 'CAMARA_H_1', zona: 'H' }
+                        ]
+                    },
+                    { 
+                        codigo: '01-001-221-005', 
+                        gtin: '7801234567902',
+                        glosa: 'PM ENTECAVIR 0,5 MG CM', 
+                        bodega: 'Farmacos',
+                        tags: ['Programa Ministerial (PM)'],
+                        ubicaciones: [
+                            { tipo: 'master', ubicacion: 'ANAQUEL_F_3', zona: 'F' },
+                            { tipo: 'comercial', ubicacion: 'ANAQUEL_F_4', zona: 'F' }
+                        ]
+                    },
+                    { 
+                        codigo: '01-001-213-076', 
+                        gtin: '7801234567894',
+                        glosa: 'DEXAMETASONA 4 MG/ML SOL INY AM 1 ML', 
+                        bodega: 'Farmacos',
+                        tags: [],
+                        ubicaciones: [
+                            { tipo: 'master', ubicacion: 'SELECTIVO_E_1', zona: 'E' },
+                            { tipo: 'comercial', ubicacion: 'FS_G_3', zona: 'G' }
+                        ]
+                    },
+                    { 
+                        codigo: '02-001-003-050', 
+                        gtin: '7801234567100',
+                        glosa: 'TORULA GASA GRANEL (Insumo Clínico)', 
+                        bodega: 'Insumos',
+                        tags: [],
+                        ubicaciones: [
+                            { tipo: 'master', ubicacion: 'MEZCLAS_J_1', zona: 'J' },
+                            { tipo: 'comercial', ubicacion: 'ANAQUEL_F_5', zona: 'F' }
+                        ]
+                    },
+                    { 
+                        codigo: '02-001-005-021', 
+                        gtin: '7801234567101',
+                        glosa: 'MASCARILLA FACIAL N-2 P/AMBU', 
+                        bodega: 'Insumos',
+                        tags: [],
+                        ubicaciones: [
+                            { tipo: 'master', ubicacion: 'PALLET_I_1', zona: 'I' }
+                        ]
+                    },
+                    { 
+                        codigo: '02-002-001-038', 
+                        gtin: '7801234567200',
+                        glosa: 'TONER BROTHER 2140 (Oficina)', 
+                        bodega: 'Economato',
+                        tags: [],
+                        ubicaciones: [
+                            { tipo: 'master', ubicacion: 'PALLET_D_3', zona: 'D' }
+                        ]
+                    },
+                    { 
+                        codigo: '02-002-002-067', 
+                        gtin: '7801234567202',
+                        glosa: 'PAPEL RONEO B OFICIO (Oficina)', 
+                        bodega: 'Economato',
+                        tags: [],
+                        ubicaciones: [
+                            { tipo: 'master', ubicacion: 'SELECTIVO_E_4', zona: 'E' }
+                        ]
+                    },
+                ];
+                localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(sampleProducts));
             }
             if (!localStorage.getItem(STORAGE_KEY_MOVEMENTS)) {
-                localStorage.setItem(STORAGE_KEY_MOVEMENTS, JSON.stringify([
-                    { fecha: '2026-06-07 10:30', codigo: '01-001-212-024', bodega: 'Farmacos', desde: 'RECEPCIÓN', hacia: 'Cámara Frío 2 (Zona H)', usuario: 'Admin' }
-                ]));
+                const sampleMov = [
+                    { fecha: '2025-03-10 14:23:15', codigo: '01-001-216-026', bodega: 'Farmacos', desde: 'RECEPCION_INICIAL', hacia: 'PALLET_A_1', usuario: 'Admin' },
+                    { fecha: '2025-03-11 09:15:40', codigo: '02-001-003-050', bodega: 'Insumos', desde: 'RECEPCION_INICIAL', hacia: 'MEZCLAS_J_1', usuario: 'Supervisor' },
+                    { fecha: '2025-03-12 11:02:30', codigo: '02-002-001-038', bodega: 'Economato', desde: 'RECEPCION_INICIAL', hacia: 'PALLET_D_3', usuario: 'Operario' },
+                    { fecha: '2025-03-13 16:45:10', codigo: '01-001-212-024', bodega: 'Farmacos', desde: 'RECEPCION_INICIAL', hacia: 'PALLET_C_2', usuario: 'Supervisor' },
+                ];
+                localStorage.setItem(STORAGE_KEY_MOVEMENTS, JSON.stringify(sampleMov));
             }
             if (!localStorage.getItem(STORAGE_KEY_CONFIG)) {
-                localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify({ mapImage: 'image_3178e5.jpg' }));
+                const config = {
+                    mapImage: 'https://via.placeholder.com/1200x800?text=Layout+Bodega+Farmacia'
+                };
+                localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify(config));
             }
         }
 
-        function getAllProducts() { return JSON.parse(localStorage.getItem(STORAGE_KEY_PRODUCTS) || '[]'); }
-        function setProducts(p) { localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(p)); }
+        // ============================================================
+        //  FUNCIONES DE ACCESO A DATOS
+        // ============================================================
+        function getAllProducts() { 
+            return JSON.parse(localStorage.getItem(STORAGE_KEY_PRODUCTS) || '[]'); 
+        }
+        function setProducts(p) { 
+            localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(p)); 
+        }
         function getProducts() {
             const all = getAllProducts();
             if (currentWarehouse === 'TODAS') return all;
             return all.filter(p => p.bodega === currentWarehouse);
         }
 
-        function getAllMovements() { return JSON.parse(localStorage.getItem(STORAGE_KEY_MOVEMENTS) || '[]'); }
-        function setMovements(m) { localStorage.setItem(STORAGE_KEY_MOVEMENTS, JSON.stringify(m)); }
+        function getAllMovements() { 
+            return JSON.parse(localStorage.getItem(STORAGE_KEY_MOVEMENTS) || '[]'); 
+        }
+        function setMovements(m) { 
+            localStorage.setItem(STORAGE_KEY_MOVEMENTS, JSON.stringify(m)); 
+        }
         function getMovements() {
             const all = getAllMovements();
             if (currentWarehouse === 'TODAS') return all;
@@ -569,11 +757,15 @@
         function getConfig() { return JSON.parse(localStorage.getItem(STORAGE_KEY_CONFIG) || '{}'); }
         function setConfig(c) { localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify(c)); }
 
+        // ============================================================
+        //  SISTEMA DE AUTENTICACIÓN
+        // ============================================================
         let currentUserId = null;
 
         function getCurrentUser() {
             if (currentUserId === null) return null;
-            return getUsers().find(u => u.id === currentUserId) || null;
+            const users = getUsers();
+            return users.find(u => u.id === currentUserId) || null;
         }
 
         function hasPermission(perm) {
@@ -586,12 +778,12 @@
             const username = document.getElementById('loginUser').value.trim();
             const password = document.getElementById('loginPass').value.trim();
             const users = getUsers();
-            const user = users.find(u => u.nombre.toLowerCase() === username.toLowerCase() && u.password === password);
+            const user = users.find(u => u.nombre === username && u.password === password);
             if (user) {
                 currentUserId = user.id;
                 localStorage.setItem(STORAGE_KEY_SESSION, user.id);
                 document.getElementById('loginModal').style.display = 'none';
-                document.getElementById('app').style.display = 'flex';
+                document.getElementById('app').style.display = 'block';
                 renderAll();
                 document.getElementById('loginError').style.display = 'none';
             } else {
@@ -615,7 +807,7 @@
                 if (users.find(u => u.id === parseInt(savedId))) {
                     currentUserId = parseInt(savedId);
                     document.getElementById('loginModal').style.display = 'none';
-                    document.getElementById('app').style.display = 'flex';
+                    document.getElementById('app').style.display = 'block';
                     return true;
                 }
             }
@@ -624,8 +816,12 @@
             return false;
         }
 
+        // ============================================================
+        //  RENDERIZADO DE UI
+        // ============================================================
         function cambiarBodega() {
-            currentWarehouse = document.getElementById('warehouseSelect').value;
+            const sel = document.getElementById('warehouseSelect');
+            currentWarehouse = sel.value;
             renderAll();
         }
 
@@ -639,11 +835,15 @@
             renderInventario();
             renderHistorial();
             renderUsuarios();
-            renderMapa();
+            renderPlano();
+            renderConfig();
         }
 
-        function renderAll() { actualizarUI(); }
+        function renderAll() {
+            actualizarUI();
+        }
 
+        // ----- DASHBOARD -----
         function renderDashboard() {
             const products = getProducts();
             const movements = getMovements();
@@ -668,89 +868,146 @@
             `).join('') || '<tr><td colspan="5" class="empty-state">No hay movimientos recientes</td></tr>';
         }
 
-        function renderMapa(highlightZona = null) {
+        // ============================================================
+        //  PLANO ESTÁTICO (SIN INTERACTIVIDAD)
+        // ============================================================
+        function renderPlano() {
             const config = getConfig();
-            document.getElementById('mapImage').src = config.mapImage || 'image_3178e5.jpg';
+            document.getElementById('mapImage').src = config.mapImage || 'https://via.placeholder.com/1200x800?text=Layout+Bodega+Farmacia';
             
-            document.querySelectorAll('.map-zone').forEach(z => {
-                z.classList.remove('highlight-search', 'highlight-putaway', 'highlight-origin', 'highlight-destiny');
-                if (highlightZona && z.dataset.zone === highlightZona) {
-                    z.classList.add('highlight-search');
+            const overlay = document.getElementById('mapOverlay');
+            overlay.innerHTML = '';
+            
+            // Definir layout de celdas (10 columnas x 8 filas)
+            const layout = [
+                // Fila 1: Zonas A, B, C (Palletizado superior)
+                { col: 0, row: 0, zone: 'A', label: 'Palletizado A', level: 1 },
+                { col: 1, row: 0, zone: 'A', label: 'Palletizado A', level: 2 },
+                { col: 2, row: 0, zone: 'A', label: 'Palletizado A', level: 3 },
+                { col: 3, row: 0, zone: 'B', label: 'Palletizado B', level: 1 },
+                { col: 4, row: 0, zone: 'B', label: 'Palletizado B', level: 2 },
+                { col: 5, row: 0, zone: 'B', label: 'Palletizado B', level: 3 },
+                { col: 6, row: 0, zone: 'C', label: 'Palletizado C', level: 1 },
+                { col: 7, row: 0, zone: 'C', label: 'Palletizado C', level: 2 },
+                { col: 8, row: 0, zone: 'C', label: 'Palletizado C', level: 3 },
+                { col: 9, row: 0, zone: 'C', label: 'Despacho', level: 0 },
+                // Fila 2
+                { col: 0, row: 1, zone: 'A', label: 'Palletizado A', level: 4 },
+                { col: 1, row: 1, zone: 'A', label: 'Palletizado A', level: 5 },
+                { col: 2, row: 1, zone: 'A', label: 'Palletizado A', level: 6 },
+                { col: 3, row: 1, zone: 'B', label: 'Palletizado B', level: 4 },
+                { col: 4, row: 1, zone: 'B', label: 'Palletizado B', level: 5 },
+                { col: 5, row: 1, zone: 'B', label: 'Palletizado B', level: 6 },
+                { col: 6, row: 1, zone: 'C', label: 'Palletizado C', level: 4 },
+                { col: 7, row: 1, zone: 'C', label: 'Palletizado C', level: 5 },
+                { col: 8, row: 1, zone: 'C', label: 'Palletizado C', level: 6 },
+                { col: 9, row: 1, zone: 'C', label: 'Despacho', level: 0 },
+                // Fila 3: Zona D (Pasillo Estrecho) y E (Selectivo)
+                { col: 0, row: 2, zone: 'D', label: 'VNA D', level: 1 },
+                { col: 1, row: 2, zone: 'D', label: 'VNA D', level: 2 },
+                { col: 2, row: 2, zone: 'D', label: 'VNA D', level: 3 },
+                { col: 3, row: 2, zone: 'D', label: 'VNA D', level: 4 },
+                { col: 4, row: 2, zone: 'E', label: 'Selectivo E', level: 1 },
+                { col: 5, row: 2, zone: 'E', label: 'Selectivo E', level: 2 },
+                { col: 6, row: 2, zone: 'E', label: 'Selectivo E', level: 3 },
+                { col: 7, row: 2, zone: 'F', label: 'Anaquel F', level: 1 },
+                { col: 8, row: 2, zone: 'F', label: 'Anaquel F', level: 2 },
+                { col: 9, row: 2, zone: 'F', label: 'Oficinas', level: 0 },
+                // Fila 4
+                { col: 0, row: 3, zone: 'D', label: 'VNA D', level: 5 },
+                { col: 1, row: 3, zone: 'D', label: 'VNA D', level: 6 },
+                { col: 2, row: 3, zone: 'D', label: 'VNA D', level: 7 },
+                { col: 3, row: 3, zone: 'D', label: 'VNA D', level: 8 },
+                { col: 4, row: 3, zone: 'E', label: 'Selectivo E', level: 4 },
+                { col: 5, row: 3, zone: 'E', label: 'Selectivo E', level: 5 },
+                { col: 6, row: 3, zone: 'E', label: 'Selectivo E', level: 6 },
+                { col: 7, row: 3, zone: 'F', label: 'Anaquel F', level: 3 },
+                { col: 8, row: 3, zone: 'F', label: 'Anaquel F', level: 4 },
+                { col: 9, row: 3, zone: 'F', label: 'Oficinas', level: 0 },
+                // Fila 5: Zona G (Full Space) y más Anaquel
+                { col: 0, row: 4, zone: 'G', label: 'Full Space G', level: 1 },
+                { col: 1, row: 4, zone: 'G', label: 'Full Space G', level: 2 },
+                { col: 2, row: 4, zone: 'G', label: 'Full Space G', level: 3 },
+                { col: 3, row: 4, zone: 'G', label: 'Full Space G', level: 4 },
+                { col: 4, row: 4, zone: 'G', label: 'Full Space G', level: 5 },
+                { col: 5, row: 4, zone: 'G', label: 'Full Space G', level: 6 },
+                { col: 6, row: 4, zone: 'G', label: 'Full Space G', level: 7 },
+                { col: 7, row: 4, zone: 'F', label: 'Anaquel F', level: 5 },
+                { col: 8, row: 4, zone: 'F', label: 'Anaquel F', level: 6 },
+                { col: 9, row: 4, zone: 'F', label: 'Oficinas', level: 0 },
+                // Fila 6: Zona H (Cámara Frío) y Zona I (Inyectables)
+                { col: 0, row: 5, zone: 'H', label: 'Cámara Frío H', level: 1 },
+                { col: 1, row: 5, zone: 'H', label: 'Cámara Frío H', level: 2 },
+                { col: 2, row: 5, zone: 'H', label: 'Cámara Frío H', level: 3 },
+                { col: 3, row: 5, zone: 'H', label: 'Cámara Frío H', level: 4 },
+                { col: 4, row: 5, zone: 'I', label: 'Inyectables I', level: 1 },
+                { col: 5, row: 5, zone: 'I', label: 'Inyectables I', level: 2 },
+                { col: 6, row: 5, zone: 'I', label: 'Inyectables I', level: 3 },
+                { col: 7, row: 5, zone: 'I', label: 'Inyectables I', level: 4 },
+                { col: 8, row: 5, zone: 'J', label: 'Mezclas J', level: 1 },
+                { col: 9, row: 5, zone: 'J', label: 'Recepción', level: 0 },
+                // Fila 7: Zona J (Mezclas) y Recepción
+                { col: 0, row: 6, zone: 'J', label: 'Mezclas J', level: 2 },
+                { col: 1, row: 6, zone: 'J', label: 'Mezclas J', level: 3 },
+                { col: 2, row: 6, zone: 'J', label: 'Mezclas J', level: 4 },
+                { col: 3, row: 6, zone: 'J', label: 'Mezclas J', level: 5 },
+                { col: 4, row: 6, zone: 'J', label: 'Mezclas J', level: 6 },
+                { col: 5, row: 6, zone: 'J', label: 'Mezclas J', level: 7 },
+                { col: 6, row: 6, zone: 'J', label: 'Mezclas J', level: 8 },
+                { col: 7, row: 6, zone: 'J', label: 'Mezclas J', level: 9 },
+                { col: 8, row: 6, zone: 'J', label: 'Cuarentena', level: 0 },
+                { col: 9, row: 6, zone: 'J', label: 'Recepción', level: 0 },
+            ];
+
+            layout.forEach(cell => {
+                const div = document.createElement('div');
+                div.className = 'map-cell';
+                const zoneInfo = ZONE_CONFIG[cell.zone];
+                if (zoneInfo) {
+                    div.classList.add(zoneInfo.color);
+                } else {
+                    div.classList.add('zone-office');
                 }
+
+                // Verificar si hay productos en esta zona para mostrar ocupación (solo visual)
+                const products = getProducts();
+                const hasProducts = products.some(p => p.ubicaciones.some(u => u.zona === cell.zone));
+                const hasAlerts = products.some(p => p.ubicaciones.some(u => u.zona === cell.zone) && p.tags && p.tags.length > 0);
+                
+                if (hasProducts) div.classList.add('occupied');
+                if (hasAlerts) div.classList.add('has-alert');
+
+                div.dataset.zone = cell.zone;
+
+                const label = document.createElement('span');
+                label.className = 'cell-label';
+                if (cell.zone && cell.level > 0) {
+                    label.textContent = `${cell.zone}${cell.level}`;
+                } else {
+                    label.textContent = cell.label;
+                }
+                div.appendChild(label);
+
+                if (cell.zone && cell.level > 0) {
+                    const sub = document.createElement('span');
+                    sub.className = 'cell-sub';
+                    sub.textContent = zoneInfo ? zoneInfo.short : '';
+                    div.appendChild(sub);
+                }
+
+                overlay.appendChild(div);
             });
         }
 
-        function filtrarPorZona(zona) {
-            selectedZona = zona;
-            const products = getProducts();
-            const filtrados = products.filter(p => p.ubicaciones.some(u => u.zona === zona));
-            const container = document.getElementById('mapProducts');
-            const zoneName = ZONE_CONFIG[zona] ? ZONE_CONFIG[zona].name : `Zona ${zona}`;
-            
-            document.querySelectorAll('.map-zone').forEach(z => z.classList.remove('highlight-search'));
-            const zoneEl = document.querySelector(`.map-zone[data-zone="${zona}"]`);
-            if (zoneEl) zoneEl.classList.add('highlight-search');
+        // ----- El resto de las funciones (buscarUbicacion, escáner GTIN, inventario, reubicación, etc.) -----
+        // ... (se mantienen igual que en la versión anterior)
 
-            if (filtrados.length === 0) {
-                container.innerHTML = `<p class="empty-state">No hay productos en ${zoneName} para esta bodega.</p>`;
-            } else {
-                container.innerHTML = `<h4 style="margin-bottom:6px;">📍 ${zoneName} (${filtrados.length} productos)</h4>
-                    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px; margin-top:6px;">
-                    ${filtrados.map(p => `
-                        <div style="background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #e2e8f0;">
-                            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:4px; margin-bottom:4px;">
-                                <strong>${p.codigo}</strong>
-                                ${getProductAlertsHTML(p)}
-                            </div>
-                            <div style="font-size:0.75rem;">${p.glosa}</div>
-                            <span style="color:#2563eb; font-size:0.75rem; font-weight:600;">📍 ${p.ubicaciones.map(u => u.ubicacion).join(', ')}</span>
-                        </div>
-                    `).join('')}
-                    </div>`;
-            }
-            document.getElementById('mapProductList').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function limpiarMapa() {
-            document.querySelectorAll('.map-zone').forEach(z => z.classList.remove('highlight-search', 'highlight-putaway', 'highlight-origin', 'highlight-destiny'));
-            selectedZona = null;
-            document.getElementById('mapProducts').innerHTML = '<p class="empty-state">Selecciona una zona del plano o busca un producto.</p>';
-            document.getElementById('mapProductSearch').value = '';
-        }
-
-        function buscarProductoEnMapa() {
-            const query = document.getElementById('mapProductSearch').value.trim().toLowerCase();
-            if (!query) return;
-            const products = getProducts();
-            const prod = products.find(p => p.codigo.toLowerCase().includes(query) || p.glosa.toLowerCase().includes(query));
-            if (!prod) { alert('Producto no encontrado en la bodega seleccionada.'); return; }
-            
-            document.querySelectorAll('.map-zone').forEach(z => z.classList.remove('highlight-search'));
-            prod.ubicaciones.forEach(u => {
-                if (u.zona) {
-                    const zoneEl = document.querySelector(`.map-zone[data-zone="${u.zona}"]`);
-                    if (zoneEl) zoneEl.classList.add('highlight-search');
-                }
-            });
-
-            const container = document.getElementById('mapProducts');
-            container.innerHTML = `<h4 style="margin-bottom:6px;">🎯 ${prod.codigo} - ${prod.glosa}</h4>
-                <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:8px; margin-top:6px;">
-                    ${prod.ubicaciones.map(u => `
-                        <div style="background:#dbeafe; padding:10px; border-radius:8px; border:2px solid #2563eb;">
-                            <strong>${u.ubicacion}</strong><br>
-                            <span style="color:#1e40af; font-size:0.75rem;">${ZONE_CONFIG[u.zona] ? ZONE_CONFIG[u.zona].name : u.zona}</span>
-                        </div>
-                    `).join('')}
-                </div>`;
-            document.getElementById('mapProductList').scrollIntoView({ behavior: 'smooth' });
-        }
-
+        // ============================================================
+        //  BUSCADOR DE UBICACIÓN
+        // ============================================================
         function buscarUbicacion() {
             const query = document.getElementById('searchUbicacion').value.trim().toLowerCase();
             const container = document.getElementById('resultadosBusqueda');
-            
-            document.querySelectorAll('.map-zone').forEach(z => z.classList.remove('highlight-search'));
             
             if (!query) {
                 container.innerHTML = '<p class="empty-state">Introduce un término de búsqueda para comenzar.</p>';
@@ -758,19 +1015,20 @@
             }
 
             const products = getProducts();
-            const resultados = products.filter(p => 
-                p.codigo.toLowerCase().includes(query) || 
-                p.glosa.toLowerCase().includes(query) || 
-                (p.gtin && p.gtin.includes(query)) ||
-                p.ubicaciones.some(u => u.ubicacion.toLowerCase().includes(query) || u.zona.toLowerCase().includes(query))
-            );
+            const resultados = products.filter(p => {
+                if (p.codigo.toLowerCase().includes(query)) return true;
+                if (p.glosa.toLowerCase().includes(query)) return true;
+                if (p.gtin && p.gtin.includes(query)) return true;
+                if (p.ubicaciones.some(u => u.ubicacion.toLowerCase().includes(query) || u.zona.toLowerCase().includes(query))) return true;
+                return false;
+            });
 
             if (resultados.length === 0) {
                 container.innerHTML = `<p class="empty-state">❌ No se encontraron productos que coincidan con "${query}".</p>`;
                 return;
             }
 
-            container.innerHTML = `<p style="margin-bottom:8px; color:#64748b; font-size:0.8rem;">Se encontraron ${resultados.length} producto(s):</p>`;
+            container.innerHTML = `<p style="margin-bottom:10px; color:#64748b; font-size:0.9rem;">Se encontraron ${resultados.length} producto(s):</p>`;
             container.innerHTML += resultados.map(p => {
                 const alertBadges = getProductAlertsHTML(p);
                 const ubicacionesHtml = p.ubicaciones.map(u => {
@@ -786,9 +1044,10 @@
                         <span>${p.codigo}</span>
                         <span class="badge-bodega ${bodegaClass}">${p.bodega}</span>
                         ${alertBadges}
+                        <span style="font-weight:400; font-size:0.75rem; color:#64748b;">GTIN: ${p.gtin || 'N/A'}</span>
                         <button class="btn btn-primary btn-sm" onclick="reubicarProducto('${p.codigo}')" style="margin-left:auto;" ${hasPermission('escritura') ? '' : 'disabled'}>🔄 Reubicar</button>
                     </h4>
-                    <p style="margin-bottom:4px; font-size:0.85rem;">${p.glosa}</p>
+                    <p style="margin-bottom:6px;">${p.glosa}</p>
                     <div class="ubicacion-tag">
                         <strong>📍 Ubicaciones:</strong><br>
                         ${ubicacionesHtml}
@@ -797,22 +1056,26 @@
             }).join('');
         }
 
+        // ============================================================
+        //  LECTOR GTIN
+        // ============================================================
         let html5QRScanner = null;
 
         function abrirLectorGTINBusqueda() {
             mostrarModal('Escanear GTIN / EAN', `
-                <p style="font-size:0.8rem;">Escanea el código de barras del producto o usa una imagen.</p>
-                <div id="gtin-scanner-container"></div>
-                <div id="gtin-scanner-status">📷 Presiona "Iniciar cámara" para comenzar.</div>
-                <div class="flex" style="justify-content:center; margin-top:8px;">
+                <p>Escanea el código de barras del producto (EAN-13, GS1-128 o DataMatrix) para buscarlo.</p>
+                <div id="gtin-scanner-container" style="width:100%; max-width:400px; margin:10px auto; border-radius:12px; overflow:hidden; background:#0f172a; min-height:200px;"></div>
+                <div id="gtin-scanner-status" style="color:#64748b; font-size:0.9rem; text-align:center; margin:8px 0;">📷 Presiona "Iniciar cámara" para comenzar.</div>
+                <div class="flex" style="justify-content:center; margin-top:10px;">
                     <button class="btn btn-primary" onclick="iniciarLectorGTIN()">📷 Iniciar cámara</button>
                     <button class="btn btn-warning" onclick="document.getElementById('gtinImageInput').click()">🖼️ Subir imagen</button>
                     <input type="file" id="gtinImageInput" accept="image/*" style="display:none" onchange="leerGTINDesdeImagen(this.files[0])">
                 </div>
-                <div id="imagePreviewContainer" style="display:none; margin-top:8px; text-align:center;">
-                    <img id="imagePreview" class="image-preview" src="#" alt="Vista previa">
+                <div id="imagePreviewContainer" style="display:none; margin-top:10px; text-align:center;">
+                    <img id="imagePreview" class="image-preview" src="#" alt="Vista previa de la imagen">
+                    <p style="font-size:0.75rem; color:#64748b;">Procesando imagen...</p>
                 </div>
-                <label style="margin-top:10px;">O escribe el GTIN/EAN manualmente:</label>
+                <p style="color:#64748b; font-size:0.8rem; margin-top:10px;">O escribe el GTIN/EAN manualmente:</p>
                 <div style="display:flex; gap:8px;">
                     <input id="manualGTIN" placeholder="Ej: 7801234567890" style="flex:1;">
                     <button class="btn btn-primary" onclick="const v=document.getElementById('manualGTIN').value; if(v) manejarLecturaGTIN(v);">🔍 Buscar</button>
@@ -846,25 +1109,54 @@
 
         function iniciarHtml5Scanner(container, status) {
             status.textContent = '📷 Solicitando acceso a la cámara...';
+            
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                status.textContent = '❌ Tu navegador no soporta la cámara. Usa "Subir imagen".';
+                return;
+            }
+
             try {
                 html5QRScanner = new Html5Qrcode("gtin-scanner-container");
+                
+                const config = {
+                    fps: 10,
+                    qrbox: { width: 250, height: 100 },
+                    formatsToSupport: [
+                        Html5QrcodeSupportedFormats.EAN_13,
+                        Html5QrcodeSupportedFormats.EAN_8,
+                        Html5QrcodeSupportedFormats.CODE_128,
+                        Html5QrcodeSupportedFormats.CODE_39,
+                        Html5QrcodeSupportedFormats.QR_CODE,
+                        Html5QrcodeSupportedFormats.DATA_MATRIX
+                    ]
+                };
+
                 html5QRScanner.start(
                     { facingMode: "environment" },
-                    { fps: 10, qrbox: { width: 220, height: 90 } },
+                    config,
                     (decodedText) => {
                         status.textContent = '✅ Código detectado: ' + decodedText;
                         manejarLecturaGTIN(decodedText);
                         detenerLectorGTIN();
                         cerrarModal();
                     },
-                    (error) => {}
+                    (error) => {
+                        if (error && !error.includes('NotFoundException')) {
+                            console.warn('Error de escaneo:', error);
+                            if (error.includes('Permission denied')) {
+                                status.textContent = '❌ Permiso de cámara denegado. Reintenta y acepta el permiso.';
+                            }
+                        }
+                    }
                 ).then(() => {
-                    status.textContent = '📷 Cámara activa. Apunta al código.';
+                    status.textContent = '📷 Cámara activa. Apunta al código de barras.';
                 }).catch((err) => {
+                    console.error('Error al iniciar escáner:', err);
                     status.textContent = '❌ No se pudo iniciar la cámara. Usa "Subir imagen".';
                 });
             } catch (err) {
-                status.textContent = '❌ Error al crear el escáner.';
+                console.error('Error al crear el escáner:', err);
+                status.textContent = '❌ Error al crear el escáner. Usa "Subir imagen".';
             }
         }
 
@@ -872,7 +1164,17 @@
             if (html5QRScanner) {
                 html5QRScanner.stop().then(() => {
                     html5QRScanner = null;
-                }).catch(() => { html5QRScanner = null; });
+                    const container = document.getElementById('gtin-scanner-container');
+                    if (container) container.innerHTML = '';
+                    const status = document.getElementById('gtin-scanner-status');
+                    if (status) status.textContent = '';
+                }).catch(() => {
+                    html5QRScanner = null;
+                    const container = document.getElementById('gtin-scanner-container');
+                    if (container) container.innerHTML = '';
+                    const status = document.getElementById('gtin-scanner-status');
+                    if (status) status.textContent = '';
+                });
             }
         }
 
@@ -890,29 +1192,75 @@
             };
             reader.readAsDataURL(file);
 
-            setTimeout(async () => {
+            setTimeout(() => {
                 try {
-                    const codeReader = new ZXing.BrowserMultiFormatReader();
-                    const result = await codeReader.decodeFromImage(previewImg);
-                    if (result) {
-                        status.textContent = '✅ Código detectado en imagen.';
-                        manejarLecturaGTIN(result.getText());
-                        cerrarModal();
-                    }
+                    const img = new Image();
+                    img.onload = async function() {
+                        try {
+                            const canvas = document.createElement('canvas');
+                            const ctx = canvas.getContext('2d');
+                            let width = img.width;
+                            let height = img.height;
+                            const maxSize = 800;
+                            if (width > maxSize || height > maxSize) {
+                                const ratio = Math.min(maxSize / width, maxSize / height);
+                                width = width * ratio;
+                                height = height * ratio;
+                            }
+                            canvas.width = width;
+                            canvas.height = height;
+                            ctx.drawImage(img, 0, 0, width, height);
+
+                            const codeReader = new ZXing.BrowserMultiFormatReader();
+                            const result = await codeReader.decodeFromCanvas(canvas);
+                            if (result) {
+                                status.textContent = '✅ Código detectado en imagen.';
+                                manejarLecturaGTIN(result.getText());
+                                cerrarModal();
+                            } else {
+                                status.textContent = '❌ No se detectó ningún código.';
+                                alert('No se pudo leer ningún código en la imagen. Asegúrate de que el código esté nítido y bien iluminado.');
+                            }
+                        } catch (err) {
+                            console.error('Error al decodificar imagen:', err);
+                            status.textContent = '❌ Error al leer la imagen.';
+                            alert('No se pudo leer ningún código en la imagen. Asegúrate de que el código esté nítido y bien iluminado.');
+                        }
+                    };
+                    img.src = previewImg.src;
                 } catch (err) {
-                    status.textContent = '❌ No se detectó ningún código.';
-                    alert('No se pudo leer ningún código en la imagen.');
+                    console.error('Error al procesar imagen:', err);
+                    status.textContent = '❌ Error al procesar la imagen.';
+                    alert('Error al procesar la imagen. Intenta con otra foto.');
                 }
             }, 500);
         }
 
         function manejarLecturaGTIN(texto) {
             let gtin = texto.replace(/\s/g, '');
+            if (gtin.includes('(01)')) {
+                const match = gtin.match(/\(01\)(\d{14})/);
+                if (match) gtin = match[1];
+                else {
+                    const numeros = gtin.match(/\d{13,14}/);
+                    if (numeros) gtin = numeros[0];
+                }
+            } else {
+                const numeros = gtin.match(/\d{13}/);
+                if (numeros) gtin = numeros[0];
+            }
+            if (!gtin || gtin.length < 13) {
+                alert('Código GTIN/EAN no válido. Debe tener 13 o 14 dígitos.');
+                return;
+            }
             document.getElementById('searchUbicacion').value = gtin;
             buscarUbicacion();
             document.querySelector('nav button[data-tab="buscador"]').click();
         }
 
+        // ============================================================
+        //  INVENTARIO
+        // ============================================================
         function renderInventario() {
             const search = document.getElementById('searchInventario').value.toLowerCase();
             const products = getProducts();
@@ -928,7 +1276,7 @@
                     <td>${p.glosa}</td>
                     <td><span class="badge-bodega ${bodegaClass}">${p.bodega}</span></td>
                     <td>${alertBadges || '<span style="color:#94a3b8; font-size:0.6rem;">Sin alertas</span>'}</td>
-                    <td style="font-size:0.75rem;">
+                    <td style="font-size:0.8rem;">
                         ${p.ubicaciones.map(u => {
                             const zoneName = ZONE_CONFIG[u.zona] ? ZONE_CONFIG[u.zona].short : u.zona;
                             return `<span class="location-badge ${u.tipo === 'master' ? 'location-master' : 'location-comercial'}">${u.tipo.toUpperCase()}</span> ${u.ubicacion} (${zoneName})`;
@@ -944,7 +1292,7 @@
         }
 
         function agregarProducto() {
-            if (!hasPermission('escritura')) { alert('No tienes permisos.'); return; }
+            if (!hasPermission('escritura')) { alert('No tienes permisos para agregar productos.'); return; }
             const zoneOptions = Object.entries(ZONE_CONFIG).map(([key, val]) => 
                 `<option value="${key}">${val.name}</option>`
             ).join('');
@@ -961,8 +1309,8 @@
                     <option value="Insumos">🧪 Insumos Clínicos</option>
                     <option value="Economato">📦 Economato</option>
                 </select>
-                <label>Alertas</label>
-                <select id="modalTags" multiple style="height:auto; min-height:50px;">
+                <label>Alertas (selecciona múltiples con Ctrl+clic)</label>
+                <select id="modalTags" multiple style="height:auto; min-height:60px;">
                     <option value="Cámara de Frío">🧊 Cámara de Frío</option>
                     <option value="Fármaco Controlado">⚠️ Fármaco Controlado</option>
                     <option value="Ley Ricarte Soto (LRS)">📋 Ley Ricarte Soto (LRS)</option>
@@ -971,30 +1319,36 @@
                 <label>Zona</label>
                 <select id="modalZona">${zoneOptions}</select>
                 <label>Ubicación Master (Pallet/Rack)</label>
-                <input id="modalUbicMaster" placeholder="Ej: Cámara Frío 1">
+                <input id="modalUbicMaster" placeholder="Ej: PALLET_A_1">
+                <label>Ubicación Comercial (Anaquel/Full Space)</label>
+                <input id="modalUbicComercial" placeholder="Ej: FS_G_1">
             `, () => {
                 const codigo = document.getElementById('modalCodigo').value.trim();
                 const gtin = document.getElementById('modalGtin').value.trim();
                 const glosa = document.getElementById('modalGlosa').value.trim();
                 const bodega = document.getElementById('modalBodega').value;
                 const zona = document.getElementById('modalZona').value;
-                const tags = Array.from(document.getElementById('modalTags').selectedOptions).map(opt => opt.value);
+                const tagsSelect = document.getElementById('modalTags');
+                const tags = Array.from(tagsSelect.selectedOptions).map(opt => opt.value);
                 const master = document.getElementById('modalUbicMaster').value.trim();
+                const comercial = document.getElementById('modalUbicComercial').value.trim();
                 if (!codigo || !glosa) { alert('Código y glosa son obligatorios'); return false; }
                 const products = getAllProducts();
                 if (products.find(p => p.codigo === codigo)) { alert('El código ya existe.'); return false; }
                 const ubicaciones = [];
                 if (master) ubicaciones.push({ tipo: 'master', ubicacion: master, zona });
+                if (comercial) ubicaciones.push({ tipo: 'comercial', ubicacion: comercial, zona });
                 products.push({ codigo, gtin, glosa, bodega, tags, ubicaciones });
                 setProducts(products);
                 const mov = getAllMovements();
-                mov.push({ fecha: new Date().toLocaleString(), codigo, bodega, desde: 'ALTA', hacia: master || 'SIN_UBICACION', usuario: getCurrentUser().nombre });
+                mov.push({ fecha: new Date().toLocaleString(), codigo, bodega, desde: 'ALTA_INICIAL', hacia: master || comercial || 'SIN_UBICACION', usuario: getCurrentUser().nombre });
                 setMovements(mov);
                 renderAll();
                 cerrarModal();
             });
         }
 
+        // ----- REUBICACIÓN -----
         let html5QrCode = null;
 
         function escaneoQR() {
@@ -1015,10 +1369,18 @@
             html5QrCode = new Html5Qrcode("qr-reader");
             html5QrCode.start(
                 { facingMode: "environment" },
-                { fps: 10, qrbox: { width: 220, height: 220 } },
+                { fps: 10, qrbox: { width: 250, height: 250 } },
                 (decodedText) => {
                     const input = document.getElementById('modalNuevaUbic');
-                    if (input) input.value = decodedText;
+                    if (input) {
+                        input.value = decodedText;
+                        input.style.borderColor = '#16a34a';
+                        input.style.backgroundColor = '#f0fdf4';
+                        setTimeout(() => {
+                            input.style.borderColor = '';
+                            input.style.backgroundColor = '';
+                        }, 1500);
+                    }
                     html5QrCode.stop().then(() => {
                         html5QrCode.clear();
                         container.style.display = 'none';
@@ -1026,14 +1388,14 @@
                 },
                 (error) => {}
             ).catch(err => {
-                alert('No se pudo acceder a la cámara.');
+                alert('No se pudo acceder a la cámara para QR. Usa HTTPS o un lector USB.');
                 container.style.display = 'none';
                 html5QrCode = null;
             });
         }
 
         function reubicarProducto(codigo) {
-            if (!hasPermission('escritura')) { alert('No tienes permisos.'); return; }
+            if (!hasPermission('escritura')) { alert('No tienes permisos para reubicar.'); return; }
             const products = getAllProducts();
             const prod = products.find(p => p.codigo === codigo);
             if (!prod) return;
@@ -1041,44 +1403,60 @@
             const alertMessages = getProductAlertMessages(prod);
             let alertHtml = '';
             if (alertMessages.length > 0) {
-                alertHtml = `<div class="alert-bar alert-bar-warning">
+                alertHtml = `<div class="alert-bar alert-bar-warning" style="border-left-color: #dc2626; background: #fef2f2;">
                     <span style="font-weight:700; color:#b91c1c;">⚠️ ALERTAS DE SEGURIDAD</span>
-                    <div style="display:flex; flex-wrap:wrap; gap:4px;">
-                        ${alertMessages.map(msg => `<span style="background:#fee2e2; padding:2px 8px; border-radius:10px; font-size:0.7rem; color:#b91c1c;">${msg}</span>`).join('')}
+                    <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                        ${alertMessages.map(msg => `<span style="background:#fee2e2; padding:2px 10px; border-radius:12px; font-size:0.75rem; color:#b91c1c;">${msg}</span>`).join('')}
                     </div>
                 </div>`;
             }
+
+            const codigoHidden = `<input type="hidden" id="modalCodigoReubicacion" value="${codigo}">`;
+            const ubicacionesActuales = prod.ubicaciones.map(u => {
+                const zoneName = ZONE_CONFIG[u.zona] ? ZONE_CONFIG[u.zona].short : u.zona;
+                return `${u.tipo}: ${u.ubicacion} (${zoneName})`;
+            }).join('\n') || 'Ninguna';
 
             const zoneOptions = Object.entries(ZONE_CONFIG).map(([key, val]) => 
                 `<option value="${key}">${val.name}</option>`
             ).join('');
 
             mostrarModal('Reubicar producto', `
-                <input type="hidden" id="modalCodigoReubicacion" value="${codigo}">
+                ${codigoHidden}
                 ${alertHtml}
-                <p style="font-size:0.85rem;"><strong>${prod.codigo}</strong> - ${prod.glosa}</p>
+                <p><strong>${prod.codigo}</strong> - ${prod.glosa}</p>
+                <label>Ubicaciones actuales</label>
+                <textarea rows="2" readonly style="width:100%; background:#f1f5f9; border:none; padding:8px; border-radius:8px;">${ubicacionesActuales}</textarea>
+                <label>Tipo de ubicación a reubicar</label>
+                <select id="modalTipoUbicacion">
+                    <option value="master">Master (Pallet/Rack)</option>
+                    <option value="comercial">Comercial (Anaquel/Full Space)</option>
+                </select>
                 <label>Zona destino</label>
                 <select id="modalZonaDestino">${zoneOptions}</select>
                 <label>Nueva ubicación</label>
                 <div style="display:flex; gap:8px; align-items:center;">
-                    <input id="modalNuevaUbic" placeholder="Escribe o escanea QR" style="flex:1;" autofocus>
+                    <input id="modalNuevaUbic" placeholder="Escribe o escanea QR (ej: PALLET_A_1)" style="flex:1;" autofocus>
                     <button type="button" class="btn btn-primary" onclick="escaneoQR()">📷 QR</button>
                 </div>
                 <div id="qr-reader" class="qr-reader-container"></div>
             `, () => {
+                const tipo = document.getElementById('modalTipoUbicacion').value;
                 const nuevaZona = document.getElementById('modalZonaDestino').value;
                 const nueva = document.getElementById('modalNuevaUbic').value.trim();
                 if (!nueva) { alert('Debes indicar una ubicación.'); return false; }
-                const desde = prod.ubicaciones[0]?.ubicacion || 'SIN_UBICACION';
-                if (prod.ubicaciones.length > 0) {
-                    prod.ubicaciones[0] = { tipo: 'master', ubicacion: nueva, zona: nuevaZona };
+                const desde = prod.ubicaciones.find(u => u.tipo === tipo)?.ubicacion || 'SIN_UBICACION';
+                const idx = prod.ubicaciones.findIndex(u => u.tipo === tipo);
+                if (idx !== -1) {
+                    prod.ubicaciones[idx] = { tipo, ubicacion: nueva, zona: nuevaZona };
                 } else {
-                    prod.ubicaciones.push({ tipo: 'master', ubicacion: nueva, zona: nuevaZona });
+                    prod.ubicaciones.push({ tipo, ubicacion: nueva, zona: nuevaZona });
                 }
                 setProducts(products);
                 const mov = getAllMovements();
                 mov.push({ fecha: new Date().toLocaleString(), codigo, bodega: prod.bodega, desde, hacia: nueva, usuario: getCurrentUser().nombre });
                 setMovements(mov);
+                
                 renderAll();
                 cerrarModal();
             });
@@ -1086,7 +1464,7 @@
 
         function verHistorial(codigo) {
             const mov = getMovements().filter(m => m.codigo === codigo);
-            if (mov.length === 0) { alert('No hay movimientos para este producto.'); return; }
+            if (mov.length === 0) { alert('No hay movimientos para este producto en la bodega seleccionada.'); return; }
             let html = `<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Bodega</th><th>Desde</th><th>Hacia</th><th>Usuario</th></tr></thead><tbody>`;
             mov.forEach(m => {
                 html += `<tr><td>${m.fecha}</td><td><span class="badge-bodega badge-farmacos">${m.bodega}</span></td><td>${m.desde || '-'}</td><td>${m.hacia || '-'}</td><td>${m.usuario || 'Sistema'}</td></tr>`;
@@ -1096,7 +1474,7 @@
         }
 
         function eliminarProducto(codigo) {
-            if (!hasPermission('administracion')) { alert('No tienes permisos.'); return; }
+            if (!hasPermission('administracion')) { alert('No tienes permisos de administración.'); return; }
             if (!confirm(`¿Eliminar producto ${codigo}?`)) return;
             let products = getAllProducts();
             products = products.filter(p => p.codigo !== codigo);
@@ -1104,6 +1482,7 @@
             renderAll();
         }
 
+        // ----- HISTORIAL -----
         function renderHistorial() {
             const filter = document.getElementById('filterHistorial').value.trim();
             let mov = getMovements();
@@ -1122,12 +1501,15 @@
         }
 
         function limpiarHistorial() {
-            if (!hasPermission('administracion')) { alert('No tienes permisos.'); return; }
-            if (!confirm('¿Eliminar historial?')) return;
-            setMovements([]);
+            if (!hasPermission('administracion')) { alert('No tienes permisos para limpiar el historial.'); return; }
+            if (!confirm('¿Eliminar todo el historial de la bodega seleccionada?')) return;
+            const all = getAllMovements();
+            const filtered = all.filter(m => m.bodega !== currentWarehouse && currentWarehouse !== 'TODAS');
+            setMovements(currentWarehouse === 'TODAS' ? [] : filtered);
             renderAll();
         }
 
+        // ----- USUARIOS -----
         function renderUsuarios() {
             const users = getUsers();
             const tbody = document.getElementById('usuariosBody');
@@ -1146,24 +1528,25 @@
         }
 
         function mostrarModalUsuario(usuario = null) {
-            if (!hasPermission('administracion')) { alert('No tienes permisos.'); return; }
+            if (!hasPermission('administracion')) { alert('No tienes permisos de administración.'); return; }
             const isEdit = !!usuario;
             const title = isEdit ? 'Editar usuario' : 'Nuevo usuario';
             const nombre = isEdit ? usuario.nombre : '';
             const perfil = isEdit ? usuario.perfil : 'operario';
             const permisos = isEdit ? usuario.permisos.join(', ') : 'lectura';
+            const passPlaceholder = isEdit ? 'Dejar en blanco para mantener' : 'Contraseña';
             mostrarModal(title, `
                 <label>Nombre</label>
                 <input id="modalUserNombre" value="${nombre}">
                 <label>Contraseña</label>
-                <input id="modalUserPass" type="password" placeholder="${isEdit ? 'Dejar en blanco para mantener' : 'Contraseña'}">
+                <input id="modalUserPass" type="password" placeholder="${passPlaceholder}">
                 <label>Perfil</label>
                 <select id="modalUserPerfil">
                     <option value="admin" ${perfil==='admin'?'selected':''}>Administrador</option>
                     <option value="supervisor" ${perfil==='supervisor'?'selected':''}>Supervisor</option>
                     <option value="operario" ${perfil==='operario'?'selected':''}>Operario</option>
                 </select>
-                <label>Permisos</label>
+                <label>Permisos (separados por coma)</label>
                 <input id="modalUserPermisos" value="${permisos}" placeholder="lectura, escritura, administracion">
                 <input type="hidden" id="modalUserId" value="${isEdit ? usuario.id : ''}">
             `, () => {
@@ -1183,7 +1566,7 @@
                         users[idx] = updated;
                     }
                 } else {
-                    if (!password) { alert('Contraseña obligatoria.'); return false; }
+                    if (!password) { alert('La contraseña es obligatoria para nuevos usuarios.'); return false; }
                     const newId = users.length ? Math.max(...users.map(u => u.id)) + 1 : 1;
                     users.push({ id: newId, nombre, password, perfil, permisos });
                 }
@@ -1205,8 +1588,16 @@
             let users = getUsers();
             users = users.filter(u => u.id !== id);
             setUsers(users);
-            if (currentUserId === id) logout();
-            else renderAll();
+            if (currentUserId === id) {
+                logout();
+            } else {
+                renderAll();
+            }
+        }
+
+        // ----- CONFIGURACIÓN -----
+        function renderConfig() {
+            // Configuración mínima
         }
 
         function subirImagenLayout(event) {
@@ -1217,18 +1608,24 @@
                 const config = getConfig();
                 config.mapImage = e.target.result;
                 setConfig(config);
-                renderMapa();
+                renderPlano();
                 alert('Imagen del layout actualizada.');
             };
             reader.readAsDataURL(file);
         }
 
+        // ----- EXPORTAR / IMPORTAR / RESET -----
         function exportarDatos() {
-            const data = { products: getAllProducts(), movements: getAllMovements(), users: getUsers(), config: getConfig() };
+            const data = {
+                products: getAllProducts(),
+                movements: getAllMovements(),
+                users: getUsers(),
+                config: getConfig()
+            };
             const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = 'wms_backup.json';
+            a.download = 'wms_backup_multibodega.json';
             a.click();
         }
 
@@ -1245,21 +1642,30 @@
                     if (data.config) setConfig(data.config);
                     alert('Datos importados correctamente.');
                     renderAll();
-                } catch (err) { alert('Error al importar.'); }
+                } catch (err) {
+                    alert('Error al importar: ' + err.message);
+                }
             };
             reader.readAsText(file);
             event.target.value = '';
         }
 
         function resetData() {
-            if (!confirm('¿Reiniciar todos los datos?')) return;
-            localStorage.clear();
+            if (!confirm('Esto eliminará todos los datos actuales y cargará los datos de ejemplo. ¿Continuar?')) return;
+            localStorage.removeItem(STORAGE_KEY_PRODUCTS);
+            localStorage.removeItem(STORAGE_KEY_MOVEMENTS);
+            localStorage.removeItem(STORAGE_KEY_USERS);
+            localStorage.removeItem(STORAGE_KEY_CONFIG);
             initData();
             renderAll();
-            alert('Sistema restablecido.');
+            alert('Datos reiniciados.');
         }
 
+        // ============================================================
+        //  MODAL GENÉRICO
+        // ============================================================
         let modalCallback = null;
+        let modalIsView = false;
 
         function mostrarModal(title, bodyHTML, onSave, isView = false) {
             document.getElementById('modalTitle').textContent = title;
@@ -1267,9 +1673,11 @@
             const actionBtn = document.getElementById('modalActionBtn');
             if (isView || !onSave) {
                 actionBtn.style.display = 'none';
+                modalIsView = true;
                 modalCallback = null;
             } else {
                 actionBtn.style.display = 'inline-block';
+                modalIsView = false;
                 modalCallback = onSave;
             }
             document.getElementById('modal').classList.add('active');
@@ -1280,6 +1688,8 @@
             if (html5QrCode) {
                 html5QrCode.stop().then(() => {
                     html5QrCode.clear();
+                    const container = document.getElementById('qr-reader');
+                    if (container) container.style.display = 'none';
                     html5QrCode = null;
                 }).catch(() => { html5QrCode = null; });
             }
@@ -1289,12 +1699,15 @@
 
         function ejecutarModal() {
             if (modalCallback) {
-                const res = modalCallback();
-                if (res === false) return;
+                const result = modalCallback();
+                if (result === false) return;
             }
             cerrarModal();
         }
 
+        // ============================================================
+        //  NAVEGACIÓN POR TABS
+        // ============================================================
         document.querySelectorAll('nav button').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -1303,17 +1716,29 @@
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                 const target = document.getElementById(`tab-${tabId}`);
                 if (target) target.classList.add('active');
-                if (tabId === 'mapa') renderMapa();
+                if (tabId === 'mapa') renderPlano();
                 if (tabId === 'buscador') buscarUbicacion();
             });
         });
 
+        // ============================================================
+        //  INICIALIZACIÓN COMPLETA
+        // ============================================================
         initData();
-        if (checkSession()) renderAll();
+        const logged = checkSession();
+        if (logged) {
+            renderAll();
+        }
 
         document.getElementById('modal').addEventListener('click', function(e) {
             if (e.target === this) cerrarModal();
         });
+
+        document.getElementById('loginPass').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        console.log('✅ WMS Hospital San Juan de Dios con plano estático cargado.');
     </script>
 </body>
 </html>
