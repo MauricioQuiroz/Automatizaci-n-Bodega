@@ -1192,9 +1192,6 @@
             document.getElementById('mapProductList').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // ----- El resto de las funciones (buscarUbicacion, escáner GTIN, inventario, reubicación, etc.) -----
-        // ... (se mantienen igual que en la versión anterior)
-
         // ============================================================
         //  BUSCADOR DE UBICACIÓN (adaptado)
         // ============================================================
@@ -1263,7 +1260,7 @@
         }
 
         // ============================================================
-        //  LECTOR GTIN (se mantiene igual)
+        //  LECTOR GTIN
         // ============================================================
         let html5QRScanner = null;
 
@@ -1465,7 +1462,7 @@
         }
 
         // ============================================================
-        //  INVENTARIO (adaptado a zonas reales)
+        //  INVENTARIO
         // ============================================================
         function renderInventario() {
             const search = document.getElementById('searchInventario').value.toLowerCase();
@@ -1554,7 +1551,7 @@
             });
         }
 
-        // ----- REUBICACIÓN (adaptado) -----
+        // ----- REUBICACIÓN -----
         let html5QrCode = null;
 
         function escaneoQR() {
@@ -1608,7 +1605,7 @@
                 },
                 (error) => {}
             ).catch(err => {
-                alert('No se pudo acceder a la cámara para QR. Usa HTTPS o un lector USB.');
+                alert('No se pudo acceder a la cámara para QR.');
                 container.style.display = 'none';
                 html5QrCode = null;
             });
@@ -1660,7 +1657,7 @@
                     <button type="button" class="btn btn-primary" onclick="escaneoQR()">📷 QR</button>
                 </div>
                 <div id="qr-reader" class="qr-reader-container"></div>
-                <p style="font-size:0.75rem; color:#64748b; margin-top:6px;">🔴 Origen en rojo | 🟠 Destino en naranja (al escanear/escribir)</p>
+                <p style="font-size:0.75rem; color:#64748b; margin-top:6px;">🔴 Origen en rojo | 🟠 Destino en naranja</p>
             `, () => {
                 const tipo = document.getElementById('modalTipoUbicacion').value;
                 const nuevaZona = document.getElementById('modalZonaDestino').value;
@@ -1678,7 +1675,6 @@
                 mov.push({ fecha: new Date().toLocaleString(), codigo, bodega: prod.bodega, desde, hacia: nueva, usuario: getCurrentUser().nombre });
                 setMovements(mov);
                 
-                // Resaltar en verde la nueva ubicación
                 document.querySelectorAll(`.map-cell[data-zone="${nuevaZona}"]`).forEach(cell => {
                     cell.classList.add('highlight-putaway');
                 });
@@ -1845,9 +1841,7 @@
         }
 
         // ----- CONFIGURACIÓN -----
-        function renderConfig() {
-            // No necesitamos el mapeo de zonas porque ahora es fijo
-        }
+        function renderConfig() {}
 
         function subirImagenLayout(event) {
             const file = event.target.files[0];
@@ -1863,7 +1857,6 @@
             reader.readAsDataURL(file);
         }
 
-        // ----- EXPORTAR / IMPORTAR / RESET -----
         function exportarDatos() {
             const data = {
                 products: getAllProducts(),
@@ -1996,8 +1989,6 @@
         document.getElementById('loginPass').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') handleLogin();
         });
-
-        console.log('✅ WMS Hospital San Juan de Dios con layout real cargado.');
     </script>
 </body>
 </html>
