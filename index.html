@@ -229,6 +229,12 @@
         .empty-state { color:#94a3b8; text-align:center; padding:30px 16px; font-size:0.85rem; }
         .empty-state .empty-icon { font-size:2.5rem; display:block; margin-bottom:10px; }
 
+        /* QR GRID para ubicaciones */
+        .qr-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:10px; }
+        .qr-card { border:2px solid #e2e8f0; border-radius:8px; padding:8px; text-align:center; background:white; }
+        .qr-card .qr-code { font-weight:700; font-size:0.8rem; margin-top:4px; }
+        .qr-card .qr-ubicacion { font-size:0.6rem; color:#64748b; }
+
         /* RESPONSIVE */
         @media (max-width:1024px) { .tab-content { padding:10px; } .card-grid { grid-template-columns:repeat(auto-fit, minmax(90px,1fr)); } .modal-content { max-width:95%; padding:16px; } .layout-grid { min-height:350px; } }
         @media (max-width:768px) {
@@ -367,26 +373,27 @@
                     <option value="Economato">Bodega de Economato</option>
                 </select>
                 <button class="btn btn-success" onclick="document.getElementById('fileInput').click()">
-                    <span class="icon"></span> Cargar Archivo
+                    <span class="icon">📂</span> Cargar Archivo
                 </button>
                 <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event)">
                 <button class="btn btn-warning" onclick="exportarExcelCompleto()">
-                    <span class="icon"></span> Exportar Archivo
+                    <span class="icon">📤</span> Exportar Archivo
                 </button>
-                <button class="btn btn-purple" onclick="generarTodosQR()">
-                    <span class="icon"></span> Generar QR
+                <!-- QR Ubicaciones - reemplaza al antiguo Generar QR -->
+                <button class="btn btn-purple" onclick="generarQRUbicaciones()">
+                    <span class="icon">📱</span> QR Ubicaciones
                 </button>
                 <button class="btn" onclick="logout()">
-                    <span class="icon"></span>Salir
+                    <span class="icon">🚪</span>Salir
                 </button>
             </div>
         </header>
 
         <!-- NAV -->
         <nav id="mainNav">
-            <button class="active" data-tab="dashboard"><span class="nav-icon"></span> Dashboard</button>
-            <button data-tab="inventario"><span class="nav-icon"></span> Inventario <span class="badge-nav" id="inventoryBadge">0</span></button>
-            <button data-tab="layout"><span class="nav-icon"></span> Layout</button>
+            <button class="active" data-tab="dashboard"><span class="nav-icon">📊</span> Dashboard</button>
+            <button data-tab="inventario"><span class="nav-icon">📦</span> Inventario <span class="badge-nav" id="inventoryBadge">0</span></button>
+            <button data-tab="layout"><span class="nav-icon">🗺️</span> Layout</button>
             <button data-tab="movimientos"><span class="nav-icon">🔄</span> Movimientos</button>
             <button data-tab="usuarios"><span class="nav-icon">👥</span> Usuarios</button>
             <button data-tab="config"><span class="nav-icon">⚙️</span> Config</button>
@@ -395,11 +402,11 @@
         <!-- DASHBOARD -->
         <div id="tab-dashboard" class="tab-content active">
             <div class="card-grid">
-                <div class="card"><span class="card-icon"></span><div class="number" id="totalProductos">0</div><div class="label">Total productos</div></div>
-                <div class="card"><span class="card-icon"></span><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones ocupadas</div></div>
-                <div class="card"><span class="card-icon"></span><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos totales</div></div>
-                <div class="card"><span class="card-icon"></span><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios activos</div></div>
-                <div class="card"><span class="card-icon"></span><div class="number" id="usuariosConectados">0</div><div class="label">Conectados ahora</div></div>
+                <div class="card"><span class="card-icon">📦</span><div class="number" id="totalProductos">0</div><div class="label">Total productos</div></div>
+                <div class="card"><span class="card-icon">📍</span><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones ocupadas</div></div>
+                <div class="card"><span class="card-icon">🔄</span><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos totales</div></div>
+                <div class="card"><span class="card-icon">👥</span><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios activos</div></div>
+                <div class="card"><span class="card-icon">🟢</span><div class="number" id="usuariosConectados">0</div><div class="label">Conectados ahora</div></div>
             </div>
             <h3 style="font-size:0.9rem; margin-bottom:6px;">📋 Últimos movimientos</h3>
             <div class="table-wrap">
@@ -440,7 +447,7 @@
 
             <div id="bulkActions">
                 <span class="selected-count" id="selectedCount">0 seleccionados</span>
-                <button class="btn btn-purple btn-sm" onclick="generarQRSeleccionados()"><span class="icon">📱</span> QR</button>
+                <!-- Eliminado el botón QR de selección masiva -->
                 <button class="btn btn-warning btn-sm" onclick="moverSeleccionados()"><span class="icon">🔄</span> Mover</button>
                 <button class="btn btn-danger btn-sm" onclick="eliminarSeleccionados()"><span class="icon">🗑️</span> Eliminar</button>
                 <button class="btn btn-outline btn-sm" onclick="deseleccionarTodos()"><span class="icon">✖️</span></button>
@@ -458,7 +465,7 @@
                             <th>Ubicación</th>
                             <th>Zona</th>
                             <th>Estado</th>
-                            <th>QR</th>
+                            <!-- Eliminada la columna QR -->
                             <th style="min-width:130px;">Acciones</th>
                         </tr>
                     </thead>
@@ -574,7 +581,7 @@
         //  CONFIGURACIÓN INDEXEDDB
         // ============================================================
         const DB_NAME = 'WMS_DB';
-        const DB_VERSION = 2; // Aumentamos versión para agregar stores si es necesario
+        const DB_VERSION = 2;
 
         let db = null;
 
@@ -614,7 +621,6 @@
             });
         }
 
-        // Funciones de acceso a datos con IndexedDB (promesas)
         function dbGetAll(storeName) {
             return new Promise((resolve, reject) => {
                 if (!db) return reject(new Error('Base de datos no abierta'));
@@ -698,7 +704,6 @@
         async function initData() {
             await abrirDB();
 
-            // Usuarios (se mantienen en localStorage por simplicidad, pero se pueden migrar a IndexedDB si se desea)
             if (!localStorage.getItem(STORAGE_KEY_USERS)) {
                 localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify([
                     { id: 1, nombre: 'Admin', perfil: 'Admin', password: 'admin', permisos: ['lectura','escritura','administracion'], ultimaActividad: new Date().toISOString() },
@@ -707,12 +712,10 @@
                 ]));
             }
 
-            // Config
             if (!localStorage.getItem(STORAGE_KEY_CONFIG)) {
                 localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify({ mapImage: '' }));
             }
 
-            // Productos de ejemplo si no hay
             const products = await dbGetAll('products');
             if (products.length === 0) {
                 const sample = [
@@ -723,7 +726,6 @@
                 await dbPutAll('products', sample);
             }
 
-            // Movimientos
             const movements = await dbGetAll('movements');
             if (movements.length === 0) {
                 await dbPut('movements', {
@@ -737,7 +739,6 @@
                 });
             }
 
-            // Historial
             const historial = await dbGetAll('historial');
             if (historial.length === 0) {
                 await dbPut('historial', {
@@ -789,7 +790,6 @@
             marcarDatosModificados();
         }
 
-        // Usuarios se mantienen en localStorage para simplicidad y compatibilidad
         function getUsers() { return JSON.parse(localStorage.getItem(STORAGE_KEY_USERS) || '[]'); }
         function setUsers(u) {
             localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(u));
@@ -800,9 +800,6 @@
         function getConfig() { return JSON.parse(localStorage.getItem(STORAGE_KEY_CONFIG) || '{}'); }
         function setConfig(c) { localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify(c)); }
 
-        // ============================================================
-        //  MARCADOR DE DATOS MODIFICADOS (para polling)
-        // ============================================================
         function marcarDatosModificados() {
             localStorage.setItem(STORAGE_KEY_MODIFIED, 'true');
         }
@@ -812,7 +809,7 @@
         }
 
         // ============================================================
-        //  BROADCAST CHANNEL + POLLING (SINCRONIZACIÓN EN TIEMPO REAL)
+        //  BROADCAST CHANNEL + POLLING
         // ============================================================
         function initBroadcastChannel() {
             try {
@@ -820,7 +817,6 @@
                 broadcastChannel.onmessage = function(event) {
                     const data = event.data;
                     if (data.type === 'CAMBIOS' || data.type === 'USUARIO') {
-                        // Recargar todo o parte
                         if (data.type === 'USUARIO') {
                             renderUsuarios();
                             mostrarToast('👥 ' + (data.usuario || 'Alguien') + ' actualizó usuarios', 'info');
@@ -830,7 +826,6 @@
                         }
                     }
                 };
-                // Si soporta BroadcastChannel, cancelamos el polling si existe
                 if (pollingInterval) {
                     clearInterval(pollingInterval);
                     pollingInterval = null;
@@ -847,7 +842,6 @@
             let lastModified = localStorage.getItem(STORAGE_KEY_MODIFIED);
 
             pollingInterval = setInterval(() => {
-                // Verificar cambios en usuarios
                 const users = getUsers();
                 const currentHash = JSON.stringify(users);
                 if (currentHash !== lastUserHash) {
@@ -855,7 +849,6 @@
                     renderUsuarios();
                 }
 
-                // Verificar flag de modificaciones generales
                 const modified = localStorage.getItem(STORAGE_KEY_MODIFIED);
                 if (modified === 'true') {
                     limpiarMarcaModificados();
@@ -875,13 +868,12 @@
                     timestamp: new Date().toISOString()
                 });
             }
-            // También marcamos para polling
             marcarDatosModificados();
             actualizarUsuariosConectados();
         }
 
         // ============================================================
-        //  AUTENTICACIÓN (mejorada con trim y case-insensitive)
+        //  AUTENTICACIÓN
         // ============================================================
         function getCurrentUser() {
             if (currentUserId === null) return null;
@@ -899,7 +891,6 @@
             const username = document.getElementById('loginUser').value.trim();
             const password = document.getElementById('loginPass').value.trim();
             const users = getUsers();
-            // Comparación case-insensitive y trim
             const user = users.find(u => u.nombre.toLowerCase() === username.toLowerCase() && u.password === password);
             if (user) {
                 currentUserId = user.id;
@@ -911,7 +902,6 @@
                 document.getElementById('loginError').style.display = 'none';
                 mostrarToast('👋 Bienvenido ' + user.nombre, 'success');
                 setInterval(actualizarUsuariosConectados, 30000);
-                // Registrar login en historial
                 registrarHistorial('LOGIN', user.nombre, 'Inicio de sesión');
             } else {
                 document.getElementById('loginError').style.display = 'block';
@@ -995,7 +985,6 @@
                 const u = users.find(u => u.id === user.id);
                 if (u) { u.ultimaActividad = new Date().toISOString(); setUsers(users); }
             }
-            // Broadcast general
             broadcastCambios('CAMBIOS', detalle);
         }
 
@@ -1146,7 +1135,7 @@
         }
 
         // ============================================================
-        //  MAPEO DE DATOS (mejorado)
+        //  MAPEO DE DATOS
         // ============================================================
         function mapearDatosExcel(data) {
             if (!data || data.length === 0) return [];
@@ -1230,10 +1219,7 @@
         function renderLayoutVisual() {
             const grid = document.getElementById('layoutGrid');
             if (!grid) return;
-            // Se usa getProducts() de forma síncrona? No, es async. Mejor obtener productos desde el scope.
-            // Para simplificar, usamos una variable global cache o llamamos a getProducts() y luego renderizamos.
-            // Aquí lo dejamos simple: usamos un array vacío y se actualiza en renderAll.
-            // En renderAll llamamos a renderLayoutVisualWithProducts con los productos obtenidos.
+            // Se actualiza en renderAll con los productos obtenidos
         }
 
         async function renderLayoutVisualWithProducts(products) {
@@ -1333,6 +1319,7 @@
         //  MODAL ALMACENAMIENTO
         // ============================================================
         function abrirModalAlmacenamiento() {
+            const products = getProducts();
             mostrarModal('📥 Recepción y Almacenamiento', `
                 <p style="color:#64748b; font-size:0.85rem; margin-bottom:12px;">Registra un producto desde recepción a su ubicación final en la bodega.</p>
                 <div class="form-grid">
@@ -1340,7 +1327,7 @@
                         <label>Código del producto</label>
                         <input id="almacenarCodigo" placeholder="Ej: 01-001-216-026" list="productosList">
                         <datalist id="productosList">
-                            ${getProducts().map(p => `<option value="${p.codigo}">${p.codigo} - ${p.glosa}</option>`).join('')}
+                            ${products.map(p => `<option value="${p.codigo}">${p.codigo} - ${p.glosa}</option>`).join('')}
                         </datalist>
                     </div>
                     <div class="full-width">
@@ -1497,6 +1484,17 @@
                         (decodedText) => {
                             status.textContent = '✅ Ubicación detectada: ' + decodedText;
                             document.getElementById('almacenarUbicacion').value = decodedText;
+                            // Auto-detectar zona
+                            const match = decodedText.match(/([A-J])(?:_|\s|$)/);
+                            if (match && ['A','B','C','D','E','F','G','H','I','J'].includes(match[1])) {
+                                const zonaSelect = document.getElementById('almacenarZona');
+                                for (let opt of zonaSelect.options) {
+                                    if (opt.value === match[1]) {
+                                        opt.selected = true;
+                                        break;
+                                    }
+                                }
+                            }
                             detenerScannerAlmacenar();
                             mostrarToast('📍 Ubicación escaneada: ' + decodedText, 'success');
                         },
@@ -1521,7 +1519,7 @@
         }
 
         // ============================================================
-        //  INVENTARIO UNIFICADO (async)
+        //  INVENTARIO UNIFICADO (async) - SIN COLUMNA QR
         // ============================================================
         async function renderInventarioUnificado() {
             const search = document.getElementById('searchInventarioUnificado')?.value?.toLowerCase() || '';
@@ -1547,7 +1545,7 @@
             document.getElementById('inventorySummary').textContent = products.length + ' productos';
 
             if (products.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" class="empty-state">
+                tbody.innerHTML = `<tr><td colspan="9" class="empty-state">
                     <span class="empty-icon">📭</span>
                     ${search ? 'No se encontraron productos que coincidan con "' + search + '"' : 'No hay productos en esta bodega'}
                 </td></tr>`;
@@ -1623,11 +1621,6 @@
                         <span class="badge-estado ${estadoClass}">${estadoLabel}</span>
                     </td>
                     <td>
-                        <button class="btn btn-purple btn-xs" onclick="generarQRProducto('${p.codigo}')" title="Generar QR">
-                            <span class="icon">📱</span>
-                        </button>
-                    </td>
-                    <td>
                         <div class="actions-cell">
                             ${showInlineEdit ? `
                                 <button class="btn btn-success btn-xs" onclick="guardarEdicionCompleta('${p.codigo}')" title="Guardar">
@@ -1662,7 +1655,7 @@
         }
 
         // ============================================================
-        //  EDICIÓN INLINE (async)
+        //  EDICIÓN INLINE
         // ============================================================
         function toggleEditMode() {
             editMode = !editMode;
@@ -1712,7 +1705,7 @@
         }
 
         // ============================================================
-        //  EDICIÓN MODAL (async)
+        //  EDICIÓN MODAL - CON ESCÁNER QR
         // ============================================================
         async function editarProductoModal(codigo) {
             if (!hasPermission('escritura')) return alert('No tienes permisos');
@@ -1748,7 +1741,12 @@
                     </div>
                     <div>
                         <label>Ubicación</label>
-                        <input id="editUbicacion" value="${ubicacion}" placeholder="Ej: PALLET_A_1">
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <input id="editUbicacion" value="${ubicacion}" placeholder="Ej: PALLET_A_1" style="flex:1;">
+                            <button class="btn btn-success btn-sm" onclick="escanearUbicacionEditar()" type="button">
+                                <span class="icon">📷</span> Leer QR
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <label>Zona</label>
@@ -1765,6 +1763,11 @@
                             <option value="recepcion" ${p.estado === 'recepcion' ? 'selected' : ''}>📥 Recepción</option>
                             <option value="almacenado" ${p.estado === 'almacenado' ? 'selected' : ''}>✅ Almacenado</option>
                         </select>
+                    </div>
+                    <div id="scannerEditarContainer" style="display:none; grid-column:1/-1;">
+                        <div id="scannerEditar" style="width:100%; max-width:300px; margin:0 auto; border-radius:8px; overflow:hidden; background:#0f172a; min-height:150px;"></div>
+                        <div id="scannerEditarStatus" style="color:#64748b; font-size:0.8rem; text-align:center; margin:4px 0;"></div>
+                        <button class="btn btn-danger btn-sm" onclick="detenerScannerEditar()" type="button">⏹️ Detener</button>
                     </div>
                 </div>
             `, true);
@@ -1806,7 +1809,68 @@
         }
 
         // ============================================================
-        //  MOVER PRODUCTO (async)
+        //  ESCÁNER PARA EDITAR
+        // ============================================================
+        let scannerEditar = null;
+
+        function escanearUbicacionEditar() {
+            const container = document.getElementById('scannerEditarContainer');
+            const status = document.getElementById('scannerEditarStatus');
+            if (!container) return;
+
+            container.style.display = 'block';
+            status.textContent = '📷 Iniciando escáner...';
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                status.textContent = '❌ Tu navegador no soporta la cámara.';
+                return;
+            }
+
+            try {
+                if (typeof Html5Qrcode !== 'undefined') {
+                    scannerEditar = new Html5Qrcode("scannerEditar");
+                    scannerEditar.start(
+                        { facingMode: "environment" },
+                        { fps: 10, qrbox: { width: 200, height: 100 } },
+                        (decodedText) => {
+                            status.textContent = '✅ Ubicación detectada: ' + decodedText;
+                            document.getElementById('editUbicacion').value = decodedText;
+                            // Auto-detectar zona
+                            const match = decodedText.match(/([A-J])(?:_|\s|$)/);
+                            if (match && ['A','B','C','D','E','F','G','H','I','J'].includes(match[1])) {
+                                const zonaSelect = document.getElementById('editZona');
+                                for (let opt of zonaSelect.options) {
+                                    if (opt.value === match[1]) {
+                                        opt.selected = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            detenerScannerEditar();
+                            mostrarToast('📍 Ubicación escaneada: ' + decodedText, 'success');
+                        },
+                        () => {}
+                    );
+                    status.textContent = '📷 Escaneando...';
+                } else {
+                    status.textContent = '❌ Librería de escaneo no disponible.';
+                }
+            } catch (e) {
+                status.textContent = '❌ Error: ' + e.message;
+            }
+        }
+
+        function detenerScannerEditar() {
+            if (scannerEditar) {
+                scannerEditar.stop().catch(() => {});
+                scannerEditar = null;
+            }
+            const container = document.getElementById('scannerEditarContainer');
+            if (container) container.style.display = 'none';
+        }
+
+        // ============================================================
+        //  MOVER PRODUCTO - CON ESCÁNER QR Y AUTO-DETECCIÓN DE ZONA
         // ============================================================
         async function moverProductoModal(codigo) {
             if (!hasPermission('escritura')) return alert('No tienes permisos');
@@ -1824,7 +1888,12 @@
                 <div class="form-grid">
                     <div class="full-width">
                         <label>Nueva ubicación</label>
-                        <input id="moverNuevaUbic" value="${ubicacionActual}" placeholder="Ej: PALLET_B_2">
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <input id="moverNuevaUbic" value="${ubicacionActual}" placeholder="Ej: PALLET_B_2" style="flex:1;">
+                            <button class="btn btn-success btn-sm" onclick="escanearUbicacionMover()" type="button">
+                                <span class="icon">📷</span> Leer QR
+                            </button>
+                        </div>
                     </div>
                     <div class="full-width">
                         <label>Nueva zona</label>
@@ -1835,16 +1904,11 @@
                             ).join('')}
                         </select>
                     </div>
-                </div>
-                <div style="margin-top:8px; display:flex; gap:8px;">
-                    <button class="btn btn-success btn-sm" onclick="escanearUbicacionMover()" type="button">
-                        <span class="icon">📷</span> Escanear QR
-                    </button>
-                </div>
-                <div id="scannerMoverContainer" style="display:none; margin-top:8px;">
-                    <div id="scannerMover" style="width:100%; max-width:300px; margin:0 auto; border-radius:8px; overflow:hidden; background:#0f172a; min-height:150px;"></div>
-                    <div id="scannerMoverStatus" style="color:#64748b; font-size:0.8rem; text-align:center; margin:4px 0;"></div>
-                    <button class="btn btn-danger btn-sm" onclick="detenerScannerMover()" type="button">⏹️ Detener</button>
+                    <div id="scannerMoverContainer" style="display:none; grid-column:1/-1;">
+                        <div id="scannerMover" style="width:100%; max-width:300px; margin:0 auto; border-radius:8px; overflow:hidden; background:#0f172a; min-height:150px;"></div>
+                        <div id="scannerMoverStatus" style="color:#64748b; font-size:0.8rem; text-align:center; margin:4px 0;"></div>
+                        <button class="btn btn-danger btn-sm" onclick="detenerScannerMover()" type="button">⏹️ Detener</button>
+                    </div>
                 </div>
             `, true);
 
@@ -1891,7 +1955,7 @@
         }
 
         // ============================================================
-        //  ESCANER PARA MOVER
+        //  ESCÁNER PARA MOVER (con auto-detección de zona)
         // ============================================================
         let scannerMover = null;
 
@@ -1917,6 +1981,17 @@
                         (decodedText) => {
                             status.textContent = '✅ Ubicación detectada: ' + decodedText;
                             document.getElementById('moverNuevaUbic').value = decodedText;
+                            // Auto-detectar zona
+                            const match = decodedText.match(/([A-J])(?:_|\s|$)/);
+                            if (match && ['A','B','C','D','E','F','G','H','I','J'].includes(match[1])) {
+                                const zonaSelect = document.getElementById('moverNuevaZona');
+                                for (let opt of zonaSelect.options) {
+                                    if (opt.value === match[1]) {
+                                        opt.selected = true;
+                                        break;
+                                    }
+                                }
+                            }
                             detenerScannerMover();
                             mostrarToast('📍 Ubicación escaneada: ' + decodedText, 'success');
                         },
@@ -1941,7 +2016,7 @@
         }
 
         // ============================================================
-        //  ELIMINAR PRODUCTO (async)
+        //  ELIMINAR PRODUCTO
         // ============================================================
         async function eliminarProducto(codigo) {
             if (!hasPermission('escritura')) return alert('No tienes permisos');
@@ -1988,45 +2063,6 @@
             renderInventarioUnificado();
         }
 
-        async function generarQRSeleccionados() {
-            if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
-
-            const products = await getProducts();
-            const seleccionados = products.filter(p => selectedRows.has(p.codigo));
-
-            let qrHtml = `<h3>📱 Códigos QR (${seleccionados.length})</h3>
-                         <p style="color:#64748b; margin-bottom:8px; font-size:0.8rem;">Códigos QR para los productos seleccionados.</p>
-                         <div class="qr-grid">`;
-
-            seleccionados.forEach((p, idx) => {
-                const ubicacion = p.ubicaciones[0]?.ubicacion || 'Sin ubicación';
-                qrHtml += `
-                    <div class="qr-card">
-                        <canvas id="qr_sel_${idx}" width="100" height="100"></canvas>
-                        <div class="qr-code">${p.codigo}</div>
-                        <div class="qr-ubicacion">📍 ${ubicacion}</div>
-                    </div>
-                `;
-            });
-
-            qrHtml += `</div>
-                       <div style="display:flex; justify-content:center; margin-top:10px; gap:6px;">
-                           <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir</button>
-                           <button class="btn btn-outline" onclick="cerrarModal()">Cerrar</button>
-                       </div>`;
-
-            mostrarModal('📱 Códigos QR', qrHtml, true);
-
-            setTimeout(() => {
-                seleccionados.forEach((p, idx) => {
-                    const ubicacion = p.ubicaciones[0]?.ubicacion || 'Sin ubicación';
-                    generarQRCanvas('qr_sel_' + idx, ubicacion, 100);
-                });
-            }, 100);
-
-            document.getElementById('modalActionBtn').style.display = 'none';
-        }
-
         async function moverSeleccionados() {
             if (selectedRows.size === 0) return alert('Selecciona al menos un producto');
 
@@ -2035,7 +2071,12 @@
                 <div class="form-grid">
                     <div class="full-width">
                         <label>Nueva ubicación</label>
-                        <input id="moverMasivoUbic" placeholder="Ej: PALLET_B_2">
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <input id="moverMasivoUbic" placeholder="Ej: PALLET_B_2" style="flex:1;">
+                            <button class="btn btn-success btn-sm" onclick="escanearUbicacionMasivo()" type="button">
+                                <span class="icon">📷</span> Leer QR
+                            </button>
+                        </div>
                     </div>
                     <div class="full-width">
                         <label>Nueva zona</label>
@@ -2045,6 +2086,11 @@
                                 `<option value="${z}">${z}</option>`
                             ).join('')}
                         </select>
+                    </div>
+                    <div id="scannerMasivoContainer" style="display:none; grid-column:1/-1;">
+                        <div id="scannerMasivo" style="width:100%; max-width:300px; margin:0 auto; border-radius:8px; overflow:hidden; background:#0f172a; min-height:150px;"></div>
+                        <div id="scannerMasivoStatus" style="color:#64748b; font-size:0.8rem; text-align:center; margin:4px 0;"></div>
+                        <button class="btn btn-danger btn-sm" onclick="detenerScannerMasivo()" type="button">⏹️ Detener</button>
                     </div>
                 </div>
             `, true);
@@ -2079,6 +2125,64 @@
                 cerrarModal();
             };
             document.getElementById('modalActionBtn').textContent = 'Mover todos';
+        }
+
+        // Escáner para movimiento masivo
+        let scannerMasivo = null;
+
+        function escanearUbicacionMasivo() {
+            const container = document.getElementById('scannerMasivoContainer');
+            const status = document.getElementById('scannerMasivoStatus');
+            if (!container) return;
+
+            container.style.display = 'block';
+            status.textContent = '📷 Iniciando escáner...';
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                status.textContent = '❌ Tu navegador no soporta la cámara.';
+                return;
+            }
+
+            try {
+                if (typeof Html5Qrcode !== 'undefined') {
+                    scannerMasivo = new Html5Qrcode("scannerMasivo");
+                    scannerMasivo.start(
+                        { facingMode: "environment" },
+                        { fps: 10, qrbox: { width: 200, height: 100 } },
+                        (decodedText) => {
+                            status.textContent = '✅ Ubicación detectada: ' + decodedText;
+                            document.getElementById('moverMasivoUbic').value = decodedText;
+                            const match = decodedText.match(/([A-J])(?:_|\s|$)/);
+                            if (match && ['A','B','C','D','E','F','G','H','I','J'].includes(match[1])) {
+                                const zonaSelect = document.getElementById('moverMasivoZona');
+                                for (let opt of zonaSelect.options) {
+                                    if (opt.value === match[1]) {
+                                        opt.selected = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            detenerScannerMasivo();
+                            mostrarToast('📍 Ubicación escaneada: ' + decodedText, 'success');
+                        },
+                        () => {}
+                    );
+                    status.textContent = '📷 Escaneando...';
+                } else {
+                    status.textContent = '❌ Librería de escaneo no disponible.';
+                }
+            } catch (e) {
+                status.textContent = '❌ Error: ' + e.message;
+            }
+        }
+
+        function detenerScannerMasivo() {
+            if (scannerMasivo) {
+                scannerMasivo.stop().catch(() => {});
+                scannerMasivo = null;
+            }
+            const container = document.getElementById('scannerMasivoContainer');
+            if (container) container.style.display = 'none';
         }
 
         async function eliminarSeleccionados() {
@@ -2125,7 +2229,7 @@
         }
 
         // ============================================================
-        //  QR
+        //  QR - SOLO PARA UBICACIONES (eliminadas las funciones de QR por producto)
         // ============================================================
         function generarQRCanvas(canvasId, data, size = 120) {
             const canvas = document.getElementById(canvasId);
@@ -2172,51 +2276,37 @@
             });
         }
 
-        async function generarQRProducto(codigo) {
+        // NUEVA FUNCIÓN: QR solo para ubicaciones
+        async function generarQRUbicaciones() {
             const products = await getAllProducts();
-            const p = products.find(prod => prod.codigo === codigo);
-            if (!p) return alert('Producto no encontrado');
+            const ubicacionesMap = new Map();
+            products.forEach(p => {
+                p.ubicaciones.forEach(u => {
+                    if (u.ubicacion && !ubicacionesMap.has(u.ubicacion)) {
+                        ubicacionesMap.set(u.ubicacion, u.zona || 'A');
+                    }
+                });
+            });
 
-            const ubicacion = p.ubicaciones[0]?.ubicacion || 'Sin ubicación';
+            if (ubicacionesMap.size === 0) {
+                return alert('No hay ubicaciones registradas para generar QR.');
+            }
 
-            const qrHtml = `
-                <div style="text-align:center; padding:14px;">
-                    <h4>${p.codigo}</h4>
-                    <p style="color:#64748b; font-size:0.75rem;">${p.glosa}</p>
-                    <p style="font-size:0.65rem; color:#64748b;">GTIN: ${p.gtin || 'N/A'}</p>
-                    <canvas id="qr_producto" width="180" height="180"></canvas>
-                    <p style="font-size:0.85rem; font-weight:600; margin-top:6px;">📍 ${ubicacion}</p>
-                    <p style="font-size:0.65rem; color:#64748b;">Zona: ${p.ubicaciones[0]?.zona || 'N/A'}</p>
-                    <div style="display:flex; justify-content:center; margin-top:10px; gap:6px;">
-                        <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir</button>
-                        <button class="btn btn-outline" onclick="cerrarModal()">Cerrar</button>
-                    </div>
-                </div>
-            `;
-
-            mostrarModal('📱 QR de Producto', qrHtml, true);
-            setTimeout(() => generarQRCanvas('qr_producto', ubicacion, 180), 100);
-            document.getElementById('modalActionBtn').style.display = 'none';
-        }
-
-        async function generarTodosQR() {
-            const products = await getProducts();
-            if (products.length === 0) return alert('No hay productos');
-
-            let qrHtml = `<h3>📱 Códigos QR (${products.length})</h3>
-                         <p style="color:#64748b; margin-bottom:8px; font-size:0.8rem;">Códigos QR para todos los productos.</p>
+            let qrHtml = `<h3>📱 Códigos QR de Ubicaciones (${ubicacionesMap.size})</h3>
+                         <p style="color:#64748b; margin-bottom:8px; font-size:0.8rem;">Escanee estos QR para trasladar productos a estas ubicaciones.</p>
                          <div class="qr-grid">`;
 
-            products.forEach((p, idx) => {
-                const ubicacion = p.ubicaciones[0]?.ubicacion || 'Sin ubicación';
+            let idx = 0;
+            for (const [ubicacion, zona] of ubicacionesMap) {
                 qrHtml += `
                     <div class="qr-card">
-                        <canvas id="qr_all_${idx}" width="100" height="100"></canvas>
-                        <div class="qr-code">${p.codigo}</div>
-                        <div class="qr-ubicacion">📍 ${ubicacion}</div>
+                        <canvas id="qr_ubic_${idx}" width="120" height="120"></canvas>
+                        <div class="qr-code">📍 ${ubicacion}</div>
+                        <div style="font-size:0.6rem; color:#64748b;">Zona: ${zona}</div>
                     </div>
                 `;
-            });
+                idx++;
+            }
 
             qrHtml += `</div>
                        <div style="display:flex; justify-content:center; margin-top:10px; gap:6px;">
@@ -2224,17 +2314,18 @@
                            <button class="btn btn-outline" onclick="cerrarModal()">Cerrar</button>
                        </div>`;
 
-            mostrarModal('📱 Códigos QR', qrHtml, true);
+            mostrarModal('📱 QR de Ubicaciones', qrHtml, true);
 
             setTimeout(() => {
-                products.forEach((p, idx) => {
-                    const ubicacion = p.ubicaciones[0]?.ubicacion || 'Sin ubicación';
-                    generarQRCanvas('qr_all_' + idx, ubicacion, 100);
-                });
+                let i = 0;
+                for (const [ubicacion] of ubicacionesMap) {
+                    generarQRCanvas('qr_ubic_' + i, ubicacion, 120);
+                    i++;
+                }
             }, 100);
 
             document.getElementById('modalActionBtn').style.display = 'none';
-            await registrarHistorial('MOVIMIENTO', 'QR_GENERADO', 'Códigos QR generados para ' + products.length + ' productos');
+            await registrarHistorial('MOVIMIENTO', 'QR_UBICACIONES', 'Códigos QR generados para ' + ubicacionesMap.size + ' ubicaciones');
         }
 
         // ============================================================
@@ -2412,7 +2503,7 @@
         }
 
         // ============================================================
-        //  HISTORIAL (async)
+        //  HISTORIAL
         // ============================================================
         async function renderHistorialCompleto() {
             const filter = document.getElementById('filterHistorial').value.toLowerCase();
@@ -2465,7 +2556,7 @@
         }
 
         // ============================================================
-        //  EXPORTAR EXCEL (async)
+        //  EXPORTAR EXCEL
         // ============================================================
         async function exportarExcelCompleto() {
             const products = await getAllProducts();
@@ -2572,6 +2663,8 @@
             modalCallback = null;
             detenerScannerAlmacenar();
             detenerScannerMover();
+            detenerScannerEditar();
+            detenerScannerMasivo();
         }
 
         function ejecutarModal() {
