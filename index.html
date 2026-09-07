@@ -334,9 +334,10 @@
                 <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='60' viewBox='0 0 200 60'%3E%3Crect width='200' height='60' fill='%230f172a' rx='8'/%3E%3Ctext x='100' y='35' font-family='Arial' font-size='18' fill='white' text-anchor='middle' font-weight='bold'%3EHospital San Juan de Dios%3C/text%3E%3Ctext x='100' y='52' font-family='Arial' font-size='10' fill='%2360a5fa' text-anchor='middle'%3E%22El Primero de Chile%22%3C/text%3E%3C/svg%3E" alt="Hospital San Juan de Dios - CDT">
             </div>
             <div class="hospital-name">Hospital San Juan de Dios</div>
-            <div class="hospital-sub">Unidad de Bodega de Abastecimiento · <span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
+            <div class="hospital-sub">Unidad de Bodega de Abastecimiento</div>
             <div class="divider"></div>
-            <h2>Automatización Almacenamiento - Bodega Central</h2>
+            <h2>Automatización Almacenamiento</h2> 
+            <div class="divider"></div><span>"Diseñado por Mauricio Quiroz Ayala"</span></div>            
             <p>Ingresa tus credenciales para acceder al sistema.</p>
             <label>Usuario</label>
             <input type="text" id="loginUser" placeholder="Ej: admin" value="admin">
@@ -365,41 +366,45 @@
                     <option value="Farmacos">Bodega de Fármacos</option>
                     <option value="Insumos">Bodega de Insumos Clínicos</option>
                     <option value="Economato">Bodega de Economato</option>
-                </select>
+                    <option value="Controlados">Bodega de Fármacos Controlados</option>
+                    <option value="Suturas">Bodega de Suturas</option>
+                    <option value="Alimentos">Bodega de Alimentos</option>
+                    <option value="Mezclas">Bodega de Mezclas</option>
+                   </select>
                 <button class="btn btn-success" onclick="document.getElementById('fileInput').click()">
-                    <span class="icon">📤</span> Cargar
+                    <span class="icon"></span> Cargar Archivo 
                 </button>
                 <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event)">
                 <button class="btn btn-warning" onclick="exportarExcelCompleto()">
-                    <span class="icon">📥</span> Exportar
+                    <span class="icon"></span> Exportar Archivo
                 </button>
                 <button class="btn btn-purple" onclick="generarTodosQR()">
-                    <span class="icon">📱</span> QR
+                    <span class="icon"></span> Generar QR
                 </button>
                 <button class="btn" onclick="logout()">
-                    <span class="icon">🚪</span>
+                    <span class="icon"></span>Salir
                 </button>
             </div>
         </header>
 
         <!-- NAV -->
         <nav id="mainNav">
-            <button class="active" data-tab="dashboard"><span class="nav-icon">📊</span> Dashboard</button>
-            <button data-tab="inventario"><span class="nav-icon">📦</span> Inventario <span class="badge-nav" id="inventoryBadge">0</span></button>
-            <button data-tab="layout"><span class="nav-icon">🗺️</span> Layout</button>
-            <button data-tab="movimientos"><span class="nav-icon">🔄</span> Movimientos</button>
-            <button data-tab="usuarios"><span class="nav-icon">👥</span> Usuarios</button>
-            <button data-tab="config"><span class="nav-icon">⚙️</span> Config</button>
+            <button class="active" data-tab="dashboard"><span class="nav-icon"></span> Dashboard</button>
+            <button data-tab="inventario"><span class="nav-icon"></span> Inventario <span class="badge-nav" id="inventoryBadge">0</span></button>
+            <button data-tab="layout"><span class="nav-icon"></span> Layout</button>
+            <button data-tab="movimientos"><span class="nav-icon"></span> Movimientos</button>
+            <button data-tab="usuarios"><span class="nav-icon"></span> Usuarios</button>
+            <button data-tab="config"><span class="nav-icon"></span> Config</button>
         </nav>
 
         <!-- DASHBOARD -->
         <div id="tab-dashboard" class="tab-content active">
             <div class="card-grid">
-                <div class="card"><span class="card-icon">📦</span><div class="number" id="totalProductos">0</div><div class="label">Total productos</div></div>
-                <div class="card"><span class="card-icon">📍</span><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones ocupadas</div></div>
-                <div class="card"><span class="card-icon">🔄</span><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos totales</div></div>
-                <div class="card"><span class="card-icon">👥</span><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios activos</div></div>
-                <div class="card"><span class="card-icon">🟢</span><div class="number" id="usuariosConectados">0</div><div class="label">Conectados ahora</div></div>
+                <div class="card"><span class="card-icon"></span><div class="number" id="totalProductos">0</div><div class="label">Total productos</div></div>
+                <div class="card"><span class="card-icon"></span><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones ocupadas</div></div>
+                <div class="card"><span class="card-icon"></span><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos totales</div></div>
+                <div class="card"><span class="card-icon"></span><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios activos</div></div>
+                <div class="card"><span class="card-icon"></span><div class="number" id="usuariosConectados">0</div><div class="label">Conectados ahora</div></div>
             </div>
             <h3 style="font-size:0.9rem; margin-bottom:6px;">📋 Últimos movimientos</h3>
             <div class="table-wrap">
