@@ -536,7 +536,11 @@
 
         window.cloudDB = cloudDB;
         window.firebaseMod = { collection, getDocs, getDoc, doc, setDoc, deleteDoc, addDoc };
-        window.dispatchEvent(new Event('firebase-ready'));
+        
+        // Ajuste aplicado: Liberar hilo principal para que el navegador móvil no bloquee los clics
+        setTimeout(() => {
+            window.dispatchEvent(new Event('firebase-ready'));
+        }, 50);
     </script>
 
     <script>
