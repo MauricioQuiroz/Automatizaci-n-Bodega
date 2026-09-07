@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Automatización Almacenamiento - Bodega Central</title>
+    <!-- Librerías QR y Excel -->
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.2/umd/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.1/umd/index.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -94,9 +96,14 @@
         .badge-farmacos { background:#2563eb; }
         .badge-insumos { background:var(--success); }
         .badge-economato { background:var(--warning); color:#0f172a; }
-        .zone-tag { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:700; background:#dbeafe; color:#1e40af; }
+        
+        /* ZONAS Y UBICACIONES COMPACTAS */
+        .ubicacion-compacta-box { display:flex; flex-direction:column; gap:3px; }
+        .ubicacion-row-item { display:flex; align-items:center; gap:6px; font-size:0.7rem; background:#f8fafc; padding:2px 6px; border-radius:4px; border:1px solid #e2e8f0; width:fit-content; }
+        .zone-tag { display:inline-block; padding:1px 5px; border-radius:3px; font-size:0.6rem; font-weight:700; background:#dbeafe; color:#1e40af; }
+        .pos-tag { font-family:monospace; font-size:0.65rem; background:#e2e8f0; padding:1px 4px; border-radius:3px; color:#334155; font-weight:600; }
+        
         .type-tag { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.6rem; font-weight:700; background:#f3e8ff; color:#7e22ce; }
-        .ubicacion-tag { font-family:monospace; font-size:0.65rem; background:#f1f5f9; padding:2px 6px; border-radius:4px; margin-bottom:2px; display:inline-block; }
         .gtin-tag { font-family:monospace; font-size:0.65rem; background:#fef9c3; color:#854d0e; padding:2px 6px; border-radius:4px; font-weight:600; }
 
         /* BOTONES */
@@ -213,7 +220,7 @@
             <h3 style="font-size:0.9rem; margin-bottom:6px;">📋 Últimos movimientos</h3>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Fecha</th><th>Producto / GTIN</th><th>Desde</th><th>Hacia</th><th>Usuario</th></tr></thead>
+                    <thead><tr><th>Día y Hora</th><th>Usuario</th><th>Tipo</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
                     <tbody id="ultimosMovimientos"></tbody>
                 </table>
             </div>
@@ -267,10 +274,10 @@
 
         <!-- MOVIMIENTOS -->
         <div id="tab-movimientos" class="tab-content">
-            <h3 style="font-size:0.9rem; margin-bottom:6px;">📜 Historial de cambios</h3>
+            <h3 style="font-size:0.9rem; margin-bottom:6px;">📜 Historial de cambios y modificaciones</h3>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
+                    <thead><tr><th>Día y Hora</th><th>Usuario</th><th>Tipo de Modificación</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
                     <tbody id="historialCompletoBody"></tbody>
                 </table>
             </div>
@@ -335,7 +342,7 @@
 
     <!-- SCRIPT PRINCIPAL OPTIMIZADO -->
     <script>
-        const STORAGE_KEY = 'wms_hsjd_full_data_v9';
+        const STORAGE_KEY = 'wms_hsjd_full_data_v10';
 
         const DEFAULT_DATA = {
             users: [
@@ -347,7 +354,10 @@
             warehouses: [
                 { id: 'Farmacos', nombre: 'Bodega de Fármacos', color: '#2563eb' },
                 { id: 'Insumos', nombre: 'Bodega de Insumos Clínicos', color: '#059669' },
-                { id: 'Economato', nombre: 'Bodega de Economato', color: '#d97706' }
+                { id: 'Economato', nombre: 'Bodega de Economato', color: '#d97706' },
+                { id: 'Controlados', nombre: 'Bodega de Fármacos Controlados', color: '#22c55e' },
+                { id: 'Suturas', nombre: 'Bodega de Suturas', color: '#2563eb' },
+                { id: 'Alimentos', nombre: 'Bodega de Alimentos', color: '#ea580c' }
             ],
             products: [
                 { id: '1', codigo: '01-001-216-026', gtin: '7801234567890', glosa: 'METRONIDAZOL 500 MG/100 ML', bodega: 'Farmacos', tipo: 'Unidad Comercial', ubicaciones: [{ zona: 'G', anaquel: '2', posicion: 'A4' }, { zona: 'G', anaquel: '2', posicion: 'B1' }], estado: 'Almacenado' }
@@ -362,6 +372,22 @@
             operario: ['lectura', 'escritura'],
             invitado: ['lectura']
         };
+
+        function registrarHistorial(tipoMod, codigoItem, detalle) {
+            const db = getDB();
+            const usr = getCurrentUser();
+            const ahora = new Date();
+            const fechaStr = ahora.toLocaleDateString() + ' ' + ahora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            db.movements.push({
+                fecha: fechaStr,
+                usuario: usr ? `${usr.nombre} (${usr.perfil})` : 'Sistema',
+                tipo: tipoMod,
+                codigo: codigoItem,
+                detalle: detalle
+            });
+            saveDB(db);
+        }
 
         function getDB() {
             const data = localStorage.getItem(STORAGE_KEY);
@@ -450,7 +476,8 @@
                 usr.password = nPass;
                 saveDB(db);
                 cerrarModal();
-                mostrarToast('✅ Contraseña actualizada con éxito. Ya puedes iniciar sesión.');
+                registrarHistorial('Cambio de Contraseña', usr.nombre, 'Restablecimiento de contraseña de acceso');
+                mostrarToast('✅ Contraseña actualizada con éxito.');
             };
         }
 
@@ -552,7 +579,7 @@
 
             const tbody = document.getElementById('ultimosMovimientos');
             tbody.innerHTML = db.movements.slice(-5).reverse().map(m => `
-                <tr><td>${m.fecha}</td><td><strong>${m.codigo}</strong></td><td>${m.desde}</td><td>${m.hacia}</td><td>${m.usuario}</td></tr>
+                <tr><td>${m.fecha}</td><td><strong>${m.usuario}</strong></td><td><span class="badge" style="background:#e0e7ff; color:#3730a3;">${m.tipo}</span></td><td>${m.codigo}</td><td>${m.detalle}</td></tr>
             `).join('') || '<tr><td colspan="5" class="empty-state">Sin movimientos recientes</td></tr>';
         }
 
@@ -615,6 +642,7 @@
                     saveDB(db);
                     renderAll();
                     document.getElementById('fileInput').value = '';
+                    registrarHistorial('Carga masiva Excel', 'Múltiples ítems', `Procesados ${count} registros desde archivo.`);
                     mostrarToast(`✅ Archivo cargado: ${count} registros procesados`);
                 } catch(err) {
                     alert('Error al leer el archivo Excel: ' + err.message);
@@ -644,8 +672,13 @@
                 if(p.tipo === 'Unidad Máster') tipoIcon = '📦';
                 if(p.tipo === 'Unidad Mínima / Unidosis') tipoIcon = '💊';
 
+                // ZONAS Y UBICACIONES EN UNA SOLA COLUMNA CON POS. ABREVIADA
                 const ubicsHtml = (p.ubicaciones || []).map(u => `
-                    <div><span class="zone-tag">${u.zona}</span> <span class="ubicacion-tag">Anaquel ${u.anaquel}, ${u.posicion}</span></div>
+                    <div class="ubicacion-row-item">
+                        <span class="zone-tag">Zona ${u.zona}</span> 
+                        <span>Anaquel ${u.anaquel},</span> 
+                        <span class="pos-tag">Pos. ${u.posicion}</span>
+                    </div>
                 `).join('') || '<span style="color:#94a3b8;">Sin ubicaciones</span>';
 
                 return `
@@ -655,7 +688,11 @@
                     <td>${p.glosa}</td>
                     <td><span class="badge-bodega badge-${p.bodega.toLowerCase()}">${p.bodega}</span></td>
                     <td><span class="type-tag">${tipoIcon} ${p.tipo || 'Unidad Comercial'}</span></td>
-                    <td>${ubicsHtml}</td>
+                    <td>
+                        <div class="ubicacion-compacta-box">
+                            ${ubicsHtml}
+                        </div>
+                    </td>
                     <td><span class="badge" style="background:#dcfce7; color:#166534;">${p.estado || 'Almacenado'}</span></td>
                     <td>
                         <button class="btn btn-primary btn-xs" onclick="gestionarUbicacionesModal('${p.id}')">📍 Gestionar Ubicaciones</button>
@@ -668,8 +705,10 @@
         function eliminarProducto(id) {
             if(!confirm('¿Estás seguro de eliminar este registro del inventario?')) return;
             const db = getDB();
+            const p = db.products.find(x => x.id === id);
             db.products = db.products.filter(p => p.id !== id);
             saveDB(db);
+            if(p) registrarHistorial('Eliminación de producto', p.codigo, `Eliminado ítem con GTIN ${p.gtin}`);
             renderAll();
             mostrarToast('🗑️ Registro eliminado');
         }
@@ -685,7 +724,7 @@
                     <div class="full-width"><label>Código del producto</label><input id="mCod" placeholder="Ej: 01-001"></div>
                     <div class="full-width"><label>GTIN (GS1 / Código de Barras)</label><input id="mGtin" value="${defaultGtin}" placeholder="GTIN-13 o GTIN-14"></div>
                     <div class="full-width"><label>Glosa / Descripción</label><input id="mGlosa" placeholder="Nombre del insumo"></div>
-                    <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">Fármacos</option><option value="Insumos">Insumos</option><option value="Economato">Economato</option></select></div>
+                    <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">Fármacos</option><option value="Insumos">Insumos</option><option value="Economato">Economato</option><option value="Controlados">Fármacos Controlados</option><option value="Suturas">Suturas</option><option value="Alimentos">Alimentos</option></select></div>
                     <div><label>Jerarquía / Tipo</label><select id="mTipo"><option value="Unidad Comercial">Unidad Comercial</option><option value="Unidad Máster">Unidad Máster</option><option value="Unidad Mínima / Unidosis">Unidad Mínima / Unidosis</option></select></div>
                     <div><label>Zona</label><select id="mZona"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option><option value="I">I</option><option value="J">J</option></select></div>
                     <div><label>Nº de Anaquel / Rack / Altura</label><input id="mAnaquel" placeholder="Ej: 7"></div>
@@ -717,9 +756,7 @@
                         id: newId, codigo: cod, gtin: gtin, glosa: glosa || cod, bodega: bodega, tipo: tipo, ubicaciones: [{ zona, anaquel, posicion }], estado: 'Almacenado'
                     });
                 }
-                db.movements.push({
-                    fecha: new Date().toLocaleString(), codigo: `${cod} (GTIN: ${gtin})`, desde: 'RECEPCION', hacia: `[${tipo}] Zona ${zona}, Anaquel ${anaquel}, ${posicion}`, usuario: getCurrentUser()?.nombre || 'Admin'
-                });
+                registrarHistorial('Recepción y Almacenamiento', `${cod} (GTIN: ${gtin})`, `Asignado a [${tipo}] Zona ${zona}, Anaquel ${anaquel}, Pos. ${posicion}`);
                 saveDB(db);
                 renderAll();
                 cerrarModal();
@@ -769,7 +806,7 @@
             document.getElementById('modalActionBtn').onclick = () => {
                 detenerEscanerQR();
                 const zona = document.getElementById('nuevaZona').value;
-                const anaquel = document.getElementById('nuevoAnaquelCur' in window ? '' : 'nuevoAnaquel').value.trim();
+                const anaquel = document.getElementById('nuevoAnaquel').value.trim();
                 const posicion = document.getElementById('nuevaPosicion').value.trim();
                 const nuevoTipo = document.getElementById('editTipo').value;
 
@@ -779,9 +816,9 @@
                 if(!p.ubicaciones) p.ubicaciones = [];
                 p.ubicaciones.push({ zona, anaquel, posicion });
 
-                db.movements.push({ fecha: new Date().toLocaleString(), codigo: `${p.codigo} (GTIN: ${p.gtin})`, desde: 'GESTION', hacia: `[${nuevoTipo}] Zona ${zona}, Anaquel ${anaquel}, ${posicion}`, usuario: getCurrentUser()?.nombre || 'Admin' });
+                registrarHistorial('Reubicación / Adición de Ubicación', `${p.codigo} (GTIN: ${p.gtin})`, `Nueva ubicación añadida: [${nuevoTipo}] Zona ${zona}, Anaquel ${anaquel}, Pos. ${posicion}`);
                 saveDB(db);
-                gestionarUbicacionesModal(p.id); // Recargar modal
+                gestionarUbicacionesModal(p.id); 
                 renderAll();
                 mostrarToast('✅ Ubicación agregada con éxito');
             };
@@ -791,8 +828,9 @@
             const db = getDB();
             const p = db.products.find(x => x.id === prodId);
             if(p && p.ubicaciones) {
-                p.ubicaciones.splice(index, 1);
+                const removida = p.ubicaciones.splice(index, 1)[0];
                 saveDB(db);
+                registrarHistorial('Retiro de Ubicación', `${p.codigo} (GTIN: ${p.gtin})`, `Removida Zona ${removida.zona}, Anaquel ${removida.anaquel}, Pos. ${removida.posicion}`);
                 gestionarUbicacionesModal(prodId);
                 renderAll();
                 mostrarToast('🗑️ Ubicación eliminada');
@@ -950,7 +988,7 @@
 
             let idx = 0;
             ubicsMap.forEach((val) => {
-                const labelTxt = `[${val.tipo}] Zona ${val.zona} - Anaquel ${val.anaquel}, Posición ${val.posicion}`;
+                const labelTxt = `[${val.tipo}] Zona ${val.zona} - Anaquel ${val.anaquel}, Pos. ${val.posicion}`;
                 html += `
                     <label style="border:1px solid #cbd5e1; padding:8px; border-radius:8px; background:white; display:flex; flex-direction:column; gap:4px; cursor:pointer; font-size:0.7rem;">
                         <div style="display:flex; align-items:center; justify-content:space-between;">
@@ -972,19 +1010,20 @@
                 if(chks.length === 0) return alert('Selecciona al menos una etiqueta para imprimir.');
                 
                 let printHtml = `<div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:15px; padding:20px; font-family:sans-serif;">`;
-                chks.forEach(chk => {
+                chks.forEach((chk, i) => {
                     printHtml += `
-                        <div style="border:2px dashed #333; padding:15px; border-radius:8px; text-align:center; background:#fff;">
-                            <div style="font-weight:bold; font-size:11px; margin-bottom:4px;">HOSPITAL SAN JUAN DE DIOS</div>
-                            <div style="font-size:13px; font-weight:800; margin-bottom:6px; color:#1e1b4b;">${chk.value}</div>
-                            <div style="font-size:9px; color:#666;">Bodega Central WMS - Control Logístico</div>
+                        <div style="border:2px dashed #333; padding:15px; border-radius:8px; text-align:center; background:#fff; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                            <div style="font-weight:bold; font-size:10px;">HOSPITAL SAN JUAN DE DIOS</div>
+                            <div style="font-size:11px; font-weight:800; color:#1e1b4b;">${chk.value}</div>
+                            <div id="qrcode-${i}" style="margin:4px auto;"></div>
+                            <div style="font-size:8px; color:#666;">Bodega Central WMS - Control Logístico</div>
                         </div>
                     `;
                 });
                 printHtml += `</div>`;
 
                 const win = window.open('', '_blank');
-                win.document.write(`<html><head><title>Imprimir Etiquetas QR</title></head><body onload="window.print(); window.close();">${printHtml}</body></html>`);
+                win.document.write(`<html><head><title>Imprimir Etiquetas QR</title><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script></head><body onload="window.print();">` + printHtml + `<script>` + Array.from(chks).map((chk, i) => `new QRCode(document.getElementById("qrcode-${i}"), { text: "${chk.value}", width: 75, height: 75 });`).join('') + `<\/script></body></html>`);
                 win.document.close();
                 cerrarModal();
             };
@@ -1044,6 +1083,7 @@
                 const newId = db.users.length > 0 ? Math.max(...db.users.map(x=>x.id))+1 : 1;
                 db.users.push({ id: newId, nombre, password: pass, perfil, permisos });
                 saveDB(db);
+                registrarHistorial('Creación de Usuario', nombre, `Creado usuario perfil ${perfil}`);
                 renderAll();
                 cerrarModal();
                 mostrarToast('Usuario creado con éxito');
@@ -1083,6 +1123,7 @@
                 u.perfil = perfil;
                 u.permisos = permisos;
 
+                registrarHistorial('Edición de Usuario', nombre, `Actualizado perfil a ${perfil}`);
                 saveDB(db);
                 renderAll();
                 cerrarModal();
@@ -1116,8 +1157,10 @@
         function eliminarUsuario(id) {
             if(!confirm('¿Estás seguro de eliminar este usuario?')) return;
             const db = getDB();
-            db.users = db.users.filter(u => u.id !== id);
+            const u = db.users.find(x => x.id === id);
+            db.users = db.users.filter(usr => usr.id !== id);
             saveDB(db);
+            if(u) registrarHistorial('Eliminación de Usuario', u.nombre, 'Usuario eliminado del sistema');
             renderAll();
             mostrarToast('🗑️ Usuario eliminado');
         }
@@ -1133,7 +1176,10 @@
                     <td><strong>${w.id}</strong></td>
                     <td>${w.nombre}</td>
                     <td><span style="display:inline-block; width:14px; height:14px; background:${w.color}; border-radius:3px;"></span></td>
-                    <td>${isAdmin ? `<button class="btn btn-danger btn-xs" onclick="eliminarBodega('${w.id}')">🗑️</button>` : 'Predeterminada'}</td>
+                    <td>
+                        ${isAdmin ? `<button class="btn btn-primary btn-xs" onclick="editarBodegaModal('${w.id}')">✏️ Editar</button>` : ''}
+                        ${isAdmin ? `<button class="btn btn-danger btn-xs" onclick="eliminarBodega('${w.id}')" style="margin-left:4px;">🗑️</button>` : 'Predeterminada'}
+                    </td>
                 </tr>
             `).join('');
         }
@@ -1156,9 +1202,36 @@
                 if(db.warehouses.some(w => w.id === id)) return alert('Ya existe esa bodega');
                 db.warehouses.push({ id, nombre, color });
                 saveDB(db);
+                registrarHistorial('Creación de Bodega', id, `Creada bodega ${nombre}`);
                 renderAll();
                 cerrarModal();
                 mostrarToast('Bodega creada');
+            };
+        }
+
+        function editarBodegaModal(id) {
+            const db = getDB();
+            const w = db.warehouses.find(x => x.id === id);
+            if(!w) return;
+
+            mostrarModal('✏️ Editar Bodega', `
+                <div class="form-grid">
+                    <div class="full-width"><label>Nombre de la Bodega</label><input id="bNombre" value="${w.nombre}"></div>
+                    <div><label>Color</label><input id="bColor" type="color" value="${w.color || '#2563eb'}" style="height:36px; padding:2px;"></div>
+                </div>
+            `);
+            modalCallback = () => {
+                const nombre = document.getElementById('bNombre').value.trim();
+                const color = document.getElementById('bColor').value;
+                if(!nombre) return alert('El nombre no puede estar vacío');
+
+                w.nombre = nombre;
+                w.color = color;
+                saveDB(db);
+                registrarHistorial('Edición de Bodega', w.id, `Actualizada bodega ${nombre}`);
+                renderAll();
+                cerrarModal();
+                mostrarToast('✅ Bodega actualizada');
             };
         }
 
@@ -1167,6 +1240,7 @@
             const db = getDB();
             db.warehouses = db.warehouses.filter(w => w.id !== id);
             saveDB(db);
+            registrarHistorial('Eliminación de Bodega', id, 'Bodega eliminada del sistema');
             renderAll();
         }
 
@@ -1180,8 +1254,14 @@
             const db = getDB();
             const tbody = document.getElementById('historialCompletoBody');
             tbody.innerHTML = db.movements.slice().reverse().map(m => `
-                <tr><td>${m.fecha}</td><td><strong>${m.usuario}</strong></td><td>MOVIMIENTO</td><td>${m.codigo}</td><td>${m.desde} → ${m.hacia}</td></tr>
-            `).join('') || '<tr><td colspan="5" class="empty-state">Sin historial</td></tr>';
+                <tr>
+                    <td>${m.fecha}</td>
+                    <td><strong>${m.usuario}</strong></td>
+                    <td><span class="badge" style="background:#e0e7ff; color:#3730a3;">${m.tipo}</span></td>
+                    <td>${m.codigo}</td>
+                    <td>${m.detalle}</td>
+                </tr>
+            `).join('') || '<tr><td colspan="5" class="empty-state">Sin historial registrado</td></tr>';
         }
 
         function exportarExcelCompleto() {
@@ -1193,6 +1273,8 @@
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
             XLSX.writeFile(wb, 'inventario_bodega.xlsx');
+            registrarHistorial('Exportación Excel', 'Inventario Completo', 'Exportados registros a Excel');
+            renderAll();
             mostrarToast('✅ Excel exportado');
         }
 
