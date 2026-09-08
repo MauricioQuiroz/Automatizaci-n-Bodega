@@ -96,6 +96,7 @@
         .badge-dac { background:#ffeeee; color:#b91c1c; border:1px solid #fecaca; }
         .badge-lrs { background:#fef3c7; color:#b45309; border:1px solid #fde68a; }
         .badge-pm { background:#f3e8ff; color:#6b21a8; border:1px solid #e9d5ff; }
+        .badge-controlado { background:#dcfce7; color:#15803d; border:1px solid #bbf7d0; }
 
         /* BADGES & TAGS */
         .badge { display:inline-block; padding:2px 8px; border-radius:50px; font-size:0.6rem; font-weight:600; }
@@ -113,7 +114,12 @@
         .zone-tag { display:inline-block; padding:1px 4px; border-radius:3px; font-size:0.6rem; font-weight:700; background:#dbeafe; color:#1e40af; }
         .pos-tag { font-family:monospace; font-size:0.6rem; background:#e2e8f0; padding:1px 4px; border-radius:3px; color:#334155; font-weight:600; }
         
-        .type-tag { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:700; background:#f3e8ff; color:#7e22ce; white-space:nowrap; }
+        /* JERARQUÍA CON COLORES DIFERENCIADOS */
+        .type-tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.65rem; font-weight:700; white-space:nowrap; }
+        .type-master { background:#ffedd5; color:#c2410c; border:1px solid #fed7aa; } /* Naranja para Caja / Unidad Máster */
+        .type-comercial { background:#f3e8ff; color:#7e22ce; border:1px solid #e9d5ff; } /* Morado para Unidad Comercial */
+        .type-minima { background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; } /* Celeste para Unidad Mínima */
+
         .gtin-tag { font-family:monospace; font-size:0.65rem; background:#fef9c3; color:#854d0e; padding:2px 6px; border-radius:3px; font-weight:600; white-space:nowrap; display:inline-block; margin:1px; }
 
         /* BOTONES */
@@ -133,6 +139,13 @@
         .toolbar-left, .toolbar-right { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
         .toolbar input { padding:6px 10px; border:1px solid #d1d5db; border-radius:6px; font-size:0.8rem; background:white; }
         .filter-select { padding:6px 10px; border:1px solid #d1d5db; border-radius:6px; font-size:0.75rem; background:white; max-width:280px; }
+
+        /* BUSCADOR DE CATALOGO MAESTRO AVANZADO */
+        .master-search-container { position: relative; width: 100%; margin-top: 4px; }
+        .master-search-input { width: 100%; padding: 7px 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.85rem; background: #fff; }
+        .master-dropdown-results { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; max-height: 180px; overflow-y: auto; z-index: 3000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; }
+        .master-dropdown-item { padding: 6px 10px; font-size: 0.75px; cursor: pointer; border-bottom: 1px solid #f1f5f9; text-align: left; }
+        .master-dropdown-item:hover { background: #eef2ff; color: #4f46e5; }
 
         /* MODAL ADAPTATIVO */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(3px); align-items:center; justify-content:center; z-index:2500; padding:12px; overflow-y:auto; }
@@ -472,7 +485,7 @@
                             if(!p.gtins) p.gtins = [];
                             if(!p.gtinEstados) p.gtinEstados = {};
                             p.gtins.forEach(g => { if(!p.gtinEstados[g]) p.gtinEstados[g] = 'activo'; });
-                            if(!p.programas) p.programas = { frio: false, dac: false, lrs: false, pm: false };
+                            if(!p.programas) p.programas = { frio: false, dac: false, lrs: false, pm: false, controlado: false };
                             return p;
                         }), 
                         movements: dataRemota.movements || [],
@@ -641,11 +654,9 @@
                 usuarioEnProcesoRecuperacion = usr;
                 codigoVerificacionActual = Math.floor(100000 + Math.random() * 900000).toString();
 
-                // Simulamos envío de correo electrónico mediante alerta y notificación visual
                 console.log(`[SIMULACIÓN DE CORREO] Código de recuperación para ${usr.nombre} (${usr.correo}): ${codigoVerificacionActual}`);
                 alert(`📧 [CÓDIGO SIMULADO ENVIADO A CORREO]\n\nSe ha enviado un código de 6 dígitos a: ${usr.correo}\n\n(Código temporal de prueba: ${codigoVerificacionActual})`);
 
-                // Abrir pantalla de validación de código y nueva contraseña
                 abrirModalValidacionCodigo();
             };
         }
@@ -838,7 +849,7 @@
             let posicion = 'A1';
 
             const keyZona = keys.find(k => /^ZONA$|ZONA_/i.test(k));
-            const keyTipoPos = keys.find(k => /^TIPO$|TIPO_/i.test(k) || /RACK|ALTURA/i.test(k));
+            const keyTipoPos = keys.find(k => /^TIPO$|TIPO_/i.test(k) || /RACK|ALTURA|ANAQUEL/i.test(k));
             const keyPosicion = keys.find(k => /^POSICION$|POSICIÓN/i.test(k));
             const colUbicacionAgrupada = row[keys.find(k => /UBICACION|UBICACIÓN/i.test(k))];
 
@@ -910,7 +921,8 @@
                             const isDac = catText.includes('DAC') || catText.includes('ALTO_COSTO');
                             const isLrs = catText.includes('LRS') || catText.includes('RICARTE');
                             const isPm = catText.includes('PM') || catText.includes('MINISTERIAL');
-                            const programas = { frio: isFrio, dac: isDac, lrs: isLrs, pm: isPm };
+                            const isControlado = catText.includes('CONTROLADO') || catText.includes('ESTUPEFACIENTE');
+                            const programas = { frio: isFrio, dac: isDac, lrs: isLrs, pm: isPm, controlado: isControlado };
 
                             const ubicacionInfo = extraerUbicacionDesdeTextoHojaONombre(sheetName, row, keys);
                             const zona = ubicacionInfo.zona;
@@ -1012,14 +1024,20 @@
                 if(!p.gtinEstados) p.gtinEstados = {};
                 const gtinsList = (p.gtins && p.gtins.length > 0) ? p.gtins.map(g => `<span class="gtin-tag">${g}</span>`).join(' ') : '<span style="color:#94a3b8; font-style:italic;">Sin GTIN</span>';
 
-                const prog = p.programas || { frio: false, dac: false, lrs: false, pm: false };
+                const prog = p.programas || { frio: false, dac: false, lrs: false, pm: false, controlado: false };
                 let progHtml = '<div class="prog-badges-box">';
                 if(prog.frio) progHtml += `<span class="badge-prog badge-frio" title="Cámara de Frío">❄️ FRÍO</span>`;
                 if(prog.dac) progHtml += `<span class="badge-prog badge-dac" title="Droga de Alto Costo">⚠️ DAC</span>`;
                 if(prog.lrs) progHtml += `<span class="badge-prog badge-lrs" title="Ley Ricarte Soto">⚖️ LRS</span>`;
                 if(prog.pm) progHtml += `<span class="badge-prog badge-pm" title="Programa Ministerial">📋 PM</span>`;
-                if(!prog.frio && !prog.dac && !prog.lrs && !prog.pm) progHtml += `<span style="color:#94a3b8; font-size:0.6rem;">Estándar</span>`;
+                if(prog.controlado) progHtml += `<span class="badge-prog badge-controlado" title="Fármaco Controlado">🟢⭐ CONTROLADO</span>`;
+                if(!prog.frio && !prog.dac && !prog.lrs && !prog.pm && !prog.controlado) progHtml += `<span style="color:#94a3b8; font-size:0.6rem;">Estándar</span>`;
                 progHtml += `</div>`;
+
+                const tipoVal = p.tipo || 'Unidad Comercial';
+                let tipoClase = 'type-comercial';
+                if(tipoVal.toLowerCase().includes('máster') || tipoVal.toLowerCase().includes('master')) tipoClase = 'type-master';
+                else if(tipoVal.toLowerCase().includes('mínima') || tipoVal.toLowerCase().includes('minima') || tipoVal.toLowerCase().includes('unidosis')) tipoClase = 'type-minima';
 
                 return `
                 <tr>
@@ -1028,7 +1046,7 @@
                     <td>${p.glosa}</td>
                     <td><span class="badge-bodega badge-${p.bodega.toLowerCase()}">${p.bodega}</span></td>
                     <td>${progHtml}</td>
-                    <td><span class="type-tag">${p.tipo || 'Unidad Comercial'}</span></td>
+                    <td><span class="type-tag ${tipoClase}">${tipoVal}</span></td>
                     <td>
                         <div class="ubicacion-compacta-box">
                             ${ubicsHtml}
@@ -1128,19 +1146,13 @@
         }
 
         function abrirModalAlmacenamiento() {
-            let optionsMasterHtml = '<option value="">-- Seleccionar desde Catálogo Maestro --</option>';
-            if(appState.masterCatalog && appState.masterCatalog.length > 0) {
-                appState.masterCatalog.forEach((item, idx) => {
-                    optionsMasterHtml += `<option value="${idx}">[${item.codigo}] ${item.glosa}</option>`;
-                });
-            }
-
             mostrarModal('📥 Recepción y Almacenamiento (Catálogo Maestro y GS1)', `
                 <div style="margin-bottom:10px; background:#f8fafc; padding:10px; border-radius:6px; border:1px solid #cbd5e1;">
-                    <label>🔍 Buscar en Catálogo Maestro de Referencia:</label>
-                    <select id="selectMasterRef" onchange="seleccionarRefMaestra(this.value)" style="margin-top:4px;">
-                        ${optionsMasterHtml}
-                    </select>
+                    <label>🔍 Buscar en Catálogo Maestro (por Código o Nombre / Resultados parciales):</label>
+                    <div class="master-search-container">
+                        <input type="text" id="masterSearchInput" class="master-search-input" placeholder="Escribe parte del código o nombre..." oninput="filtrarCatalogoMaestroDropdown(this.value)" autocomplete="off">
+                        <div id="masterDropdownResults" class="master-dropdown-results"></div>
+                    </div>
                 </div>
                 <div style="margin-bottom:10px; background:#eef2ff; padding:8px; border-radius:6px; text-align:center; display:flex; gap:6px; justify-content:center; flex-wrap:wrap;">
                     <button class="btn btn-purple btn-xs" onclick="iniciarEscanerQR('almacenar')">📷 Escanear QR Ubicación</button>
@@ -1192,11 +1204,12 @@
                             <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="mProgDac" style="width:14px; height:14px;"> ⚠️ Alto Costo (DAC)</label>
                             <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="mProgLrs" style="width:14px; height:14px;"> ⚖️ Ley Ricarte Soto</label>
                             <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="mProgPm" style="width:14px; height:14px;"> 📋 Prog. Ministerial</label>
+                            <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="mProgControlado" style="width:14px; height:14px;"> 🟢⭐ Fármaco Controlado</label>
                         </div>
                     </div>
 
                     <div><label>Zona</label><select id="mZona" onchange="actualizarJerarquiaPorZonaForm(this.value)"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
-                    <div><label>Nº de Anaquel / Rack</label><input id="mAnaquel" value="1" placeholder="Ej: 1"></div>
+                    <div><label>Nº de Anaquel / Rack / Full Space / Pallet</label><input id="mAnaquel" value="Anaquel 1" placeholder="Ej: Anaquel 1, Rack, Full Space, Pallet"></div>
                     <div class="full-width"><label>Posición</label><input id="mPosicion" value="A1" placeholder="Ej: A1"></div>
                 </div>
             `);
@@ -1215,7 +1228,8 @@
                     frio: document.getElementById('mProgFrío').checked,
                     dac: document.getElementById('mProgDac').checked,
                     lrs: document.getElementById('mProgLrs').checked,
-                    pm: document.getElementById('mProgPm').checked
+                    pm: document.getElementById('mProgPm').checked,
+                    controlado: document.getElementById('mProgControlado').checked
                 };
 
                 const zona = document.getElementById('mZona').value;
@@ -1262,16 +1276,48 @@
             };
         }
 
-        function seleccionarRefMaestra(idxStr) {
-            if(idxStr === '') return;
-            const item = appState.masterCatalog[parseInt(idxStr)];
-            if(!item) return;
+        function filtrarCatalogoMaestroDropdown(query) {
+            const dropdown = document.getElementById('masterDropdownResults');
+            if(!dropdown) return;
 
-            document.getElementById('mCod').value = item.codigo;
-            document.getElementById('mGlosa').value = item.glosa;
-            document.getElementById('mBodega').value = item.bodega;
-            verificarAlertaEscaneoManual(item.glosa);
-            mostrarToast(`📋 Producto seleccionado: ${item.glosa}`);
+            const q = String(query || '').trim().toLowerCase();
+            if(!q || q.length < 1) {
+                dropdown.style.display = 'none';
+                dropdown.innerHTML = '';
+                return;
+            }
+
+            const catalog = appState.masterCatalog || [];
+            const filtrados = catalog.filter(item => 
+                String(item.codigo).toLowerCase().includes(q) || 
+                String(item.glosa).toLowerCase().includes(q)
+            ).slice(0, 15);
+
+            if(filtrados.length === 0) {
+                dropdown.style.display = 'block';
+                dropdown.innerHTML = `<div style="padding:6px 10px; color:#94a3b8; font-size:0.75rem;">No se encontraron coincidencias parciales</div>`;
+                return;
+            }
+
+            dropdown.style.display = 'block';
+            dropdown.innerHTML = filtrados.map((item) => `
+                <div class="master-dropdown-item" onclick="seleccionarItemMaestroPorFiltro('${item.codigo.replace(/'/g, "\\'")}', '${item.glosa.replace(/'/g, "\\'")}', '${item.bodega}')">
+                    <strong>[${item.codigo}]</strong> ${item.glosa} <span style="color:#64748b; font-size:0.65rem;">(${item.bodega})</span>
+                </div>
+            `).join('');
+        }
+
+        function seleccionarItemMaestroPorFiltro(codigo, glosa, bodega) {
+            document.getElementById('mCod').value = codigo;
+            document.getElementById('mGlosa').value = glosa;
+            document.getElementById('mBodega').value = bodega;
+            document.getElementById('masterSearchInput').value = `[${codigo}] ${glosa}`;
+            
+            const dropdown = document.getElementById('masterDropdownResults');
+            if(dropdown) dropdown.style.display = 'none';
+
+            verificarAlertaEscaneoManual(glosa);
+            mostrarToast(`📋 Seleccionado: ${glosa}`);
         }
 
         function actualizarJerarquiaPorZonaForm(zonaVal) {
@@ -1290,6 +1336,7 @@
             if(txt.includes('DAC') || txt.includes('ALTO COSTO')) alertas.push('⚠️ Droga de Alto Costo (DAC)');
             if(txt.includes('RICARTE') || txt.includes('LRS')) alertas.push('⚖️ Ley Ricarte Soto (LRS)');
             if(txt.includes('MINISTERIAL') || txt.includes('PM')) alertas.push('📋 Programa Ministerial (PM)');
+            if(txt.includes('CONTROLADO') || txt.includes('ESTUPEFACIENTE')) alertas.push('🟢⭐ Fármaco Controlado');
 
             if(alertas.length > 0) {
                 alertaBox.style.display = 'block';
@@ -1313,7 +1360,7 @@
             const currentGtins = p.gtins || [];
             if(!p.gtinEstados) p.gtinEstados = {};
             currentGtins.forEach(g => { if(!p.gtinEstados[g]) p.gtinEstados[g] = 'activo'; });
-            const prog = p.programas || { frio: false, dac: false, lrs: false, pm: false };
+            const prog = p.programas || { frio: false, dac: false, lrs: false, pm: false, controlado: false };
 
             mostrarModal('📍 Gestionar Códigos GS1 - GTIN/EAN y Ubicaciones', `
                 <p style="font-size:0.8rem; margin-bottom:6px;"><strong>${p.glosa}</strong> (Código Interno: ${p.codigo})</p>
@@ -1375,6 +1422,7 @@
                         <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="editProgDac" ${prog.dac?'checked':''} style="width:14px; height:14px;"> ⚠️ DAC</label>
                         <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="editProgLrs" ${prog.lrs?'checked':''} style="width:14px; height:14px;"> ⚖️ LRS</label>
                         <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="editProgPm" ${prog.pm?'checked':''} style="width:14px; height:14px;"> 📋 PM</label>
+                        <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="editProgControlado" ${prog.controlado?'checked':''} style="width:14px; height:14px;"> 🟢⭐ Controlado</label>
                     </div>
                 </div>
 
@@ -1389,8 +1437,8 @@
                 </div>
                 <div class="form-grid">
                     <div><label>Zona</label><select id="nuevaZona" onchange="actualizarJerarquiaPorZonaForm(this.value)"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
-                    <div><label>Nº Anaquel / Rack</label><input id="nuevoAnaquel" value="Rack - Pallet" placeholder="Ej: Rack - Pallet"></div>
-                    <div class="full-width"><label>Posición</label><input id="nuevaPosicion" value="1" placeholder="Ej: 1"></div>
+                    <div><label>Anaquel / Rack / Full Space / Pallet</label><input id="nuevoAnaquel" value="Anaquel 1" placeholder="Ej: Anaquel 1, Rack, Full Space, Pallet"></div>
+                    <div class="full-width"><label>Posición</label><input id="nuevaPosicion" value="A1" placeholder="Ej: A1"></div>
                 </div>
             `);
 
@@ -1410,7 +1458,8 @@
                     frio: document.getElementById('editProgFrío').checked,
                     dac: document.getElementById('editProgDac').checked,
                     lrs: document.getElementById('editProgLrs').checked,
-                    pm: document.getElementById('editProgPm').checked
+                    pm: document.getElementById('editProgPm').checked,
+                    controlado: document.getElementById('editProgControlado').checked
                 };
 
                 const newGtins = [];
@@ -1519,7 +1568,7 @@
 
         function procesarTextoQR(texto, modo) {
             let zonaVal = 'A';
-            let anaqVal = 'Rack - Pallet';
+            let anaqVal = 'Anaquel 1';
             let posVal = '1';
             let tipoVal = '';
 
@@ -1533,7 +1582,7 @@
                 const matchZona = texto.match(/zona\s*([a-j])/i) || texto.match(/z([a-j])/i);
                 if(matchZona) zonaVal = matchZona[1].toUpperCase();
 
-                const matchAnaq = texto.match(/anaquel\s*(\d+)/i) || texto.match(/rack[^\d]*(\d+)?/i);
+                const matchAnaq = texto.match(/anaquel\s*(\d+)/i) || texto.match(/(rack|full\s*space|pallet)[^\d]*(\d+)?/i);
                 if(matchAnaq) anaqVal = matchAnaq[0];
 
                 const matchPos = texto.match(/pos[i|c][i|o]n\s*([a-z0-9]+)/i);
