@@ -267,8 +267,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)" style="cursor:pointer;" title="Seleccionar todo"></th>
-                            <th>Código Interno</th>
+                            <th>Código Interno <input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)" style="cursor:pointer; margin-left:6px;" title="Seleccionar todo"></th>
                             <th>Códigos GTIN/EAN</th>
                             <th>Glosa</th>
                             <th>Bodega</th>
@@ -449,7 +448,6 @@
                         users: usuariosFinales,
                         warehouses: (dataRemota.warehouses && dataRemota.warehouses.length > 0) ? dataRemota.warehouses : DEFAULT_DATA.warehouses,
                         products: (dataRemota.products || []).map(p => {
-                            if(!p.gtins && p.gtin) p.gtins = [p.gtin];
                             if(!p.gtins) p.gtins = [];
                             if(!p.gtinEstados) p.gtinEstados = {};
                             p.gtins.forEach(g => { if(!p.gtinEstados[g]) p.gtinEstados[g] = 'activo'; });
@@ -501,6 +499,7 @@
         function limpiarYExtraerGTIN(rawText) {
             if (!rawText) return '';
             let limpio = String(rawText).trim();
+            if(!limpio || limpio.toUpperCase() === 'SIN ASIGNACIÓN' || limpio === '-') return '';
             limpio = limpio.replace(/\((01|02)\)/g, '$1');
 
             if (limpio.startsWith('01') && limpio.length >= 16) {
@@ -705,7 +704,11 @@
             const ubics = new Set();
             prods.forEach(p => { 
                 if(p.ubicaciones) {
-                    p.ubicaciones.forEach(u => ubics.add(`${u.zona}-${u.anaquel}-${u.posicion}`));
+                    p.ubicaciones.forEach(u => {
+                        if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÓN') {
+                            ubics.add(`${u.zona}-${u.anaquel}-${u.posicion}`);
+                        }
+                    });
                 }
             });
             document.getElementById('totalUbicaciones').textContent = ubics.size;
@@ -732,48 +735,93 @@
                     if(!appState.products) appState.products = [];
 
                     workbook.SheetNames.forEach(name => {
-                        const json = XLSX.utils.sheet_to_json(workbook.Sheets[name], { defval: '' });
+                        const sheet = workbook.Sheets[name];
+                        const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+                        
                         json.forEach((row, idx) => {
                             const keys = Object.keys(row);
-                            const codigo = row[keys.find(k => /COD|SKU|INTERNO|ID/i.test(k))] || `ITEM_${idx+1}`;
-                            const glosa = row[keys.find(k => /GLOSA|NOMBRE|DESC/i.test(k))] || 'Sin descripción';
+                            const codigo = String(row[keys.find(k => /COD|SKU|INTERNO|ID/i.test(k))] || `ITEM_${idx+1}`).trim();
+                            const glosa = String(row[keys.find(k => /GLOSA|NOMBRE|DESC/i.test(k))] || 'Sin descripción').trim();
                             
-                            const gtin1Raw = row[keys.find(k => /GTIN\s*1|EAN\s*1|BARRA\s*1|GTIN/i.test(k))] || ('780' + Math.floor(1000000000 + Math.random()*9000000000));
+                            // Lectura flexible de GTIN 1 y GTIN 2 (si están vacíos, se admiten sin GTIN)
+                            const gtin1Raw = row[keys.find(k => /GTIN\s*1|EAN\s*1|BARRA\s*1|^GTIN$/i.test(k))] || '';
                             const gtin2Raw = row[keys.find(k => /GTIN\s*2|EAN\s*2|BARRA\s*2|DATAMATRIX/i.test(k))] || '';
 
-                            const gtins = [limpiarYExtraerGTIN(String(gtin1Raw))];
+                            const gtins = [];
+                            const limpio1 = limpiarYExtraerGTIN(String(gtin1Raw));
+                            if(limpio1) gtins.push(limpio1);
+                            
                             const limpio2 = limpiarYExtraerGTIN(String(gtin2Raw));
                             if(limpio2) gtins.push(limpio2);
 
                             let gtinEstados = {};
                             gtins.forEach(g => { gtinEstados[g] = 'activo'; });
 
-                            // Reconocimiento automático de programas / alertas desde el Excel
-                            const progText = String(row[keys.find(k => /PROGRAMA|CATEGORIA|TIPO_PROGRAMA|NORMATIVA/i.test(k))] || '').toUpperCase();
-                            const isFrio = progText.includes('FRIO') || /SI|1/i.test(String(row[keys.find(k => /FRIO/i.test(k))] || ''));
-                            const isDac = progText.includes('DAC') || /SI|1/i.test(String(row[keys.find(k => /^DAC$|ALTO_COSTO/i.test(k))] || ''));
-                            const isLrs = progText.includes('LRS') || /SI|1/i.test(String(row[keys.find(k => /LRS|RICARTE/i.test(k))] || ''));
-                            const isPm = progText.includes('PM') || progText.includes('MINISTERIAL') || /SI|1/i.test(String(row[keys.find(k => /PM|MINISTERIAL/i.test(k))] || ''));
-
+                            // Programas y alertas
+                            const catText = String(row[keys.find(k => /CATEGORIA|PROGRAMA|TIPO_PROGRAMA|NORMATIVA/i.test(k))] || '').toUpperCase();
+                            const isFrio = catText.includes('FRIO') || /SI|1/i.test(String(row[keys.find(k => /FRIO/i.test(k))] || ''));
+                            const isDac = catText.includes('DAC') || /SI|1/i.test(String(row[keys.find(k => /^DAC$|ALTO_COSTO/i.test(k))] || ''));
+                            const isLrs = catText.includes('LRS') || /SI|1/i.test(String(row[keys.find(k => /LRS|RICARTE/i.test(k))] || ''));
+                            const isPm = catText.includes('PM') || catText.includes('MINISTERIAL') || /SI|1/i.test(String(row[keys.find(k => /PM|MINISTERIAL/i.test(k))] || ''));
                             const programas = { frio: isFrio, dac: isDac, lrs: isLrs, pm: isPm };
 
-                            const tipoRaw = row[keys.find(k => /TIPO|JERARQUIA|ALMACENAMIENTO/i.test(k))] || 'Unidad Comercial';
-                            const zonaRaw = row[keys.find(k => /ZONA/i.test(k))] || 'A';
-                            const anaquelRaw = row[keys.find(k => /ANAQUEL|RACK|ALTURA/i.test(k))] || '1';
-                            const posicionRaw = row[keys.find(k => /POSICION|UBICACION/i.test(k))] || 'A1';
-                            
+                            // Jerarquía / Tipo
+                            const tipoRaw = String(row[keys.find(k => /TIPO|JERARQUIA|ALMACENAMIENTO/i.test(k))] || 'Unidad Comercial').trim();
                             let tipo = 'Unidad Comercial';
                             if(/master|caja/i.test(tipoRaw)) tipo = 'Unidad Máster';
                             else if(/minima|unidosis/i.test(tipoRaw)) tipo = 'Unidad Mínima / Unidosis';
 
-                            const zona = String(zonaRaw).replace(/zona/gi, '').trim() || 'A';
-                            const anaquel = String(anaquelRaw).replace(/anaquel/gi, '').trim() || '1';
-                            const posicion = String(posicionRaw).trim();
+                            // UBICACIÓN (Soporta columnas separadas Zona, Tipo/Anaquel, Posición o agrupadas en UBICACION)
+                            let zona = 'SIN ASIGNACIÓN';
+                            let anaquel = '1';
+                            let posicion = 'A1';
 
-                            const existing = appState.products.find(p => p.gtins && p.gtins.some(g => gtins.includes(g)));
+                            const colUbicacionAgrupada = row[keys.find(k => /^UBICACION$/i.test(k))];
+                            if (colUbicacionAgrupada && String(colUbicacionAgrupada).trim() !== '') {
+                                const partesUb = String(colUbicacionAgrupada).trim();
+                                if(partesUb.toUpperCase() !== 'SIN ASIGNACIÓN' && partesUb !== '-') {
+                                    zona = partesUb;
+                                    anaquel = '1';
+                                    posicion = 'A1';
+                                }
+                            } else {
+                                const zonaRaw = row[keys.find(k => /^ZONA$/i.test(k))];
+                                const anaquelRaw = row[keys.find(k => /ANAQUEL|RACK|ALTURA|^TIPO$/i.test(k))];
+                                const posicionRaw = row[keys.find(k => /^POSICION$|POSICIÓN/i.test(k))];
+
+                                if(zonaRaw && String(zonaRaw).trim() !== '' && String(zonaRaw).toUpperCase() !== 'SIN ASIGNACIÓN') {
+                                    zona = String(zonaRaw).replace(/zona/gi, '').trim();
+                                }
+                                if(anaquelRaw && String(anaquelRaw).trim() !== '') {
+                                    anaquel = String(anaquelRaw).trim();
+                                }
+                                if(posicionRaw && String(posicionRaw).trim() !== '') {
+                                    posicion = String(posicionRaw).trim();
+                                }
+                            }
+
+                            // Bodega
+                            const bodegaRaw = row[keys.find(k => /^BODEGA$/i.test(k))];
+                            let bodega = currentWarehouse === 'TODAS' ? 'Farmacos' : currentWarehouse;
+                            if(bodegaRaw && String(bodegaRaw).trim() !== '') {
+                                const bTxt = String(bodegaRaw).toLowerCase();
+                                if(bTxt.includes('insumo')) bodega = 'Insumos';
+                                else if(bTxt.includes('economat')) bodega = 'Economato';
+                                else if(bTxt.includes('controlad')) bodega = 'Controlados';
+                                else if(bTxt.includes('sutura')) bodega = 'Suturas';
+                                else if(bTxt.includes('aliment')) bodega = 'Alimentos';
+                                else if(bTxt.includes('farmac')) bodega = 'Farmacos';
+                            }
+
+                            // Buscar coincidencia por GTIN o por Código Interno si no tiene GTIN
+                            const existing = appState.products.find(p => {
+                                if (gtins.length > 0 && p.gtins && p.gtins.some(g => gtins.includes(g))) return true;
+                                return p.codigo.toLowerCase() === codigo.toLowerCase();
+                            });
+
                             if (existing) {
-                                existing.codigo = String(codigo).trim();
-                                existing.glosa = String(glosa);
+                                existing.codigo = codigo;
+                                existing.glosa = glosa;
                                 existing.tipo = tipo;
                                 existing.programas = programas;
                                 if(!existing.gtinEstados) existing.gtinEstados = {};
@@ -787,11 +835,11 @@
                                 const newId = '_' + Math.random().toString(36).substr(2, 9);
                                 appState.products.push({
                                     id: newId,
-                                    codigo: String(codigo).trim(),
+                                    codigo: codigo,
                                     gtins: gtins,
                                     gtinEstados: gtinEstados,
-                                    glosa: String(glosa),
-                                    bodega: currentWarehouse === 'TODAS' ? 'Farmacos' : currentWarehouse,
+                                    glosa: glosa,
+                                    bodega: bodega,
                                     programas: programas,
                                     tipo: tipo,
                                     ubicaciones: [{ zona, anaquel, posicion }],
@@ -822,7 +870,7 @@
                 prods = prods.filter(p => p.codigo.toLowerCase().includes(search) || p.glosa.toLowerCase().includes(search) || (p.gtins && p.gtins.some(g => g.toLowerCase().includes(search))));
             }
             if (zona !== 'TODAS') {
-                prods = prods.filter(p => p.ubicaciones && p.ubicaciones.some(u => u.zona === zona));
+                prods = prods.filter(p => p.ubicaciones && p.ubicaciones.some(u => u.zona.toUpperCase() === zona.toUpperCase()));
             }
 
             const user = getCurrentUser();
@@ -830,18 +878,22 @@
 
             const tbody = document.getElementById('inventarioUnificadoBody');
             tbody.innerHTML = prods.map(p => {
-                const ubicsHtml = (p.ubicaciones || []).map(u => `
-                    <div class="ubicacion-row-item">
-                        <span class="zone-tag">Zona ${u.zona}</span> 
-                        <span>Anaquel ${u.anaquel}</span> 
-                        <span class="pos-tag">Pos. ${u.posicion}</span>
-                    </div>
-                `).join('') || '<span style="color:#94a3b8;">Sin ubicaciones</span>';
+                const ubicsHtml = (p.ubicaciones || []).map(u => {
+                    if(!u.zona || u.zona.toUpperCase() === 'SIN ASIGNACIÓN') {
+                        return `<div class="ubicacion-row-item"><span style="color:#64748b; font-weight:600;">SIN ASIGNACIÓN</span></div>`;
+                    }
+                    return `
+                        <div class="ubicacion-row-item">
+                            <span class="zone-tag">Zona ${u.zona}</span> 
+                            <span>Anaquel ${u.anaquel}</span> 
+                            <span class="pos-tag">Pos. ${u.posicion}</span>
+                        </div>
+                    `;
+                }).join('') || '<span style="color:#94a3b8;">SIN ASIGNACIÓN</span>';
 
                 if(!p.gtinEstados) p.gtinEstados = {};
-                const gtinsList = (p.gtins || []).map(g => `<span class="gtin-tag">${g}</span>`).join(' ') || '<span style="color:#94a3b8;">Sin código</span>';
+                const gtinsList = (p.gtins && p.gtins.length > 0) ? p.gtins.map(g => `<span class="gtin-tag">${g}</span>`).join(' ') : '<span style="color:#94a3b8; font-style:italic;">Sin GTIN</span>';
 
-                // Badges entre Bodega y Jerarquía
                 const prog = p.programas || { frio: false, dac: false, lrs: false, pm: false };
                 let progHtml = '<div class="prog-badges-box">';
                 if(prog.frio) progHtml += `<span class="badge-prog badge-frio" title="Cámara de Frío">❄️ FRÍO</span>`;
@@ -853,8 +905,7 @@
 
                 return `
                 <tr>
-                    <td><input type="checkbox" class="prod-chk" value="${p.id}" style="cursor:pointer;" onchange="actualizarEstadoCheckTodo()"></td>
-                    <td><strong>${p.codigo}</strong></td>
+                    <td><strong>${p.codigo}</strong> <input type="checkbox" class="prod-chk" value="${p.id}" style="cursor:pointer; margin-left:6px;" onchange="actualizarEstadoCheckTodo()"></td>
                     <td>${gtinsList}</td>
                     <td>${p.glosa}</td>
                     <td><span class="badge-bodega badge-${p.bodega.toLowerCase()}">${p.bodega}</span></td>
@@ -872,7 +923,7 @@
                         ${puedeEliminar ? `<button class="btn btn-danger btn-xs" onclick="eliminarProducto('${p.id}')" style="margin-top:2px;">🗑️ Eliminar</button>` : ''}
                     </td>
                 </tr>
-            `}).join('') || '<tr><td colspan="10" class="empty-state">No se encontraron productos</td></tr>';
+            `}).join('') || '<tr><td colspan="9" class="empty-state">No se encontraron productos</td></tr>';
         }
 
         function toggleSeleccionarTodoInventario(masterChk) {
@@ -959,7 +1010,6 @@
         }
 
         function abrirModalAlmacenamiento() {
-            const defaultGtin1 = '780' + Math.floor(1000000000 + Math.random()*9000000000);
             mostrarModal('📥 Recepción y Almacenamiento (Códigos GS1 - GTIN/EAN)', `
                 <div style="margin-bottom:10px; background:#eef2ff; padding:8px; border-radius:8px; text-align:center; display:flex; gap:6px; justify-content:center; flex-wrap:wrap;">
                     <button class="btn btn-purple btn-sm" onclick="iniciarEscanerQR('almacenar')">📷 Escanear QR Ubicación</button>
@@ -969,10 +1019,10 @@
                     <div class="full-width"><label>Código Interno</label><input id="mCod" placeholder="Ej: 01-001"></div>
                     
                     <div>
-                        <label>Códigos GTIN/EAN (Código 1)</label>
+                        <label>Códigos GTIN/EAN (Código 1 - Opcional)</label>
                         <div style="display:flex; gap:4px; margin-bottom:4px;">
-                            <input id="mGtin1" value="${defaultGtin1}" placeholder="Escanee con pistola o cámara" oninput="this.value=limpiarYExtraerGTIN(this.value)">
-                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin1')" title="Borrar dato">🗑️</button>
+                            <input id="mGtin1" placeholder="Opcional" oninput="this.value=limpiarYExtraerGTIN(this.value)">
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin1')">🗑️</button>
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
                             <button type="button" class="btn btn-success btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(1)">🏷️ Escanear Código 1</button>
@@ -987,7 +1037,7 @@
                         <label>Códigos GTIN/EAN (Código 2 opcional)</label>
                         <div style="display:flex; gap:4px; margin-bottom:4px;">
                             <input id="mGtin2" placeholder="DataMatrix / Secundario" oninput="this.value=limpiarYExtraerGTIN(this.value)">
-                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin2')" title="Borrar dato">🗑️</button>
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin2')">🗑️</button>
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
                             <button type="button" class="btn btn-orange btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(2)">🏷️ Escanear Código 2</button>
@@ -1014,9 +1064,9 @@
                         </div>
                     </div>
 
-                    <div><label>Zona</label><select id="mZona"><option value="A">Zona A - Paletizado Rack Doble Altura</option><option value="B">Zona B - Estantería Media Fijos</option><option value="C">Zona C - Almacenamiento Masivo</option><option value="D">Zona D - Farmacia de Alta Rotación</option><option value="E">Zona E - Medicamentos Refrigerados</option><option value="F">Zona F - Productos Termosensibles</option><option value="G">Zona G - Insumos Clínicos Generales</option><option value="H">Zona H - Material Quirúrgico y Suturas</option><option value="I">Zona I - Zona de Cuarentena y Controlados</option><option value="J">Zona J - Economato y Aseo</option></select></div>
-                    <div><label>Nº de Anaquel / Rack / Altura</label><input id="mAnaquel" placeholder="Ej: 7"></div>
-                    <div class="full-width"><label>Posición</label><input id="mPosicion" placeholder="Ej: A4"></div>
+                    <div><label>Zona</label><select id="mZona"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
+                    <div><label>Nº de Anaquel / Rack</label><input id="mAnaquel" value="1" placeholder="Ej: 1"></div>
+                    <div class="full-width"><label>Posición</label><input id="mPosicion" value="A1" placeholder="Ej: A1"></div>
                 </div>
             `);
             modalCallback = () => {
@@ -1041,37 +1091,40 @@
                 const anaquel = document.getElementById('mAnaquel').value.trim();
                 const posicion = document.getElementById('mPosicion').value.trim();
 
-                if(!cod || !gtin1 || !anaquel || !posicion) return alert('Completa los campos obligatorios');
+                if(!cod) return alert('El Código Interno es obligatorio');
 
-                const gtins = [gtin1];
+                const gtins = [];
                 let gtinEstados = {};
-                gtinEstados[gtin1] = est1;
-
+                if(gtin1) {
+                    gtins.push(gtin1);
+                    gtinEstados[gtin1] = est1;
+                }
                 if(gtin2) {
                     gtins.push(gtin2);
                     gtinEstados[gtin2] = est2;
                 }
 
                 if(!appState.products) appState.products = [];
-                const existing = appState.products.find(p => p.gtins && p.gtins.some(g => gtins.includes(g)));
+                const existing = appState.products.find(p => p.codigo.toLowerCase() === cod.toLowerCase());
                 
                 if (existing) {
+                    existing.glosa = glosa || existing.glosa;
+                    existing.tipo = tipo;
+                    existing.programas = programas;
                     if(!existing.gtinEstados) existing.gtinEstados = {};
                     gtins.forEach(g => { 
                         if(!existing.gtins.includes(g)) existing.gtins.push(g);
                         existing.gtinEstados[g] = gtinEstados[g];
                     });
-                    existing.programas = programas;
                     if(!existing.ubicaciones) existing.ubicaciones = [];
                     existing.ubicaciones.push({ zona, anaquel, posicion });
-                    existing.tipo = tipo;
                 } else {
                     const newId = '_' + Math.random().toString(36).substr(2, 9);
                     appState.products.push({
                         id: newId, codigo: cod, gtins: gtins, gtinEstados: gtinEstados, glosa: glosa || cod, bodega: bodega, programas: programas, tipo: tipo, ubicaciones: [{ zona, anaquel, posicion }], estado: 'Almacenado'
                     });
                 }
-                registrarHistorial('Recepción y Almacenamiento', `${cod}`, `Ingresado ítem con GTINs [${gtins.join(', ')}] en Zona ${zona}`);
+                registrarHistorial('Recepción y Almacenamiento', `${cod}`, `Ingresado ítem en Zona ${zona}`);
                 guardarEstadoFirestore();
                 cerrarModal();
                 mostrarToast('Producto almacenado con éxito');
@@ -1121,7 +1174,7 @@
                             const est = p.gtinEstados[g] || 'activo';
                             const cssCl = est === 'inactivo' ? 'gtin-tag gtin-inactivo' : 'gtin-tag';
                             return `<span class="${cssCl}">${est === 'inactivo' ? '🔴' : '🟢'} ${g}</span>`;
-                        }).join('')}
+                        }).join('') || '<span style="color:#94a3b8; font-style:italic;">Sin GTIN registrado</span>'}
                     </div>
                 </div>
 
@@ -1185,9 +1238,9 @@
                     <button class="btn btn-purple btn-xs" onclick="iniciarEscanerQR('agregarUbicacion')">📷 Escanear QR para Ubicación</button>
                 </div>
                 <div class="form-grid">
-                    <div><label>Zona</label><select id="nuevaZona"><option value="A">Zona A - Paletizado Rack Doble Altura</option><option value="B">Zona B - Estantería Media Fijos</option><option value="C">Zona C - Almacenamiento Masivo</option><option value="D">Zona D - Farmacia de Alta Rotación</option><option value="E">Zona E - Medicamentos Refrigerados</option><option value="F">Zona F - Productos Termosensibles</option><option value="G">Zona G - Insumos Clínicos Generales</option><option value="H">Zona H - Material Quirúrgico y Suturas</option><option value="I">Zona I - Zona de Cuarentena y Controlados</option><option value="J">Zona J - Economato y Aseo</option></select></div>
-                    <div><label>Nº Anaquel</label><input id="nuevoAnaquel" placeholder="Ej: 2"></div>
-                    <div class="full-width"><label>Posición</label><input id="nuevaPosicion" placeholder="Ej: B1"></div>
+                    <div><label>Zona</label><select id="nuevaZona"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
+                    <div><label>Nº Anaquel</label><input id="nuevoAnaquel" value="1" placeholder="Ej: 1"></div>
+                    <div class="full-width"><label>Posición</label><input id="nuevaPosicion" value="A1" placeholder="Ej: A1"></div>
                 </div>
             `);
 
@@ -1225,7 +1278,7 @@
                 p.gtinEstados = gtinEstados;
                 p.tipo = nuevoTipo;
 
-                let detalleMod = `Actualizados GTINs y estados | Tipo [${nuevoTipo}]`;
+                let detalleMod = `Actualizados datos | Tipo [${nuevoTipo}]`;
                 if(anaquel && posicion) {
                     if(!p.ubicaciones) p.ubicaciones = [];
                     p.ubicaciones.push({ zona, anaquel, posicion });
@@ -1244,7 +1297,7 @@
             if(p && p.ubicaciones) {
                 const removida = p.ubicaciones.splice(index, 1)[0];
                 guardarEstadoFirestore();
-                registrarHistorial('Retiro de Ubicación', `${p.codigo}`, `Removida Zona ${removida.zona}, Anaquel ${removida.anaquel}, Pos. ${removida.posicion}`);
+                registrarHistorial('Retiro de Ubicación', `${p.codigo}`, `Removida Zona ${removida.zona}`);
                 gestionarUbicacionesModal(prodId);
                 mostrarToast('🗑️ Ubicación eliminada');
             }
@@ -1418,13 +1471,15 @@
             prods.forEach(p => {
                 if(p.ubicaciones) {
                     p.ubicaciones.forEach(u => {
-                        const key = `${p.tipo || 'Unidad Comercial'}|${u.zona}|${u.anaquel}|${u.posicion}`;
-                        ubicsMap.set(key, { tipo: p.tipo || 'Unidad Comercial', zona: u.zona, anaquel: u.anaquel, posicion: u.posicion });
+                        if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÓN') {
+                            const key = `${p.tipo || 'Unidad Comercial'}|${u.zona}|${u.anaquel}|${u.posicion}`;
+                            ubicsMap.set(key, { tipo: p.tipo || 'Unidad Comercial', zona: u.zona, anaquel: u.anaquel, posicion: u.posicion });
+                        }
                     });
                 }
             });
 
-            if(ubicsMap.size === 0) return alert('No hay ubicaciones registradas.');
+            if(ubicsMap.size === 0) return alert('No hay ubicaciones válidas registradas.');
 
             let html = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
