@@ -845,11 +845,11 @@
 
         function extraerUbicacionDesdeTextoHojaONombre(sheetName, row, keys) {
             let zona = 'SIN ASIGNACIÓN';
-            let anaquel = '1';
+            let anaquel = 'Anaquel 1';
             let posicion = 'A1';
 
             const keyZona = keys.find(k => /^ZONA$|ZONA_/i.test(k));
-            const keyTipoPos = keys.find(k => /^TIPO$|TIPO_/i.test(k) || /RACK|ALTURA|ANAQUEL/i.test(k));
+            const keyTipoPos = keys.find(k => /^TIPO$|TIPO_/i.test(k) || /RACK|ALTURA|ANAQUEL|FULL\s*SPACE|PALLET/i.test(k));
             const keyPosicion = keys.find(k => /^POSICION$|POSICIÓN/i.test(k));
             const colUbicacionAgrupada = row[keys.find(k => /UBICACION|UBICACIÓN/i.test(k))];
 
@@ -1209,7 +1209,7 @@
                     </div>
 
                     <div><label>Zona</label><select id="mZona" onchange="actualizarJerarquiaPorZonaForm(this.value)"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
-                    <div><label>Nº de Anaquel / Rack / Full Space / Pallet</label><input id="mAnaquel" value="Anaquel 1" placeholder="Ej: Anaquel 1, Rack, Full Space, Pallet"></div>
+                    <div><label>Anaquel / Rack / Full Space / Pallet</label><input id="mAnaquel" value="Anaquel 1" placeholder="Ej: Anaquel 1, Rack, Full Space, Pallet"></div>
                     <div class="full-width"><label>Posición</label><input id="mPosicion" value="A1" placeholder="Ej: A1"></div>
                 </div>
             `);
