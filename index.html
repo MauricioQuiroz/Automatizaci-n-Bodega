@@ -314,7 +314,7 @@
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>ID</th><th>Nombre</th><th>Perfil</th><th>Permisos</th><th>Acciones</th></tr></thead>
+                    <thead><tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Perfil</th><th>Permisos</th><th>Acciones</th></tr></thead>
                     <tbody id="usuariosBody"></tbody>
                 </table>
             </div>
@@ -415,10 +415,10 @@
 
         const DEFAULT_DATA = {
             users: [
-                { id: 1, nombre: 'Admin', perfil: 'admin', password: 'admin', permisos: ['lectura', 'escritura', 'administracion', 'carga', 'descarga'] },
-                { id: 2, nombre: 'Supervisor', perfil: 'supervisor', password: '1234', permisos: ['lectura', 'escritura', 'carga', 'descarga'] },
-                { id: 3, nombre: 'Operario', perfil: 'operario', password: '1234', permisos: ['lectura', 'escritura'] },
-                { id: 4, nombre: 'Invitado', perfil: 'invitado', password: '1234', permisos: ['lectura'] }
+                { id: 1, nombre: 'Admin', correo: 'admin@hsjd.cl', perfil: 'admin', password: 'admin', permisos: ['lectura', 'escritura', 'administracion', 'carga', 'descarga'] },
+                { id: 2, nombre: 'Supervisor', correo: 'supervisor@hsjd.cl', perfil: 'supervisor', password: '1234', permisos: ['lectura', 'escritura', 'carga', 'descarga'] },
+                { id: 3, nombre: 'Operario', correo: 'operario@hsjd.cl', perfil: 'operario', password: '1234', permisos: ['lectura', 'escritura'] },
+                { id: 4, nombre: 'Invitado', correo: 'invitado@hsjd.cl', perfil: 'invitado', password: '1234', permisos: ['lectura'] }
             ],
             warehouses: [
                 { id: 'Farmacos', nombre: 'Bodega de Fármacos', color: '#2563eb' },
@@ -518,6 +518,9 @@
         let modalCallback = null;
         let html5QrCodeScanner = null;
 
+        let codigoVerificacionActual = null;
+        let usuarioEnProcesoRecuperacion = null;
+
         function limpiarYExtraerGTIN(rawText) {
             if (!rawText) return '';
             let limpio = String(rawText).trim();
@@ -613,27 +616,65 @@
         }
 
         function abrirModalRecuperarPass() {
+            codigoVerificacionActual = null;
+            usuarioEnProcesoRecuperacion = null;
+
             mostrarModal('🔑 Restablecer Contraseña', `
-                <p style="font-size:0.8rem; color:#64748b; margin-bottom:8px;">Ingresa tu nombre de usuario para establecer una nueva contraseña de acceso.</p>
+                <p style="font-size:0.8rem; color:#64748b; margin-bottom:8px;">Ingresa tu usuario y correo electrónico asociado para recibir un código de verificación.</p>
                 <label>Nombre de Usuario</label>
                 <input id="recUser" placeholder="Tu usuario exacto">
-                <label style="margin-top:6px;">Nueva Contraseña</label>
-                <input id="recPass" type="password" placeholder="Nueva contraseña">
+                <label style="margin-top:6px;">Correo Electrónico</label>
+                <input id="recEmail" type="email" placeholder="correo@hsjd.cl">
             `);
-            document.getElementById('modalActionBtn').textContent = 'Actualizar Contraseña';
+            document.getElementById('modalActionBtn').textContent = 'Enviar Código de Verificación';
             modalCallback = () => {
                 const uName = document.getElementById('recUser').value.trim();
-                const nPass = document.getElementById('recPass').value.trim();
-                if(!uName || !nPass) return alert('Completa todos los campos');
+                const uEmail = document.getElementById('recEmail').value.trim();
+                if(!uName || !uEmail) return alert('Completa todos los campos');
 
                 const usr = appState.users.find(x => x.nombre.toLowerCase() === uName.toLowerCase());
                 if(!usr) return alert('No se encontró un usuario con ese nombre.');
+                if(!usr.correo || usr.correo.toLowerCase() !== uEmail.toLowerCase()) {
+                    return alert('El correo electrónico no coincide con el registrado para este usuario.');
+                }
 
-                usr.password = nPass;
+                usuarioEnProcesoRecuperacion = usr;
+                codigoVerificacionActual = Math.floor(100000 + Math.random() * 900000).toString();
+
+                // Simulamos envío de correo electrónico mediante alerta y notificación visual
+                console.log(`[SIMULACIÓN DE CORREO] Código de recuperación para ${usr.nombre} (${usr.correo}): ${codigoVerificacionActual}`);
+                alert(`📧 [CÓDIGO SIMULADO ENVIADO A CORREO]\n\nSe ha enviado un código de 6 dígitos a: ${usr.correo}\n\n(Código temporal de prueba: ${codigoVerificacionActual})`);
+
+                // Abrir pantalla de validación de código y nueva contraseña
+                abrirModalValidacionCodigo();
+            };
+        }
+
+        function abrirModalValidacionCodigo() {
+            mostrarModal('🔐 Validar Código y Cambiar Contraseña', `
+                <p style="font-size:0.8rem; color:#64748b; margin-bottom:8px;">Ingresa el código de 6 dígitos enviado a tu correo electrónico y tu nueva contraseña.</p>
+                <label>Código de Verificación (6 dígitos)</label>
+                <input id="valCodigo" placeholder="Ej: 123456" maxlength="6">
+                <label style="margin-top:6px;">Nueva Contraseña</label>
+                <input id="valNewPass" type="password" placeholder="Nueva contraseña">
+            `);
+            document.getElementById('modalActionBtn').textContent = 'Actualizar Contraseña';
+            modalCallback = () => {
+                const ingCode = document.getElementById('valCodigo').value.trim();
+                const nPass = document.getElementById('valNewPass').value.trim();
+
+                if(!ingCode || !nPass) return alert('Completa todos los campos.');
+                if(ingCode !== codigoVerificacionActual) {
+                    return alert('❌ El código de verificación es incorrecto.');
+                }
+
+                if(!usuarioEnProcesoRecuperacion) return alert('Sesión de recuperación expirada.');
+
+                usuarioEnProcesoRecuperacion.password = nPass;
                 guardarEstadoFirestore();
                 cerrarModal();
-                registrarHistorial('Cambio de Contraseña', usr.nombre, 'Restablecimiento de contraseña de acceso');
-                mostrarToast('✅ Contraseña actualizada con éxito.');
+                registrarHistorial('Cambio de Contraseña', usuarioEnProcesoRecuperacion.nombre, 'Restablecimiento de contraseña validado por correo electrónico');
+                mostrarToast('✅ Contraseña actualizada con éxito mediante validación por correo.');
             };
         }
 
@@ -1661,6 +1702,7 @@
                 <tr>
                     <td>${u.id}</td>
                     <td>${u.nombre}</td>
+                    <td>${u.correo || 'Sin correo'}</td>
                     <td><span class="badge badge-${u.perfil}">${u.perfil}</span></td>
                     <td>${u.permisos.join(', ')}</td>
                     <td>
@@ -1675,6 +1717,7 @@
             mostrarModal('➕ Nuevo Usuario', `
                 <div class="form-grid">
                     <div class="full-width"><label>Nombre</label><input id="uNombre" placeholder="Nombre de usuario"></div>
+                    <div class="full-width"><label>Correo Electrónico (para recuperación)</label><input id="uCorreo" type="email" placeholder="correo@hsjd.cl"></div>
                     <div class="full-width"><label>Contraseña</label><input id="uPass" type="password" placeholder="Contraseña"></div>
                     <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarChecksPermisos()"><option value="admin">Admin</option><option value="supervisor">Supervisor</option><option value="operario">Operario</option><option value="invitado">Invitado</option></select></div>
                     <div class="full-width">
@@ -1686,22 +1729,23 @@
             actualizarChecksPermisos();
             modalCallback = () => {
                 const nombre = document.getElementById('uNombre').value.trim();
+                const correo = document.getElementById('uCorreo').value.trim();
                 const pass = document.getElementById('uPass').value.trim();
                 const perfil = document.getElementById('uPerfil').value;
                 
                 const permisos = [];
                 document.querySelectorAll('.perm-chk:checked').forEach(chk => permisos.push(chk.value));
 
-                if(!nombre || !pass) return alert('Completa los campos obligatorios');
+                if(!nombre || !pass || !correo) return alert('Completa todos los campos obligatorios (incluyendo correo)');
                 if(permisos.length === 0) return alert('Selecciona al menos un permiso');
 
                 if(!appState.users) appState.users = [];
                 if(appState.users.some(x => x.nombre.toLowerCase() === nombre.toLowerCase())) return alert('Ya existe un usuario con ese nombre.');
 
                 const newId = appState.users.length > 0 ? Math.max(...appState.users.map(x=>x.id))+1 : 1;
-                appState.users.push({ id: newId, nombre, password: pass, perfil, permisos });
+                appState.users.push({ id: newId, nombre, correo, password: pass, perfil, permisos });
                 guardarEstadoFirestore();
-                registrarHistorial('Creación de Usuario', nombre, `Creado usuario perfil ${perfil}`);
+                registrarHistorial('Creación de Usuario', nombre, `Creado usuario perfil ${perfil} con correo ${correo}`);
                 cerrarModal();
                 mostrarToast('Usuario creado con éxito');
             };
@@ -1714,6 +1758,7 @@
             mostrarModal('✏️ Editar Usuario / Perfil', `
                 <div class="form-grid">
                     <div class="full-width"><label>Nombre</label><input id="uNombre" value="${u.nombre}"></div>
+                    <div class="full-width"><label>Correo Electrónico</label><input id="uCorreo" type="email" value="${u.correo || ''}"></div>
                     <div class="full-width"><label>Nueva Contraseña (dejar en blanco para mantener actual)</label><input id="uPass" type="password" placeholder="••••••••"></div>
                     <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarChecksPermisos()"><option value="admin" ${u.perfil==='admin'?'selected':''}>Admin</option><option value="supervisor" ${u.perfil==='supervisor'?'selected':''}>Supervisor</option><option value="operario" ${u.perfil==='operario'?'selected':''}>Operario</option><option value="invitado" ${u.perfil==='invitado'?'selected':''}>Invitado</option></select></div>
                     <div class="full-width">
@@ -1725,16 +1770,18 @@
             actualizarChecksPermisos(u.permisos);
             modalCallback = () => {
                 const nombre = document.getElementById('uNombre').value.trim();
+                const correo = document.getElementById('uCorreo').value.trim();
                 const pass = document.getElementById('uPass').value.trim();
                 const perfil = document.getElementById('uPerfil').value;
                 
                 const permisos = [];
                 document.querySelectorAll('.perm-chk:checked').forEach(chk => permisos.push(chk.value));
 
-                if(!nombre) return alert('El nombre no puede estar vacío');
+                if(!nombre || !correo) return alert('El nombre y el correo no pueden estar vacíos');
                 if(permisos.length === 0) return alert('Selecciona al menos un permiso');
 
                 u.nombre = nombre;
+                u.correo = correo;
                 if(pass) u.password = pass;
                 u.perfil = perfil;
                 u.permisos = permisos;
