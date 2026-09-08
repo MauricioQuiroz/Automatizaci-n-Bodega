@@ -60,7 +60,7 @@
         header .user-info .user-name { color:#94a3b8; font-size:0.65rem; }
         header .user-info .online-indicator { display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e; margin-right:4px; }
 
-        /* NAV TACTIL FLUIDO */
+        /* NAV */
         nav { display:flex; background:#f8fafc; border-bottom:1px solid #e2e8f0; overflow-x:auto; -webkit-overflow-scrolling:touch; padding:0 6px; }
         nav button { background:transparent; border:none; padding:10px 12px; font-weight:600; font-size:0.7rem; color:#64748b; cursor:pointer; border-bottom:3px solid transparent; flex:0 0 auto; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; min-height:44px; }
         nav button .nav-icon { font-size:0.9rem; }
@@ -79,7 +79,7 @@
         .card .label { color:#64748b; font-size:0.65rem; margin-top:3px; }
         .card .card-icon { font-size:1.3rem; display:block; margin-bottom:3px; }
 
-        /* TABLAS Y CONTENEDORES - TEXTO CENTRADO Y 1 LÍNEA */
+        /* TABLAS Y CONTENEDORES */
         .table-wrap { overflow-x:auto; margin-top:10px; -webkit-overflow-scrolling:touch; }
         .table-container { max-height:60vh; overflow:auto; border-radius:var(--radius); border:1px solid #e2e8f0; -webkit-overflow-scrolling:touch; background:white; }
         table { width:100%; border-collapse:collapse; font-size:0.7rem; min-width:850px; }
@@ -98,17 +98,15 @@
         .badge-insumos { background:#059669; }
         .badge-economato { background:#d97706; color:#0f172a; }
         
-        /* UBICACIÓN OPTIMIZADA Y CENTRADA */
         .ubicacion-compacta-box { display:flex; flex-direction:column; gap:4px; align-items:center; justify-content:center; }
         .ubicacion-row-item { display:inline-flex; align-items:center; gap:4px; font-size:0.65rem; background:#f8fafc; padding:2px 6px; border-radius:6px; border:1px solid #e2e8f0; color:#1e293b; font-weight:500; white-space:nowrap; }
         .zone-tag { display:inline-block; padding:1px 4px; border-radius:4px; font-size:0.6rem; font-weight:700; background:#dbeafe; color:#1e40af; }
         .pos-tag { font-family:monospace; font-size:0.6rem; background:#e2e8f0; padding:1px 4px; border-radius:4px; color:#334155; font-weight:600; }
         
-        /* JERARQUÍA Y GTINS */
         .type-tag { display:inline-block; padding:2px 6px; border-radius:6px; font-size:0.65rem; font-weight:700; background:#f3e8ff; color:#7e22ce; white-space:nowrap; }
         .gtin-tag { font-family:monospace; font-size:0.65rem; background:#fef9c3; color:#854d0e; padding:2px 6px; border-radius:4px; font-weight:600; white-space:nowrap; display:inline-block; margin:1px; }
 
-        /* BOTONES GENERALES */
+        /* BOTONES */
         .btn { padding:5px 12px; border:none; border-radius:8px; font-weight:600; font-size:0.7rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; text-align:center; gap:5px; text-decoration:none; color:#ffffff; min-height:36px; white-space:nowrap; }
         .btn-primary { background:#4f46e5; }
         .btn-success { background:#059669; }
@@ -126,7 +124,7 @@
         .toolbar input { padding:6px 10px; border:2px solid #d1d5db; border-radius:8px; font-size:0.8rem; background:white; }
         .filter-select { padding:6px 10px; border:2px solid #d1d5db; border-radius:8px; font-size:0.75rem; background:white; max-width:320px; }
 
-        /* MODAL GENERAL */
+        /* MODAL */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:16px; }
         .modal.active { display:flex; }
         .modal-content { background:#ffffff; border-radius:20px; padding:20px; max-width:650px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
@@ -135,11 +133,11 @@
         .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
         .form-grid .full-width { grid-column:1/-1; }
 
-        /* ESCANER QR INTERNO */
+        /* ESCANER */
         #qr-reader { width: 100%; max-width: 400px; margin: 10px auto; display: none; }
         #qr-reader video { border-radius: 8px; width: 100% !important; }
 
-        /* LAYOUT VISUAL PURO */
+        /* LAYOUT */
         .layout-image-container { width:100%; margin-top:10px; background:#f8fafc; border-radius:12px; border:1px solid #e2e8f0; padding:12px; text-align:center; min-height:150px; display:flex; align-items:center; justify-content:center; flex-direction:column; }
         .layout-image-container img { max-width:100%; max-height:500px; border-radius:8px; object-fit:contain; }
         .no-image { color:#94a3b8; font-size:0.85rem; }
@@ -235,7 +233,7 @@
                     </button>
                 </div>
                 <div class="toolbar-right">
-                    <input type="text" id="searchInventarioUnificado" placeholder="Buscar código, glosa o GTIN..." oninput="renderInventarioUnificado()">
+                    <input type="text" id="searchInventarioUnificado" placeholder="Buscar código interno, glosa o GTIN/EAN..." oninput="renderInventarioUnificado()">
                     <select class="filter-select" id="filterZona" onchange="renderInventarioUnificado()">
                         <option value="TODAS">🌐 Todas las Zonas</option>
                         <option value="A">Zona A - Paletizado Rack Doble Altura</option>
@@ -255,8 +253,8 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Código</th>
-                            <th>GTIN / Códigos (Hasta 2)</th>
+                            <th>Código Interno</th>
+                            <th>Códigos GTIN/EAN</th>
                             <th>Glosa</th>
                             <th>Bodega</th>
                             <th>Jerarquía</th>
@@ -363,7 +361,7 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- SCRIPT DE SINCRONIZACIÓN EN TIEMPO REAL CON FIREBASE FIRESTORE -->
+    <!-- SCRIPT DE SINCRONIZACIÓN Y PROCESAMIENTO DE CÓDIGOS UNIVERSAL -->
     <script>
         const firebaseConfig = {
             apiKey: "TU_API_KEY_NUEVA_RESTRINGIDA",
@@ -424,7 +422,7 @@
                         users: (dataRemota.users && dataRemota.users.length > 0) ? dataRemota.users : DEFAULT_DATA.users,
                         warehouses: (dataRemota.warehouses && dataRemota.warehouses.length > 0) ? dataRemota.warehouses : DEFAULT_DATA.warehouses,
                         products: (dataRemota.products || []).map(p => {
-                            if(!p.gtins && p.gtin) p.gtins = [p.gtin]; // Compatibilidad con versiones anteriores
+                            if(!p.gtins && p.gtin) p.gtins = [p.gtin];
                             if(!p.gtins) p.gtins = [];
                             return p;
                         }),
@@ -467,6 +465,37 @@
         let currentUserId = null;
         let modalCallback = null;
         let html5QrCodeScanner = null;
+
+        // FUNCIÓN CLAVE: Filtra y extrae estrictamente el GTIN (01) o (02) o EAN-13 puro de DataMatrix, GS1-128 o pistola Zebra
+        function limpiarYExtraerGTIN(rawText) {
+            if (!rawText) return '';
+            let limpio = String(rawText).trim();
+
+            // Limpieza de paréntesis en identificadores de aplicación GS1 ej: (01), (02)
+            limpio = limpio.replace(/\((01|02)\)/g, '$1');
+
+            // Si contiene el Application Identifier 01 o 02 al inicio (con o sin corchetes previos)
+            if (limpio.startsWith('01') && limpio.length >= 16) {
+                // GTIN-14 suele venir precedido de '01' y tener 14 dígitos (total 16 caracteres)
+                limpio = limpio.substring(2, 16);
+            } else if (limpio.startsWith('02') && limpio.length >= 16) {
+                limpio = limpio.substring(2, 16);
+            } else {
+                // Si es un EAN-13 o DataMatrix directo, limpiamos caracteres no numéricos si es necesario o conservamos el código de barras estándar
+                limpio = limpio.replace(/[^0-9]/g, '');
+                // Si excede 14 dígitos por otros FNC1 o sufijos de lectores Zebra, tomamos los primeros 13 o 14 dígitos estándar
+                if (limpio.length > 14) {
+                    // Buscar si tiene patrón 01 en medio
+                    const idx01 = limpio.indexOf('01');
+                    if (idx01 !== -1 && limpio.length >= idx01 + 16) {
+                        limpio = limpio.substring(idx01 + 2, idx01 + 16);
+                    } else {
+                        limpio = limpio.substring(0, 14);
+                    }
+                }
+            }
+            return limpio;
+        }
 
         setTimeout(() => {
             inicializarListenersTiempoReal();
@@ -665,19 +694,6 @@
             `).join('') || '<tr><td colspan="5" class="empty-state">Sin movimientos recientes</td></tr>';
         }
 
-        function limpiarCodigoEscaneado(rawText) {
-            let limpio = rawText.trim();
-            // Soporte GS1 Application Identifiers comunes (ej: eliminar prefijos como (01) o 01 en DataMatrix/GS1-128)
-            if (limpio.startsWith('01') && limpio.length >= 14) {
-                // Si viene con el ID de aplicación 01 y 14 dígitos, extraemos el GTIN
-                if (limpio.length >= 16 && (limpio.startsWith('(01)') || limpio.length === 16)) {
-                    limpio = limpio.replace(/\D/g, '');
-                    if(limpio.startsWith('01')) limpio = limpio.substring(2, 16);
-                }
-            }
-            return limpio;
-        }
-
         function cargarExcel(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -695,14 +711,15 @@
                         const json = XLSX.utils.sheet_to_json(workbook.Sheets[name], { defval: '' });
                         json.forEach((row, idx) => {
                             const keys = Object.keys(row);
-                            const codigo = row[keys.find(k => /COD|SKU|ID/i.test(k))] || `ITEM_${idx+1}`;
+                            const codigo = row[keys.find(k => /COD|SKU|INTERNO|ID/i.test(k))] || `ITEM_${idx+1}`;
                             const glosa = row[keys.find(k => /GLOSA|NOMBRE|DESC/i.test(k))] || 'Sin descripción';
                             
                             const gtin1Raw = row[keys.find(k => /GTIN\s*1|EAN\s*1|BARRA\s*1|GTIN/i.test(k))] || ('780' + Math.floor(1000000000 + Math.random()*9000000000));
                             const gtin2Raw = row[keys.find(k => /GTIN\s*2|EAN\s*2|BARRA\s*2|DATAMATRIX/i.test(k))] || '';
 
-                            const gtins = [limpiarCodigoEscaneado(String(gtin1Raw))];
-                            if(gtin2Raw) gtins.push(limpiarCodigoEscaneado(String(gtin2Raw)));
+                            const gtins = [limpiarYExtraerGTIN(String(gtin1Raw))];
+                            const limpio2 = limpiarYExtraerGTIN(String(gtin2Raw));
+                            if(limpio2) gtins.push(limpio2);
 
                             const tipoRaw = row[keys.find(k => /TIPO|JERARQUIA|ALMACENAMIENTO/i.test(k))] || 'Unidad Comercial';
                             const zonaRaw = row[keys.find(k => /ZONA/i.test(k))] || 'A';
@@ -744,7 +761,7 @@
 
                     guardarEstadoFirestore();
                     document.getElementById('fileInput').value = '';
-                    registrarHistorial('Carga masiva Excel', 'Múltiples ítems', `Procesados ${count} registros desde archivo.`);
+                    registrarHistorial('Carga masiva Excel', 'Múltiples ítems', `Procesados ${count} registros.`);
                     mostrarToast(`✅ Archivo cargado: ${count} registros procesados`);
                 } catch(err) {
                     alert('Error al leer el archivo Excel: ' + err.message);
@@ -810,19 +827,40 @@
             mostrarToast('🗑️ Registro eliminado');
         }
 
+        function limpiarCampoInput(idInput) {
+            const el = document.getElementById(idInput);
+            if(el) {
+                el.value = '';
+                el.focus();
+                mostrarToast('🧹 Campo borrado. Listo para nueva lectura.');
+            }
+        }
+
         function abrirModalAlmacenamiento() {
             const defaultGtin1 = '780' + Math.floor(1000000000 + Math.random()*9000000000);
-            mostrarModal('📥 Recepción y Almacenamiento (Hasta 2 GTIN / Códigos)', `
+            mostrarModal('📥 Recepción y Almacenamiento (Códigos GTIN/EAN)', `
                 <div style="margin-bottom:10px; background:#eef2ff; padding:8px; border-radius:8px; text-align:center; display:flex; gap:6px; justify-content:center; flex-wrap:wrap;">
                     <button class="btn btn-purple btn-sm" onclick="iniciarEscanerQR('almacenar')">📷 Escanear QR Ubicación</button>
-                    <button class="btn btn-success btn-sm" onclick="iniciarEscanerBarraGTIN(1)">🏷️ Escanear GTIN 1</button>
-                    <button class="btn btn-orange btn-sm" onclick="iniciarEscanerBarraGTIN(2)">🏷️ Escanear GTIN 2</button>
+                    <button class="btn btn-success btn-sm" onclick="iniciarEscanerBarraGTIN(1)">🏷️ Escanear Código 1 (Cámara)</button>
+                    <button class="btn btn-orange btn-sm" onclick="iniciarEscanerBarraGTIN(2)">🏷️ Escanear Código 2 (Cámara)</button>
                 </div>
                 <div id="qr-reader"></div>
                 <div class="form-grid">
-                    <div class="full-width"><label>Código del producto (SKU / Interno)</label><input id="mCod" placeholder="Ej: 01-001"></div>
-                    <div><label>GTIN / EAN-13 / DataMatrix (Código 1)</label><input id="mGtin1" value="${defaultGtin1}" placeholder="Principal"></div>
-                    <div><label>GTIN / EAN-13 / DataMatrix (Código 2 opcional)</label><input id="mGtin2" placeholder="Secundario / DataMatrix"></div>
+                    <div class="full-width"><label>Código Interno</label><input id="mCod" placeholder="Ej: 01-001"></div>
+                    <div>
+                        <label>Códigos GTIN/EAN (Código 1)</label>
+                        <div style="display:flex; gap:4px;">
+                            <input id="mGtin1" value="${defaultGtin1}" placeholder="Escanee con pistola o cámara" oninput="this.value=limpiarYExtraerGTIN(this.value)">
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin1')" title="Borrar dato">🗑️</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label>Códigos GTIN/EAN (Código 2 opcional)</label>
+                        <div style="display:flex; gap:4px;">
+                            <input id="mGtin2" placeholder="DataMatrix / Secundario" oninput="this.value=limpiarYExtraerGTIN(this.value)">
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin2')" title="Borrar dato">🗑️</button>
+                        </div>
+                    </div>
                     <div class="full-width"><label>Glosa / Descripción</label><input id="mGlosa" placeholder="Nombre del insumo o fármaco"></div>
                     <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">Fármacos</option><option value="Insumos">Insumos</option><option value="Economato">Economato</option><option value="Controlados">Fármacos Controlados</option><option value="Suturas">Suturas</option><option value="Alimentos">Alimentos</option></select></div>
                     <div><label>Jerarquía / Tipo</label><select id="mTipo"><option value="Unidad Comercial">Unidad Comercial</option><option value="Unidad Máster">Unidad Máster</option><option value="Unidad Mínima / Unidosis">Unidad Mínima / Unidosis</option></select></div>
@@ -834,8 +872,8 @@
             modalCallback = () => {
                 detenerEscanerQR();
                 const cod = document.getElementById('mCod').value.trim();
-                const gtin1 = limpiarCodigoEscaneado(document.getElementById('mGtin1').value.trim());
-                const gtin2 = limpiarCodigoEscaneado(document.getElementById('mGtin2').value.trim());
+                const gtin1 = limpiarYExtraerGTIN(document.getElementById('mGtin1').value.trim());
+                const gtin2 = limpiarYExtraerGTIN(document.getElementById('mGtin2').value.trim());
                 const glosa = document.getElementById('mGlosa').value.trim();
                 const bodega = document.getElementById('mBodega').value;
                 const tipo = document.getElementById('mTipo').value;
@@ -843,7 +881,7 @@
                 const anaquel = document.getElementById('mAnaquel').value.trim();
                 const posicion = document.getElementById('mPosicion').value.trim();
 
-                if(!cod || !gtin1 || !anaquel || !posicion) return alert('Completa los campos obligatorios (Código, GTIN 1, Anaquel y Posición)');
+                if(!cod || !gtin1 || !anaquel || !posicion) return alert('Completa los campos obligatorios (Código Interno, Código GTIN/EAN 1, Anaquel y Posición)');
 
                 const gtins = [gtin1];
                 if(gtin2) gtins.push(gtin2);
@@ -882,17 +920,29 @@
 
             const currentGtins = p.gtins || [];
 
-            mostrarModal('📍 Gestionar Códigos y Ubicaciones', `
-                <p style="font-size:0.8rem; margin-bottom:4px;"><strong>${p.glosa}</strong></p>
+            mostrarModal('📍 Gestionar Códigos GTIN/EAN y Ubicaciones', `
+                <p style="font-size:0.8rem; margin-bottom:4px;"><strong>${p.glosa}</strong> (Código Interno: ${p.codigo})</p>
                 <div style="margin-bottom:8px;">
-                    <label>Códigos GTIN / EAN / DataMatrix registrados:</label>
+                    <label>Códigos GTIN/EAN registrados:</label>
                     <div style="display:flex; gap:4px; flex-wrap:wrap; margin-top:2px;">
                         ${currentGtins.map(g => `<span class="gtin-tag">${g}</span>`).join('')}
                     </div>
                 </div>
                 <div class="form-grid" style="margin-bottom:8px;">
-                    <div><label>Añadir/Editar Código 1</label><input id="editGtin1" value="${currentGtins[0] || ''}"></div>
-                    <div><label>Añadir/Editar Código 2</label><input id="editGtin2" value="${currentGtins[1] || ''}"></div>
+                    <div>
+                        <label>Editar Código GTIN/EAN 1</label>
+                        <div style="display:flex; gap:4px;">
+                            <input id="editGtin1" value="${currentGtins[0] || ''}" oninput="this.value=limpiarYExtraerGTIN(this.value)">
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('editGtin1')">🗑️</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label>Editar Código GTIN/EAN 2</label>
+                        <div style="display:flex; gap:4px;">
+                            <input id="editGtin2" value="${currentGtins[1] || ''}" oninput="this.value=limpiarYExtraerGTIN(this.value)">
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('editGtin2')">🗑️</button>
+                        </div>
+                    </div>
                 </div>
                 <label>Jerarquía / Tipo</label>
                 <select id="editTipo" style="margin-bottom:8px;">
@@ -920,8 +970,8 @@
             document.getElementById('modalActionBtn').textContent = '💾 Actualizar y Guardar';
             document.getElementById('modalActionBtn').onclick = () => {
                 detenerEscanerQR();
-                const g1 = limpiarCodigoEscaneado(document.getElementById('editGtin1').value.trim());
-                const g2 = limpiarCodigoEscaneado(document.getElementById('editGtin2').value.trim());
+                const g1 = limpiarYExtraerGTIN(document.getElementById('editGtin1').value.trim());
+                const g2 = limpiarYExtraerGTIN(document.getElementById('editGtin2').value.trim());
                 const zona = document.getElementById('nuevaZona').value;
                 const anaquel = document.getElementById('nuevoAnaquel').value.trim();
                 const posicion = document.getElementById('nuevaPosicion').value.trim();
@@ -939,7 +989,7 @@
                     p.ubicaciones.push({ zona, anaquel, posicion });
                 }
 
-                registrarHistorial('Actualización de Producto', `${p.codigo}`, `Actualizados códigos GTIN y/o ubicación`);
+                registrarHistorial('Actualización de Producto', `${p.codigo}`, `Actualizados códigos GTIN/EAN y/o ubicación`);
                 guardarEstadoFirestore();
                 gestionarUbicacionesModal(p.id); 
                 mostrarToast('✅ Datos actualizados con éxito');
@@ -994,10 +1044,10 @@
                 { facingMode: "environment" },
                 { fps: 10, qrbox: { width: 260, height: 120 } },
                 (decodedText) => {
-                    const codigoLimpio = limpiarCodigoEscaneado(decodedText);
+                    const codigoPuro = limpiarYExtraerGTIN(decodedText);
                     const inputTarget = document.getElementById(campoGtinDestino === 1 ? 'mGtin1' : 'mGtin2');
-                    if(inputTarget) inputTarget.value = codigoLimpio;
-                    mostrarToast(`🏷️ Código GTIN ${campoGtinDestino} capturado: ` + codigoLimpio);
+                    if(inputTarget) inputTarget.value = codigoPuro;
+                    mostrarToast(`🏷️ GTIN/EAN ${campoGtinDestino} capturado: ` + codigoPuro);
                     detenerEscanerQR();
                 },
                 (errorMessage) => { }
@@ -1408,7 +1458,7 @@
             const prods = getProducts();
             if(prods.length === 0) return alert('No hay productos');
             const ws = XLSX.utils.json_to_sheet(prods.map(p => ({
-                'ID Registro': p.id, 'Código': p.codigo, 'GTIN 1': (p.gtins && p.gtins[0]) || '', 'GTIN 2': (p.gtins && p.gtins[1]) || '', 'Glosa': p.glosa, 'Bodega': p.bodega, 'Jerarquía': p.tipo || 'Unidad Comercial', 'Ubicaciones': JSON.stringify(p.ubicaciones || []), 'Estado': p.estado
+                'ID Registro': p.id, 'Código Interno': p.codigo, 'GTIN/EAN 1': (p.gtins && p.gtins[0]) || '', 'GTIN/EAN 2': (p.gtins && p.gtins[1]) || '', 'Glosa': p.glosa, 'Bodega': p.bodega, 'Jerarquía': p.tipo || 'Unidad Comercial', 'Ubicaciones': JSON.stringify(p.ubicaciones || []), 'Estado': p.estado
             })));
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
