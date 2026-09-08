@@ -32,10 +32,10 @@
         body { background:#f1f5f9; color:#1e293b; padding:8px; min-height:100vh; display:flex; align-items:flex-start; justify-content:center; }
         .app { max-width:1400px; margin:0 auto; background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow-lg); overflow:hidden; width:100%; }
 
-        /* LOGIN */
+        /* LOGIN CON BANNER AJUSTADO A BORDES */
         #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:16px; overflow-y:auto; }
         #loginModal .login-box { background:var(--white); padding:0 0 24px 0; border-radius:24px; max-width:420px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.3); text-align:center; position:relative; z-index:2001; margin:auto; overflow:hidden; }
-        #loginModal .login-box .hospital-logo img { width:100%; max-height:150px; object-fit:cover; display:block; border-top-left-radius:24px; border-top-right-radius:24px; margin-bottom:12px; background:#fff; }
+        #loginModal .login-box .hospital-logo img { width:100%; max-height:160px; object-fit:cover; display:block; border-top-left-radius:24px; border-top-right-radius:24px; margin-bottom:12px; background:#fff; margin-top: 0; }
         .login-content-pad { padding: 0 26px; }
         .divider { width:50px; height:3px; background:var(--primary); margin:6px auto 10px; border-radius:4px; }
         #loginModal h2 { margin-bottom:4px; font-size:1.05rem; color:#0f172a; }
@@ -365,7 +365,7 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- SCRIPT DE SINCRONIZACIÓN Y CREDENCIALES REALES -->
+    <!-- SCRIPT DE SINCRONIZACIÓN Y SESIÓN CORREGIDA -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyB_F7itx3L67gDQ2EBaZaMT401lZG2MxEk",
@@ -405,9 +405,7 @@
                 { id: 'Suturas', nombre: 'Bodega de Suturas', color: '#2563eb' },
                 { id: 'Alimentos', nombre: 'Bodega de Alimentos', color: '#ea580c' }
             ],
-            products: [
-                { id: '1', codigo: '01-001-216-026', gtins: ['7801234567890', '0107801234567890'], gtinEstados: {'7801234567890': 'activo', '0107801234567890': 'activo'}, glosa: 'METRONIDAZOL 500 MG/100 ML', bodega: 'Farmacos', tipo: 'Unidad Comercial', ubicaciones: [{ zona: 'G', anaquel: '2', posicion: 'A4' }], estado: 'Almacenado' }
-            ],
+            products: [],
             movements: [],
             layouts: {}
         };
@@ -452,6 +450,9 @@
                     dbFirestore.collection('wms_data').doc('main').set(DEFAULT_DATA);
                     appState = DEFAULT_DATA;
                 }
+                
+                // Revalidar sesión actual con los datos sincronizados
+                verificarSesionGuardada();
                 renderAll();
             }, (error) => {
                 console.error("Error en sincronización: ", error);
@@ -488,7 +489,6 @@
         function limpiarYExtraerGTIN(rawText) {
             if (!rawText) return '';
             let limpio = String(rawText).trim();
-
             limpio = limpio.replace(/\((01|02)\)/g, '$1');
 
             if (limpio.startsWith('01') && limpio.length >= 16) {
@@ -507,6 +507,18 @@
                 }
             }
             return limpio;
+        }
+
+        function verificarSesionGuardada() {
+            const savedUserName = localStorage.getItem('wms_session_user');
+            if (savedUserName && appState.users.length > 0) {
+                const user = appState.users.find(u => u.nombre.toLowerCase() === savedUserName.toLowerCase());
+                if (user) {
+                    currentUserId = user.id;
+                    document.getElementById('loginModal').style.display = 'none';
+                    document.getElementById('app').style.display = 'block';
+                }
+            }
         }
 
         setTimeout(() => {
@@ -541,19 +553,7 @@
                 });
             });
 
-            const savedUser = localStorage.getItem('wms_session_user');
-            if (savedUser) {
-                currentUserId = parseInt(savedUser);
-                document.getElementById('loginModal').style.display = 'none';
-                document.getElementById('app').style.display = 'block';
-                
-                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-                document.getElementById('tab-dashboard').classList.add('active');
-                document.querySelector('nav button[data-tab="dashboard"]').classList.add('active');
-
-                renderAll();
-            }
+            verificarSesionGuardada();
         }, 50);
 
         function handleLogin() {
@@ -563,7 +563,8 @@
             
             if (user) {
                 currentUserId = user.id;
-                localStorage.setItem('wms_session_user', user.id);
+                // Guardamos el NOMBRE de usuario y no un ID numérico para evitar conflictos
+                localStorage.setItem('wms_session_user', user.nombre);
                 document.getElementById('loginModal').style.display = 'none';
                 document.getElementById('app').style.display = 'block';
                 
