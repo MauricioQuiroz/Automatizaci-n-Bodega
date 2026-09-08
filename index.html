@@ -250,16 +250,16 @@
                     <input type="text" id="searchInventarioUnificado" placeholder="Buscar código interno, glosa o GTIN/EAN..." oninput="renderInventarioUnificado()">
                     <select class="filter-select" id="filterZona" onchange="renderInventarioUnificado()">
                         <option value="TODAS">🌐 Todas las Zonas</option>
-                        <option value="A">Zona A - Paletizado Rack Doble Altura</option>
-                        <option value="B">Zona B - Estantería Media Fijos</option>
-                        <option value="C">Zona C - Almacenamiento Masivo</option>
-                        <option value="D">Zona D - Farmacia de Alta Rotación</option>
-                        <option value="E">Zona E - Medicamentos Refrigerados</option>
-                        <option value="F">Zona F - Productos Termosensibles</option>
-                        <option value="G">Zona G - Insumos Clínicos Generales</option>
-                        <option value="H">Zona H - Material Quirúrgico y Suturas</option>
-                        <option value="I">Zona I - Zona de Cuarentena y Controlados</option>
-                        <option value="J">Zona J - Economato y Aseo</option>
+                        <option value="A">Zona A</option>
+                        <option value="B">Zona B</option>
+                        <option value="C">Zona C</option>
+                        <option value="D">Zona D</option>
+                        <option value="E">Zona E</option>
+                        <option value="F">Zona F</option>
+                        <option value="G">Zona G</option>
+                        <option value="H">Zona H</option>
+                        <option value="I">Zona I</option>
+                        <option value="J">Zona J</option>
                     </select>
                 </div>
             </div>
@@ -427,6 +427,14 @@
             operario: ['lectura', 'escritura'],
             invitado: ['lectura']
         };
+
+        function determinarJerarquiaPorZona(zonaStr) {
+            const z = String(zonaStr || '').trim().toUpperCase();
+            if(['A', 'B', 'C', 'D', 'E', 'I'].includes(z)) {
+                return 'Unidad Máster';
+            }
+            return 'Unidad Comercial';
+        }
 
         function inicializarListenersTiempoReal() {
             dbFirestore.collection('wms_data').doc('main').onSnapshot((doc) => {
@@ -743,7 +751,6 @@
                             const codigo = String(row[keys.find(k => /COD|SKU|INTERNO|ID/i.test(k))] || `ITEM_${idx+1}`).trim();
                             const glosa = String(row[keys.find(k => /GLOSA|NOMBRE|DESC/i.test(k))] || 'Sin descripción').trim();
                             
-                            // Lectura flexible de GTIN 1 y GTIN 2 (si están vacíos, se admiten sin GTIN)
                             const gtin1Raw = row[keys.find(k => /GTIN\s*1|EAN\s*1|BARRA\s*1|^GTIN$/i.test(k))] || '';
                             const gtin2Raw = row[keys.find(k => /GTIN\s*2|EAN\s*2|BARRA\s*2|DATAMATRIX/i.test(k))] || '';
 
@@ -757,7 +764,6 @@
                             let gtinEstados = {};
                             gtins.forEach(g => { gtinEstados[g] = 'activo'; });
 
-                            // Programas y alertas
                             const catText = String(row[keys.find(k => /CATEGORIA|PROGRAMA|TIPO_PROGRAMA|NORMATIVA/i.test(k))] || '').toUpperCase();
                             const isFrio = catText.includes('FRIO') || /SI|1/i.test(String(row[keys.find(k => /FRIO/i.test(k))] || ''));
                             const isDac = catText.includes('DAC') || /SI|1/i.test(String(row[keys.find(k => /^DAC$|ALTO_COSTO/i.test(k))] || ''));
@@ -765,13 +771,6 @@
                             const isPm = catText.includes('PM') || catText.includes('MINISTERIAL') || /SI|1/i.test(String(row[keys.find(k => /PM|MINISTERIAL/i.test(k))] || ''));
                             const programas = { frio: isFrio, dac: isDac, lrs: isLrs, pm: isPm };
 
-                            // Jerarquía / Tipo
-                            const tipoRaw = String(row[keys.find(k => /TIPO|JERARQUIA|ALMACENAMIENTO/i.test(k))] || 'Unidad Comercial').trim();
-                            let tipo = 'Unidad Comercial';
-                            if(/master|caja/i.test(tipoRaw)) tipo = 'Unidad Máster';
-                            else if(/minima|unidosis/i.test(tipoRaw)) tipo = 'Unidad Mínima / Unidosis';
-
-                            // UBICACIÓN (Soporta columnas separadas Zona, Tipo/Anaquel, Posición o agrupadas en UBICACION)
                             let zona = 'SIN ASIGNACIÓN';
                             let anaquel = '1';
                             let posicion = 'A1';
@@ -800,7 +799,10 @@
                                 }
                             }
 
-                            // Bodega
+                            // Jerarquía por defecto según zona (A, B, C, D, E, I -> Unidad Máster)
+                            const tipoRaw = String(row[keys.find(k => /TIPO|JERARQUIA|ALMACENAMIENTO/i.test(k))] || '').trim();
+                            let tipo = tipoRaw ? ( /master|caja/i.test(tipoRaw) ? 'Unidad Máster' : (/minima|unidosis/i.test(tipoRaw) ? 'Unidad Mínima / Unidosis' : 'Unidad Comercial') ) : determinarJerarquiaPorZona(zona);
+
                             const bodegaRaw = row[keys.find(k => /^BODEGA$/i.test(k))];
                             let bodega = currentWarehouse === 'TODAS' ? 'Farmacos' : currentWarehouse;
                             if(bodegaRaw && String(bodegaRaw).trim() !== '') {
@@ -813,7 +815,6 @@
                                 else if(bTxt.includes('farmac')) bodega = 'Farmacos';
                             }
 
-                            // Buscar coincidencia por GTIN o por Código Interno si no tiene GTIN
                             const existing = appState.products.find(p => {
                                 if (gtins.length > 0 && p.gtins && p.gtins.some(g => gtins.includes(g))) return true;
                                 return p.codigo.toLowerCase() === codigo.toLowerCase();
@@ -1064,7 +1065,7 @@
                         </div>
                     </div>
 
-                    <div><label>Zona</label><select id="mZona"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
+                    <div><label>Zona</label><select id="mZona" onchange="actualizarJerarquiaPorZonaForm(this.value)"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
                     <div><label>Nº de Anaquel / Rack</label><input id="mAnaquel" value="1" placeholder="Ej: 1"></div>
                     <div class="full-width"><label>Posición</label><input id="mPosicion" value="A1" placeholder="Ej: A1"></div>
                 </div>
@@ -1129,6 +1130,13 @@
                 cerrarModal();
                 mostrarToast('Producto almacenado con éxito');
             };
+        }
+
+        function actualizarJerarquiaPorZonaForm(zonaVal) {
+            const tipoSel = document.getElementById('mTipo') || document.getElementById('editTipo');
+            if(tipoSel) {
+                tipoSel.value = determinarJerarquiaPorZona(zonaVal);
+            }
         }
 
         function verificarAlertaEscaneoManual(glosaText) {
@@ -1238,7 +1246,7 @@
                     <button class="btn btn-purple btn-xs" onclick="iniciarEscanerQR('agregarUbicacion')">📷 Escanear QR para Ubicación</button>
                 </div>
                 <div class="form-grid">
-                    <div><label>Zona</label><select id="nuevaZona"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
+                    <div><label>Zona</label><select id="nuevaZona" onchange="actualizarJerarquiaPorZonaForm(this.value)"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
                     <div><label>Nº Anaquel</label><input id="nuevoAnaquel" value="1" placeholder="Ej: 1"></div>
                     <div class="full-width"><label>Posición</label><input id="nuevaPosicion" value="A1" placeholder="Ej: A1"></div>
                 </div>
@@ -1316,7 +1324,7 @@
                 { facingMode: "environment" },
                 { fps: 10, qrbox: { width: 250, height: 150 } },
                 (decodedText) => {
-                    procesarTextoQR(decodedText);
+                    procesarTextoQR(decodedText, modo);
                     detenerEscanerQR();
                 },
                 (errorMessage) => { }
@@ -1367,49 +1375,52 @@
             if(readerDiv) readerDiv.style.display = 'none';
         }
 
-        function procesarTextoQR(texto) {
+        function procesarTextoQR(texto, modo) {
+            let zonaVal = 'A';
+            let anaqVal = '1';
+            let posVal = 'A1';
+            let tipoVal = '';
+
             try {
                 const parsed = JSON.parse(texto);
-                if(parsed.zona) {
-                    const el = document.getElementById('mZona') || document.getElementById('nuevaZona');
-                    if(el) el.value = parsed.zona;
-                }
-                if(parsed.tipo) {
-                    const el = document.getElementById('mTipo') || document.getElementById('editTipo');
-                    if(el) el.value = parsed.tipo;
-                }
-                if(parsed.anaquel) {
-                    const el = document.getElementById('mAnaquel') || document.getElementById('nuevoAnaquel');
-                    if(el) el.value = parsed.anaquel;
-                }
-                if(parsed.posicion) {
-                    const el = document.getElementById('mPosicion') || document.getElementById('nuevaPosicion');
-                    if(el) el.value = parsed.posicion;
-                }
-                mostrarToast('📍 Ubicación asignada por QR con éxito');
-                return;
-            } catch(e) {}
+                if(parsed.zona) zonaVal = parsed.zona;
+                if(parsed.tipo) tipoVal = parsed.tipo;
+                if(parsed.anaquel) anaqVal = parsed.anaquel;
+                if(parsed.posicion) posVal = parsed.posicion;
+            } catch(e) {
+                const matchZona = texto.match(/zona\s*([a-j])/i) || texto.match(/z([a-j])/i);
+                if(matchZona) zonaVal = matchZona[1].toUpperCase();
 
-            const matchZona = texto.match(/zona\s*([a-j])/i) || texto.match(/z([a-j])/i);
-            if(matchZona) {
-                const zonaVal = matchZona[1].toUpperCase();
-                const selZona = document.getElementById('mZona') || document.getElementById('nuevaZona');
-                if(selZona) selZona.value = zonaVal;
+                const matchAnaq = texto.match(/anaquel\s*(\d+)/i) || texto.match(/rack\s*(\d+)/i);
+                if(matchAnaq) anaqVal = matchAnaq[1];
+
+                const matchPos = texto.match(/pos[i|c][i|o]n\s*([a-z0-9]+)/i);
+                if(matchPos) posVal = matchPos[1].toUpperCase();
             }
 
-            const matchAnaq = texto.match(/anaquel\s*(\d+)/i) || texto.match(/rack\s*(\d+)/i);
-            if(matchAnaq) {
-                const inputAnaq = document.getElementById('mAnaquel') || document.getElementById('nuevoAnaquel');
-                if(inputAnaq) inputAnaq.value = matchAnaq[1];
-            }
+            const selZona = document.getElementById('mZona') || document.getElementById('nuevaZona');
+            const inputAnaq = document.getElementById('mAnaquel') || document.getElementById('nuevoAnaquel');
+            const inputPos = document.getElementById('mPosicion') || document.getElementById('nuevaPosicion');
+            const selTipo = document.getElementById('mTipo') || document.getElementById('editTipo');
 
-            const matchPos = texto.match(/pos[i|c][i|o]n\s*([a-z0-9]+)/i);
-            if(matchPos) {
-                const inputPos = document.getElementById('mPosicion') || document.getElementById('nuevoPosicion');
-                if(inputPos) inputPos.value = matchPos[1].toUpperCase();
+            if(selZona) {
+                selZona.value = zonaVal;
+                actualizarJerarquiaPorZonaForm(zonaVal);
             }
+            if(inputAnaq) inputAnaq.value = anaqVal;
+            if(inputPos) inputPos.value = posVal;
+            if(tipoVal && selTipo) selTipo.value = tipoVal;
 
-            mostrarToast('📍 QR de ubicación leído correctamente');
+            mostrarToast(`📍 QR leído: Zona ${zonaVal}, Anaquel ${anaqVal}, Pos. ${posVal}`);
+
+            // Si estamos en el modo de gestión, aplicamos y guardamos la asignación de inmediato
+            if(modo === 'agregarUbicacion' && typeof modalCallback === 'function') {
+                setTimeout(() => {
+                    if(document.getElementById('modalActionBtn')) {
+                        document.getElementById('modalActionBtn').click();
+                    }
+                }, 300);
+            }
         }
 
         function subirImagenLayout(event) {
