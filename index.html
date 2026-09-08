@@ -10,6 +10,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.2/umd/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.1/umd/index.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
             --primary: #4f46e5;
@@ -364,9 +367,31 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- SCRIPT PRINCIPAL OPTIMIZADO -->
+    <!-- SCRIPT DE SINCRONIZACIÓN EN TIEMPO REAL CON FIREBASE FIRESTORE -->
     <script>
-        const STORAGE_KEY = 'wms_hsjd_full_data_v17';
+        // Configuración de Firebase (Sustituye con los datos de tu proyecto wms-hsjd)
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY_NUEVA_RESTRINGIDA",
+            authDomain: "wms-hsjd.firebaseapp.com",
+            projectId: "wms-hsjd",
+            storageBucket: "wms-hsjd.appspot.com",
+            messagingSenderId: "TU_MESSAGING_SENDER_ID",
+            appId: "TU_APP_ID"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const dbFirestore = firebase.firestore();
+
+        // Estado en memoria sincronizado en tiempo real
+        let appState = {
+            users: [],
+            warehouses: [],
+            products: [],
+            movements: [],
+            layouts: {}
+        };
 
         const DEFAULT_DATA = {
             users: [
@@ -397,33 +422,42 @@
             invitado: ['lectura']
         };
 
+        // Sincronización en tiempo real escuchando Firestore (Colección "wms_data", documento "main")
+        function inicializarListenersTiempoReal() {
+            dbFirestore.collection('wms_data').doc('main').onSnapshot((doc) => {
+                if (doc.exists) {
+                    appState = doc.data();
+                } else {
+                    // Si no existe, inicializamos con los valores por defecto en Firestore
+                    dbFirestore.collection('wms_data').doc('main').set(DEFAULT_DATA);
+                    appState = DEFAULT_DATA;
+                }
+                renderAll();
+            }, (error) => {
+                console.error("Error en sincronización en tiempo real: ", error);
+            });
+        }
+
+        function guardarEstadoFirestore() {
+            dbFirestore.collection('wms_data').doc('main').set(appState).catch((error) => {
+                console.error("Error al guardar en Firestore: ", error);
+            });
+        }
+
         function registrarHistorial(tipoMod, codigoItem, detalle) {
-            const db = getDB();
             const usr = getCurrentUser();
             const ahora = new Date();
             const fechaStr = ahora.toLocaleDateString() + ' ' + ahora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             
-            db.movements.push({
+            if(!appState.movements) appState.movements = [];
+            appState.movements.push({
                 fecha: fechaStr,
                 usuario: usr ? `${usr.nombre} (${usr.perfil})` : 'Sistema',
                 tipo: tipoMod,
                 codigo: codigoItem,
                 detalle: detalle
             });
-            saveDB(db);
-        }
-
-        function getDB() {
-            const data = localStorage.getItem(STORAGE_KEY);
-            if (!data) {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DATA));
-                return DEFAULT_DATA;
-            }
-            try { return JSON.parse(data); } catch(e) { return DEFAULT_DATA; }
-        }
-
-        function saveDB(db) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+            guardarEstadoFirestore();
         }
 
         let currentWarehouse = 'TODAS';
@@ -432,6 +466,8 @@
         let html5QrCodeScanner = null;
 
         setTimeout(() => {
+            inicializarListenersTiempoReal();
+
             document.querySelectorAll('nav button').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -473,8 +509,7 @@
         function handleLogin() {
             const u = document.getElementById('loginUser').value.trim();
             const p = document.getElementById('loginPass').value.trim();
-            const db = getDB();
-            const user = db.users.find(x => x.nombre.toLowerCase() === u.toLowerCase() && x.password === p);
+            const user = appState.users.find(x => x.nombre.toLowerCase() === u.toLowerCase() && x.password === p);
             
             if (user) {
                 currentUserId = user.id;
@@ -502,12 +537,11 @@
                 const nPass = document.getElementById('recPass').value.trim();
                 if(!uName || !nPass) return alert('Completa todos los campos');
 
-                const db = getDB();
-                const usr = db.users.find(x => x.nombre.toLowerCase() === uName.toLowerCase());
+                const usr = appState.users.find(x => x.nombre.toLowerCase() === uName.toLowerCase());
                 if(!usr) return alert('No se encontró un usuario con ese nombre.');
 
                 usr.password = nPass;
-                saveDB(db);
+                guardarEstadoFirestore();
                 cerrarModal();
                 registrarHistorial('Cambio de Contraseña', usr.nombre, 'Restablecimiento de contraseña de acceso');
                 mostrarToast('✅ Contraseña actualizada con éxito.');
@@ -522,8 +556,7 @@
         }
 
         function getCurrentUser() {
-            const db = getDB();
-            return db.users.find(u => u.id === currentUserId) || null;
+            return appState.users.find(u => u.id === currentUserId) || null;
         }
 
         function mostrarToast(msg) {
@@ -536,7 +569,6 @@
         }
 
         function renderAll() {
-            const db = getDB();
             const user = getCurrentUser();
             if (user) {
                 document.getElementById('currentUserDisplay').textContent = '👤 ' + user.nombre + ' (' + user.perfil + ')';
@@ -545,7 +577,7 @@
 
             const sel = document.getElementById('warehouseSelect');
             sel.innerHTML = '<option value="TODAS">🏢 Todas</option>';
-            db.warehouses.forEach(w => {
+            appState.warehouses.forEach(w => {
                 sel.innerHTML += `<option value="${w.id}">${w.nombre}</option>`;
             });
             sel.value = currentWarehouse;
@@ -589,9 +621,8 @@
         }
 
         function getProducts() {
-            const db = getDB();
-            if (currentWarehouse === 'TODAS') return db.products;
-            return db.products.filter(p => p.bodega === currentWarehouse);
+            if (currentWarehouse === 'TODAS') return appState.products || [];
+            return (appState.products || []).filter(p => p.bodega === currentWarehouse);
         }
 
         function cambiarBodega() {
@@ -601,7 +632,6 @@
 
         function renderDashboard() {
             const prods = getProducts();
-            const db = getDB();
             document.getElementById('totalProductos').textContent = prods.length;
             
             const ubics = new Set();
@@ -611,11 +641,11 @@
                 }
             });
             document.getElementById('totalUbicaciones').textContent = ubics.size;
-            document.getElementById('totalMovimientos').textContent = db.movements.length;
-            document.getElementById('totalUsuarios').textContent = db.users.length;
+            document.getElementById('totalMovimientos').textContent = (appState.movements || []).length;
+            document.getElementById('totalUsuarios').textContent = (appState.users || []).length;
 
             const tbody = document.getElementById('ultimosMovimientos');
-            tbody.innerHTML = db.movements.slice(-5).reverse().map(m => `
+            tbody.innerHTML = (appState.movements || []).slice(-5).reverse().map(m => `
                 <tr><td>${m.fecha}</td><td><strong>${m.usuario}</strong></td><td><span class="badge" style="background:#e0e7ff; color:#3730a3;">${m.tipo}</span></td><td>${m.codigo}</td><td>${m.detalle}</td></tr>
             `).join('') || '<tr><td colspan="5" class="empty-state">Sin movimientos recientes</td></tr>';
         }
@@ -629,8 +659,9 @@
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
-                    const db = getDB();
                     let count = 0;
+
+                    if(!appState.products) appState.products = [];
 
                     workbook.SheetNames.forEach(name => {
                         const json = XLSX.utils.sheet_to_json(workbook.Sheets[name], { defval: '' });
@@ -652,7 +683,7 @@
                             const anaquel = String(anaquelRaw).replace(/anaquel/gi, '').trim() || '1';
                             const posicion = String(posicionRaw).trim();
 
-                            const existing = db.products.find(p => p.gtin === gtin);
+                            const existing = appState.products.find(p => p.gtin === gtin);
                             if (existing) {
                                 existing.codigo = String(codigo).trim();
                                 existing.glosa = String(glosa);
@@ -661,7 +692,7 @@
                                 existing.ubicaciones.push({ zona, anaquel, posicion });
                             } else {
                                 const newId = '_' + Math.random().toString(36).substr(2, 9);
-                                db.products.push({
+                                appState.products.push({
                                     id: newId,
                                     codigo: String(codigo).trim(),
                                     gtin: gtin,
@@ -676,8 +707,7 @@
                         });
                     });
 
-                    saveDB(db);
-                    renderAll();
+                    guardarEstadoFirestore();
                     document.getElementById('fileInput').value = '';
                     registrarHistorial('Carga masiva Excel', 'Múltiples ítems', `Procesados ${count} registros desde archivo.`);
                     mostrarToast(`✅ Archivo cargado: ${count} registros procesados`);
@@ -736,12 +766,10 @@
 
         function eliminarProducto(id) {
             if(!confirm('¿Estás seguro de eliminar este registro del inventario?')) return;
-            const db = getDB();
-            const p = db.products.find(x => x.id === id);
-            db.products = db.products.filter(item => item.id !== id);
-            saveDB(db);
+            const p = appState.products.find(x => x.id === id);
+            appState.products = appState.products.filter(item => item.id !== id);
+            guardarEstadoFirestore();
             if(p) registrarHistorial('Eliminación de producto', p.codigo, `Eliminado ítem con GTIN ${p.gtin}`);
-            renderAll();
             mostrarToast('🗑️ Registro eliminado');
         }
 
@@ -776,29 +804,27 @@
 
                 if(!cod || !gtin || !anaquel || !posicion) return alert('Completa los campos obligatorios');
 
-                const db = getDB();
-                const existing = db.products.find(p => p.gtin === gtin);
+                if(!appState.products) appState.products = [];
+                const existing = appState.products.find(p => p.gtin === gtin);
                 if (existing) {
                     if(!existing.ubicaciones) existing.ubicaciones = [];
                     existing.ubicaciones.push({ zona, anaquel, posicion });
                     existing.tipo = tipo;
                 } else {
                     const newId = '_' + Math.random().toString(36).substr(2, 9);
-                    db.products.push({
+                    appState.products.push({
                         id: newId, codigo: cod, gtin: gtin, glosa: glosa || cod, bodega: bodega, tipo: tipo, ubicaciones: [{ zona, anaquel, posicion }], estado: 'Almacenado'
                     });
                 }
                 registrarHistorial('Recepción y Almacenamiento', `${cod} (GTIN: ${gtin})`, `Asignado a [${tipo}] Zona ${zona}, Anaquel ${anaquel}, Pos. ${posicion}`);
-                saveDB(db);
-                renderAll();
+                guardarEstadoFirestore();
                 cerrarModal();
                 mostrarToast('Producto almacenado con éxito');
             };
         }
 
         function gestionarUbicacionesModal(id) {
-            const db = getDB();
-            const p = db.products.find(x => x.id === id);
+            const p = appState.products.find(x => x.id === id);
             if(!p) return;
 
             let listHtml = (p.ubicaciones || []).map((u, index) => `
@@ -848,22 +874,19 @@
                 p.ubicaciones.push({ zona, anaquel, posicion });
 
                 registrarHistorial('Reubicación / Adición de Ubicación', `${p.codigo} (GTIN: ${p.gtin})`, `Nueva ubicación añadida: [${nuevoTipo}] Zona ${zona}, Anaquel ${anaquel}, Pos. ${posicion}`);
-                saveDB(db);
+                guardarEstadoFirestore();
                 gestionarUbicacionesModal(p.id); 
-                renderAll();
                 mostrarToast('✅ Ubicación agregada con éxito');
             };
         }
 
         function removerUbicacionDeProducto(prodId, index) {
-            const db = getDB();
-            const p = db.products.find(x => x.id === prodId);
+            const p = appState.products.find(x => x.id === prodId);
             if(p && p.ubicaciones) {
                 const removida = p.ubicaciones.splice(index, 1)[0];
-                saveDB(db);
+                guardarEstadoFirestore();
                 registrarHistorial('Retiro de Ubicación', `${p.codigo} (GTIN: ${p.gtin})`, `Removida Zona ${removida.zona}, Anaquel ${removida.anaquel}, Pos. ${removida.posicion}`);
                 gestionarUbicacionesModal(prodId);
-                renderAll();
                 mostrarToast('🗑️ Ubicación eliminada');
             }
         }
@@ -968,10 +991,9 @@
             const targetBodega = document.getElementById('configSubirBodegaSelect').value;
             const reader = new FileReader();
             reader.onload = function(e) {
-                const db = getDB();
-                if(!db.layouts) db.layouts = {};
-                db.layouts[targetBodega] = e.target.result;
-                saveDB(db);
+                if(!appState.layouts) appState.layouts = {};
+                appState.layouts[targetBodega] = e.target.result;
+                guardarEstadoFirestore();
                 cargarImagenLayout(currentWarehouse);
                 mostrarToast(`✅ Imagen de plano actualizada (${targetBodega})`);
             };
@@ -980,8 +1002,7 @@
 
         function cargarImagenLayout(bodegaId) {
             const container = document.getElementById('layoutImageContent');
-            const db = getDB();
-            const imgData = (db.layouts && db.layouts[bodegaId]) ? db.layouts[bodegaId] : (db.layouts && db.layouts['GENERAL'] ? db.layouts['GENERAL'] : null);
+            const imgData = (appState.layouts && appState.layouts[bodegaId]) ? appState.layouts[bodegaId] : (appState.layouts && appState.layouts['GENERAL'] ? appState.layouts['GENERAL'] : null);
 
             if (imgData) {
                 container.innerHTML = `<img src="${imgData}" alt="Layout">`;
@@ -991,7 +1012,6 @@
         }
 
         function generarQRUbicaciones() {
-            const db = getDB();
             const prods = getProducts();
             const ubicsMap = new Map();
             
@@ -1069,12 +1089,11 @@
         }
 
         function renderUsuarios() {
-            const db = getDB();
             const tbody = document.getElementById('usuariosBody');
             const user = getCurrentUser();
             const isAdmin = user && user.perfil === 'admin';
 
-            tbody.innerHTML = db.users.map(u => `
+            tbody.innerHTML = (appState.users || []).map(u => `
                 <tr>
                     <td>${u.id}</td>
                     <td>${u.nombre}</td>
@@ -1112,22 +1131,20 @@
                 if(!nombre || !pass) return alert('Completa los campos obligatorios');
                 if(permisos.length === 0) return alert('Selecciona al menos un permiso');
 
-                const db = getDB();
-                if(db.users.some(x => x.nombre.toLowerCase() === nombre.toLowerCase())) return alert('Ya existe un usuario con ese nombre.');
+                if(!appState.users) appState.users = [];
+                if(appState.users.some(x => x.nombre.toLowerCase() === nombre.toLowerCase())) return alert('Ya existe un usuario con ese nombre.');
 
-                const newId = db.users.length > 0 ? Math.max(...db.users.map(x=>x.id))+1 : 1;
-                db.users.push({ id: newId, nombre, password: pass, perfil, permisos });
-                saveDB(db);
+                const newId = appState.users.length > 0 ? Math.max(...appState.users.map(x=>x.id))+1 : 1;
+                appState.users.push({ id: newId, nombre, password: pass, perfil, permisos });
+                guardarEstadoFirestore();
                 registrarHistorial('Creación de Usuario', nombre, `Creado usuario perfil ${perfil}`);
-                renderAll();
                 cerrarModal();
                 mostrarToast('Usuario creado con éxito');
             };
         }
 
         function editarUsuarioModal(id) {
-            const db = getDB();
-            const u = db.users.find(x => x.id === id);
+            const u = appState.users.find(x => x.id === id);
             if(!u) return;
 
             mostrarModal('✏️ Editar Usuario / Perfil', `
@@ -1159,8 +1176,7 @@
                 u.permisos = permisos;
 
                 registrarHistorial('Edición de Usuario', nombre, `Actualizado perfil a ${perfil}`);
-                saveDB(db);
-                renderAll();
+                guardarEstadoFirestore();
                 cerrarModal();
                 mostrarToast('✅ Perfil de usuario actualizado');
             };
@@ -1191,22 +1207,19 @@
 
         function eliminarUsuario(id) {
             if(!confirm('¿Estás seguro de eliminar este usuario?')) return;
-            const db = getDB();
-            const u = db.users.find(x => x.id === id);
-            db.users = db.users.filter(usr => usr.id !== id);
-            saveDB(db);
+            const u = appState.users.find(x => x.id === id);
+            appState.users = appState.users.filter(usr => usr.id !== id);
+            guardarEstadoFirestore();
             if(u) registrarHistorial('Eliminación de Usuario', u.nombre, 'Usuario eliminado del sistema');
-            renderAll();
             mostrarToast('🗑️ Usuario eliminado');
         }
 
         function renderBodegas() {
-            const db = getDB();
             const tbody = document.getElementById('bodegasBody');
             const user = getCurrentUser();
             const isAdmin = user && user.perfil === 'admin';
 
-            tbody.innerHTML = db.warehouses.map(w => `
+            tbody.innerHTML = (appState.warehouses || []).map(w => `
                 <tr>
                     <td><strong>${w.id}</strong></td>
                     <td>${w.nombre}</td>
@@ -1233,20 +1246,18 @@
                 const color = document.getElementById('bColor').value;
                 if(!id || !nombre) return alert('Completa los campos');
 
-                const db = getDB();
-                if(db.warehouses.some(w => w.id === id)) return alert('Ya existe esa bodega');
-                db.warehouses.push({ id, nombre, color });
-                saveDB(db);
+                if(!appState.warehouses) appState.warehouses = [];
+                if(appState.warehouses.some(w => w.id === id)) return alert('Ya existe esa bodega');
+                appState.warehouses.push({ id, nombre, color });
+                guardarEstadoFirestore();
                 registrarHistorial('Creación de Bodega', id, `Creada bodega ${nombre}`);
-                renderAll();
                 cerrarModal();
                 mostrarToast('Bodega creada');
             };
         }
 
         function editarBodegaModal(id) {
-            const db = getDB();
-            const w = db.warehouses.find(x => x.id === id);
+            const w = appState.warehouses.find(x => x.id === id);
             if(!w) return;
 
             mostrarModal('✏️ Editar Bodega', `
@@ -1262,9 +1273,8 @@
 
                 w.nombre = nombre;
                 w.color = color;
-                saveDB(db);
+                guardarEstadoFirestore();
                 registrarHistorial('Edición de Bodega', w.id, `Actualizada bodega ${nombre}`);
-                renderAll();
                 cerrarModal();
                 mostrarToast('✅ Bodega actualizada');
             };
@@ -1272,47 +1282,41 @@
 
         function eliminarBodega(id) {
             if(!confirm('¿Eliminar bodega?')) return;
-            const db = getDB();
-            db.warehouses = db.warehouses.filter(w => w.id !== id);
-            saveDB(db);
+            appState.warehouses = appState.warehouses.filter(w => w.id !== id);
+            guardarEstadoFirestore();
             registrarHistorial('Eliminación de Bodega', id, 'Bodega eliminada del sistema');
-            renderAll();
         }
 
         function renderConfig() {
-            const db = getDB();
             const selSubir = document.getElementById('configSubirBodegaSelect');
             selSubir.innerHTML = '<option value="GENERAL">🌐 General (Todas las bodegas)</option>';
-            db.warehouses.forEach(w => {
+            (appState.warehouses || []).forEach(w => {
                 selSubir.innerHTML += `<option value="${w.id}">🏢 ${w.nombre}</option>`;
             });
 
             const selReset = document.getElementById('configResetBodegaSelect');
             selReset.innerHTML = '';
-            db.warehouses.forEach(w => {
+            (appState.warehouses || []).forEach(w => {
                 selReset.innerHTML += `<option value="${w.id}">🏢 ${w.nombre}</option>`;
             });
         }
 
         function resetDataBodega() {
             const selBodega = document.getElementById('configResetBodegaSelect').value;
-            const db = getDB();
-            const wh = db.warehouses.find(w => w.id === selBodega);
+            const wh = (appState.warehouses || []).find(w => w.id === selBodega);
             const nombreBodega = wh ? wh.nombre : selBodega;
 
             if(!confirm(`¿Estás seguro de eliminar todo el inventario de la bodega "${nombreBodega}"?`)) return;
 
-            db.products = db.products.filter(p => p.bodega !== selBodega);
-            saveDB(db);
+            appState.products = (appState.products || []).filter(p => p.bodega !== selBodega);
+            guardarEstadoFirestore();
             registrarHistorial('Reinicio de Bodega', selBodega, `Eliminados registros de inventario de ${nombreBodega}`);
-            renderAll();
             mostrarToast(`🗑️ Inventario de ${nombreBodega} reiniciado con éxito.`);
         }
 
         function renderHistorialCompleto() {
-            const db = getDB();
             const tbody = document.getElementById('historialCompletoBody');
-            tbody.innerHTML = db.movements.slice().reverse().map(m => `
+            tbody.innerHTML = (appState.movements || []).slice().reverse().map(m => `
                 <tr>
                     <td>${m.fecha}</td>
                     <td><strong>${m.usuario}</strong></td>
@@ -1333,12 +1337,11 @@
             XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
             XLSX.writeFile(wb, 'inventario_bodega.xlsx');
             registrarHistorial('Exportación Excel', 'Inventario Completo', 'Exportados registros a Excel');
-            renderAll();
             mostrarToast('✅ Excel exportado');
         }
 
         function exportarDatos() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(localStorage.getItem(STORAGE_KEY));
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState));
             const dl = document.createElement('a');
             dl.setAttribute("href", dataStr);
             dl.setAttribute("download", "wms_backup.json");
@@ -1347,7 +1350,8 @@
 
         function resetDataGeneral() {
             if(confirm('⚠️ ¿Estás completamente seguro de reiniciar TODO EL SISTEMA? Se perderán todos los datos, usuarios personalizados y productos.')) {
-                localStorage.removeItem(STORAGE_KEY);
+                appState = DEFAULT_DATA;
+                guardarEstadoFirestore();
                 location.reload();
             }
         }
