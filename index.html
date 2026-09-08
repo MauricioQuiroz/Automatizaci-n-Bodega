@@ -30,19 +30,19 @@
         .app { max-width:1400px; margin:0 auto; background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow-lg); overflow:hidden; width:100%; }
 
         /* LOGIN */
-        #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:16px; }
-        #loginModal .login-box { background:var(--white); padding:28px 30px; border-radius:24px; max-width:420px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.3); text-align:center; position:relative; z-index:2001; }
-        #loginModal .login-box .hospital-logo img { max-width:180px; height:auto; border-radius:8px; background:var(--white); padding:4px; box-shadow:0 2px 8px rgba(0,0,0,0.08); object-fit:contain; margin-bottom:10px; }
+        #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:16px; overflow-y:auto; }
+        #loginModal .login-box { background:var(--white); padding:24px 26px; border-radius:24px; max-width:420px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.3); text-align:center; position:relative; z-index:2001; margin:auto; }
+        #loginModal .login-box .hospital-logo img { width:100%; max-height:110px; border-radius:10px; object-fit:contain; margin-bottom:12px; background:#fff; }
         #loginModal .login-box .hospital-name { font-size:0.95rem; font-weight:700; color:#0f172a; }
         #loginModal .login-box .hospital-sub { font-size:0.75rem; color:#64748b; margin-bottom:10px; font-weight:500; }
-        #loginModal .divider { width:50px; height:3px; background:var(--primary); margin:8px auto 14px; border-radius:4px; }
-        #loginModal h2 { margin-bottom:4px; font-size:1.1rem; color:#0f172a; }
-        #loginModal p { color:#64748b; margin-bottom:16px; font-size:0.85rem; }
-        #loginModal label { display:block; font-weight:600; margin:10px 0 4px; font-size:0.8rem; text-align:left; color:#334155; }
-        #loginModal input { width:100%; padding:10px 14px; border:2px solid #d1d5db; border-radius:10px; font-size:0.95rem; background:#fff; }
+        #loginModal .divider { width:50px; height:3px; background:var(--primary); margin:6px auto 10px; border-radius:4px; }
+        #loginModal h2 { margin-bottom:4px; font-size:1.05rem; color:#0f172a; }
+        #loginModal p { color:#64748b; margin-bottom:14px; font-size:0.8rem; }
+        #loginModal label { display:block; font-weight:600; margin:8px 0 3px; font-size:0.75rem; text-align:left; color:#334155; }
+        #loginModal input { width:100%; padding:9px 12px; border:2px solid #d1d5db; border-radius:10px; font-size:0.9rem; background:#fff; }
         #loginModal input:focus { outline:none; border-color:var(--primary); }
-        #loginModal .btn { width:100%; margin-top:16px; padding:12px; font-size:1rem; border-radius:10px; }
-        .login-error { color:var(--danger); font-size:0.85rem; margin-top:8px; display:none; }
+        #loginModal .btn { width:100%; margin-top:14px; padding:11px; font-size:0.95rem; border-radius:10px; display:flex; align-items:center; justify-content:center; text-align:center; }
+        .login-error { color:var(--danger); font-size:0.8rem; margin-top:6px; display:none; }
         .forgot-link { display:inline-block; margin-top:10px; font-size:0.75rem; color:var(--primary); cursor:pointer; text-decoration:underline; font-weight:600; }
 
         /* HEADER */
@@ -52,7 +52,7 @@
         header .header-left .header-sub span { color:#60a5fa; }
         header .user-info { display:flex; align-items:center; gap:6px; font-size:0.7rem; flex-wrap:wrap; }
         header .user-info select { padding:4px 8px; border-radius:6px; border:none; background:#1e293b; color:var(--white); font-weight:500; font-size:0.65rem; }
-        header .user-info .btn { background:#334155; color:var(--white); border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-weight:500; font-size:0.65rem; display:inline-flex; align-items:center; gap:4px; min-height:30px; }
+        header .user-info .btn { background:#334155; color:var(--white); border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-weight:500; font-size:0.65rem; display:inline-flex; align-items:center; gap:4px; min-height:30px; text-align:center; justify-content:center; }
         header .user-info .btn-success { background:var(--success); }
         header .user-info .btn-warning { background:var(--warning); }
         header .user-info .btn-purple { background:var(--purple); }
@@ -107,8 +107,8 @@
         .type-tag { display:inline-block; padding:2px 6px; border-radius:6px; font-size:0.65rem; font-weight:700; background:#f3e8ff; color:#7e22ce; white-space:nowrap; }
         .gtin-tag { font-family:monospace; font-size:0.65rem; background:#fef9c3; color:#854d0e; padding:2px 6px; border-radius:4px; font-weight:600; white-space:nowrap; }
 
-        /* BOTONES */
-        .btn { padding:5px 12px; border:none; border-radius:8px; font-weight:600; font-size:0.7rem; cursor:pointer; display:inline-flex; align-items:center; gap:5px; text-decoration:none; color:#ffffff; min-height:36px; white-space:nowrap; }
+        /* BOTONES GENERALES */
+        .btn { padding:5px 12px; border:none; border-radius:8px; font-weight:600; font-size:0.7rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; text-align:center; gap:5px; text-decoration:none; color:#ffffff; min-height:36px; white-space:nowrap; }
         .btn-primary { background:#4f46e5; }
         .btn-success { background:#059669; }
         .btn-warning { background:#d97706; }
@@ -160,7 +160,7 @@
     <div id="loginModal">
         <div class="login-box">
             <div class="hospital-logo">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='100' viewBox='0 0 300 100'%3E%3Crect width='300' height='100' fill='white' rx='8'/%3E%3Cpath d='M70 30 h35 v12 h-20 v12 h18 v12 h-18 v14 h-15 z' fill='%23990000'/%3E%3Ccircle cx='87' cy='22' r='8' fill='%23990000'/%3E%3Cpath d='M110 20 h30 a25 25 0 0 1 0 50 h-30 z' fill='%230f4c5c'/%3E%3Ctext x='150' y='72' font-family='Arial' font-size='10' fill='%23333' text-anchor='middle' font-weight='bold'%3EHospital San Juan de Dios - CDT%3C/text%3E%3Ctext x='150' y='84' font-family='Arial' font-size='9' fill='%23666' text-anchor='middle'%3EAsistencial Docente%3C/text%3E%3Ctext x='150' y='94' font-family='Arial' font-size='7' fill='%230f4c5c' text-anchor='middle' font-style='italic'%3E%22El Primero de Chile%22%3C/text%3E%3C/svg%3E" alt="Hospital San Juan de Dios">
+                <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=" alt="Hospital San Juan de Dios - Banner">
             </div>
             <div class="hospital-name">Hospital San Juan de Dios - CDT Asistencial Docente</div>
             <div class="hospital-sub">"El Primero de Chile"</div>
@@ -366,7 +366,7 @@
 
     <!-- SCRIPT PRINCIPAL OPTIMIZADO -->
     <script>
-        const STORAGE_KEY = 'wms_hsjd_full_data_v16';
+        const STORAGE_KEY = 'wms_hsjd_full_data_v17';
 
         const DEFAULT_DATA = {
             users: [
@@ -919,7 +919,7 @@
                     if(el) el.value = parsed.anaquel;
                 }
                 if(parsed.posicion) {
-                    const el = document.getElementById('mPosicion') || document.getElementById('nuevoPosicion');
+                    const el = document.getElementById('mPosicion') || document.getElementById('nuevaPosicion');
                     if(el) el.value = parsed.posicion;
                 }
                 mostrarToast('📍 Ubicación asignada por QR con éxito');
