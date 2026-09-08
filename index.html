@@ -471,21 +471,15 @@
             if (!rawText) return '';
             let limpio = String(rawText).trim();
 
-            // Limpieza de paréntesis en identificadores de aplicación GS1 ej: (01), (02)
             limpio = limpio.replace(/\((01|02)\)/g, '$1');
 
-            // Si contiene el Application Identifier 01 o 02 al inicio (con o sin corchetes previos)
             if (limpio.startsWith('01') && limpio.length >= 16) {
-                // GTIN-14 suele venir precedido de '01' y tener 14 dígitos (total 16 caracteres)
                 limpio = limpio.substring(2, 16);
             } else if (limpio.startsWith('02') && limpio.length >= 16) {
                 limpio = limpio.substring(2, 16);
             } else {
-                // Si es un EAN-13 o DataMatrix directo, limpiamos caracteres no numéricos si es necesario o conservamos el código de barras estándar
                 limpio = limpio.replace(/[^0-9]/g, '');
-                // Si excede 14 dígitos por otros FNC1 o sufijos de lectores Zebra, tomamos los primeros 13 o 14 dígitos estándar
                 if (limpio.length > 14) {
-                    // Buscar si tiene patrón 01 en medio
                     const idx01 = limpio.indexOf('01');
                     if (idx01 !== -1 && limpio.length >= idx01 + 16) {
                         limpio = limpio.substring(idx01 + 2, idx01 + 16);
@@ -928,6 +922,13 @@
                         ${currentGtins.map(g => `<span class="gtin-tag">${g}</span>`).join('')}
                     </div>
                 </div>
+                
+                <div style="margin-bottom:8px; background:#f1f5f9; padding:8px; border-radius:8px; text-align:center; display:flex; gap:6px; justify-content:center; flex-wrap:wrap;">
+                    <button class="btn btn-success btn-xs" onclick="iniciarEscanerBarraGTIN(1)">🏷️ Escanear Código 1 (Cámara)</button>
+                    <button class="btn btn-orange btn-xs" onclick="iniciarEscanerBarraGTIN(2)">🏷️ Escanear Código 2 (Cámara)</button>
+                </div>
+                <div id="qr-reader"></div>
+
                 <div class="form-grid" style="margin-bottom:8px;">
                     <div>
                         <label>Editar Código GTIN/EAN 1</label>
@@ -957,8 +958,7 @@
                 <hr style="border:0; border-top:1px solid #e2e8f0; margin:10px 0;">
                 <h4 style="font-size:0.8rem; margin-bottom:6px;">➕ Agregar Nueva Ubicación</h4>
                 <div style="background:#eef2ff; padding:6px; border-radius:8px; text-align:center; margin-bottom:6px;">
-                    <button class="btn btn-purple btn-xs" onclick="iniciarEscanerQR('agregarUbicacion')">📷 Escanear QR para Agregar</button>
-                    <div id="qr-reader"></div>
+                    <button class="btn btn-purple btn-xs" onclick="iniciarEscanerQR('agregarUbicacion')">📷 Escanear QR para Ubicación</button>
                 </div>
                 <div class="form-grid">
                     <div><label>Zona</label><select id="nuevaZona"><option value="A">Zona A - Paletizado Rack Doble Altura</option><option value="B">Zona B - Estantería Media Fijos</option><option value="C">Zona C - Almacenamiento Masivo</option><option value="D">Zona D - Farmacia de Alta Rotación</option><option value="E">Zona E - Medicamentos Refrigerados</option><option value="F">Zona F - Productos Termosensibles</option><option value="G">Zona G - Insumos Clínicos Generales</option><option value="H">Zona H - Material Quirúrgico y Suturas</option><option value="I">Zona I - Zona de Cuarentena y Controlados</option><option value="J">Zona J - Economato y Aseo</option></select></div>
@@ -1045,8 +1045,10 @@
                 { fps: 10, qrbox: { width: 260, height: 120 } },
                 (decodedText) => {
                     const codigoPuro = limpiarYExtraerGTIN(decodedText);
-                    const inputTarget = document.getElementById(campoGtinDestino === 1 ? 'mGtin1' : 'mGtin2');
-                    if(inputTarget) inputTarget.value = codigoPuro;
+                    const inputTarget = document.getElementById(campoGtinDestino === 1 ? 'mGtin1' : 'mGtin2') || document.getElementById(campoGtinDestino === 1 ? 'editGtin1' : 'editGtin2');
+                    if(inputTarget) {
+                        inputTarget.value = codigoPuro;
+                    }
                     mostrarToast(`🏷️ GTIN/EAN ${campoGtinDestino} capturado: ` + codigoPuro);
                     detenerEscanerQR();
                 },
