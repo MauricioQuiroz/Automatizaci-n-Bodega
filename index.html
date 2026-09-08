@@ -418,8 +418,22 @@
             dbFirestore.collection('wms_data').doc('main').onSnapshot((doc) => {
                 if (doc.exists) {
                     const dataRemota = doc.data();
+                    
+                    // Fusionar usuarios remotos con los por defecto para evitar que se pierdan cuentas creadas
+                    let usuariosFinales = DEFAULT_DATA.users;
+                    if (dataRemota.users && dataRemota.users.length > 0) {
+                        const remotosMap = new Map(dataRemota.users.map(u => [u.nombre.toLowerCase(), u]));
+                        // Asegurar que los por defecto estén o mantener los personalizados
+                        DEFAULT_DATA.users.forEach(defUsr => {
+                            if (!remotosMap.has(defUsr.nombre.toLowerCase())) {
+                                remotosMap.set(defUsr.nombre.toLowerCase(), defUsr);
+                            }
+                        });
+                        usuariosFinales = Array.from(remotosMap.values());
+                    }
+
                     appState = {
-                        users: (dataRemota.users && dataRemota.users.length > 0) ? dataRemota.users : DEFAULT_DATA.users,
+                        users: usuariosFinales,
                         warehouses: (dataRemota.warehouses && dataRemota.warehouses.length > 0) ? dataRemota.warehouses : DEFAULT_DATA.warehouses,
                         products: (dataRemota.products || []).map(p => {
                             if(!p.gtins && p.gtin) p.gtins = [p.gtin];
@@ -832,7 +846,7 @@
 
         function abrirModalAlmacenamiento() {
             const defaultGtin1 = '780' + Math.floor(1000000000 + Math.random()*9000000000);
-            mostrarModal('📥 Recepción y Almacenamiento (Códigos GTIN/EAN)', `
+            mostrarModal('📥 Recepción y Almacenamiento (Códigos GS1 - GTIN/EAN)', `
                 <div style="margin-bottom:10px; background:#eef2ff; padding:8px; border-radius:8px; text-align:center; display:flex; gap:6px; justify-content:center; flex-wrap:wrap;">
                     <button class="btn btn-purple btn-sm" onclick="iniciarEscanerQR('almacenar')">📷 Escanear QR Ubicación</button>
                     <button class="btn btn-success btn-sm" onclick="iniciarEscanerBarraGTIN(1)">🏷️ Escanear Código 1 (Cámara)</button>
@@ -914,10 +928,10 @@
 
             const currentGtins = p.gtins || [];
 
-            mostrarModal('📍 Gestionar Códigos GTIN/EAN y Ubicaciones', `
+            mostrarModal('📍 Gestionar Códigos GS1 - GTIN/EAN y Ubicaciones', `
                 <p style="font-size:0.8rem; margin-bottom:4px;"><strong>${p.glosa}</strong> (Código Interno: ${p.codigo})</p>
                 <div style="margin-bottom:8px;">
-                    <label>Códigos GTIN/EAN registrados:</label>
+                    <label>Códigos GS1 - GTIN/EAN registrados:</label>
                     <div style="display:flex; gap:4px; flex-wrap:wrap; margin-top:2px;">
                         ${currentGtins.map(g => `<span class="gtin-tag">${g}</span>`).join('')}
                     </div>
