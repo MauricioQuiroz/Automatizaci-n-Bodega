@@ -83,10 +83,18 @@
         /* TABLAS Y CONTENEDORES */
         .table-wrap { overflow-x:auto; margin-top:10px; -webkit-overflow-scrolling:touch; }
         .table-container { max-height:60vh; overflow:auto; border-radius:var(--radius); border:1px solid #e2e8f0; -webkit-overflow-scrolling:touch; background:white; }
-        table { width:100%; border-collapse:collapse; font-size:0.7rem; min-width:850px; }
+        table { width:100%; border-collapse:collapse; font-size:0.7rem; min-width:950px; }
         th { background:#f1f5f9; text-align:center; padding:8px 8px; font-weight:600; color:#334155; position:sticky; top:0; z-index:10; font-size:0.65rem; text-transform:uppercase; white-space:nowrap; }
         td { padding:6px 8px; border-bottom:1px solid #e2e8f0; vertical-align:middle; text-align:center; white-space:nowrap; font-size:0.7rem; }
         tr:hover td { background:#f8fafc; }
+
+        /* ETIQUETAS DE PROGRAMAS / ALERTAS */
+        .prog-badges-box { display:flex; gap:3px; flex-wrap:wrap; justify-content:center; align-items:center; }
+        .badge-prog { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.55rem; font-weight:700; white-space:nowrap; }
+        .badge-frio { background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; }
+        .badge-dac { background:#ffeeee; color:#b91c1c; border:1px solid #fecaca; }
+        .badge-lrs { background:#fef3c7; color:#b45309; border:1px solid #fde68a; }
+        .badge-pm { background:#f3e8ff; color:#6b21a8; border:1px solid #e9d5ff; }
 
         /* BADGES & TAGS */
         .badge { display:inline-block; padding:2px 8px; border-radius:50px; font-size:0.6rem; font-weight:600; }
@@ -106,7 +114,6 @@
         
         .type-tag { display:inline-block; padding:2px 6px; border-radius:6px; font-size:0.65rem; font-weight:700; background:#f3e8ff; color:#7e22ce; white-space:nowrap; }
         .gtin-tag { font-family:monospace; font-size:0.65rem; background:#fef9c3; color:#854d0e; padding:2px 6px; border-radius:4px; font-weight:600; white-space:nowrap; display:inline-block; margin:1px; }
-        .gtin-inactivo { background:#fee2e2 !important; color:#991b1b !important; text-decoration: line-through; }
 
         /* BOTONES */
         .btn { padding:5px 12px; border:none; border-radius:8px; font-weight:600; font-size:0.7rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; text-align:center; gap:5px; text-decoration:none; color:#ffffff; min-height:36px; white-space:nowrap; }
@@ -117,7 +124,7 @@
         .btn-purple { background:#7c3aed; }
         .btn-orange { background:#ea580c; }
         .btn-outline { background:transparent; border:2px solid #6b7280; color:#6b7280; }
-        .btn-sm { padding:3px 8px; font-size:0.6rem; min-height:30px; }
+        .btn-sm { padding:3px 8px; font-size:0.60rem; min-height:30px; }
         .btn-xs { padding:2px 6px; font-size:0.5rem; min-height:26px; }
 
         /* TOOLBAR */
@@ -235,6 +242,9 @@
                     <button class="btn btn-orange btn-sm" id="btnRecepcionAlmacenar" onclick="abrirModalAlmacenamiento()">
                         📥 Recepción → Almacenar
                     </button>
+                    <button class="btn btn-danger btn-sm" id="btnEliminarSeleccionados" onclick="eliminarSeleccionadosInventario()">
+                        🗑️ Eliminar Selección Masiva
+                    </button>
                 </div>
                 <div class="toolbar-right">
                     <input type="text" id="searchInventarioUnificado" placeholder="Buscar código interno, glosa o GTIN/EAN..." oninput="renderInventarioUnificado()">
@@ -257,10 +267,12 @@
                 <table>
                     <thead>
                         <tr>
+                            <th><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)" style="cursor:pointer;" title="Seleccionar todo"></th>
                             <th>Código Interno</th>
                             <th>Códigos GTIN/EAN</th>
                             <th>Glosa</th>
                             <th>Bodega</th>
+                            <th>Programas / Alertas Especiales</th>
                             <th>Jerarquía</th>
                             <th>Ubicación</th>
                             <th>Estado</th>
@@ -441,6 +453,7 @@
                             if(!p.gtins) p.gtins = [];
                             if(!p.gtinEstados) p.gtinEstados = {};
                             p.gtins.forEach(g => { if(!p.gtinEstados[g]) p.gtinEstados[g] = 'activo'; });
+                            if(!p.programas) p.programas = { frio: false, dac: false, lrs: false, pm: false };
                             return p;
                         }), 
                         movements: dataRemota.movements || [],
@@ -735,6 +748,15 @@
                             let gtinEstados = {};
                             gtins.forEach(g => { gtinEstados[g] = 'activo'; });
 
+                            // Reconocimiento automático de programas / alertas desde el Excel
+                            const progText = String(row[keys.find(k => /PROGRAMA|CATEGORIA|TIPO_PROGRAMA|NORMATIVA/i.test(k))] || '').toUpperCase();
+                            const isFrio = progText.includes('FRIO') || /SI|1/i.test(String(row[keys.find(k => /FRIO/i.test(k))] || ''));
+                            const isDac = progText.includes('DAC') || /SI|1/i.test(String(row[keys.find(k => /^DAC$|ALTO_COSTO/i.test(k))] || ''));
+                            const isLrs = progText.includes('LRS') || /SI|1/i.test(String(row[keys.find(k => /LRS|RICARTE/i.test(k))] || ''));
+                            const isPm = progText.includes('PM') || progText.includes('MINISTERIAL') || /SI|1/i.test(String(row[keys.find(k => /PM|MINISTERIAL/i.test(k))] || ''));
+
+                            const programas = { frio: isFrio, dac: isDac, lrs: isLrs, pm: isPm };
+
                             const tipoRaw = row[keys.find(k => /TIPO|JERARQUIA|ALMACENAMIENTO/i.test(k))] || 'Unidad Comercial';
                             const zonaRaw = row[keys.find(k => /ZONA/i.test(k))] || 'A';
                             const anaquelRaw = row[keys.find(k => /ANAQUEL|RACK|ALTURA/i.test(k))] || '1';
@@ -753,6 +775,7 @@
                                 existing.codigo = String(codigo).trim();
                                 existing.glosa = String(glosa);
                                 existing.tipo = tipo;
+                                existing.programas = programas;
                                 if(!existing.gtinEstados) existing.gtinEstados = {};
                                 gtins.forEach(g => { 
                                     if(!existing.gtins.includes(g)) existing.gtins.push(g);
@@ -769,6 +792,7 @@
                                     gtinEstados: gtinEstados,
                                     glosa: String(glosa),
                                     bodega: currentWarehouse === 'TODAS' ? 'Farmacos' : currentWarehouse,
+                                    programas: programas,
                                     tipo: tipo,
                                     ubicaciones: [{ zona, anaquel, posicion }],
                                     estado: 'Almacenado'
@@ -815,17 +839,26 @@
                 `).join('') || '<span style="color:#94a3b8;">Sin ubicaciones</span>';
 
                 if(!p.gtinEstados) p.gtinEstados = {};
-                // Círculos de estado ocultos en la vista general (se muestran solo al gestionar en el modal)
-                const gtinsList = (p.gtins || []).map(g => {
-                    return `<span class="gtin-tag">${g}</span>`;
-                }).join(' ') || '<span style="color:#94a3b8;">Sin código</span>';
+                const gtinsList = (p.gtins || []).map(g => `<span class="gtin-tag">${g}</span>`).join(' ') || '<span style="color:#94a3b8;">Sin código</span>';
+
+                // Badges entre Bodega y Jerarquía
+                const prog = p.programas || { frio: false, dac: false, lrs: false, pm: false };
+                let progHtml = '<div class="prog-badges-box">';
+                if(prog.frio) progHtml += `<span class="badge-prog badge-frio" title="Cámara de Frío">❄️ FRÍO</span>`;
+                if(prog.dac) progHtml += `<span class="badge-prog badge-dac" title="Droga de Alto Costo">⚠️ DAC</span>`;
+                if(prog.lrs) progHtml += `<span class="badge-prog badge-lrs" title="Ley Ricarte Soto">⚖️ LRS</span>`;
+                if(prog.pm) progHtml += `<span class="badge-prog badge-pm" title="Programa Ministerial">📋 PM</span>`;
+                if(!prog.frio && !prog.dac && !prog.lrs && !prog.pm) progHtml += `<span style="color:#94a3b8; font-size:0.6rem;">Estándar</span>`;
+                progHtml += `</div>`;
 
                 return `
                 <tr>
+                    <td><input type="checkbox" class="prod-chk" value="${p.id}" style="cursor:pointer;" onchange="actualizarEstadoCheckTodo()"></td>
                     <td><strong>${p.codigo}</strong></td>
                     <td>${gtinsList}</td>
                     <td>${p.glosa}</td>
                     <td><span class="badge-bodega badge-${p.bodega.toLowerCase()}">${p.bodega}</span></td>
+                    <td>${progHtml}</td>
                     <td><span class="type-tag">${p.tipo || 'Unidad Comercial'}</span></td>
                     <td>
                         <div class="ubicacion-compacta-box">
@@ -839,7 +872,33 @@
                         ${puedeEliminar ? `<button class="btn btn-danger btn-xs" onclick="eliminarProducto('${p.id}')" style="margin-top:2px;">🗑️ Eliminar</button>` : ''}
                     </td>
                 </tr>
-            `}).join('') || '<tr><td colspan="8" class="empty-state">No se encontraron productos</td></tr>';
+            `}).join('') || '<tr><td colspan="10" class="empty-state">No se encontraron productos</td></tr>';
+        }
+
+        function toggleSeleccionarTodoInventario(masterChk) {
+            const chks = document.querySelectorAll('.prod-chk');
+            chks.forEach(c => c.checked = masterChk.checked);
+        }
+
+        function actualizarEstadoCheckTodo() {
+            const chks = document.querySelectorAll('.prod-chk');
+            const chksChecked = document.querySelectorAll('.prod-chk:checked');
+            const masterChk = document.getElementById('chkSelectAll');
+            if(masterChk) {
+                masterChk.checked = chks.length > 0 && chks.length === chksChecked.length;
+            }
+        }
+
+        function eliminarSeleccionadosInventario() {
+            const chksChecked = document.querySelectorAll('.prod-chk:checked');
+            if(chksChecked.length === 0) return alert('Selecciona al menos un producto para eliminar.');
+            if(!confirm(`¿Estás seguro de eliminar los ${chksChecked.length} registros seleccionados?`)) return;
+
+            const idsAEliminar = Array.from(chksChecked).map(c => c.value);
+            appState.products = (appState.products || []).filter(p => !idsAEliminar.includes(p.id));
+            guardarEstadoFirestore();
+            registrarHistorial('Eliminación Masiva', `${chksChecked.length} ítems`, 'Eliminación masiva de registros seleccionados desde la tabla');
+            mostrarToast(`🗑️ ${idsAEliminar.length} registros eliminados con éxito.`);
         }
 
         function verHistorialArticulo(codigoInterno) {
@@ -939,9 +998,22 @@
                         </div>
                     </div>
 
-                    <div class="full-width"><label>Glosa / Descripción</label><input id="mGlosa" placeholder="Nombre del insumo o fármaco"></div>
+                    <div class="full-width"><label>Glosa / Descripción</label><input id="mGlosa" placeholder="Nombre del insumo o fármaco" onblur="verificarAlertaEscaneoManual(this.value)"></div>
+                    <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fef3c7; border:1px solid #f59e0b; padding:8px; border-radius:6px; font-size:0.75rem; color:#92400e;"></div>
+
                     <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">Fármacos</option><option value="Insumos">Insumos</option><option value="Economato">Economato</option><option value="Controlados">Fármacos Controlados</option><option value="Suturas">Suturas</option><option value="Alimentos">Alimentos</option></select></div>
                     <div><label>Jerarquía / Tipo</label><select id="mTipo"><option value="Unidad Comercial">Unidad Comercial</option><option value="Unidad Máster">Unidad Máster</option><option value="Unidad Mínima / Unidosis">Unidad Mínima / Unidosis</option></select></div>
+                    
+                    <div class="full-width" style="background:#f8fafc; padding:8px; border-radius:8px; border:1px solid #cbd5e1;">
+                        <label style="margin-bottom:4px;">Programas y Alertas Especiales:</label>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <label style="display:flex; align-items:center; gap:4px; cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="mProgFrío"> ❄️ Cámara de Frío</label>
+                            <label style="display:flex; align-items:center; gap:4px; cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="mProgDac"> ⚠️ Droga Alto Costo (DAC)</label>
+                            <label style="display:flex; align-items:center; gap:4px; cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="mProgLrs"> ⚖️ Ley Ricarte Soto (LRS)</label>
+                            <label style="display:flex; align-items:center; gap:4px; cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="mProgPm"> 📋 Prog. Ministerial (PM)</label>
+                        </div>
+                    </div>
+
                     <div><label>Zona</label><select id="mZona"><option value="A">Zona A - Paletizado Rack Doble Altura</option><option value="B">Zona B - Estantería Media Fijos</option><option value="C">Zona C - Almacenamiento Masivo</option><option value="D">Zona D - Farmacia de Alta Rotación</option><option value="E">Zona E - Medicamentos Refrigerados</option><option value="F">Zona F - Productos Termosensibles</option><option value="G">Zona G - Insumos Clínicos Generales</option><option value="H">Zona H - Material Quirúrgico y Suturas</option><option value="I">Zona I - Zona de Cuarentena y Controlados</option><option value="J">Zona J - Economato y Aseo</option></select></div>
                     <div><label>Nº de Anaquel / Rack / Altura</label><input id="mAnaquel" placeholder="Ej: 7"></div>
                     <div class="full-width"><label>Posición</label><input id="mPosicion" placeholder="Ej: A4"></div>
@@ -957,11 +1029,19 @@
                 const glosa = document.getElementById('mGlosa').value.trim();
                 const bodega = document.getElementById('mBodega').value;
                 const tipo = document.getElementById('mTipo').value;
+                
+                const programas = {
+                    frio: document.getElementById('mProgFrío').checked,
+                    dac: document.getElementById('mProgDac').checked,
+                    lrs: document.getElementById('mProgLrs').checked,
+                    pm: document.getElementById('mProgPm').checked
+                };
+
                 const zona = document.getElementById('mZona').value;
                 const anaquel = document.getElementById('mAnaquel').value.trim();
                 const posicion = document.getElementById('mPosicion').value.trim();
 
-                if(!cod || !gtin1 || !anaquel || !posicion) return alert('Completa los campos obligatorios (Código Interno, Código GTIN/EAN 1, Anaquel y Posición)');
+                if(!cod || !gtin1 || !anaquel || !posicion) return alert('Completa los campos obligatorios');
 
                 const gtins = [gtin1];
                 let gtinEstados = {};
@@ -981,20 +1061,39 @@
                         if(!existing.gtins.includes(g)) existing.gtins.push(g);
                         existing.gtinEstados[g] = gtinEstados[g];
                     });
+                    existing.programas = programas;
                     if(!existing.ubicaciones) existing.ubicaciones = [];
                     existing.ubicaciones.push({ zona, anaquel, posicion });
                     existing.tipo = tipo;
                 } else {
                     const newId = '_' + Math.random().toString(36).substr(2, 9);
                     appState.products.push({
-                        id: newId, codigo: cod, gtins: gtins, gtinEstados: gtinEstados, glosa: glosa || cod, bodega: bodega, tipo: tipo, ubicaciones: [{ zona, anaquel, posicion }], estado: 'Almacenado'
+                        id: newId, codigo: cod, gtins: gtins, gtinEstados: gtinEstados, glosa: glosa || cod, bodega: bodega, programas: programas, tipo: tipo, ubicaciones: [{ zona, anaquel, posicion }], estado: 'Almacenado'
                     });
                 }
-                registrarHistorial('Recepción y Almacenamiento', `${cod}`, `Ingresado nuevo ítem con GTINs [${gtins.join(', ')}] en Zona ${zona}, Anaquel ${anaquel}, Pos. ${posicion}`);
+                registrarHistorial('Recepción y Almacenamiento', `${cod}`, `Ingresado ítem con GTINs [${gtins.join(', ')}] en Zona ${zona}`);
                 guardarEstadoFirestore();
                 cerrarModal();
                 mostrarToast('Producto almacenado con éxito');
             };
+        }
+
+        function verificarAlertaEscaneoManual(glosaText) {
+            const alertaBox = document.getElementById('alertaEscaneoBox');
+            if(!alertaBox) return;
+            const txt = glosaText.toUpperCase();
+            let alertas = [];
+            if(txt.includes('FRIO') || txt.includes('REFRIGERADO')) alertas.push('❄️ Requiere Cámara de Frío');
+            if(txt.includes('DAC') || txt.includes('ALTO COSTO')) alertas.push('⚠️ Droga de Alto Costo (DAC)');
+            if(txt.includes('RICARTE') || txt.includes('LRS')) alertas.push('⚖️ Ley Ricarte Soto (LRS)');
+            if(txt.includes('MINISTERIAL') || txt.includes('PM')) alertas.push('📋 Programa Ministerial (PM)');
+
+            if(alertas.length > 0) {
+                alertaBox.style.display = 'block';
+                alertaBox.innerHTML = `<strong>⚠️ Alerta de Producto Sensible detectada:</strong><br>` + alertas.join(' | ');
+            } else {
+                alertaBox.style.display = 'none';
+            }
         }
 
         function gestionarUbicacionesModal(id) {
@@ -1011,8 +1110,8 @@
             const currentGtins = p.gtins || [];
             if(!p.gtinEstados) p.gtinEstados = {};
             currentGtins.forEach(g => { if(!p.gtinEstados[g]) p.gtinEstados[g] = 'activo'; });
+            const prog = p.programas || { frio: false, dac: false, lrs: false, pm: false };
 
-            // Círculos de estado (🟢/🔴) visibles únicamente dentro del modal de gestión
             mostrarModal('📍 Gestionar Códigos GS1 - GTIN/EAN y Ubicaciones', `
                 <p style="font-size:0.8rem; margin-bottom:4px;"><strong>${p.glosa}</strong> (Código Interno: ${p.codigo})</p>
                 <div style="margin-bottom:8px;">
@@ -1065,6 +1164,17 @@
                     <option value="Unidad Máster" ${p.tipo==='Unidad Máster'?'selected':''}>Unidad Máster</option>
                     <option value="Unidad Mínima / Unidosis" ${p.tipo==='Unidad Mínima / Unidosis'?'selected':''}>Unidad Mínima / Unidosis</option>
                 </select>
+
+                <div style="background:#f8fafc; padding:8px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:8px;">
+                    <label style="margin-bottom:4px;">Programas y Alertas Especiales:</label>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <label style="display:flex; align-items:center; gap:4px; cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="editProgFrío" ${prog.frio?'checked':''}> ❄️ Frío</label>
+                        <label style="display:flex; align-items:center; gap:4px; cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="editProgDac" ${prog.dac?'checked':''}> ⚠️ DAC</label>
+                        <label style="display:flex; align-items:center; gap:4px; cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="editProgLrs" ${prog.lrs?'checked':''}> ⚖️ LRS</label>
+                        <label style="display:flex; align-items:center; gap:4px; cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="editProgPm" ${prog.pm?'checked':''}> 📋 PM</label>
+                    </div>
+                </div>
+
                 <label>Ubicaciones Actuales:</label>
                 <div style="max-height:100px; overflow-y:auto; border:1px solid #e2e8f0; padding:6px; border-radius:8px; margin-bottom:10px;">
                     ${listHtml}
@@ -1092,6 +1202,13 @@
                 const anaquel = document.getElementById('nuevoAnaquel').value.trim();
                 const posicion = document.getElementById('nuevaPosicion').value.trim();
                 const nuevoTipo = document.getElementById('editTipo').value;
+
+                p.programas = {
+                    frio: document.getElementById('editProgFrío').checked,
+                    dac: document.getElementById('editProgDac').checked,
+                    lrs: document.getElementById('editProgLrs').checked,
+                    pm: document.getElementById('editProgPm').checked
+                };
 
                 const newGtins = [];
                 let gtinEstados = {};
