@@ -233,7 +233,7 @@
             <div class="toolbar">
                 <div class="toolbar-left">
                     <button class="btn btn-orange btn-sm" id="btnRecepcionAlmacenar" onclick="abrirModalAlmacenamiento()">
-                        📥 Recepción → Almacenar
+                        📥 recepción → Almacenar
                     </button>
                 </div>
                 <div class="toolbar-right">
@@ -365,7 +365,7 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- SCRIPT DE SINCRONIZACIÓN Y SESIÓN CORREGIDA -->
+    <!-- SCRIPT DE SINCRONIZACIÓN EN TIEMPO REAL -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyB_F7itx3L67gDQ2EBaZaMT401lZG2MxEk",
@@ -451,11 +451,10 @@
                     appState = DEFAULT_DATA;
                 }
                 
-                // Revalidar sesión actual con los datos sincronizados
                 verificarSesionGuardada();
                 renderAll();
             }, (error) => {
-                console.error("Error en sincronización: ", error);
+                console.error("Error en sincronización en tiempo real: ", error);
             });
         }
 
@@ -563,7 +562,6 @@
             
             if (user) {
                 currentUserId = user.id;
-                // Guardamos el NOMBRE de usuario y no un ID numérico para evitar conflictos
                 localStorage.setItem('wms_session_user', user.nombre);
                 document.getElementById('loginModal').style.display = 'none';
                 document.getElementById('app').style.display = 'block';
