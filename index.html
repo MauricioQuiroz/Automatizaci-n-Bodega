@@ -433,11 +433,7 @@
                     appState = {
                         users: usuariosFinales,
                         warehouses: (dataRemota.warehouses && dataRemota.warehouses.length > 0) ? dataRemota.warehouses : DEFAULT_DATA.warehouses,
-                        products: (dataRemota.products || []).map(p => {
-                            if(!p.gtins && p.gtin) p.gtins = [p.gtin];
-                            if(!p.gtins) p.gtins = [];
-                            return p;
-                        }),
+                        products: dataRemota.products || [], 
                         movements: dataRemota.movements || [],
                         layouts: dataRemota.layouts || {}
                     };
@@ -788,7 +784,6 @@
             }
 
             const user = getCurrentUser();
-            // PERMISO ACTUALIZADO: Admin y Supervisor pueden eliminar
             const puedeEliminar = user && (user.perfil === 'admin' || user.perfil === 'supervisor');
 
             const tbody = document.getElementById('inventarioUnificadoBody');
@@ -861,7 +856,7 @@
             html += `</tbody></table></div>`;
 
             mostrarModal('📜 Historial Detallado por Artículo', html);
-            document.getElementById('modalActionBtn').style.display = 'none'; // Solo cerrar
+            document.getElementById('modalActionBtn').style.display = 'none';
         }
 
         function eliminarProducto(id) {
@@ -1163,7 +1158,7 @@
 
             const matchPos = texto.match(/pos[i|c][i|o]n\s*([a-z0-9]+)/i);
             if(matchPos) {
-                const inputPos = document.getElementById('mPosicion') || document.getElementById('nuevaPosicion');
+                const inputPos = document.getElementById('mPosicion') || document.getElementById('nuevoPosicion');
                 if(inputPos) inputPos.value = matchPos[1].toUpperCase();
             }
 
