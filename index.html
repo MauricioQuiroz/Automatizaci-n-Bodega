@@ -796,10 +796,14 @@
             let anaquel = '1';
             let posicion = 'A1';
 
+            const keyZona = keys.find(k => /^ZONA$|ZONA_/i.test(k));
+            const keyTipoPos = keys.find(k => /^TIPO$|TIPO_/i.test(k) || /RACK|ALTURA/i.test(k));
+            const keyPosicion = keys.find(k => /^POSICION$|POSICIÓN/i.test(k));
             const colUbicacionAgrupada = row[keys.find(k => /UBICACION|UBICACIÓN/i.test(k))];
-            const zonaRaw = row[keys.find(k => /^ZONA$|ZONA_/i.test(k))];
-            const posicionRaw = String(row[keys.find(k => /^POSICION$|POSICIÓN|^TIPO$|TIPO_/i.test(k))] || '').trim();
-            const anaquelRaw = row[keys.find(k => /ANAQUEL|RACK|ALTURA/i.test(k))];
+
+            const zonaRaw = keyZona ? row[keyZona] : '';
+            const tipoPosRaw = keyTipoPos ? String(row[keyTipoPos]).trim() : '';
+            const posicionRaw = keyPosicion ? String(row[keyPosicion]).trim() : '';
 
             if (colUbicacionAgrupada && String(colUbicacionAgrupada).trim() !== '') {
                 const partesUb = String(colUbicacionAgrupada).trim();
@@ -808,39 +812,18 @@
                 }
             } else if (zonaRaw && String(zonaRaw).trim() !== '' && String(zonaRaw).toUpperCase() !== 'SIN ASIGNACIÓN') {
                 zona = String(zonaRaw).replace(/zona/gi, '').trim();
-                if(anaquelRaw) anaquel = String(anaquelRaw).trim();
-                if(posicionRaw) posicion = String(posicionRaw).trim();
+                if(tipoPosRaw) {
+                    anaquel = tipoPosRaw;
+                }
+                if(posicionRaw) {
+                    posicion = posicionRaw;
+                }
             }
 
             if (zona === 'SIN ASIGNACIÓN' && sheetName) {
                 const sName = sheetName.toUpperCase();
-                const matchZonaHoja = sName.match(/ZONA\s*([A-Z0-9]+)/) || sName.match(/([A-Z])_ANAQUEL/);
-                if (matchZonaHoja) {
-                    zona = matchZonaHoja[1] || matchZonaHoja[0].replace('_ANAQUEL', '');
-                } else if (sName.includes('ZONA')) {
-                    zona = sName;
-                }
-
-                const matchAnaqHoja = sName.match(/ANAQUEL\s*(\d+)/) || sName.match(/RACK\s*(\d+)/);
-                if (matchAnaqHoja) {
-                    anaquel = matchAnaqHoja[1];
-                }
-            }
-
-            if (posicionRaw) {
-                const matchAnaqPos = posicionRaw.match(/anaquel\s*(\d+)\s*([a-z0-9]+)/i) || posicionRaw.match(/rack\s*(\d+)\s*([a-z0-9]+)/i);
-                if (matchAnaqPos) {
-                    anaquel = matchAnaqPos[1];
-                    posicion = matchAnaqPos[2];
-                } else {
-                    const matchSimple = posicionRaw.match(/(\d+)\s+([a-z0-9]+)/i);
-                    if(matchSimple) {
-                        anaquel = matchSimple[1];
-                        posicion = matchSimple[2];
-                    } else if (posicionRaw !== '') {
-                        posicion = posicionRaw;
-                    }
-                }
+                const matchZonaHoja = sName.match(/ZONA\s*([A-Z0-9]+)/);
+                if (matchZonaHoja) zona = matchZonaHoja[1];
             }
 
             return { zona, anaquel, posicion };
@@ -979,7 +962,7 @@
                     return `
                         <div class="ubicacion-row-item">
                             <span class="zone-tag">Zona ${u.zona}</span> 
-                            <span>Anaquel ${u.anaquel}</span> 
+                            <span>${u.anaquel}</span> 
                             <span class="pos-tag">Pos. ${u.posicion}</span>
                         </div>
                     `;
@@ -1281,7 +1264,7 @@
 
             let listHtml = (p.ubicaciones || []).map((u, index) => `
                 <div style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; padding:6px 10px; border-radius:6px; margin-bottom:4px; font-size:0.75rem;">
-                    <span>📍 <strong>Zona ${u.zona}</strong> - Anaquel ${u.anaquel} Pos. ${u.posicion}</span>
+                    <span>📍 <strong>Zona ${u.zona}</strong> - ${u.anaquel} Pos. ${u.posicion}</span>
                     <button class="btn btn-danger btn-xs" onclick="removerUbicacionDeProducto('${p.id}', ${index})">🗑️ Quitar</button>
                 </div>
             `).join('') || '<p style="color:#64748b; font-size:0.75rem;">Sin ubicaciones registradas.</p>';
@@ -1365,8 +1348,8 @@
                 </div>
                 <div class="form-grid">
                     <div><label>Zona</label><select id="nuevaZona" onchange="actualizarJerarquiaPorZonaForm(this.value)"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
-                    <div><label>Nº Anaquel</label><input id="nuevoAnaquel" value="1" placeholder="Ej: 1"></div>
-                    <div class="full-width"><label>Posición</label><input id="nuevaPosicion" value="A1" placeholder="Ej: A1"></div>
+                    <div><label>Nº Anaquel / Rack</label><input id="nuevoAnaquel" value="Rack - Pallet" placeholder="Ej: Rack - Pallet"></div>
+                    <div class="full-width"><label>Posición</label><input id="nuevaPosicion" value="1" placeholder="Ej: 1"></div>
                 </div>
             `);
 
@@ -1408,7 +1391,7 @@
                 if(anaquel && posicion) {
                     if(!p.ubicaciones) p.ubicaciones = [];
                     p.ubicaciones.push({ zona, anaquel, posicion });
-                    detalleMod += ` | Añadida ubicación Zona ${zona}, Anaquel ${anaquel}, Pos. ${posicion}`;
+                    detalleMod += ` | Añadida ubicación Zona ${zona}, ${anaquel}, Pos. ${posicion}`;
                 }
 
                 registrarHistorial('Actualización de Producto', `${p.codigo}`, detalleMod);
@@ -1495,8 +1478,8 @@
 
         function procesarTextoQR(texto, modo) {
             let zonaVal = 'A';
-            let anaqVal = '1';
-            let posVal = 'A1';
+            let anaqVal = 'Rack - Pallet';
+            let posVal = '1';
             let tipoVal = '';
 
             try {
@@ -1509,8 +1492,8 @@
                 const matchZona = texto.match(/zona\s*([a-j])/i) || texto.match(/z([a-j])/i);
                 if(matchZona) zonaVal = matchZona[1].toUpperCase();
 
-                const matchAnaq = texto.match(/anaquel\s*(\d+)/i) || texto.match(/rack\s*(\d+)/i);
-                if(matchAnaq) anaqVal = matchAnaq[1];
+                const matchAnaq = texto.match(/anaquel\s*(\d+)/i) || texto.match(/rack[^\d]*(\d+)?/i);
+                if(matchAnaq) anaqVal = matchAnaq[0];
 
                 const matchPos = texto.match(/pos[i|c][i|o]n\s*([a-z0-9]+)/i);
                 if(matchPos) posVal = matchPos[1].toUpperCase();
@@ -1529,7 +1512,7 @@
             if(inputPos) inputPos.value = posVal;
             if(tipoVal && selTipo) selTipo.value = tipoVal;
 
-            mostrarToast(`📍 QR leído: Zona ${zonaVal}, Anaquel ${anaqVal}, Pos. ${posVal}`);
+            mostrarToast(`📍 QR leído: Zona ${zonaVal}, ${anaqVal}, Pos. ${posVal}`);
 
             if(modo === 'agregarUbicacion' && typeof modalCallback === 'function') {
                 setTimeout(() => {
@@ -1621,14 +1604,14 @@
             `;
 
             ubicsMap.forEach((val) => {
-                const labelTxt = `[${val.tipo}] Zona ${val.zona} - Anaquel ${val.anaquel} Pos. ${val.posicion}`;
+                const labelTxt = `[${val.tipo}] Zona ${val.zona} - ${val.anaquel} Pos. ${val.posicion}`;
                 html += `
                     <label style="border:1px solid #cbd5e1; padding:8px; border-radius:6px; background:white; display:flex; flex-direction:column; gap:4px; cursor:pointer; font-size:0.7rem;">
                         <div style="display:flex; align-items:center; justify-content:space-between;">
                             <span style="font-weight:700; color:var(--primary);">${val.tipo}</span>
                             <input type="checkbox" class="qr-chk" value="${labelTxt}" checked style="width:14px; height:14px; cursor:pointer;">
                         </div>
-                        <div style="color:#334155;"><strong>Zona ${val.zona}</strong><br>Anaquel ${val.anaquel}<br>Pos. ${val.posicion}</div>
+                        <div style="color:#334155;"><strong>Zona ${val.zona}</strong><br>${val.anaquel}<br>Pos. ${val.posicion}</div>
                     </label>
                 `;
             });
