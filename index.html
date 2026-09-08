@@ -35,10 +35,8 @@
         /* LOGIN */
         #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:16px; overflow-y:auto; }
         #loginModal .login-box { background:var(--white); padding:24px 26px; border-radius:24px; max-width:420px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.3); text-align:center; position:relative; z-index:2001; margin:auto; }
-        #loginModal .login-box .hospital-logo img { width:100%; max-height:110px; border-radius:10px; object-fit:contain; margin-bottom:12px; background:#fff; }
-        #loginModal .login-box .hospital-name { font-size:0.95rem; font-weight:700; color:#0f172a; }
-        #loginModal .login-box .hospital-sub { font-size:0.75rem; color:#64748b; margin-bottom:10px; font-weight:500; }
-        #loginModal .divider { width:50px; height:3px; background:var(--primary); margin:6px auto 10px; border-radius:4px; }
+        #loginModal .login-box .hospital-logo img { width:100%; max-height:130px; border-radius:10px; object-fit:contain; margin-bottom:12px; background:#fff; }
+        .divider { width:50px; height:3px; background:var(--primary); margin:6px auto 10px; border-radius:4px; }
         #loginModal h2 { margin-bottom:4px; font-size:1.05rem; color:#0f172a; }
         #loginModal p { color:#64748b; margin-bottom:14px; font-size:0.8rem; }
         #loginModal label { display:block; font-weight:600; margin:8px 0 3px; font-size:0.75rem; text-align:left; color:#334155; }
@@ -163,10 +161,8 @@
     <div id="loginModal">
         <div class="login-box">
             <div class="hospital-logo">
-                <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=" alt="Hospital San Juan de Dios - Banner">
+                <img src="https://oquiroz.github.io/Automatizaci%C3%B3n-Bodega/1000166962.png" alt="Banner Hospital San Juan de Dios" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'100\' viewBox=\'0 0 300 100\'%3E%3Crect width=\'300\' height=\'100\' fill=\'%23f1f5f9\' rx=\'8\'/%3E%3Ctext x=\'150\' y=\'55\' font-family=\'Arial\' font-size=\'14\' fill=\'%23333\' text-anchor=\'middle\' font-weight=\'bold\'%3EHospital San Juan de Dios%3C/text%3E%3C/svg%3E'">
             </div>
-            <div class="hospital-name">Hospital San Juan de Dios - CDT Asistencial Docente</div>
-            <div class="hospital-sub">"El Primero de Chile"</div>
             <div class="divider"></div>
             <h2>Automatización Almacenamiento<br><span style="font-size:0.9rem; color:var(--primary); font-weight:600;">"Diseñado por Mauricio Quiroz Ayala"</span></h2>
             <p>Ingresa tus credenciales para acceder al sistema.</p>
@@ -369,7 +365,7 @@
 
     <!-- SCRIPT DE SINCRONIZACIÓN EN TIEMPO REAL CON FIREBASE FIRESTORE -->
     <script>
-        // Configuración de Firebase (Sustituye con los datos de tu proyecto wms-hsjd)
+        // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "TU_API_KEY_NUEVA_RESTRINGIDA",
             authDomain: "wms-hsjd.firebaseapp.com",
@@ -422,13 +418,11 @@
             invitado: ['lectura']
         };
 
-        // Sincronización en tiempo real escuchando Firestore (Colección "wms_data", documento "main")
         function inicializarListenersTiempoReal() {
             dbFirestore.collection('wms_data').doc('main').onSnapshot((doc) => {
                 if (doc.exists) {
                     appState = doc.data();
                 } else {
-                    // Si no existe, inicializamos con los valores por defecto en Firestore
                     dbFirestore.collection('wms_data').doc('main').set(DEFAULT_DATA);
                     appState = DEFAULT_DATA;
                 }
@@ -942,7 +936,7 @@
                     if(el) el.value = parsed.anaquel;
                 }
                 if(parsed.posicion) {
-                    const el = document.getElementById('mPosicion') || document.getElementById('nuevaPosicion');
+                    const el = document.getElementById('mPosicion') || document.getElementById('nuevoPosicion');
                     if(el) el.value = parsed.posicion;
                 }
                 mostrarToast('📍 Ubicación asignada por QR con éxito');
