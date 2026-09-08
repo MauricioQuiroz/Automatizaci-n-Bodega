@@ -419,11 +419,9 @@
                 if (doc.exists) {
                     const dataRemota = doc.data();
                     
-                    // Fusionar usuarios remotos con los por defecto para evitar que se pierdan cuentas creadas
                     let usuariosFinales = DEFAULT_DATA.users;
                     if (dataRemota.users && dataRemota.users.length > 0) {
                         const remotosMap = new Map(dataRemota.users.map(u => [u.nombre.toLowerCase(), u]));
-                        // Asegurar que los por defecto estén o mantener los personalizados
                         DEFAULT_DATA.users.forEach(defUsr => {
                             if (!remotosMap.has(defUsr.nombre.toLowerCase())) {
                                 remotosMap.set(defUsr.nombre.toLowerCase(), defUsr);
@@ -480,7 +478,6 @@
         let modalCallback = null;
         let html5QrCodeScanner = null;
 
-        // FUNCIÓN CLAVE: Filtra y extrae estrictamente el GTIN (01) o (02) o EAN-13 puro de DataMatrix, GS1-128 o pistola Zebra
         function limpiarYExtraerGTIN(rawText) {
             if (!rawText) return '';
             let limpio = String(rawText).trim();
@@ -791,7 +788,8 @@
             }
 
             const user = getCurrentUser();
-            const isAdmin = user && user.perfil === 'admin';
+            // PERMISO ACTUALIZADO: Admin y Supervisor pueden eliminar
+            const puedeEliminar = user && (user.perfil === 'admin' || user.perfil === 'supervisor');
 
             const tbody = document.getElementById('inventarioUnificadoBody');
             tbody.innerHTML = prods.map(p => {
@@ -820,10 +818,50 @@
                     <td><span class="badge" style="background:#dcfce7; color:#166534;">${p.estado || 'Almacenado'}</span></td>
                     <td>
                         <button class="btn btn-primary btn-xs" onclick="gestionarUbicacionesModal('${p.id}')">📍 Gestionar Ubicaciones</button>
-                        ${isAdmin ? `<button class="btn btn-danger btn-xs" onclick="eliminarProducto('${p.id}')" style="margin-top:4px;">🗑️ Eliminar</button>` : ''}
+                        <button class="btn btn-purple btn-xs" onclick="verHistorialArticulo('${p.codigo}')" style="margin-top:4px;">📜 Historial</button>
+                        ${puedeEliminar ? `<button class="btn btn-danger btn-xs" onclick="eliminarProducto('${p.id}')" style="margin-top:4px;">🗑️ Eliminar</button>` : ''}
                     </td>
                 </tr>
             `}).join('') || '<tr><td colspan="8" class="empty-state">No se encontraron productos</td></tr>';
+        }
+
+        function verHistorialArticulo(codigoInterno) {
+            const movimientosArticulo = (appState.movements || []).filter(m => String(m.codigo).toLowerCase() === String(codigoInterno).toLowerCase() || (m.detalle && m.detalle.toLowerCase().includes(String(codigoInterno).toLowerCase())));
+
+            let html = `
+                <p style="font-size:0.8rem; margin-bottom:8px; color:#475569;">Historial completo de actualizaciones, recepciones y modificaciones para el código interno: <strong>${codigoInterno}</strong></p>
+                <div style="max-height:55vh; overflow-y:auto; border:1px solid #e2e8f0; border-radius:8px;">
+                    <table style="width:100%; font-size:0.65rem;">
+                        <thead>
+                            <tr style="background:#f1f5f9; position:sticky; top:0;">
+                                <th style="padding:6px;">Fecha y Hora</th>
+                                <th style="padding:6px;">Usuario</th>
+                                <th style="padding:6px;">Acción</th>
+                                <th style="padding:6px;">Detalle Específico</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            if (movimientosArticulo.length > 0) {
+                movimientosArticulo.slice().reverse().forEach(m => {
+                    html += `
+                        <tr>
+                            <td style="padding:6px; white-space:nowrap;">${m.fecha}</td>
+                            <td style="padding:6px;"><strong>${m.usuario}</strong></td>
+                            <td style="padding:6px;"><span class="badge" style="background:#e0e7ff; color:#3730a3;">${m.tipo}</span></td>
+                            <td style="padding:6px; text-align:left;">${m.detalle}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                html += `<tr><td colspan="4" class="empty-state">No hay registros de modificaciones específicos para este artículo.</td></tr>`;
+            }
+
+            html += `</tbody></table></div>`;
+
+            mostrarModal('📜 Historial Detallado por Artículo', html);
+            document.getElementById('modalActionBtn').style.display = 'none'; // Solo cerrar
         }
 
         function eliminarProducto(id) {
@@ -831,7 +869,7 @@
             const p = appState.products.find(x => x.id === id);
             appState.products = appState.products.filter(item => item.id !== id);
             guardarEstadoFirestore();
-            if(p) registrarHistorial('Eliminación de producto', p.codigo, `Eliminado ítem con códigos GTIN`);
+            if(p) registrarHistorial('Eliminación de producto', p.codigo, `Eliminado ítem con códigos GTIN / EAN`);
             mostrarToast('🗑️ Registro eliminado');
         }
 
@@ -908,7 +946,7 @@
                         id: newId, codigo: cod, gtins: gtins, glosa: glosa || cod, bodega: bodega, tipo: tipo, ubicaciones: [{ zona, anaquel, posicion }], estado: 'Almacenado'
                     });
                 }
-                registrarHistorial('Recepción y Almacenamiento', `${cod}`, `Asignado a [${tipo}] Zona ${zona}, Anaquel ${anaquel}, Pos. ${posicion}`);
+                registrarHistorial('Recepción y Almacenamiento', `${cod}`, `Ingresado nuevo ítem con GTINs [${gtins.join(', ')}] en Zona ${zona}, Anaquel ${anaquel}, Pos. ${posicion}`);
                 guardarEstadoFirestore();
                 cerrarModal();
                 mostrarToast('Producto almacenado con éxito');
@@ -998,12 +1036,14 @@
                 p.gtins = newGtins;
                 p.tipo = nuevoTipo;
 
+                let detalleMod = `Actualizados GTINs a [${newGtins.join(', ')}] y tipo [${nuevoTipo}]`;
                 if(anaquel && posicion) {
                     if(!p.ubicaciones) p.ubicaciones = [];
                     p.ubicaciones.push({ zona, anaquel, posicion });
+                    detalleMod += ` | Añadida ubicación Zona ${zona}, Anaquel ${anaquel}, Pos. ${posicion}`;
                 }
 
-                registrarHistorial('Actualización de Producto', `${p.codigo}`, `Actualizados códigos GTIN/EAN y/o ubicación`);
+                registrarHistorial('Actualización de Producto', `${p.codigo}`, detalleMod);
                 guardarEstadoFirestore();
                 gestionarUbicacionesModal(p.id); 
                 mostrarToast('✅ Datos actualizados con éxito');
