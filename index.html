@@ -161,7 +161,7 @@
     <div id="loginModal">
         <div class="login-box">
             <div class="hospital-logo">
-                <img src="https://oquiroz.github.io/Automatizaci%C3%B3n-Bodega/1000166962.png" alt="Banner Hospital San Juan de Dios" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'100\' viewBox=\'0 0 300 100\'%3E%3Crect width=\'300\' height=\'100\' fill=\'%23f1f5f9\' rx=\'8\'/%3E%3Ctext x=\'150\' y=\'55\' font-family=\'Arial\' font-size=\'14\' fill=\'%23333\' text-anchor=\'middle\' font-weight=\'bold\'%3EHospital San Juan de Dios%3C/text%3E%3C/svg%3E'">
+                <img src="./banner.png" alt="Banner Hospital San Juan de Dios" onerror="this.src='./1000166962_2.png';">
             </div>
             <div class="divider"></div>
             <h2>Automatización Almacenamiento<br><span style="font-size:0.9rem; color:var(--primary); font-weight:600;">"Diseñado por Mauricio Quiroz Ayala"</span></h2>
@@ -936,7 +936,7 @@
                     if(el) el.value = parsed.anaquel;
                 }
                 if(parsed.posicion) {
-                    const el = document.getElementById('mPosicion') || document.getElementById('nuevoPosicion');
+                    const el = document.getElementById('mPosicion') || document.getElementById('nuevaPosicion');
                     if(el) el.value = parsed.posicion;
                 }
                 mostrarToast('📍 Ubicación asignada por QR con éxito');
