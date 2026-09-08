@@ -233,7 +233,7 @@
             <div class="toolbar">
                 <div class="toolbar-left">
                     <button class="btn btn-orange btn-sm" id="btnRecepcionAlmacenar" onclick="abrirModalAlmacenamiento()">
-                        📥 recepción → Almacenar
+                        📥 Recepción → Almacenar
                     </button>
                 </div>
                 <div class="toolbar-right">
@@ -365,7 +365,7 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- SCRIPT DE SINCRONIZACIÓN EN TIEMPO REAL -->
+    <!-- SCRIPT DE SINCRONIZACIÓN Y GESTIÓN -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyB_F7itx3L67gDQ2EBaZaMT401lZG2MxEk",
@@ -454,7 +454,7 @@
                 verificarSesionGuardada();
                 renderAll();
             }, (error) => {
-                console.error("Error en sincronización en tiempo real: ", error);
+                console.error("Error en sincronización: ", error);
             });
         }
 
@@ -815,11 +815,9 @@
                 `).join('') || '<span style="color:#94a3b8;">Sin ubicaciones</span>';
 
                 if(!p.gtinEstados) p.gtinEstados = {};
+                // Círculos de estado ocultos en la vista general (se muestran solo al gestionar en el modal)
                 const gtinsList = (p.gtins || []).map(g => {
-                    const est = p.gtinEstados[g] || 'activo';
-                    const cssCl = est === 'inactivo' ? 'gtin-tag gtin-inactivo' : 'gtin-tag';
-                    const iconSt = est === 'inactivo' ? '🔴' : '🟢';
-                    return `<span class="${cssCl}" title="Estado: ${est}">${iconSt} ${g}</span>`;
+                    return `<span class="gtin-tag">${g}</span>`;
                 }).join(' ') || '<span style="color:#94a3b8;">Sin código</span>';
 
                 return `
@@ -1014,6 +1012,7 @@
             if(!p.gtinEstados) p.gtinEstados = {};
             currentGtins.forEach(g => { if(!p.gtinEstados[g]) p.gtinEstados[g] = 'activo'; });
 
+            // Círculos de estado (🟢/🔴) visibles únicamente dentro del modal de gestión
             mostrarModal('📍 Gestionar Códigos GS1 - GTIN/EAN y Ubicaciones', `
                 <p style="font-size:0.8rem; margin-bottom:4px;"><strong>${p.glosa}</strong> (Código Interno: ${p.codigo})</p>
                 <div style="margin-bottom:8px;">
@@ -1247,13 +1246,39 @@
             const file = event.target.files[0];
             if (!file) return;
             const targetBodega = document.getElementById('configSubirBodegaSelect').value;
+            
             const reader = new FileReader();
             reader.onload = function(e) {
-                if(!appState.layouts) appState.layouts = {};
-                appState.layouts[targetBodega] = e.target.result;
-                guardarEstadoFirestore();
-                cargarImagenLayout(currentWarehouse);
-                mostrarToast(`✅ Imagen de plano actualizada (${targetBodega})`);
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    let width = img.width;
+                    let height = img.height;
+                    const maxDim = 1000;
+                    if (width > height && width > maxDim) {
+                        height *= maxDim / width;
+                        width = maxDim;
+                    } else if (height > maxDim) {
+                        width *= maxDim / height;
+                        height = maxDim;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+
+                    if(!appState.layouts) appState.layouts = {};
+                    appState.layouts[targetBodega] = compressedDataUrl;
+                    
+                    guardarEstadoFirestore();
+                    cargarImagenLayout(currentWarehouse);
+                    mostrarToast(`✅ Imagen de plano optimizada y actualizada (${targetBodega})`);
+                };
             };
             reader.readAsDataURL(file);
         }
