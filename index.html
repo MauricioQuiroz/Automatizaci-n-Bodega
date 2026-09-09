@@ -32,20 +32,20 @@
         
         .app { width:100%; min-height:100vh; background:var(--surface); display:flex; flex-direction:column; }
 
-        /* LOGIN RESPONSIVE - Título más armónico */
-        #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:16px; overflow-y:auto; }
-        #loginModal .login-box { background:var(--surface); padding:0; border-radius:20px; max-width:400px; width:100%; box-shadow:0 20px 40px rgba(0,0,0,0.2); text-align:center; position:relative; z-index:2001; margin:auto; overflow:hidden; border:1px solid var(--border); }
-        #loginModal .login-box .hospital-logo img { width:100%; max-height:140px; object-fit:contain; display:block; margin:0 auto; background:#fff; }
-        .login-content-pad { padding: 10px 24px 24px 24px; }
-        .divider { width:40px; height:3px; background:var(--accent); margin:8px auto 14px; border-radius:3px; }
-        #loginModal h2 { margin-bottom:6px; font-size:0.95rem; color:var(--primary); font-weight:700; line-height: 1.3; }
-        #loginModal p { color:var(--text-muted); margin-bottom:16px; font-size:0.75rem; }
-        #loginModal label { display:block; font-weight:600; margin:0 0 4px; font-size:0.75rem; text-align:left; color:var(--text-muted); }
-        #loginModal input { width:100%; padding:11px 14px; border:1px solid var(--border); border-radius:10px; font-size:0.85rem; background:#fff; margin-bottom:10px; }
+        /* LOGIN RESPONSIVE - Tamaño y banner optimizados */
+        #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:20px; overflow-y:auto; }
+        #loginModal .login-box { background:var(--surface); padding:0; border-radius:22px; max-width:440px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.25); text-align:center; position:relative; z-index:2001; margin:auto; overflow:hidden; border:1px solid var(--border); }
+        #loginModal .login-box .hospital-logo img { width:100%; max-height:160px; object-fit:contain; display:block; margin:0 auto; background:#fff; }
+        .login-content-pad { padding: 14px 28px 28px 28px; }
+        .divider { width:45px; height:3px; background:var(--accent); margin:10px auto 16px; border-radius:3px; }
+        #loginModal h2 { margin-bottom:8px; font-size:1.05rem; color:var(--primary); font-weight:700; line-height: 1.3; }
+        #loginModal p { color:var(--text-muted); margin-bottom:18px; font-size:0.8rem; }
+        #loginModal label { display:block; font-weight:600; margin:0 0 6px; font-size:0.78rem; text-align:left; color:var(--text-muted); }
+        #loginModal input { width:100%; padding:12px 16px; border:1px solid var(--border); border-radius:10px; font-size:0.9rem; background:#fff; margin-bottom:12px; }
         #loginModal input:focus { outline:none; border-color:var(--accent); }
-        #loginModal .btn { width:100%; margin-top:4px; padding:12px; font-size:0.9rem; border-radius:10px; display:flex; align-items:center; justify-content:center; text-align:center; background:var(--primary); color:#fff; border:none; font-weight:600; cursor:pointer; }
-        .login-error { color:var(--danger); font-size:0.75rem; margin-top:6px; display:none; }
-        .forgot-link { display:inline-block; font-size:0.75rem; color:var(--accent); cursor:pointer; text-decoration:none; font-weight:600; }
+        #loginModal .btn { width:100%; margin-top:6px; padding:13px; font-size:0.95rem; border-radius:10px; display:flex; align-items:center; justify-content:center; text-align:center; background:var(--primary); color:#fff; border:none; font-weight:600; cursor:pointer; }
+        .login-error { color:var(--danger); font-size:0.78rem; margin-top:8px; display:none; }
+        .forgot-link { display:inline-block; font-size:0.78rem; color:var(--accent); cursor:pointer; text-decoration:none; font-weight:600; }
 
         /* HEADER MULTIDISPOSITIVO */
         header { background: #0f172a; color: #f8fafc; padding: 12px 20px; display: flex; flex-direction: column; gap: 10px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); }
@@ -113,7 +113,7 @@
             height: 16px;
         }
 
-        /* PROGRAMAS Y CATEGORÍAS - 2 Columnas y alineación perfecta */
+        /* PROGRAMAS Y CATEGORÍAS - 2 Columnas y alineación vertical central perfecta */
         .prog-column-box { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; align-items: stretch; }
         .prog-option-item { display: flex; align-items: center; justify-content: flex-start; gap: 10px; background: #fff; padding: 10px 12px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; font-size: 0.72rem; width: 100%; text-align: left; box-sizing: border-box; }
         .prog-option-item input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; margin: 0; flex-shrink: 0; align-self: center; position: static; top: auto; }
@@ -121,7 +121,6 @@
         .prog-cell-inventario { text-align: center !important; }
         .prog-cell-inventario .prog-badges-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 100%; }
 
-        /* Estilos dinámicos y armonizados para etiquetas de programas / categorías */
         .badge-prog { display: inline-block; font-size: 0.7rem; font-weight: 600; white-space: nowrap; padding: 3px 8px; border-radius: 4px; text-align: left; }
         .badge-frio { background:#e0f2fe; color:#0284c7; border:1px solid #bae6fd; }
         .badge-dac { background:#ffe4e6; color:#e11d48; border:1px solid #fecdd3; }
@@ -197,7 +196,7 @@
         /* MODALES */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:16px; overflow-y:auto; }
         .modal.active { display:flex; }
-        .modal-content { background:#ffffff; border-radius:12px; padding:24px 24px 20px 24px; max-width:760px; width:100%; max-height:85vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.2); border:1px solid var(--border); text-align: left; margin-bottom: 10px; }
+        .modal-content { background:#ffffff; border-radius:12px; padding:24px 24px 20px 24px; max-width:840px; width:100%; max-height:88vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.2); border:1px solid var(--border); text-align: left; margin-bottom: 10px; }
         .modal-content label { display:block; margin:10px 0 4px; font-weight:500; font-size:0.75rem; color:var(--text-muted); text-align: left; }
         .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.85rem; }
         .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
@@ -264,12 +263,12 @@
     <!-- LOGIN -->
     <div id="loginModal">
         <div class="login-box">
-            <div class="hospital-logo" style="padding: 16px 20px 0 20px; background: #fff;">
-                <img src="./banner.png" alt="Banner Hospital San Juan de Dios" style="width: 100%; max-height: 140px; object-fit: contain; border-radius: 12px;" onerror="this.src='./1000166962_2.png';">
+            <div class="hospital-logo" style="padding: 18px 24px 0 24px; background: #fff;">
+                <img src="./banner.png" alt="Banner Hospital San Juan de Dios" style="width: 100%; max-height: 160px; object-fit: contain; border-radius: 12px;" onerror="this.src='./1000166962_2.png';">
             </div>
             <div class="login-content-pad">
                 <div class="divider"></div>
-                <h2 style="font-size: 0.88rem; font-weight: 700; color: var(--primary); line-height: 1.3; margin-bottom: 6px;">Sistema de Automatización de Almacenamiento</h2>
+                <h2 style="font-size: 1.05rem; font-weight: 700; color: var(--primary); line-height: 1.3; margin-bottom: 8px;">Sistema de Automatización de Almacenamiento</h2>
                 <p>Ingresa tus credenciales de acceso.</p>
                 <label>Usuario</label>
                 <input type="text" id="loginUser" placeholder="Nombre de usuario">
@@ -279,7 +278,7 @@
                 <button class="btn btn-primary" onclick="handleLogin()">Ingresar</button>
                 <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 8px; align-items: center;">
                     <span class="forgot-link" onclick="abrirModalRecuperarPass()">¿Olvidaste tu contraseña?</span>
-                    <span style="font-size: 0.68rem; color: var(--text-muted); font-weight: 500; font-style: italic;">"Diseñado por Mauricio Quiroz Ayala"</span>
+                    <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 500; font-style: italic;">"Diseñado por Mauricio Quiroz Ayala"</span>
                 </div>
             </div>
         </div>
@@ -380,13 +379,13 @@
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 13%; text-align:left; padding-left:14px;"><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)"> Cód. Interno</th>
-                                <th style="width: 11%;">GTIN/EAN</th>
-                                <th style="width: 17%;">Glosa</th>
-                                <th style="width: 8%;">Bodega</th>
-                                <th style="width: 12%; text-align:center;">Programas / Categorías</th>
-                                <th style="width: 9%; text-align:center;">Jerarquía</th>
-                                <th style="width: 15%;">Ubicación</th>
+                                <th style="width: 12%; text-align:left; padding-left:14px;"><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)"> Cód. Interno</th>
+                                <th style="width: 14%;">GTIN/EAN</th>
+                                <th style="width: 20%;">Glosa</th>
+                                <th style="width: 10%;">Bodega</th>
+                                <th style="width: 16%; text-align:center;">Programas / Categorías</th>
+                                <th style="width: 11%; text-align:center;">Jerarquía</th>
+                                <th style="width: 17%;">Ubicación</th>
                                 <th style="width: 8%; text-align:center;">Estado</th>
                                 <th id="thAccionsInvHead" style="width: 9%; text-align:center;">Acciones</th>
                             </tr>
@@ -565,18 +564,18 @@
         const dbFirestore = firebase.firestore();
 
         const DEFAULT_PROGRAMAS_CATALOG = [
-            { id: 'controlado', nombre: 'Controlados', badgeClass: 'badge-controlado' },
-            { id: 'frio', nombre: 'Cámara de Frío', badgeClass: 'badge-frio' },
-            { id: 'pm', nombre: 'Programa Ministerial', badgeClass: 'badge-pm' },
-            { id: 'lrs', nombre: 'Ley Ricarte Soto', badgeClass: 'badge-lrs' },
-            { id: 'vih', nombre: 'VIH', badgeClass: 'badge-vih' },
-            { id: 'sueros', nombre: 'Sueros', badgeClass: 'badge-sueros' },
-            { id: 'inflamable', nombre: 'Inflamable', badgeClass: 'badge-inflamable' },
-            { id: 'comp', nombre: 'Comp - Comp rec', badgeClass: 'badge-comp' },
-            { id: 'inyectable', nombre: 'Inyectable', badgeClass: 'badge-inyectable' },
-            { id: 'magistral', nombre: 'Preparación magistral', badgeClass: 'badge-magistral' },
-            { id: 'mezcla', nombre: 'Mezcla (oncológico)', badgeClass: 'badge-mezcla' },
-            { id: 'unguentos', nombre: 'Unguentos-pomadas-cremas-geles-pastas', badgeClass: 'badge-unguentos' }
+            { id: 'controlado', nombre: 'Controlados', badgeClass: 'badge-controlado', color: '#0d9488' },
+            { id: 'frio', nombre: 'Cámara de Frío', badgeClass: 'badge-frio', color: '#0284c7' },
+            { id: 'pm', nombre: 'Programa Ministerial', badgeClass: 'badge-pm', color: '#7c3aed' },
+            { id: 'lrs', nombre: 'Ley Ricarte Soto', badgeClass: 'badge-lrs', color: '#d97706' },
+            { id: 'vih', nombre: 'VIH', badgeClass: 'badge-vih', color: '#a21caf' },
+            { id: 'sueros', nombre: 'Sueros', badgeClass: 'badge-sueros', color: '#0369a1' },
+            { id: 'inflamable', nombre: 'Inflamable', badgeClass: 'badge-inflamable', color: '#c2410c' },
+            { id: 'comp', nombre: 'Comp - Comp rec', badgeClass: 'badge-comp', color: '#334155' },
+            { id: 'inyectable', nombre: 'Inyectable', badgeClass: 'badge-inyectable', color: '#15803d' },
+            { id: 'magistral', nombre: 'Preparación magistral', badgeClass: 'badge-magistral', color: '#115e59' },
+            { id: 'mezcla', nombre: 'Mezcla (oncológico)', badgeClass: 'badge-mezcla', color: '#be185d' },
+            { id: 'unguentos', nombre: 'Unguentos-pomadas-cremas-geles-pastas', badgeClass: 'badge-unguentos', color: '#854d0e' }
         ];
 
         let appState = {
@@ -1399,7 +1398,8 @@
 
                 catalogoProg.forEach(cp => {
                     if (prog[cp.id]) {
-                        progHtml += `<span class="badge-prog ${cp.badgeClass || 'badge-frio'}">${cp.nombre}</span>`;
+                        const customStyle = cp.color ? `background: ${cp.color}15; color: ${cp.color}; border: 1px solid ${cp.color}40;` : '';
+                        progHtml += `<span class="badge-prog ${cp.badgeClass || 'badge-frio'}" style="${customStyle}">${cp.nombre}</span>`;
                         activeCount++;
                     }
                 });
@@ -1436,7 +1436,8 @@
                         </div>
                     </td>` : ''}
                 </tr>
-            `}).join('') || `<tr><td colspan="${!esInvitado ? 9 : 8}" class="empty-state">No se encontraron productos registrados</td></tr>`;
+            `;
+            }).join('') || `<tr><td colspan="${!esInvitado ? 9 : 8}" class="empty-state">No se encontraron productos registrados</td></tr>`;
         }
 
         function toggleSeleccionarTodoInventario(masterChk) {
@@ -1551,12 +1552,15 @@
             const erpBgStyle = erpActive ? '#ffffff' : '#f1f5f9';
 
             const catalogoProg = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
-            let progCheckboxesHtml = catalogoProg.map(cp => `
+            let progCheckboxesHtml = catalogoProg.map(cp => {
+                const customStyle = cp.color ? `background: ${cp.color}15; color: ${cp.color}; border: 1px solid ${cp.color}40;` : '';
+                return `
                 <label class="prog-option-item">
                     <input type="checkbox" id="mProg_${cp.id}" onchange="verificarAlertasCheckboxesForm()"> 
-                    <span class="badge-prog ${cp.badgeClass || 'badge-frio'}">${cp.nombre}</span>
+                    <span class="badge-prog ${cp.badgeClass || 'badge-frio'}" style="${customStyle}">${cp.nombre}</span>
                 </label>
-            `).join('');
+            `;
+            }).join('');
 
             mostrarModal('Crear Nuevo Registro y Almacenamiento', `
                 <div style="margin-bottom:14px; background:#f8fafc; padding:16px; border-radius:var(--radius); border:1px solid var(--border); text-align: left;">
@@ -1799,7 +1803,8 @@
                     const codigoPuro = limpiarYExtraerGTIN(decodedText);
                     const textarea = document.getElementById('reubGtinsInput');
                     if(textarea) {
-                        textarea.value = textarea.value ? textarea.value + ', ' + codigoPuro : codigoPuro;
+                        const currentVal = textarea.value.trim();
+                        textarea.value = currentVal ? currentVal + ', ' + codigoPuro + ', ' : codigoPuro + ', ';
                     }
                     mostrarToast(`GTIN capturado: ` + codigoPuro);
                     detenerEscanerQR();
@@ -1882,12 +1887,15 @@
             const prog = p.programas || {};
             const catalogoProg = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
 
-            let editProgHtml = catalogoProg.map(cp => `
+            let editProgHtml = catalogoProg.map(cp => {
+                const customStyle = cp.color ? `background: ${cp.color}15; color: ${cp.color}; border: 1px solid ${cp.color}40;` : '';
+                return `
                 <label class="prog-option-item">
                     <input type="checkbox" id="editProg_${cp.id}" ${prog[cp.id] ? 'checked' : ''} onchange="verificarAlertasCheckboxesForm()"> 
-                    <span class="badge-prog ${cp.badgeClass || 'badge-frio'}">${cp.nombre}</span>
+                    <span class="badge-prog ${cp.badgeClass || 'badge-frio'}" style="${customStyle}">${cp.nombre}</span>
                 </label>
-            `).join('');
+            `;
+            }).join('');
 
             const erpData = p.erpData || { lote: '', vencimiento: '', serie: '', factorEmpaque: 1 };
 
@@ -2369,9 +2377,12 @@
             if(!container) return;
 
             const catalogo = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
-            container.innerHTML = catalogo.map(cp => `
+            container.innerHTML = catalogo.map(cp => {
+                const dotColor = cp.color || '#0284c7';
+                return `
                 <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:8px 12px; border-radius:var(--radius); border:1px solid var(--border); font-size:0.75rem;">
                     <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="display:inline-block; width:12px; height:12px; background:${dotColor}; border-radius:50%;"></span>
                         <span class="badge-prog ${cp.badgeClass || 'badge-frio'}">${cp.nombre}</span>
                         <span style="color:var(--text-muted); font-size:0.65rem;">(ID: ${cp.id})</span>
                     </div>
@@ -2380,12 +2391,13 @@
                         <button class="btn btn-danger btn-xs" onclick="eliminarProgramaCRUD('${cp.id}')">Eliminar</button>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
 
         function abrirModalProgramaCRUD(idEditar = null) {
             const catalogo = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
-            let progObj = { id: '', nombre: '', badgeClass: 'badge-frio' };
+            let progObj = { id: '', nombre: '', badgeClass: 'badge-frio', color: '#0284c7' };
             let esEdicion = false;
 
             if(idEditar) {
@@ -2417,16 +2429,20 @@
                 <input id="crudProgId" value="${progObj.id}" ${esEdicion ? 'readonly style="background:#f1f5f9;"' : ''} placeholder="Ej: oncologia">
                 <label style="margin-top:8px;">Nombre Visible</label>
                 <input id="crudProgNombre" value="${progObj.nombre}" placeholder="Ej: Oncología">
-                <label style="margin-top:8px;">Estilo Visual / Color</label>
-                <select id="crudProgBadge" style="padding:9px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem; width:100%;">
-                    ${badgeOptions.map(b => `<option value="${b.val}" ${progObj.badgeClass === b.val ? 'selected' : ''}>${b.label}</option>`).join('')}
-                </select>
+                <label style="margin-top:8px;">Estilo Visual / Color de Referencia (Pantone)</label>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <input id="crudProgColor" type="color" value="${progObj.color || '#0284c7'}" style="width:60px; height:38px; padding:2px; cursor:pointer;">
+                    <select id="crudProgBadge" style="padding:9px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem; flex:1;">
+                        ${badgeOptions.map(b => `<option value="${b.val}" ${progObj.badgeClass === b.val ? 'selected' : ''}>${b.label}</option>`).join('')}
+                    </select>
+                </div>
             `);
 
             modalCallback = () => {
                 const idVal = document.getElementById('crudProgId').value.trim().toLowerCase().replace(/\s+/g, '_');
                 const nombreVal = document.getElementById('crudProgNombre').value.trim();
                 const badgeVal = document.getElementById('crudProgBadge').value;
+                const colorVal = document.getElementById('crudProgColor').value;
 
                 if(!idVal || !nombreVal) return alert('Completa todos los campos.');
 
@@ -2435,11 +2451,11 @@
                 if(esEdicion) {
                     const idx = appState.programasCatalog.findIndex(x => x.id === idEditar);
                     if(idx !== -1) {
-                        appState.programasCatalog[idx] = { id: idVal, nombre: nombreVal, badgeClass: badgeVal };
+                        appState.programasCatalog[idx] = { id: idVal, nombre: nombreVal, badgeClass: badgeVal, color: colorVal };
                     }
                 } else {
                     if(appState.programasCatalog.some(x => x.id === idVal)) return alert('Ya existe un programa con ese ID.');
-                    appState.programasCatalog.push({ id: idVal, nombre: nombreVal, badgeClass: badgeVal });
+                    appState.programasCatalog.push({ id: idVal, nombre: nombreVal, badgeClass: badgeVal, color: colorVal });
                 }
 
                 guardarEstadoFirestore();
@@ -2609,7 +2625,7 @@
                 <tr>
                     <td><strong>${w.id}</strong></td>
                     <td>${w.nombre}</td>
-                    <td><span style="display:inline-block; width:12px; height:12px; background:${w.color}; border-radius:2px;"></span></td>
+                    <td><span style="display:inline-block; width:16px; height:16px; background:${w.color}; border-radius:4px; border:1px solid rgba(0,0,0,0.1);"></span></td>
                     ${isAdmin ? `
                     <td style="text-align:center;">
                         <div class="acciones-cell">
@@ -2626,7 +2642,7 @@
                 <div class="form-grid">
                     <div class="full-width"><label>ID (Ej: Farmacos2)</label><input id="bId" placeholder="ID único"></div>
                     <div class="full-width"><label>Nombre</label><input id="bNombre" placeholder="Nombre de bodega"></div>
-                    <div><label>Color</label><input id="bColor" type="color" value="#0284c7" style="height:38px; padding:2px;"></div>
+                    <div><label>Color / Tono (Pantone)</label><input id="bColor" type="color" value="#0284c7" style="height:38px; padding:2px; cursor:pointer;"></div>
                 </div>
             `);
             modalCallback = () => {
@@ -2652,7 +2668,7 @@
             mostrarModal('Editar Bodega', `
                 <div class="form-grid">
                     <div class="full-width"><label>Nombre</label><input id="bNombre" value="${w.nombre}"></div>
-                    <div><label>Color</label><input id="bColor" type="color" value="${w.color || '#0284c7'}" style="height:38px; padding:2px;"></div>
+                    <div><label>Color / Tono (Pantone)</label><input id="bColor" type="color" value="${w.color || '#0284c7'}" style="height:38px; padding:2px; cursor:pointer;"></div>
                 </div>
             `);
             modalCallback = () => {
