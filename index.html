@@ -32,13 +32,13 @@
         
         .app { width:100%; min-height:100vh; background:var(--surface); display:flex; flex-direction:column; }
 
-        /* LOGIN RESPONSIVE */
+        /* LOGIN RESPONSIVE - Título más armónico */
         #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:16px; overflow-y:auto; }
         #loginModal .login-box { background:var(--surface); padding:0; border-radius:20px; max-width:400px; width:100%; box-shadow:0 20px 40px rgba(0,0,0,0.2); text-align:center; position:relative; z-index:2001; margin:auto; overflow:hidden; border:1px solid var(--border); }
         #loginModal .login-box .hospital-logo img { width:100%; max-height:140px; object-fit:contain; display:block; margin:0 auto; background:#fff; }
         .login-content-pad { padding: 10px 24px 24px 24px; }
         .divider { width:40px; height:3px; background:var(--accent); margin:8px auto 14px; border-radius:3px; }
-        #loginModal h2 { margin-bottom:6px; font-size:1.1rem; color:var(--primary); font-weight:700; line-height: 1.3; }
+        #loginModal h2 { margin-bottom:6px; font-size:0.95rem; color:var(--primary); font-weight:700; line-height: 1.3; }
         #loginModal p { color:var(--text-muted); margin-bottom:16px; font-size:0.75rem; }
         #loginModal label { display:block; font-weight:600; margin:0 0 4px; font-size:0.75rem; text-align:left; color:var(--text-muted); }
         #loginModal input { width:100%; padding:11px 14px; border:1px solid var(--border); border-radius:10px; font-size:0.85rem; background:#fff; margin-bottom:10px; }
@@ -113,10 +113,10 @@
             height: 16px;
         }
 
-        /* PROGRAMAS Y ETIQUETAS */
-        .prog-column-box { display: flex; flex-direction: column; gap: 4px; width: 100%; align-items: stretch; }
-        .prog-option-item { display: flex; align-items: center; justify-content: flex-start; gap: 14px; background: #fff; padding: 12px 16px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; font-size: 0.75rem; width: 100%; text-align: left; box-sizing: border-box; }
-        .prog-option-item input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; margin: 0; flex-shrink: 0; align-self: center; }
+        /* PROGRAMAS Y CATEGORÍAS - 2 Columnas y alineación perfecta */
+        .prog-column-box { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; align-items: stretch; }
+        .prog-option-item { display: flex; align-items: center; justify-content: flex-start; gap: 10px; background: #fff; padding: 10px 12px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; font-size: 0.72rem; width: 100%; text-align: left; box-sizing: border-box; }
+        .prog-option-item input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; margin: 0; flex-shrink: 0; align-self: center; position: static; top: auto; }
         
         .prog-cell-inventario { text-align: center !important; }
         .prog-cell-inventario .prog-badges-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 100%; }
@@ -159,13 +159,13 @@
 
         .gtin-tag { font-family:monospace; font-size:0.65rem; background:#fefce8; color:#a16207; padding:2px 4px; border-radius:3px; font-weight:500; border:1px solid #fef08a; white-space:nowrap; display:inline-block; margin:1px; }
 
-        /* ACCIONES */
-        .acciones-cell { display: inline-flex; gap: 4px; align-items: center; justify-content: center; }
-        .btn-action-primary { background: #0284c7; color: #ffffff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: background 0.2s; white-space: nowrap; }
+        /* ACCIONES - 3 Filas apiladas en columna, dimensiones ajustadas */
+        .acciones-cell { display: flex; flex-direction: column; gap: 4px; align-items: stretch; justify-content: center; width: 85px; margin: 0 auto; }
+        .btn-action-primary { background: #0284c7; color: #ffffff; border: none; padding: 4px 6px; border-radius: 4px; font-size: 0.62rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; white-space: nowrap; width: 100%; }
         .btn-action-primary:hover { background: #0369a1; }
-        .btn-action-secondary { background: #f8fafc; color: #475569; border: 1px solid var(--border); padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.2s; white-space: nowrap; }
+        .btn-action-secondary { background: #f8fafc; color: #475569; border: 1px solid var(--border); padding: 4px 6px; border-radius: 4px; font-size: 0.62rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; white-space: nowrap; width: 100%; }
         .btn-action-secondary:hover { background: #f1f5f9; color: var(--text-main); border-color: #94a3b8; }
-        .btn-action-danger { background: #e11d48; color: #ffffff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; }
+        .btn-action-danger { background: #e11d48; color: #ffffff; border: none; padding: 4px 6px; border-radius: 4px; font-size: 0.62rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; white-space: nowrap; width: 100%; }
         .btn-action-danger:hover { background: #be123c; }
 
         /* BOTONES */
@@ -197,7 +197,7 @@
         /* MODALES */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:16px; overflow-y:auto; }
         .modal.active { display:flex; }
-        .modal-content { background:#ffffff; border-radius:12px; padding:24px 24px 20px 24px; max-width:720px; width:100%; max-height:85vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.2); border:1px solid var(--border); text-align: left; margin-bottom: 10px; }
+        .modal-content { background:#ffffff; border-radius:12px; padding:24px 24px 20px 24px; max-width:760px; width:100%; max-height:85vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.2); border:1px solid var(--border); text-align: left; margin-bottom: 10px; }
         .modal-content label { display:block; margin:10px 0 4px; font-weight:500; font-size:0.75rem; color:var(--text-muted); text-align: left; }
         .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.85rem; }
         .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
@@ -269,7 +269,7 @@
             </div>
             <div class="login-content-pad">
                 <div class="divider"></div>
-                <h2>Sistema de Automatización de Almacenamiento</h2>
+                <h2 style="font-size: 0.88rem; font-weight: 700; color: var(--primary); line-height: 1.3; margin-bottom: 6px;">Sistema de Automatización de Almacenamiento</h2>
                 <p>Ingresa tus credenciales de acceso.</p>
                 <label>Usuario</label>
                 <input type="text" id="loginUser" placeholder="Nombre de usuario">
@@ -388,7 +388,7 @@
                                 <th style="width: 9%; text-align:center;">Jerarquía</th>
                                 <th style="width: 15%;">Ubicación</th>
                                 <th style="width: 8%; text-align:center;">Estado</th>
-                                <th id="thAccionsInvHead" style="width: 7%; text-align:center;">Acciones</th>
+                                <th id="thAccionsInvHead" style="width: 9%; text-align:center;">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="inventarioUnificadoBody"></tbody>
@@ -564,7 +564,6 @@
         }
         const dbFirestore = firebase.firestore();
 
-        // Lista predeterminada de programas y categorías especiales solicitadas
         const DEFAULT_PROGRAMAS_CATALOG = [
             { id: 'controlado', nombre: 'Controlados', badgeClass: 'badge-controlado' },
             { id: 'frio', nombre: 'Cámara de Frío', badgeClass: 'badge-frio' },
@@ -1134,7 +1133,6 @@
             reader.readAsArrayBuffer(file);
         }
 
-        // Función para parsear la columna concatenada "UBICACION" (ej. "Zona G - Full Space 7 - Pos. C1")
         function parsearUbicacionConcatenada(ubicacionStr) {
             if (!ubicacionStr || String(ubicacionStr).trim() === '' || String(ubicacionStr).toUpperCase() === 'SIN ASIGNACIÓN') {
                 return { zona: 'SIN ASIGNACIÓN', anaquel: 'Anaquel 1', posicion: '' };
@@ -1144,10 +1142,8 @@
             let anaquel = 'Anaquel 1';
             let posicion = '';
 
-            // Intentar separar por guiones o descriptores típicos
             const partes = raw.split(/[-–—]/).map(p => p.trim());
             
-            // Buscar zona (ej. "Zona G" o solo "G")
             for (let p of partes) {
                 const matchZ = p.match(/zona\s*([a-j0-9]+)/i) || p.match(/^([a-j])$/i);
                 if (matchZ) {
@@ -1156,11 +1152,9 @@
                 }
             }
             if (zona === 'SIN ASIGNACIÓN' && partes.length > 0) {
-                // Asumir que la primera parte si es letra/corta es la zona
                 if (partes[0].length <= 3) zona = partes[0].toUpperCase();
             }
 
-            // Buscar posición (ej. "Pos. C1" o "C1")
             for (let p of partes) {
                 const matchP = p.match(/pos\.?\s*([a-z0-9]+)/i);
                 if (matchP) {
@@ -1170,7 +1164,6 @@
                 }
             }
 
-            // El anaquel/rack suele ser la parte intermedia (ej. "Full Space 7" o "Anaquel 1")
             const partesAnaquel = partes.filter(p => {
                 const up = p.toUpperCase();
                 return !up.includes('ZONA') && !up.includes('POS.') && up !== zona && up !== posicion;
@@ -1257,7 +1250,6 @@
                             let gtinEstados = {};
                             gtins.forEach(g => { gtinEstados[g] = 'activo'; });
 
-                            // Detección de programas / categorías a partir de la columna "Categoria" o glosa o nombre de pestaña
                             const catRawExcel = String(row[keys.find(k => /CATEGORIA|PROGRAMA|TIPO_PROGRAMA|NORMATIVA/i.test(k))] || '').toLowerCase();
                             const catText = catRawExcel + ' ' + glosa.toLowerCase() + ' ' + sheetName.toLowerCase();
 
@@ -1527,7 +1519,6 @@
             }
         }
 
-        // Verificador de alertas al capturar / ingresar códigos o glosas
         function verificarAlertaEscaneoManual(glosaText) {
             const alertaBox = document.getElementById('alertaEscaneoBox');
             if(!alertaBox) return;
@@ -1540,7 +1531,6 @@
             if(txt.includes('RICARTE') || txt.includes('LRS')) alertas.push('🏷️ Ley Ricarte Soto');
             if(txt.includes('VIH')) alertas.push('🔬 VIH');
 
-            // Combinaciones especiales en Cámara de Frío
             const esFrio = txt.includes('FRIO') || txt.includes('FRÍO') || txt.includes('REFRIGERADO');
             if(esFrio && (txt.includes('RICARTE') || txt.includes('LRS'))) alertas.push('⚡ Combinación: Cámara de Frío + Ley Ricarte Soto');
             if(esFrio && (txt.includes('MINISTERIAL') || txt.includes('PROG MIN'))) alertas.push('⚡ Combinación: Cámara de Frío + Programa Ministerial');
@@ -1617,7 +1607,7 @@
                     <div><label>Jerarquía / Tipo</label><select id="mTipo"><option value="Unidad Comercial">Unidad Comercial</option><option value="Unidad Máster">Unidad Máster</option><option value="Unidad Mínima / Unidosis">Unidad Mínima / Unidosis</option></select></div>
                     
                     <div class="full-width" style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); text-align: left;">
-                        <label style="margin-bottom:10px; font-weight:600; color:var(--text-main); font-size:0.75rem; text-align: left;">Programas y Categorías Especiales:</label>
+                        <label style="margin-bottom:10px; font-weight:600; color:var(--text-main); font-size:0.75rem; text-align: left;">Programas y Categorías Especiales (2 Columnas):</label>
                         <div class="prog-column-box">
                             ${progCheckboxesHtml}
                         </div>
@@ -1712,7 +1702,6 @@
         }
 
         function verificarAlertasCheckboxesForm() {
-            // Verificar si hay combinaciones de Cámara de Frío con LRS, PM o Mezcla
             const chkFrio = document.getElementById('mProg_frio') || document.getElementById('editProg_frio');
             const chkLrs = document.getElementById('mProg_lrs') || document.getElementById('editProg_lrs');
             const chkPm = document.getElementById('mProg_pm') || document.getElementById('editProg_pm');
@@ -1956,7 +1945,7 @@
                 </select>
 
                 <div style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:12px; text-align: left;">
-                    <label style="margin-bottom:10px; font-weight:600; font-size:0.75rem; text-align: left;">Programas y Alertas Especiales:</label>
+                    <label style="margin-bottom:10px; font-weight:600; font-size:0.75rem; text-align: left;">Programas y Alertas Especiales (2 Columnas):</label>
                     <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fef3c7; border:1px solid #fde68a; padding:10px; border-radius:var(--radius); font-size:0.75rem; color:#b45309; margin-bottom:8px;"></div>
                     <div class="prog-column-box">
                         ${editProgHtml}
@@ -2375,7 +2364,6 @@
             cerrarModal();
         }
 
-        // CRUD de Programas / Categorías Especiales en Configuración
         function renderListaProgramasConfig() {
             const container = document.getElementById('listaProgramasConfigContainer');
             if(!container) return;
