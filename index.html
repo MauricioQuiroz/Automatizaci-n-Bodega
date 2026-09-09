@@ -85,7 +85,7 @@
         .tab-content { display:none; padding:28px 24px; width:100%; max-width:1400px; margin:0 auto; flex:1; }
         .tab-content.active { display:block; }
 
-        /* CARD GRID CON TONOS AZULES */
+        /* CARD GRID */
         .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:16px; margin-bottom:24px; width:100%; }
         .card { background:#ffffff; padding:20px; border-radius:var(--radius); text-align:left; border:1px solid var(--border); box-shadow:0 2px 4px rgba(0,0,0,0.02); position:relative; overflow:hidden; }
         .card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:#64748b; }
@@ -96,7 +96,7 @@
         .card .number { font-size:1.4rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; line-height: 1.2; word-break: break-word; }
         .card .label { color:var(--text-muted); font-size:0.7rem; margin-top:6px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
 
-        /* TABLAS Y CONTENEDORES RESPONSIVE SIN MARCOS NI SOLAPAMIENTO */
+        /* TABLAS Y CONTENEDORES RESPONSIVE */
         .table-wrap { width:100%; }
         .table-container { max-height:65vh; overflow-y:auto; overflow-x:auto; background:transparent; width:100%; }
         table { width:100%; border-collapse:collapse; font-size:0.75rem; table-layout: fixed; }
@@ -114,19 +114,28 @@
         }
 
         /* PROGRAMAS Y ETIQUETAS */
-        .prog-column-box { display: flex; flex-direction: column; gap: 8px; width: 100%; align-items: stretch; }
+        .prog-column-box { display: flex; flex-direction: column; gap: 4px; width: 100%; align-items: stretch; }
         .prog-option-item { display: flex; align-items: center; justify-content: flex-start; gap: 14px; background: #fff; padding: 12px 16px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; font-size: 0.75rem; width: 100%; text-align: left; box-sizing: border-box; }
         .prog-option-item input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; margin: 0; flex-shrink: 0; align-self: center; }
         
         .prog-cell-inventario { text-align: center !important; }
         .prog-cell-inventario .prog-badges-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 100%; }
 
+        /* Estilos dinámicos y armonizados para etiquetas de programas / categorías */
         .badge-prog { display: inline-block; font-size: 0.7rem; font-weight: 600; white-space: nowrap; padding: 3px 8px; border-radius: 4px; text-align: left; }
         .badge-frio { background:#e0f2fe; color:#0284c7; border:1px solid #bae6fd; }
         .badge-dac { background:#ffe4e6; color:#e11d48; border:1px solid #fecdd3; }
         .badge-lrs { background:#fef3c7; color:#d97706; border:1px solid #fde68a; }
         .badge-pm { background:#f3e8ff; color:#7c3aed; border:1px solid #e9d5ff; }
         .badge-controlado { background:#ccfbf1; color:#0d9488; border:1px solid #99f6e4; }
+        .badge-vih { background:#fae8ff; color:#a21caf; border:1px solid #f5d0fe; }
+        .badge-sueros { background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; }
+        .badge-inflamable { background:#ffedd5; color:#c2410c; border:1px solid #fed7aa; }
+        .badge-comp { background:#f1f5f9; color:#334155; border:1px solid #cbd5e1; }
+        .badge-inyectable { background:#dcfce7; color:#15803d; border:1px solid #bbf7d0; }
+        .badge-magistral { background:#ccfbf1; color:#115e59; border:1px solid #99f6e4; }
+        .badge-mezcla { background:#fce7f3; color:#be185d; border:1px solid #fbcfe8; }
+        .badge-unguentos { background:#fef9c3; color:#854d0e; border:1px solid #fef08a; }
 
         .badge { display:inline-block; padding:3px 10px; border-radius:50px; font-size:0.65rem; font-weight:500; }
         .badge-admin { background:#ffe4e6; color:#be123c; }
@@ -150,7 +159,7 @@
 
         .gtin-tag { font-family:monospace; font-size:0.65rem; background:#fefce8; color:#a16207; padding:2px 4px; border-radius:3px; font-weight:500; border:1px solid #fef08a; white-space:nowrap; display:inline-block; margin:1px; }
 
-        /* ACCIONES (COMPACTAS) */
+        /* ACCIONES */
         .acciones-cell { display: inline-flex; gap: 4px; align-items: center; justify-content: center; }
         .btn-action-primary { background: #0284c7; color: #ffffff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: background 0.2s; white-space: nowrap; }
         .btn-action-primary:hover { background: #0369a1; }
@@ -216,7 +225,6 @@
             }
         }
 
-        /* MEDIA QUERIES RESPONSIVE */
         @media (min-width: 1024px) {
             .table-container { overflow-x: hidden !important; }
             table { table-layout: fixed; width: 100%; }
@@ -376,7 +384,7 @@
                                 <th style="width: 11%;">GTIN/EAN</th>
                                 <th style="width: 17%;">Glosa</th>
                                 <th style="width: 8%;">Bodega</th>
-                                <th style="width: 12%; text-align:center;">Programas</th>
+                                <th style="width: 12%; text-align:center;">Programas / Categorías</th>
                                 <th style="width: 9%; text-align:center;">Jerarquía</th>
                                 <th style="width: 15%;">Ubicación</th>
                                 <th style="width: 8%; text-align:center;">Estado</th>
@@ -455,12 +463,24 @@
             <h3 style="font-size:0.9rem; font-weight:600; margin-bottom:16px; text-align: left;">Configuración del Sistema</h3>
             <div style="max-width:720px; display:flex; flex-direction:column; gap:16px; text-align: left;">
                 
-                <!-- INTERRUPTOR DE INTEGRACIÓN ERP (BLOQUEO / DESBLOQUEO GLOBAL) -->
+                <!-- GESTIÓN DINÁMICA DE PROGRAMAS Y CATEGORÍAS (CRUD) -->
+                <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--accent);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <div>
+                            <label style="font-weight:600; color:var(--text-main); font-size:0.85rem;">Gestión de Programas y Categorías Especiales</label>
+                            <p style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">Crea, edita o elimina los programas y categorías disponibles para el inventario.</p>
+                        </div>
+                        <button class="btn btn-primary btn-xs" onclick="abrirModalProgramaCRUD()">+ Nuevo Programa</button>
+                    </div>
+                    <div id="listaProgramasConfigContainer" style="display:flex; flex-direction:column; gap:6px; margin-top:10px; max-height:180px; overflow-y:auto; padding:4px;"></div>
+                </div>
+
+                <!-- INTEGRACIÓN ERP -->
                 <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--success);">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <div>
-                            <label style="font-weight:600; color:var(--text-main); text-align: left; font-size:0.85rem;">Módulo de Integración ERP (Trazabilidad Avanzada)</label>
-                            <p style="font-size:0.7rem; color:var(--text-muted); margin-top:2px; text-align: left;">Habilita o deshabilita globalmente los campos de lotes, vencimientos, series y factores de empaque en todo el sistema.</p>
+                            <label style="font-weight:600; color:var(--text-main); font-size:0.85rem;">Módulo de Integración ERP (Trazabilidad Avanzada)</label>
+                            <p style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">Habilita o deshabilita globalmente los campos de lotes, vencimientos, series y factores de empaque en todo el sistema.</p>
                         </div>
                         <label style="position:relative; display:inline-block; width:46px; height:24px; cursor:pointer; margin:0;">
                             <input type="checkbox" id="toggleErpConfig" onchange="toggleErpGlobal(this)" style="opacity:0; width:0; height:0;">
@@ -473,14 +493,14 @@
 
                 <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--accent);" id="configMasterCatalogSection">
                     <label style="font-weight:600; color:var(--text-main); text-align: left;">Catálogo Maestro de Referencia (Administrador)</label>
-                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Carga el Excel maestro con códigos, glosas y bodegas para la búsqueda predictiva.</p>
+                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Carga el Excel maestro con códigos, glosas, bodegas y columna concatenada <strong>UBICACION</strong>.</p>
                     <input type="file" id="masterCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoMaestro(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.8rem;">
                     <div style="font-size:0.7rem; color:var(--success); margin-top:6px; font-weight:500; text-align: left;" id="masterCatalogStatus">Registros en catálogo maestro: 0</div>
                 </div>
 
                 <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border);" id="configLocationsMasterSection">
                     <label style="font-weight:600; color:var(--text-main); text-align: left;">Maestro de Ubicaciones QR (Excel)</label>
-                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Carga un Excel con columnas <strong>Zona</strong>, <strong>Anaquel</strong>, <strong>Posicion</strong> (y opcional <strong>Tipo</strong>) para el generador de QR.</p>
+                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Carga un Excel con columnas <strong>Zona</strong>, <strong>Anaquel</strong>, <strong>Posicion</strong> para el generador de QR.</p>
                     <input type="file" id="locationsCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoUbicaciones(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.8rem;">
                     <div style="font-size:0.7rem; color:var(--success); margin-top:6px; font-weight:500; text-align: left;" id="locationsCatalogStatus">Ubicaciones maestras cargadas: 0</div>
                 </div>
@@ -544,6 +564,22 @@
         }
         const dbFirestore = firebase.firestore();
 
+        // Lista predeterminada de programas y categorías especiales solicitadas
+        const DEFAULT_PROGRAMAS_CATALOG = [
+            { id: 'controlado', nombre: 'Controlados', badgeClass: 'badge-controlado' },
+            { id: 'frio', nombre: 'Cámara de Frío', badgeClass: 'badge-frio' },
+            { id: 'pm', nombre: 'Programa Ministerial', badgeClass: 'badge-pm' },
+            { id: 'lrs', nombre: 'Ley Ricarte Soto', badgeClass: 'badge-lrs' },
+            { id: 'vih', nombre: 'VIH', badgeClass: 'badge-vih' },
+            { id: 'sueros', nombre: 'Sueros', badgeClass: 'badge-sueros' },
+            { id: 'inflamable', nombre: 'Inflamable', badgeClass: 'badge-inflamable' },
+            { id: 'comp', nombre: 'Comp - Comp rec', badgeClass: 'badge-comp' },
+            { id: 'inyectable', nombre: 'Inyectable', badgeClass: 'badge-inyectable' },
+            { id: 'magistral', nombre: 'Preparación magistral', badgeClass: 'badge-magistral' },
+            { id: 'mezcla', nombre: 'Mezcla (oncológico)', badgeClass: 'badge-mezcla' },
+            { id: 'unguentos', nombre: 'Unguentos-pomadas-cremas-geles-pastas', badgeClass: 'badge-unguentos' }
+        ];
+
         let appState = {
             users: [],
             warehouses: [],
@@ -552,7 +588,8 @@
             layouts: {},
             masterCatalog: [],
             locationsCatalog: [],
-            erpUnlocked: false
+            erpUnlocked: false,
+            programasCatalog: DEFAULT_PROGRAMAS_CATALOG
         };
 
         const DEFAULT_DATA = {
@@ -575,7 +612,8 @@
             layouts: {},
             masterCatalog: [],
             locationsCatalog: [],
-            erpUnlocked: false
+            erpUnlocked: false,
+            programasCatalog: DEFAULT_PROGRAMAS_CATALOG
         };
 
         const PERFILES_CONFIG = {
@@ -593,7 +631,6 @@
             return 'Unidad Comercial';
         }
 
-        // Latido periódico para mantener activo al usuario actual en Firestore (Presencia en tiempo real)
         function iniciarLatidoPresencia() {
             setInterval(() => {
                 const usr = getCurrentUser();
@@ -603,7 +640,7 @@
                         ultimoAcceso: firebase.firestore.FieldValue.serverTimestamp()
                     }).catch(err => console.error("Error actualizando latido:", err));
                 }
-            }, 10000); // Cada 10 segundos
+            }, 10000);
         }
 
         function inicializarListenersTiempoReal() {
@@ -628,7 +665,7 @@
                             if(!p.gtins) p.gtins = [];
                             if(!p.gtinEstados) p.gtinEstados = {};
                             p.gtins.forEach(g => { if(!p.gtinEstados[g]) p.gtinEstados[g] = 'activo'; });
-                            if(!p.programas) p.programas = { frio: false, dac: false, lrs: false, pm: false, controlado: false };
+                            if(!p.programas) p.programas = {};
                             if(!p.erpData) p.erpData = { lote: '', vencimiento: '', serie: '', factorEmpaque: 1 };
                             return p;
                         }), 
@@ -636,7 +673,8 @@
                         layouts: dataRemota.layouts || {},
                         masterCatalog: dataRemota.masterCatalog || [],
                         locationsCatalog: dataRemota.locationsCatalog || [],
-                        erpUnlocked: dataRemota.erpUnlocked !== undefined ? dataRemota.erpUnlocked : false
+                        erpUnlocked: dataRemota.erpUnlocked !== undefined ? dataRemota.erpUnlocked : false,
+                        programasCatalog: (dataRemota.programasCatalog && dataRemota.programasCatalog.length > 0) ? dataRemota.programasCatalog : DEFAULT_PROGRAMAS_CATALOG
                     };
                 } else {
                     dbFirestore.collection('wms_data').doc('main').set(DEFAULT_DATA);
@@ -648,7 +686,6 @@
                 console.error("Error en sincronización: ", error);
             });
 
-            // Escuchar cambios en la colección de presencia para contar usuarios activos en tiempo real
             dbFirestore.collection('wms_data').onSnapshot((snapshot) => {
                 let activos = 0;
                 const ahora = new Date().getTime();
@@ -657,7 +694,6 @@
                         const data = docSnap.data();
                         if (data && data.ultimoAcceso) {
                             const timestampAcceso = data.ultimoAcceso.toDate().getTime();
-                            // Considerar activo si se conectó en los últimos 30 segundos
                             if (ahora - timestampAcceso < 30000) {
                                 activos++;
                             }
@@ -1098,27 +1134,81 @@
             reader.readAsArrayBuffer(file);
         }
 
+        // Función para parsear la columna concatenada "UBICACION" (ej. "Zona G - Full Space 7 - Pos. C1")
+        function parsearUbicacionConcatenada(ubicacionStr) {
+            if (!ubicacionStr || String(ubicacionStr).trim() === '' || String(ubicacionStr).toUpperCase() === 'SIN ASIGNACIÓN') {
+                return { zona: 'SIN ASIGNACIÓN', anaquel: 'Anaquel 1', posicion: '' };
+            }
+            const raw = String(ubicacionStr).trim();
+            let zona = 'SIN ASIGNACIÓN';
+            let anaquel = 'Anaquel 1';
+            let posicion = '';
+
+            // Intentar separar por guiones o descriptores típicos
+            const partes = raw.split(/[-–—]/).map(p => p.trim());
+            
+            // Buscar zona (ej. "Zona G" o solo "G")
+            for (let p of partes) {
+                const matchZ = p.match(/zona\s*([a-j0-9]+)/i) || p.match(/^([a-j])$/i);
+                if (matchZ) {
+                    zona = matchZ[1].toUpperCase();
+                    break;
+                }
+            }
+            if (zona === 'SIN ASIGNACIÓN' && partes.length > 0) {
+                // Asumir que la primera parte si es letra/corta es la zona
+                if (partes[0].length <= 3) zona = partes[0].toUpperCase();
+            }
+
+            // Buscar posición (ej. "Pos. C1" o "C1")
+            for (let p of partes) {
+                const matchP = p.match(/pos\.?\s*([a-z0-9]+)/i);
+                if (matchP) {
+                    posicion = matchP[1].toUpperCase();
+                } else if (/^[a-z]\d+$/i.test(p) || /^\d+$/.test(p)) {
+                    posicion = p.toUpperCase();
+                }
+            }
+
+            // El anaquel/rack suele ser la parte intermedia (ej. "Full Space 7" o "Anaquel 1")
+            const partesAnaquel = partes.filter(p => {
+                const up = p.toUpperCase();
+                return !up.includes('ZONA') && !up.includes('POS.') && up !== zona && up !== posicion;
+            });
+            if (partesAnaquel.length > 0) {
+                anaquel = partesAnaquel.join(' - ');
+            }
+
+            if (!posicion && partes.length >= 3) {
+                posicion = partes[partes.length - 1].replace(/pos\.?/i, '').trim().toUpperCase();
+            }
+
+            return { zona, anaquel: anaquel || 'Anaquel 1', posicion: posicion || 'A1' };
+        }
+
         function extraerUbicacionDesdeTextoHojaONombre(sheetName, row, keys) {
             let zona = 'SIN ASIGNACIÓN';
             let anaquel = 'Anaquel 1';
             let posicion = 'A1';
 
+            const colUbicacionConcatenada = row[keys.find(k => /^UBICACION$|UBICACIÓN/i.test(k))];
+            if (colUbicacionConcatenada && String(colUbicacionConcatenada).trim() !== '') {
+                const parsed = parsearUbicacionConcatenada(colUbicacionConcatenada);
+                if (parsed.zona && parsed.zona !== 'SIN ASIGNACIÓN') {
+                    return parsed;
+                }
+            }
+
             const keyZona = keys.find(k => /^ZONA$|ZONA_/i.test(k));
             const keyTipoPos = keys.find(k => /^TIPO$|TIPO_/i.test(k) || /RACK|ALTURA|ANAQUEL|FULL\s*SPACE|PALLET/i.test(k));
             const keyPosicion = keys.find(k => /^POSICION$|POSICIÓN/i.test(k));
-            const colUbicacionAgrupada = row[keys.find(k => /UBICACION|UBICACIÓN/i.test(k))];
 
             const zonaRaw = keyZona ? row[keyZona] : '';
             const tipoPosRaw = keyTipoPos ? String(row[keyTipoPos]).trim() : '';
             const posicionRaw = keyPosicion ? String(row[keyPosicion]).trim() : '';
 
-            if (colUbicacionAgrupada && String(colUbicacionAgrupada).trim() !== '') {
-                const partesUb = String(colUbicacionAgrupada).trim();
-                if(partesUb.toUpperCase() !== 'SIN ASIGNACIÓN' && partesUb !== '-') {
-                    zona = partesUb;
-                }
-            } else if (zonaRaw && String(zonaRaw).trim() !== '' && String(zonaRaw).toUpperCase() !== 'SIN ASIGNACIÓN') {
-                zona = String(zonaRaw).replace(/zona/gi, '').trim();
+            if (zonaRaw && String(zonaRaw).trim() !== '' && String(zonaRaw).toUpperCase() !== 'SIN ASIGNACIÓN') {
+                zona = String(zonaRaw).replace(/zona/gi, '').trim().toUpperCase();
                 if(tipoPosRaw) anaquel = tipoPosRaw;
                 if(posicionRaw) posicion = posicionRaw;
             }
@@ -1167,13 +1257,45 @@
                             let gtinEstados = {};
                             gtins.forEach(g => { gtinEstados[g] = 'activo'; });
 
-                            const catText = String(row[keys.find(k => /CATEGORIA|PROGRAMA|TIPO_PROGRAMA|NORMATIVA/i.test(k))] || '').toUpperCase() + ' ' + sheetName.toUpperCase();
-                            const isFrio = catText.includes('FRIO') || catText.includes('FRÍO');
-                            const isDac = catText.includes('DAC') || catText.includes('ALTO_COSTO');
-                            const isLrs = catText.includes('LRS') || catText.includes('RICARTE');
-                            const isPm = catText.includes('PM') || catText.includes('MINISTERIAL');
-                            const isControlado = catText.includes('CONTROLADO') || catText.includes('ESTUPEFACIENTE');
-                            const programas = { frio: isFrio, dac: isDac, lrs: isLrs, pm: isPm, controlado: isControlado };
+                            // Detección de programas / categorías a partir de la columna "Categoria" o glosa o nombre de pestaña
+                            const catRawExcel = String(row[keys.find(k => /CATEGORIA|PROGRAMA|TIPO_PROGRAMA|NORMATIVA/i.test(k))] || '').toLowerCase();
+                            const catText = catRawExcel + ' ' + glosa.toLowerCase() + ' ' + sheetName.toLowerCase();
+
+                            let programas = {};
+                            (appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG).forEach(prog => {
+                                const pNameLower = prog.nombre.toLowerCase();
+                                const pIdLower = prog.id.toLowerCase();
+                                
+                                let matched = false;
+                                if (catRawExcel.includes(pNameLower) || catRawExcel.includes(pIdLower)) {
+                                    matched = true;
+                                } else if (pIdLower === 'frio' && (catText.includes('frio') || catText.includes('frío') || catText.includes('refrigerad'))) {
+                                    matched = true;
+                                } else if (pIdLower === 'controlado' && (catText.includes('controlad') || catText.includes('estupefacient'))) {
+                                    matched = true;
+                                } else if (pIdLower === 'pm' && (catText.includes('ministerial') || catText.includes(' prog min'))) {
+                                    matched = true;
+                                } else if (pIdLower === 'lrs' && (catText.includes('ricarte') || catText.includes('lrs'))) {
+                                    matched = true;
+                                } else if (pIdLower === 'vih' && catText.includes('vih')) {
+                                    matched = true;
+                                } else if (pIdLower === 'sueros' && catText.includes('suero')) {
+                                    matched = true;
+                                } else if (pIdLower === 'inflamable' && catText.includes('inflamable')) {
+                                    matched = true;
+                                } else if (pIdLower === 'comp' && (catText.includes('comp') || catText.includes('comprimido'))) {
+                                    matched = true;
+                                } else if (pIdLower === 'inyectable' && catText.includes('inyectable')) {
+                                    matched = true;
+                                } else if (pIdLower === 'magistral' && (catText.includes('magistral') || catText.includes('preparacion'))) {
+                                    matched = true;
+                                } else if (pIdLower === 'mezcla' && (catText.includes('mezcla') || catText.includes('oncológico') || catText.includes('oncologico'))) {
+                                    matched = true;
+                                } else if (pIdLower === 'unguentos' && (catText.includes('unguento') || catText.includes('crema') || catText.includes('gel') || catText.includes('pasta') || catText.includes('pomada'))) {
+                                    matched = true;
+                                }
+                                programas[prog.id] = matched;
+                            });
 
                             const ubicacionInfo = extraerUbicacionDesdeTextoHojaONombre(sheetName, row, keys);
                             const zona = ubicacionInfo.zona;
@@ -1204,7 +1326,7 @@
                                 existing.codigo = codigo;
                                 existing.glosa = glosa;
                                 existing.tipo = tipo;
-                                existing.programas = programas;
+                                existing.programas = { ...existing.programas, ...programas };
                                 if(!existing.gtinEstados) existing.gtinEstados = {};
                                 gtins.forEach(g => { 
                                     if(!existing.gtins.includes(g)) existing.gtins.push(g);
@@ -1259,6 +1381,8 @@
             const esInvitado = user && user.perfil === 'invitado';
             const puedeEliminar = user && (user.perfil === 'admin' || user.perfil === 'supervisor');
 
+            const catalogoProg = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
+
             const tbody = document.getElementById('inventarioUnificadoBody');
             tbody.innerHTML = prods.map(p => {
                 const ubicsHtml = (p.ubicaciones || []).map(u => {
@@ -1277,14 +1401,20 @@
                 if(!p.gtinEstados) p.gtinEstados = {};
                 const gtinsList = (p.gtins && p.gtins.length > 0) ? p.gtins.map(g => `<span class="gtin-tag">${g}</span>`).join(' ') : '<span style="color:var(--text-muted); font-style:italic;">Sin GTIN</span>';
 
-                const prog = p.programas || { frio: false, dac: false, lrs: false, pm: false, controlado: false };
+                const prog = p.programas || {};
                 let progHtml = '<div class="prog-badges-box">';
-                if(prog.frio) progHtml += `<span class="badge-prog badge-frio">Cámara de Frío</span>`;
-                if(prog.dac) progHtml += `<span class="badge-prog badge-dac">Alto Costo (DAC)</span>`;
-                if(prog.lrs) progHtml += `<span class="badge-prog badge-lrs">Ley Ricarte Soto</span>`;
-                if(prog.pm) progHtml += `<span class="badge-prog badge-pm">Programa Ministerial</span>`;
-                if(prog.controlado) progHtml += `<span class="badge-prog badge-controlado">Fármaco Controlado</span>`;
-                if(!prog.frio && !prog.dac && !prog.lrs && !prog.pm && !prog.controlado) progHtml += `<span style="color:var(--text-muted); font-size:0.65rem;">Estándar</span>`;
+                let activeCount = 0;
+
+                catalogoProg.forEach(cp => {
+                    if (prog[cp.id]) {
+                        progHtml += `<span class="badge-prog ${cp.badgeClass || 'badge-frio'}">${cp.nombre}</span>`;
+                        activeCount++;
+                    }
+                });
+
+                if(activeCount === 0) {
+                    progHtml += `<span style="color:var(--text-muted); font-size:0.65rem;">Estándar</span>`;
+                }
                 progHtml += `</div>`;
 
                 const tipoVal = p.tipo || 'Unidad Comercial';
@@ -1397,11 +1527,46 @@
             }
         }
 
+        // Verificador de alertas al capturar / ingresar códigos o glosas
+        function verificarAlertaEscaneoManual(glosaText) {
+            const alertaBox = document.getElementById('alertaEscaneoBox');
+            if(!alertaBox) return;
+            const txt = glosaText.toUpperCase();
+            let alertas = [];
+            
+            if(txt.includes('CONTROLADO') || txt.includes('ESTUPEFACIENTE')) alertas.push('⚠️ Controlados');
+            if(txt.includes('FRIO') || txt.includes('FRÍO') || txt.includes('REFRIGERADO')) alertas.push('❄️ Cámara de Frío');
+            if(txt.includes('MINISTERIAL') || txt.includes('PROG MIN')) alertas.push('📋 Programa Ministerial');
+            if(txt.includes('RICARTE') || txt.includes('LRS')) alertas.push('🏷️ Ley Ricarte Soto');
+            if(txt.includes('VIH')) alertas.push('🔬 VIH');
+
+            // Combinaciones especiales en Cámara de Frío
+            const esFrio = txt.includes('FRIO') || txt.includes('FRÍO') || txt.includes('REFRIGERADO');
+            if(esFrio && (txt.includes('RICARTE') || txt.includes('LRS'))) alertas.push('⚡ Combinación: Cámara de Frío + Ley Ricarte Soto');
+            if(esFrio && (txt.includes('MINISTERIAL') || txt.includes('PROG MIN'))) alertas.push('⚡ Combinación: Cámara de Frío + Programa Ministerial');
+            if(esFrio && (txt.includes('MEZCLA') || txt.includes('ONCOLÓGICO') || txt.includes('ONCOLOGICO'))) alertas.push('⚡ Combinación: Cámara de Frío + Mezcla (oncológico)');
+
+            if(alertas.length > 0) {
+                alertaBox.style.display = 'block';
+                alertaBox.innerHTML = `<strong>⚠️ Alerta de Sistema / Programas Especiales detectados:</strong><br>` + alertas.join('<br>');
+            } else {
+                alertaBox.style.display = 'none';
+            }
+        }
+
         function abrirModalAlmacenamiento() {
             const erpActive = appState.erpUnlocked;
             const erpOpacity = erpActive ? '1' : '0.65';
             const erpDisabledAttr = erpActive ? '' : 'disabled';
             const erpBgStyle = erpActive ? '#ffffff' : '#f1f5f9';
+
+            const catalogoProg = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
+            let progCheckboxesHtml = catalogoProg.map(cp => `
+                <label class="prog-option-item">
+                    <input type="checkbox" id="mProg_${cp.id}" onchange="verificarAlertasCheckboxesForm()"> 
+                    <span class="badge-prog ${cp.badgeClass || 'badge-frio'}">${cp.nombre}</span>
+                </label>
+            `).join('');
 
             mostrarModal('Crear Nuevo Registro y Almacenamiento', `
                 <div style="margin-bottom:14px; background:#f8fafc; padding:16px; border-radius:var(--radius); border:1px solid var(--border); text-align: left;">
@@ -1452,17 +1617,12 @@
                     <div><label>Jerarquía / Tipo</label><select id="mTipo"><option value="Unidad Comercial">Unidad Comercial</option><option value="Unidad Máster">Unidad Máster</option><option value="Unidad Mínima / Unidosis">Unidad Mínima / Unidosis</option></select></div>
                     
                     <div class="full-width" style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); text-align: left;">
-                        <label style="margin-bottom:10px; font-weight:600; color:var(--text-main); font-size:0.75rem; text-align: left;">Programas y Alertas Especiales:</label>
+                        <label style="margin-bottom:10px; font-weight:600; color:var(--text-main); font-size:0.75rem; text-align: left;">Programas y Categorías Especiales:</label>
                         <div class="prog-column-box">
-                            <label class="prog-option-item"><input type="checkbox" id="mProgFrío"> <span class="badge-prog badge-frio">Cámara de Frío</span></label>
-                            <label class="prog-option-item"><input type="checkbox" id="mProgDac"> <span class="badge-prog badge-dac">Alto Costo (DAC)</span></label>
-                            <label class="prog-option-item"><input type="checkbox" id="mProgLrs"> <span class="badge-prog badge-lrs">Ley Ricarte Soto</span></label>
-                            <label class="prog-option-item"><input type="checkbox" id="mProgPm"> <span class="badge-prog badge-pm">Programa Ministerial</span></label>
-                            <label class="prog-option-item"><input type="checkbox" id="mProgControlado"> <span class="badge-prog badge-controlado">Fármaco Controlado</span></label>
+                            ${progCheckboxesHtml}
                         </div>
                     </div>
 
-                    <!-- MÓDULO ERP PREPARADO Y CONTROLADO DESDE CONFIGURACIÓN -->
                     <div class="full-width" style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); opacity:${erpOpacity};">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                             <label style="font-weight:600; color:var(--text-main); font-size:0.75rem; margin:0;">Trazabilidad Avanzada ERP (Lote, Vencimiento, Serie y Stock)</label>
@@ -1506,13 +1666,11 @@
                     factorEmpaque: parseInt(document.getElementById('mErpFactor')?.value || '1')
                 };
 
-                const programas = {
-                    frio: document.getElementById('mProgFrío').checked,
-                    dac: document.getElementById('mProgDac').checked,
-                    lrs: document.getElementById('mProgLrs').checked,
-                    pm: document.getElementById('mProgPm').checked,
-                    controlado: document.getElementById('mProgControlado').checked
-                };
+                const programas = {};
+                catalogoProg.forEach(cp => {
+                    const chkEl = document.getElementById(`mProg_${cp.id}`);
+                    programas[cp.id] = chkEl ? chkEl.checked : false;
+                });
 
                 const zona = document.getElementById('mZona').value;
                 const anaquel = document.getElementById('mAnaquel').value.trim();
@@ -1553,7 +1711,35 @@
             };
         }
 
-        /* MÓDULO EXCLUSIVO DE REUBICACIÓN */
+        function verificarAlertasCheckboxesForm() {
+            // Verificar si hay combinaciones de Cámara de Frío con LRS, PM o Mezcla
+            const chkFrio = document.getElementById('mProg_frio') || document.getElementById('editProg_frio');
+            const chkLrs = document.getElementById('mProg_lrs') || document.getElementById('editProg_lrs');
+            const chkPm = document.getElementById('mProg_pm') || document.getElementById('editProg_pm');
+            const chkMezcla = document.getElementById('mProg_mezcla') || document.getElementById('editProg_mezcla');
+            const chkControlado = document.getElementById('mProg_controlado') || document.getElementById('editProg_controlado');
+            const chkVih = document.getElementById('mProg_vih') || document.getElementById('editProg_vih');
+
+            const alertaBox = document.getElementById('alertaEscaneoBox');
+            if(!alertaBox) return;
+
+            let alertas = [];
+            if(chkControlado && chkControlado.checked) alertas.push('⚠️ Alerta: Programa Controlados activo.');
+            if(chkFrio && chkFrio.checked) {
+                if(chkLrs && chkLrs.checked) alertas.push('⚡ Combinación Especial: Cámara de Frío + Ley Ricarte Soto');
+                if(chkPm && chkPm.checked) alertas.push('⚡ Combinación Especial: Cámara de Frío + Programa Ministerial');
+                if(chkMezcla && chkMezcla.checked) alertas.push('⚡ Combinación Especial: Cámara de Frío + Mezcla (oncológico)');
+            }
+            if(chkVih && chkVih.checked) alertas.push('🔬 Alerta: Categoría VIH activa.');
+
+            if(alertas.length > 0) {
+                alertaBox.style.display = 'block';
+                alertaBox.innerHTML = `<strong>⚠️ Alerta de Sistema / Programas Especiales:</strong><br>` + alertas.join('<br>');
+            } else {
+                alertaBox.style.display = 'none';
+            }
+        }
+
         function abrirModalReubicacion() {
             mostrarModal('Reubicar Artículo(s)', `
                 <div style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:12px; text-align: left;">
@@ -1684,25 +1870,6 @@
             if(tipoSel) tipoSel.value = determinarJerarquiaPorZona(zonaVal);
         }
 
-        function verificarAlertaEscaneoManual(glosaText) {
-            const alertaBox = document.getElementById('alertaEscaneoBox');
-            if(!alertaBox) return;
-            const txt = glosaText.toUpperCase();
-            let alertas = [];
-            if(txt.includes('FRIO') || txt.includes('FRÍO') || txt.includes('REFRIGERADO')) alertas.push('Cámara de Frío');
-            if(txt.includes('DAC') || txt.includes('ALTO COSTO')) alertas.push('Alto Costo (DAC)');
-            if(txt.includes('RICARTE') || txt.includes('LRS')) alertas.push('Ley Ricarte Soto');
-            if(txt.includes('MINISTERIAL') || txt.includes('PM')) alertas.push('Programa Ministerial');
-            if(txt.includes('CONTROLADO') || txt.includes('ESTUPEFACIENTE')) alertas.push('Fármaco Controlado');
-
-            if(alertas.length > 0) {
-                alertaBox.style.display = 'block';
-                alertaBox.innerHTML = `<strong>Alerta de producto sensible detectada:</strong> ` + alertas.join(' | ');
-            } else {
-                alertaBox.style.display = 'none';
-            }
-        }
-
         function gestionarUbicacionesModal(id) {
             const p = appState.products.find(x => x.id === id);
             if(!p) return;
@@ -1722,7 +1889,17 @@
             const currentGtins = p.gtins || [];
             if(!p.gtinEstados) p.gtinEstados = {};
             currentGtins.forEach(g => { if(!p.gtinEstados[g]) p.gtinEstados[g] = 'activo'; });
-            const prog = p.programas || { frio: false, dac: false, lrs: false, pm: false, controlado: false };
+            
+            const prog = p.programas || {};
+            const catalogoProg = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
+
+            let editProgHtml = catalogoProg.map(cp => `
+                <label class="prog-option-item">
+                    <input type="checkbox" id="editProg_${cp.id}" ${prog[cp.id] ? 'checked' : ''} onchange="verificarAlertasCheckboxesForm()"> 
+                    <span class="badge-prog ${cp.badgeClass || 'badge-frio'}">${cp.nombre}</span>
+                </label>
+            `).join('');
+
             const erpData = p.erpData || { lote: '', vencimiento: '', serie: '', factorEmpaque: 1 };
 
             mostrarModal('Gestión de Artículo', `
@@ -1780,16 +1957,12 @@
 
                 <div style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:12px; text-align: left;">
                     <label style="margin-bottom:10px; font-weight:600; font-size:0.75rem; text-align: left;">Programas y Alertas Especiales:</label>
+                    <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fef3c7; border:1px solid #fde68a; padding:10px; border-radius:var(--radius); font-size:0.75rem; color:#b45309; margin-bottom:8px;"></div>
                     <div class="prog-column-box">
-                        <label class="prog-option-item"><input type="checkbox" id="editProgFrío" ${prog.frio?'checked':''}> <span class="badge-prog badge-frio">Cámara de Frío</span></label>
-                        <label class="prog-option-item"><input type="checkbox" id="editProgDac" ${prog.dac?'checked':''}> <span class="badge-prog badge-dac">Alto Costo (DAC)</span></label>
-                        <label class="prog-option-item"><input type="checkbox" id="editProgLrs" ${prog.lrs?'checked':''}> <span class="badge-prog badge-lrs">Ley Ricarte Soto</span></label>
-                        <label class="prog-option-item"><input type="checkbox" id="editProgPm" ${prog.pm?'checked':''}> <span class="badge-prog badge-pm">Programa Ministerial</span></label>
-                        <label class="prog-option-item"><input type="checkbox" id="editProgControlado" ${prog.controlado?'checked':''}> <span class="badge-prog badge-controlado">Fármaco Controlado</span></label>
+                        ${editProgHtml}
                     </div>
                 </div>
 
-                <!-- MÓDULO ERP PREPARADO -->
                 <div style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:12px; opacity:${erpOpacity};">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                         <label style="font-weight:600; color:var(--text-main); font-size:0.75rem; margin:0;">Trazabilidad Avanzada ERP</label>
@@ -1824,6 +1997,8 @@
                 </div>
             `);
 
+            verificarAlertasCheckboxesForm();
+
             document.getElementById('modalActionBtn').textContent = 'Actualizar y Guardar';
             document.getElementById('modalActionBtn').onclick = () => {
                 detenerEscanerQR();
@@ -1843,13 +2018,12 @@
                     factorEmpaque: parseInt(document.getElementById('editErpFactor')?.value || '1')
                 };
 
-                p.programas = {
-                    frio: document.getElementById('editProgFrío').checked,
-                    dac: document.getElementById('editProgDac').checked,
-                    lrs: document.getElementById('editProgLrs').checked,
-                    pm: document.getElementById('editProgPm').checked,
-                    controlado: document.getElementById('editProgControlado').checked
-                };
+                const programasActualizados = {};
+                catalogoProg.forEach(cp => {
+                    const chkEl = document.getElementById(`editProg_${cp.id}`);
+                    programasActualizados[cp.id] = chkEl ? chkEl.checked : false;
+                });
+                p.programas = programasActualizados;
 
                 const newGtins = [];
                 let gtinEstados = {};
@@ -2201,6 +2375,104 @@
             cerrarModal();
         }
 
+        // CRUD de Programas / Categorías Especiales en Configuración
+        function renderListaProgramasConfig() {
+            const container = document.getElementById('listaProgramasConfigContainer');
+            if(!container) return;
+
+            const catalogo = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
+            container.innerHTML = catalogo.map(cp => `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:8px 12px; border-radius:var(--radius); border:1px solid var(--border); font-size:0.75rem;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="badge-prog ${cp.badgeClass || 'badge-frio'}">${cp.nombre}</span>
+                        <span style="color:var(--text-muted); font-size:0.65rem;">(ID: ${cp.id})</span>
+                    </div>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn btn-outline btn-xs" onclick="editarProgramaCRUD('${cp.id}')">Editar</button>
+                        <button class="btn btn-danger btn-xs" onclick="eliminarProgramaCRUD('${cp.id}')">Eliminar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function abrirModalProgramaCRUD(idEditar = null) {
+            const catalogo = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
+            let progObj = { id: '', nombre: '', badgeClass: 'badge-frio' };
+            let esEdicion = false;
+
+            if(idEditar) {
+                const found = catalogo.find(x => x.id === idEditar);
+                if(found) {
+                    progObj = { ...found };
+                    esEdicion = true;
+                }
+            }
+
+            const badgeOptions = [
+                { val: 'badge-frio', label: 'Cámara de Frío (Celeste)' },
+                { val: 'badge-dac', label: 'Alto Costo / Rojo' },
+                { val: 'badge-lrs', label: 'Ley Ricarte Soto (Ámbar)' },
+                { val: 'badge-pm', label: 'Ministerial (Morado)' },
+                { val: 'badge-controlado', label: 'Controlado (Teal)' },
+                { val: 'badge-vih', label: 'VIH (Magenta)' },
+                { val: 'badge-sueros', label: 'Sueros (Azul claro)' },
+                { val: 'badge-inflamable', label: 'Inflamable (Naranja)' },
+                { val: 'badge-comp', label: 'Comprimidos (Gris)' },
+                { val: 'badge-inyectable', label: 'Inyectable (Verde)' },
+                { val: 'badge-magistral', label: 'Preparación Magistral (Verde oscuro)' },
+                { val: 'badge-mezcla', label: 'Mezcla Oncológico (Rosado)' },
+                { val: 'badge-unguentos', label: 'Ungüentos / Cremas (Amarillo)' }
+            ];
+
+            mostrarModal(esEdicion ? 'Editar Programa / Categoría' : 'Nuevo Programa / Categoría', `
+                <label>Identificador Único (ID sin espacios)</label>
+                <input id="crudProgId" value="${progObj.id}" ${esEdicion ? 'readonly style="background:#f1f5f9;"' : ''} placeholder="Ej: oncologia">
+                <label style="margin-top:8px;">Nombre Visible</label>
+                <input id="crudProgNombre" value="${progObj.nombre}" placeholder="Ej: Oncología">
+                <label style="margin-top:8px;">Estilo Visual / Color</label>
+                <select id="crudProgBadge" style="padding:9px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem; width:100%;">
+                    ${badgeOptions.map(b => `<option value="${b.val}" ${progObj.badgeClass === b.val ? 'selected' : ''}>${b.label}</option>`).join('')}
+                </select>
+            `);
+
+            modalCallback = () => {
+                const idVal = document.getElementById('crudProgId').value.trim().toLowerCase().replace(/\s+/g, '_');
+                const nombreVal = document.getElementById('crudProgNombre').value.trim();
+                const badgeVal = document.getElementById('crudProgBadge').value;
+
+                if(!idVal || !nombreVal) return alert('Completa todos los campos.');
+
+                if(!appState.programasCatalog) appState.programasCatalog = [...DEFAULT_PROGRAMAS_CATALOG];
+
+                if(esEdicion) {
+                    const idx = appState.programasCatalog.findIndex(x => x.id === idEditar);
+                    if(idx !== -1) {
+                        appState.programasCatalog[idx] = { id: idVal, nombre: nombreVal, badgeClass: badgeVal };
+                    }
+                } else {
+                    if(appState.programasCatalog.some(x => x.id === idVal)) return alert('Ya existe un programa con ese ID.');
+                    appState.programasCatalog.push({ id: idVal, nombre: nombreVal, badgeClass: badgeVal });
+                }
+
+                guardarEstadoFirestore();
+                cerrarModal();
+                renderConfig();
+                mostrarToast('Programa / Categoría guardada con éxito.');
+            };
+        }
+
+        function editarProgramaCRUD(id) {
+            abrirModalProgramaCRUD(id);
+        }
+
+        function eliminarProgramaCRUD(id) {
+            if(!confirm(`¿Estás seguro de eliminar el programa/categoría "${id}"?`)) return;
+            appState.programasCatalog = (appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG).filter(x => x.id !== id);
+            guardarEstadoFirestore();
+            renderConfig();
+            mostrarToast('Programa eliminado.');
+        }
+
         function renderUsuarios() {
             const tbody = document.getElementById('usuariosBody');
             const user = getCurrentUser();
@@ -2440,6 +2712,8 @@
                 const countLocs = (appState.locationsCatalog || []).length;
                 statusLocs.textContent = `Ubicaciones maestras cargadas: ${countLocs}`;
             }
+
+            renderListaProgramasConfig();
         }
 
         function resetDataBodega() {
