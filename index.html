@@ -57,7 +57,7 @@
         header .user-info .btn { background:#334155; color:#f8fafc; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-weight:400; font-size:0.65rem; display:inline-flex; align-items:center; gap:4px; min-height:28px; }
         header .user-info .btn-success { background:#0d9488; }
         header .user-info .btn-warning { background:#d97706; }
-        header .user-info .btn-teal { background:#0f766e; }
+        header .user-info .btn-teal { background:#7c3aed; } /* Cambiado a tono violeta para no confundir con Cargar Archivo */
         header .user-info .user-name { color:#94a3b8; font-size:0.65rem; font-weight:500; }
         header .user-info .online-indicator { display:inline-block; width:6px; height:6px; border-radius:50%; background:#10b981; margin-right:4px; }
 
@@ -100,7 +100,7 @@
 
         /* PROGRAMAS Y ETIQUETAS */
         .prog-badges-box { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; align-items:center; }
-        .badge-prog { display:inline-block; font-size:0.7rem; font-weight:600; white-space:nowrap; padding:3px 8px; border-radius:4px; }
+        .badge-prog { display:inline-block; font-size:0.7rem; font-weight:600; white-space:nowrap; padding:3px 8px; border-radius:4px; text-align: left; }
         .badge-frio { background:#e0f2fe; color:#0284c7; border:1px solid #bae6fd; }
         .badge-dac { background:#ffe4e6; color:#e11d48; border:1px solid #fecdd3; }
         .badge-lrs { background:#fef3c7; color:#d97706; border:1px solid #fde68a; }
@@ -122,14 +122,15 @@
         .zone-tag { display:inline-block; padding:1px 5px; border-radius:3px; font-size:0.65rem; font-weight:600; background:#e0f2fe; color:#0369a1; }
         .pos-tag { font-family:monospace; font-size:0.65rem; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--text-muted); font-weight:600; }
         
+        /* UNIDAD COMERCIAL EN TONOS VIOLETA */
         .type-tag { display:inline-block; padding:3px 8px; border-radius:4px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
         .type-master { background:#fff7ed; color:#c2410c; border:1px solid #ffedd5; }
-        .type-comercial { background:#f0fdf4; color:#15803d; border:1px solid #dcfce7; }
+        .type-comercial { background:#f3e8ff; color:#7c3aed; border:1px solid #e9d5ff; }
         .type-minima { background:#f5f3ff; color:#6d28d9; border:1px solid #ede9fe; }
 
         .gtin-tag { font-family:monospace; font-size:0.7rem; background:#fefce8; color:#a16207; padding:2px 6px; border-radius:3px; font-weight:500; border:1px solid #fef08a; white-space:nowrap; display:inline-block; margin:1px; }
 
-        /* ACCIONES UNIFORMES Y ELEGANTES EN TABLA */
+        /* ACCIONES UNIFORMES Y ELEGANTES EN TABLA (SIN ICONOS) */
         .acciones-cell { display: flex; flex-direction: column; gap: 4px; align-items: stretch; min-width: 110px; }
         .btn-action-primary { background: #0284c7; color: #ffffff; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: background 0.2s; }
         .btn-action-primary:hover { background: #0369a1; }
@@ -145,7 +146,7 @@
         .btn-success { background:var(--success); }
         .btn-warning { background:var(--warning); }
         .btn-danger { background:var(--danger); }
-        .btn-teal { background:#0f766e; }
+        .btn-teal { background:#7c3aed; } /* Cambiado a tono violeta */
         .btn-orange { background:#ea580c; }
         .btn-outline { background:transparent; border:1px solid var(--border); color:var(--text-muted); }
         .btn-sm { padding:6px 12px; font-size:0.7rem; min-height:30px; }
@@ -168,7 +169,7 @@
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:16px; overflow-y:auto; }
         .modal.active { display:flex; }
         .modal-content { background:#ffffff; border-radius:12px; padding:24px; max-width:720px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.2); border:1px solid var(--border); }
-        .modal-content label { display:block; margin:10px 0 4px; font-weight:500; font-size:0.75rem; color:var(--text-muted); }
+        .modal-content label { display:block; margin:10px 0 4px; font-weight:500; font-size:0.75rem; color:var(--text-muted); text-align: left; }
         .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.85rem; }
         .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
         .form-grid .full-width { grid-column:1/-1; }
@@ -261,7 +262,7 @@
                 <div class="card"><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos Totales</div></div>
                 <div class="card"><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios Activos</div></div>
             </div>
-            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:12px; color:var(--text-main);">Últimos movimientos registrados</h3>
+            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:12px; color:var(--text-main); text-align: left;">Últimos movimientos registrados</h3>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>Fecha y Hora</th><th>Usuario</th><th>Tipo</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
@@ -320,7 +321,7 @@
 
         <!-- LAYOUT -->
         <div id="tab-layout" class="tab-content">
-            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:12px;">Plano de la Bodega (Visual)</h3>
+            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:12px; text-align: left;">Plano de la Bodega (Visual)</h3>
             <div class="layout-image-container" id="layoutImageContainer">
                 <div id="layoutImageContent">
                     <span class="no-image">No hay imagen de plano cargada para esta bodega.<br><small>Sube una imagen desde la sección Configuración.</small></span>
@@ -330,7 +331,7 @@
 
         <!-- MOVIMIENTOS -->
         <div id="tab-movimientos" class="tab-content">
-            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:12px;">Historial completo de modificaciones</h3>
+            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:12px; text-align: left;">Historial completo de modificaciones</h3>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>Fecha y Hora</th><th>Usuario</th><th>Tipo de Modificación</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
@@ -341,7 +342,7 @@
 
         <!-- USUARIOS -->
         <div id="tab-usuarios" class="tab-content">
-            <div style="margin-bottom:14px;" id="divBtnNuevoUsr">
+            <div style="margin-bottom:14px; text-align: left;" id="divBtnNuevoUsr">
                 <button class="btn btn-primary btn-sm" onclick="mostrarModalUsuario()">Nuevo Usuario</button>
             </div>
             <div class="table-wrap">
@@ -354,7 +355,7 @@
 
         <!-- BODEGAS -->
         <div id="tab-bodegas" class="tab-content">
-            <div style="margin-bottom:14px;" id="divBtnNuevaBodega">
+            <div style="margin-bottom:14px; text-align: left;" id="divBtnNuevaBodega">
                 <button class="btn btn-primary btn-sm" onclick="mostrarModalBodega()">Nueva Bodega</button>
             </div>
             <div class="table-wrap">
@@ -367,19 +368,19 @@
 
         <!-- CONFIG -->
         <div id="tab-config" class="tab-content">
-            <h3 style="font-size:0.9rem; font-weight:600; margin-bottom:16px;">Configuración del Sistema</h3>
-            <div style="max-width:720px; display:flex; flex-direction:column; gap:16px;">
+            <h3 style="font-size:0.9rem; font-weight:600; margin-bottom:16px; text-align: left;">Configuración del Sistema</h3>
+            <div style="max-width:720px; display:flex; flex-direction:column; gap:16px; text-align: left;">
                 
                 <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--accent);" id="configMasterCatalogSection">
-                    <label style="font-weight:600; color:var(--text-main);">Catálogo Maestro de Referencia (Administrador)</label>
-                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px;">Carga el Excel maestro con códigos, glosas y bodegas para la búsqueda predictiva.</p>
+                    <label style="font-weight:600; color:var(--text-main); text-align: left;">Catálogo Maestro de Referencia (Administrador)</label>
+                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Carga el Excel maestro con códigos, glosas y bodegas para la búsqueda predictiva.</p>
                     <input type="file" id="masterCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoMaestro(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.8rem;">
-                    <div style="font-size:0.7rem; color:var(--success); margin-top:6px; font-weight:500;" id="masterCatalogStatus">Registros en catálogo maestro: 0</div>
+                    <div style="font-size:0.7rem; color:var(--success); margin-top:6px; font-weight:500; text-align: left;" id="masterCatalogStatus">Registros en catálogo maestro: 0</div>
                 </div>
 
                 <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border);" id="configLayoutSection">
-                    <label style="font-weight:600; color:var(--text-main);">Imagen del Plano (Layout Visual)</label>
-                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px;">Asocia un plano gráfico a una bodega específica o de forma general.</p>
+                    <label style="font-weight:600; color:var(--text-main); text-align: left;">Imagen del Plano (Layout Visual)</label>
+                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Asocia un plano gráfico a una bodega específica o de forma general.</p>
                     <div style="display:flex; gap:8px; margin-bottom:8px;">
                         <select id="configSubirBodegaSelect" style="flex:1; padding:9px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem;">
                             <option value="GENERAL">General (Todas las bodegas)</option>
@@ -389,8 +390,8 @@
                 </div>
 
                 <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border);">
-                    <label style="font-weight:600; color:var(--text-main);">Reinicio Selectivo de Inventario</label>
-                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px;">Elimina los registros asociados a una bodega en particular.</p>
+                    <label style="font-weight:600; color:var(--text-main); text-align: left;">Reinicio Selectivo de Inventario</label>
+                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Elimina los registros asociados a una bodega en particular.</p>
                     <div style="display:flex; gap:8px; align-items:center;">
                         <select id="configResetBodegaSelect" style="flex:1; padding:9px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem;"></select>
                         <button class="btn btn-warning btn-sm" onclick="resetDataBodega()">Reiniciar Bodega</button>
@@ -408,8 +409,8 @@
     <!-- MODAL -->
     <div class="modal" id="modal">
         <div class="modal-content">
-            <h3 id="modalTitle" style="font-size:0.85rem; font-weight:600; margin-bottom:14px;">Modal</h3>
-            <div id="modalBody"></div>
+            <h3 id="modalTitle" style="font-size:0.85rem; font-weight:600; margin-bottom:14px; text-align: left;">Modal</h3>
+            <div id="modalBody" style="text-align: left;"></div>
             <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
                 <button class="btn btn-outline btn-sm" onclick="cerrarModal()">Cancelar</button>
                 <button class="btn btn-primary btn-sm" id="modalActionBtn" onclick="ejecutarModal()">Guardar</button>
@@ -657,7 +658,7 @@
             usuarioEnProcesoRecuperacion = null;
 
             mostrarModal('Restablecer Contraseña', `
-                <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">Ingresa tu usuario y correo electrónico institucional registrado para recibir el código de verificación.</p>
+                <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px; text-align: left;">Ingresa tu usuario y correo electrónico institucional registrado para recibir el código de verificación.</p>
                 <label>Nombre de Usuario</label>
                 <input id="recUser" placeholder="Usuario exacto">
                 <label style="margin-top:6px;">Correo Electrónico</label>
@@ -685,7 +686,7 @@
 
         function abrirModalValidacionCodigo() {
             mostrarModal('Validar Código de Recuperación', `
-                <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">Ingresa el código de 6 dígitos enviado a tu correo institucional y establece tu nueva contraseña.</p>
+                <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px; text-align: left;">Ingresa el código de 6 dígitos enviado a tu correo institucional y establece tu nueva contraseña.</p>
                 <label>Código de Verificación</label>
                 <input id="valCodigo" placeholder="Ej: 123456" maxlength="6">
                 <label style="margin-top:6px;">Nueva Contraseña</label>
@@ -1089,9 +1090,9 @@
                     ${!esInvitado ? `
                     <td>
                         <div class="acciones-cell">
-                            <button class="btn-action-primary" onclick="gestionarUbicacionesModal('${p.id}')">⚙️ Gestionar</button>
-                            <button class="btn-action-secondary" onclick="verHistorialArticulo('${p.codigo}')">🕒 Historial</button>
-                            ${puedeEliminar ? `<button class="btn-action-danger" onclick="eliminarProducto('${p.id}')">🗑️ Eliminar</button>` : ''}
+                            <button class="btn-action-primary" onclick="gestionarUbicacionesModal('${p.id}')">Gestionar</button>
+                            <button class="btn-action-secondary" onclick="verHistorialArticulo('${p.codigo}')">Historial</button>
+                            ${puedeEliminar ? `<button class="btn-action-danger" onclick="eliminarProducto('${p.id}')">Eliminar</button>` : ''}
                         </div>
                     </td>` : ''}
                 </tr>
@@ -1126,7 +1127,7 @@
             const movimientosArticulo = (appState.movements || []).filter(m => String(m.codigo).toLowerCase() === String(codigoInterno).toLowerCase() || (m.detalle && m.detalle.toLowerCase().includes(String(codigoInterno).toLowerCase())));
 
             let html = `
-                <p style="font-size:0.75rem; margin-bottom:10px; color:var(--text-muted);">Historial de modificaciones para el código interno: <strong>${codigoInterno}</strong></p>
+                <p style="font-size:0.75rem; margin-bottom:10px; color:var(--text-muted); text-align: left;">Historial de modificaciones para el código interno: <strong>${codigoInterno}</strong></p>
                 <div class="table-container" style="max-height:55vh;">
                     <table style="width:100%; font-size:0.65rem;">
                         <thead>
@@ -1180,15 +1181,15 @@
 
         function abrirModalAlmacenamiento() {
             mostrarModal('Recepción y Almacenamiento (Catálogo Maestro y GS1)', `
-                <div style="margin-bottom:14px; background:#f8fafc; padding:16px; border-radius:var(--radius); border:1px solid var(--border);">
-                    <label style="font-weight:600;">Buscar en Catálogo Maestro:</label>
+                <div style="margin-bottom:14px; background:#f8fafc; padding:16px; border-radius:var(--radius); border:1px solid var(--border); text-align: left;">
+                    <label style="font-weight:600; text-align: left;">Buscar en Catálogo Maestro:</label>
                     <div class="master-search-container">
                         <input type="text" id="masterSearchInput" class="master-search-input" placeholder="Escribe código o nombre..." oninput="filtrarCatalogoMaestroDropdown(this.value)" autocomplete="off">
                         <div id="masterDropdownResults" class="master-dropdown-results"></div>
                     </div>
                 </div>
                 
-                <div class="form-grid">
+                <div class="form-grid" style="text-align: left;">
                     <div class="full-width"><label>Código Interno</label><input id="mCod" placeholder="Ej: 01-001"></div>
                     
                     <div>
@@ -1222,26 +1223,26 @@
                     </div>
 
                     <div class="full-width"><label>Glosa / Descripción</label><input id="mGlosa" placeholder="Nombre del insumo o fármaco" onblur="verificarAlertaEscaneoManual(this.value)"></div>
-                    <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fef3c7; border:1px solid #fde68a; padding:10px; border-radius:var(--radius); font-size:0.75rem; color:#b45309;"></div>
+                    <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fef3c7; border:1px solid #fde68a; padding:10px; border-radius:var(--radius); font-size:0.75rem; color:#b45309; text-align: left;"></div>
 
                     <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">Fármacos</option><option value="Insumos">Insumos</option><option value="Economato">Economato</option><option value="Controlados">Fármacos Controlados</option><option value="Suturas">Suturas</option><option value="Alimentos">Alimentos</option></select></div>
                     <div><label>Jerarquía / Tipo</label><select id="mTipo"><option value="Unidad Comercial">Unidad Comercial</option><option value="Unidad Máster">Unidad Máster</option><option value="Unidad Mínima / Unidosis">Unidad Mínima / Unidosis</option></select></div>
                     
-                    <!-- PROGRAMAS CON BLOQUES INDEPENDIENTES Y DISEÑO ELEGANTE -->
-                    <div class="full-width" style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border);">
-                        <label style="margin-bottom:10px; font-weight:600; color:var(--text-main); font-size:0.75rem;">Programas y Alertas Especiales:</label>
-                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
-                            <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="mProgFrío"> <span class="badge-prog badge-frio">Cámara de Frío</span></label>
-                            <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="mProgDac"> <span class="badge-prog badge-dac">Alto Costo (DAC)</span></label>
-                            <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="mProgLrs"> <span class="badge-prog badge-lrs">Ley Ricarte Soto</span></label>
-                            <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="mProgPm"> <span class="badge-prog badge-pm">Programa Ministerial</span></label>
-                            <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="mProgControlado"> <span class="badge-prog badge-controlado">Fármaco Controlado</span></label>
+                    <!-- PROGRAMAS CON BLOQUES INDEPENDIENTES Y ALINEACIÓN IZQUIERDA -->
+                    <div class="full-width" style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); text-align: left;">
+                        <label style="margin-bottom:10px; font-weight:600; color:var(--text-main); font-size:0.75rem; text-align: left;">Programas y Alertas Especiales:</label>
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; text-align: left;">
+                            <label style="display:flex; align-items:center; justify-content: flex-start; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem; text-align: left;"><input type="checkbox" id="mProgFrío"> <span class="badge-prog badge-frio">Cámara de Frío</span></label>
+                            <label style="display:flex; align-items:center; justify-content: flex-start; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem; text-align: left;"><input type="checkbox" id="mProgDac"> <span class="badge-prog badge-dac">Alto Costo (DAC)</span></label>
+                            <label style="display:flex; align-items:center; justify-content: flex-start; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem; text-align: left;"><input type="checkbox" id="mProgLrs"> <span class="badge-prog badge-lrs">Ley Ricarte Soto</span></label>
+                            <label style="display:flex; align-items:center; justify-content: flex-start; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem; text-align: left;"><input type="checkbox" id="mProgPm"> <span class="badge-prog badge-pm">Programa Ministerial</span></label>
+                            <label style="display:flex; align-items:center; justify-content: flex-start; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem; text-align: left;"><input type="checkbox" id="mProgControlado"> <span class="badge-prog badge-controlado">Fármaco Controlado</span></label>
                         </div>
                     </div>
 
                     <div><label>Zona</label><select id="mZona" onchange="actualizarJerarquiaPorZonaForm(this.value)"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
                     <div><label>Anaquel / Rack / Full Space / Pallet</label><select id="mAnaquel"><option value="">-- Seleccionar --</option><option value="Anaquel 1">Anaquel 1</option><option value="Rack">Rack</option><option value="Full Space">Full Space</option><option value="Pallet">Pallet</option></select></div>
-                    <div class="full-width"><label>Posición</label><input id="mPosicion" value="" placeholder="Ej: A1 (dejar en blanco para lectura QR)"></div>
+                    <div class="full-width"><label>Posición</label><input id="mPosicion" value="" placeholder="A1"></div>
                     
                     <div class="full-width" style="background:#f1f5f9; padding:12px; border-radius:var(--radius); text-align:center; margin-top:6px;">
                         <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('almacenar')">Escanear QR de Ubicación</button>
@@ -1383,7 +1384,7 @@
                     <span><strong>Zona ${u.zona}</strong> - ${u.anaquel} Pos. ${u.posicion}</span>
                     <button class="btn btn-danger btn-xs" onclick="removerUbicacionDeProducto('${p.id}', ${index})">Quitar</button>
                 </div>
-            `).join('') || '<p style="color:var(--text-muted); font-size:0.75rem;">Sin ubicaciones registradas.</p>';
+            `).join('') || '<p style="color:var(--text-muted); font-size:0.75rem; text-align: left;">Sin ubicaciones registradas.</p>';
 
             const currentGtins = p.gtins || [];
             if(!p.gtinEstados) p.gtinEstados = {};
@@ -1391,8 +1392,11 @@
             const prog = p.programas || { frio: false, dac: false, lrs: false, pm: false, controlado: false };
 
             mostrarModal('Gestionar Códigos GS1 - GTIN/EAN y Ubicaciones', `
-                <p style="font-size:0.75rem; margin-bottom:8px;"><strong>${p.glosa}</strong> (Código Interno: ${p.codigo})</p>
-                <div style="margin-bottom:10px;">
+                <p style="font-size:0.75rem; margin-bottom:8px; line-height:1.4; text-align: left;">
+                    <strong>${p.glosa}</strong><br>
+                    <span style="color:var(--text-muted); font-size:0.7rem; display:block; margin-top:2px;">Código Interno: ${p.codigo}</span>
+                </p>
+                <div style="margin-bottom:10px; text-align: left;">
                     <label>Códigos GS1 - GTIN/EAN:</label>
                     <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;">
                         ${currentGtins.map(g => {
@@ -1402,7 +1406,7 @@
                     </div>
                 </div>
 
-                <div class="form-grid" style="margin-bottom:10px;">
+                <div class="form-grid" style="margin-bottom:10px; text-align: left;">
                     <div>
                         <label>GTIN/EAN 1</label>
                         <div style="display:flex; gap:6px; margin-bottom:4px;">
@@ -1433,36 +1437,36 @@
                     </div>
                 </div>
 
-                <label>Jerarquía / Tipo</label>
+                <label style="text-align: left;">Jerarquía / Tipo</label>
                 <select id="editTipo" style="margin-bottom:10px;">
                     <option value="Unidad Comercial" ${p.tipo==='Unidad Comercial'?'selected':''}>Unidad Comercial</option>
                     <option value="Unidad Máster" ${p.tipo==='Unidad Máster'?'selected':''}>Unidad Máster</option>
                     <option value="Unidad Mínima / Unidosis" ${p.tipo==='Unidad Mínima / Unidosis'?'selected':''}>Unidad Mínima / Unidosis</option>
                 </select>
 
-                <!-- PROGRAMAS CON BLOQUES INDEPENDIENTES Y DISEÑO ELEGANTE -->
-                <div style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:12px;">
-                    <label style="margin-bottom:10px; font-weight:600; font-size:0.75rem;">Programas y Alertas Especiales:</label>
-                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
-                        <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="editProgFrío" ${prog.frio?'checked':''}> <span class="badge-prog badge-frio">Cámara de Frío</span></label>
-                        <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="editProgDac" ${prog.dac?'checked':''}> <span class="badge-prog badge-dac">Alto Costo (DAC)</span></label>
-                        <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="editProgLrs" ${prog.lrs?'checked':''}> <span class="badge-prog badge-lrs">Ley Ricarte Soto</span></label>
-                        <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="editProgPm" ${prog.pm?'checked':''}> <span class="badge-prog badge-pm">Programa Ministerial</span></label>
-                        <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="editProgControlado" ${prog.controlado?'checked':''}> <span class="badge-prog badge-controlado">Fármaco Controlado</span></label>
+                <!-- PROGRAMAS CON BLOQUES INDEPENDIENTES Y ALINEACIÓN IZQUIERDA -->
+                <div style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:12px; text-align: left;">
+                    <label style="margin-bottom:10px; font-weight:600; font-size:0.75rem; text-align: left;">Programas y Alertas Especiales:</label>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; text-align: left;">
+                        <label style="display:flex; align-items:center; justify-content: flex-start; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem; text-align: left;"><input type="checkbox" id="editProgFrío" ${prog.frio?'checked':''}> <span class="badge-prog badge-frio">Cámara de Frío</span></label>
+                        <label style="display:flex; align-items:center; justify-content: flex-start; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem; text-align: left;"><input type="checkbox" id="editProgDac" ${prog.dac?'checked':''}> <span class="badge-prog badge-dac">Alto Costo (DAC)</span></label>
+                        <label style="display:flex; align-items:center; justify-content: flex-start; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem; text-align: left;"><input type="checkbox" id="editProgLrs" ${prog.lrs?'checked':''}> <span class="badge-prog badge-lrs">Ley Ricarte Soto</span></label>
+                        <label style="display:flex; align-items:center; justify-content: flex-start; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem; text-align: left;"><input type="checkbox" id="editProgPm" ${prog.pm?'checked':''}> <span class="badge-prog badge-pm">Programa Ministerial</span></label>
+                        <label style="display:flex; align-items:center; justify-content: flex-start; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem; text-align: left;"><input type="checkbox" id="editProgControlado" ${prog.controlado?'checked':''}> <span class="badge-prog badge-controlado">Fármaco Controlado</span></label>
                     </div>
                 </div>
 
-                <label>Ubicaciones Actuales:</label>
-                <div style="max-height:110px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:var(--radius); margin-bottom:12px;">
+                <label style="text-align: left;">Ubicaciones Actuales:</label>
+                <div style="max-height:110px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:var(--radius); margin-bottom:12px; text-align: left;">
                     ${listHtml}
                 </div>
                 <hr style="border:0; border-top:1px solid var(--border); margin:12px 0;">
-                <h4 style="font-size:0.8rem; font-weight:600; margin-bottom:8px;">Agregar Nueva Ubicación</h4>
+                <h4 style="font-size:0.8rem; font-weight:600; margin-bottom:8px; text-align: left;">Agregar Nueva Ubicación</h4>
                 
-                <div class="form-grid">
+                <div class="form-grid" style="text-align: left;">
                     <div><label>Zona</label><select id="nuevaZona" onchange="actualizarJerarquiaPorZonaForm(this.value)"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
                     <div><label>Anaquel / Rack / Full Space / Pallet</label><select id="nuevoAnaquel"><option value="">-- Seleccionar --</option><option value="Anaquel 1">Anaquel 1</option><option value="Rack">Rack</option><option value="Full Space">Full Space</option><option value="Pallet">Pallet</option></select></div>
-                    <div class="full-width"><label>Posición</label><input id="nuevaPosicion" value="" placeholder="Ej: A1 (dejar en blanco para lectura QR)"></div>
+                    <div class="full-width"><label>Posición</label><input id="nuevaPosicion" value="" placeholder="A1"></div>
                     
                     <div class="full-width" style="background:#f1f5f9; padding:12px; border-radius:var(--radius); text-align:center; margin-top:6px;">
                         <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('agregarUbicacion')">Escanear QR de Ubicación</button>
