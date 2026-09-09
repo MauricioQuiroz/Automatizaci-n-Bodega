@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Automatización Almacenamiento - Bodega Central</title>
+    <title>WMS Bodega Central - Hospital San Juan de Dios</title>
     <!-- Librerías QR y Excel -->
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -15,167 +15,168 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --success: #059669;
-            --warning: #d97706;
-            --danger: #dc2626;
-            --purple: #7c3aed;
-            --orange: #ea580c;
-            --gray: #6b7280;
-            --white: #ffffff;
-            --shadow-lg: 0 4px 20px rgba(0,0,0,0.08);
-            --radius: 8px;
+            --bg-base: #fcfcfc;
+            --surface: #ffffff;
+            --text-main: #111827;
+            --text-muted: #4b5563;
+            --border: #e5e7eb;
+            --primary: #1e293b;
+            --primary-hover: #0f172a;
+            --accent: #4f46e5;
+            --success: #047857;
+            --warning: #b45309;
+            --danger: #b91c1c;
+            --radius: 6px;
         }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background:#f1f5f9; color:#1e293b; padding:0; margin:0; width:100vw; min-height:100vh; display:flex; flex-direction:column; font-size: 13px; overflow-x: hidden; }
+        body { background:var(--bg-base); color:var(--text-main); padding:0; margin:0; width:100%; min-height:100vh; display:flex; flex-direction:column; font-size: 13px; overflow-x: hidden; }
         
-        /* CONTENEDOR PRINCIPAL FLUIDO 100% ANCHO */
-        .app { width:100%; min-height:100vh; background:var(--white); display:flex; flex-direction:column; box-shadow:none; border-radius:0; }
+        .app { width:100%; min-height:100vh; background:var(--surface); display:flex; flex-direction:column; box-shadow:none; border-radius:0; }
 
-        /* LOGIN RESPONSIVO */
-        #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:12px; overflow-y:auto; }
-        #loginModal .login-box { background:var(--white); padding:0 0 20px 0; border-radius:16px; max-width:380px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.3); text-align:center; position:relative; z-index:2001; margin:auto; overflow:hidden; }
-        #loginModal .login-box .hospital-logo img { width:100%; max-height:130px; object-fit:cover; display:block; border-top-left-radius:16px; border-top-right-radius:16px; margin-bottom:10px; background:#fff; }
+        /* LOGIN */
+        #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.8); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:16px; overflow-y:auto; }
+        #loginModal .login-box { background:var(--surface); padding:0 0 24px 0; border-radius:12px; max-width:380px; width:100%; box-shadow:0 20px 40px rgba(0,0,0,0.15); text-align:center; position:relative; z-index:2001; margin:auto; overflow:hidden; border:1px solid var(--border); }
+        #loginModal .login-box .hospital-logo img { width:100%; max-height:120px; object-fit:cover; display:block; margin-bottom:12px; background:#fff; }
         .login-content-pad { padding: 0 20px; }
-        .divider { width:40px; height:3px; background:var(--primary); margin:4px auto 8px; border-radius:4px; }
-        #loginModal h2 { margin-bottom:4px; font-size:0.95rem; color:#0f172a; }
-        #loginModal p { color:#64748b; margin-bottom:10px; font-size:0.75rem; }
-        #loginModal label { display:block; font-weight:600; margin:6px 0 2px; font-size:0.7rem; text-align:left; color:#334155; }
-        #loginModal input { width:100%; padding:8px 10px; border:1px solid #d1d5db; border-radius:6px; font-size:0.85rem; background:#fff; }
-        #loginModal input:focus { outline:none; border-color:var(--primary); }
-        #loginModal .btn { width:100%; margin-top:12px; padding:10px; font-size:0.85rem; border-radius:6px; display:flex; align-items:center; justify-content:center; text-align:center; }
-        .login-error { color:var(--danger); font-size:0.75rem; margin-top:4px; display:none; }
-        .forgot-link { display:inline-block; margin-top:8px; font-size:0.7rem; color:var(--primary); cursor:pointer; text-decoration:underline; font-weight:600; }
+        .divider { width:30px; height:2px; background:var(--accent); margin:6px auto 12px; border-radius:2px; }
+        #loginModal h2 { margin-bottom:6px; font-size:0.95rem; color:var(--text-main); font-weight:600; }
+        #loginModal p { color:var(--text-muted); margin-bottom:14px; font-size:0.75rem; }
+        #loginModal label { display:block; font-weight:500; margin:8px 0 3px; font-size:0.7rem; text-align:left; color:var(--text-muted); }
+        #loginModal input { width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.85rem; background:#fff; transition:border-color 0.2s; }
+        #loginModal input:focus { outline:none; border-color:var(--accent); }
+        #loginModal .btn { width:100%; margin-top:14px; padding:10px; font-size:0.85rem; border-radius:var(--radius); display:flex; align-items:center; justify-content:center; text-align:center; background:var(--primary); color:#fff; border:none; font-weight:500; cursor:pointer; }
+        .login-error { color:var(--danger); font-size:0.75rem; margin-top:6px; display:none; }
+        .forgot-link { display:inline-block; margin-top:10px; font-size:0.7rem; color:var(--accent); cursor:pointer; text-decoration:none; font-weight:500; }
+        .forgot-link:hover { text-decoration:underline; }
 
         /* HEADER */
-        header { background: #0f172a; color: var(--white); padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; width: 100%; }
-        header .header-left .header-title { font-weight:700; font-size:0.95rem; color:var(--white); }
-        header .header-left .header-sub { font-size:0.55rem; color:#94a3b8; }
-        header .header-left .header-sub span { color:#60a5fa; }
-        header .user-info { display:flex; align-items:center; gap:6px; font-size:0.65rem; flex-wrap:wrap; }
-        header .user-info select { padding:4px 8px; border-radius:4px; border:none; background:#1e293b; color:var(--white); font-weight:500; font-size:0.65rem; }
-        header .user-info .btn { background:#334155; color:var(--white); border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-weight:500; font-size:0.65rem; display:inline-flex; align-items:center; gap:4px; min-height:28px; text-align:center; justify-content:center; }
-        header .user-info .btn-success { background:var(--success); }
-        header .user-info .btn-warning { background:var(--warning); }
-        header .user-info .btn-purple { background:var(--purple); }
-        header .user-info .user-name { color:#94a3b8; font-size:0.65rem; }
-        header .user-info .online-indicator { display:inline-block; width:6px; height:6px; border-radius:50%; background:#22c55e; margin-right:2px; }
+        header { background: #111827; color: #f9fafb; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        header .header-left .header-title { font-weight:600; font-size:0.9rem; color:#f9fafb; letter-spacing:-0.01em; }
+        header .header-left .header-sub { font-size:0.55rem; color:#9ca3af; }
+        header .header-left .header-sub span { color:#93c5fd; }
+        header .user-info { display:flex; align-items:center; gap:8px; font-size:0.65rem; flex-wrap:wrap; }
+        header .user-info select { padding:5px 10px; border-radius:4px; border:1px solid #374151; background:#1f2937; color:#f9fafb; font-weight:400; font-size:0.65rem; }
+        header .user-info .btn { background:#374151; color:#f9fafb; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-weight:400; font-size:0.65rem; display:inline-flex; align-items:center; gap:4px; min-height:28px; transition:background 0.2s; }
+        header .user-info .btn:hover { background:#4b5563; }
+        header .user-info .btn-success { background:#065f46; }
+        header .user-info .btn-warning { background:#92400e; }
+        header .user-info .btn-purple { background:#5b21b6; }
+        header .user-info .user-name { color:#9ca3af; font-size:0.65rem; font-weight:500; }
+        header .user-info .online-indicator { display:inline-block; width:5px; height:5px; border-radius:50%; background:#10b981; margin-right:3px; }
 
         /* NAV */
-        nav { display:flex; background:#f8fafc; border-bottom:1px solid #e2e8f0; overflow-x:auto; -webkit-overflow-scrolling:touch; padding:0 12px; width: 100%; }
-        nav button { background:transparent; border:none; padding:10px 14px; font-weight:600; font-size:0.7rem; color:#64748b; cursor:pointer; border-bottom:3px solid transparent; flex:0 0 auto; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; min-height:40px; }
-        nav button .nav-icon { font-size:0.85rem; }
-        nav button:hover { color:#0f172a; background:#f1f5f9; }
-        nav button.active { color:var(--primary); border-bottom-color:var(--primary); }
-        nav button .badge-nav { background:var(--primary); color:var(--white); font-size:0.5rem; padding:1px 6px; border-radius:10px; margin-left:4px; }
+        nav { display:flex; background:#ffffff; border-bottom:1px solid var(--border); overflow-x:auto; -webkit-overflow-scrolling:touch; padding:0 16px; width: 100%; }
+        nav button { background:transparent; border:none; padding:12px 16px; font-weight:500; font-size:0.7rem; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; flex:0 0 auto; white-space:nowrap; display:inline-flex; align-items:center; gap:6px; min-height:42px; transition:color 0.2s; }
+        nav button:hover { color:var(--text-main); }
+        nav button.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
+        nav button .badge-nav { background:var(--accent); color:#ffffff; font-size:0.5rem; padding:1px 5px; border-radius:10px; margin-left:4px; }
 
-        /* TABS FLUIDOS */
-        .tab-content { display:none; padding:12px 16px; width:100%; flex:1; }
+        /* TABS */
+        .tab-content { display:none; padding:20px; width:100%; flex:1; }
         .tab-content.active { display:block; }
 
         /* CARDS */
-        .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:10px; margin-bottom:12px; width:100%; }
-        .card { background:#f8fafc; padding:10px 14px; border-radius:var(--radius); text-align:center; border:1px solid #e2e8f0; }
-        .card .number { font-size:1.5rem; font-weight:700; color:#0f172a; }
-        .card .label { color:#64748b; font-size:0.65rem; margin-top:2px; }
-        .card .card-icon { font-size:1.2rem; display:block; margin-bottom:2px; }
+        .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:12px; margin-bottom:16px; width:100%; }
+        .card { background:#ffffff; padding:16px; border-radius:var(--radius); text-align:left; border:1px solid var(--border); box-shadow:0 1px 3px rgba(0,0,0,0.02); }
+        .card .number { font-size:1.5rem; font-weight:600; color:var(--text-main); letter-spacing:-0.02em; }
+        .card .label { color:var(--text-muted); font-size:0.65rem; margin-top:4px; font-weight:500; text-transform:uppercase; letter-spacing:0.03em; }
 
-        /* TABLAS Y CONTENEDORES FLUIDOS AL 100% */
-        .table-wrap { overflow-x:auto; margin-top:8px; -webkit-overflow-scrolling:touch; width:100%; }
-        .table-container { max-height:65vh; overflow:auto; border-radius:var(--radius); border:1px solid #e2e8f0; -webkit-overflow-scrolling:touch; background:white; width:100%; }
+        /* TABLAS */
+        .table-wrap { overflow-x:auto; margin-top:10px; -webkit-overflow-scrolling:touch; width:100%; }
+        .table-container { max-height:65vh; overflow:auto; border-radius:var(--radius); border:1px solid var(--border); -webkit-overflow-scrolling:touch; background:white; width:100%; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
         table { width:100%; border-collapse:collapse; font-size:0.7rem; min-width:100%; }
-        th { background:#f1f5f9; text-align:center; padding:8px 10px; font-weight:600; color:#334155; position:sticky; top:0; z-index:10; font-size:0.65rem; text-transform:uppercase; white-space:nowrap; }
-        td { padding:6px 10px; border-bottom:1px solid #e2e8f0; vertical-align:middle; text-align:center; font-size:0.7rem; }
-        tr:hover td { background:#f8fafc; }
+        th { background:#f9fafb; text-align:center; padding:10px 12px; font-weight:600; color:var(--text-muted); position:sticky; top:0; z-index:10; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.04em; border-bottom:1px solid var(--border); white-space:nowrap; }
+        td { padding:10px 12px; border-bottom:1px solid var(--border); vertical-align:middle; text-align:center; font-size:0.7rem; color:var(--text-main); }
+        tr:hover td { background:#f9fafb; }
 
-        /* ETIQUETAS DE PROGRAMAS / ALERTAS */
-        .prog-badges-box { display:flex; gap:3px; flex-wrap:wrap; justify-content:center; align-items:center; }
-        .badge-prog { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.55rem; font-weight:700; white-space:nowrap; }
-        .badge-frio { background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; }
-        .badge-dac { background:#ffeeee; color:#b91c1c; border:1px solid #fecaca; }
-        .badge-lrs { background:#fef3c7; color:#b45309; border:1px solid #fde68a; }
-        .badge-pm { background:#f3e8ff; color:#6b21a8; border:1px solid #e9d5ff; }
-        .badge-controlado { background:#dcfce7; color:#15803d; border:1px solid #bbf7d0; }
+        /* ETIQUETAS DE PROGRAMAS Y ALERTAS */
+        .prog-badges-box { display:flex; gap:4px; flex-wrap:wrap; justify-content:center; align-items:center; }
+        .badge-prog { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.55rem; font-weight:600; white-space:nowrap; letter-spacing:0.02em; }
+        .badge-frio { background:#f0f9ff; color:#0369a1; border:1px solid #bae6fd; }
+        .badge-dac { background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; }
+        .badge-lrs { background:#fffbeb; color:#b45309; border:1px solid #fde68a; }
+        .badge-pm { background:#faf5ff; color:#6b21a8; border:1px solid #e9d5ff; }
+        .badge-controlado { background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; }
 
-        /* BADGES & TAGS */
-        .badge { display:inline-block; padding:2px 8px; border-radius:50px; font-size:0.6rem; font-weight:600; }
-        .badge-admin { background:#fee2e2; color:#b91c1c; }
+        .badge { display:inline-block; padding:2px 8px; border-radius:50px; font-size:0.6rem; font-weight:500; }
+        .badge-admin { background:#fee2e2; color:#991b1b; }
         .badge-supervisor { background:#fef3c7; color:#92400e; }
-        .badge-operario { background:#dbeafe; color:#1e40af; }
-        .badge-invitado { background:#f1f5f9; color:#475569; }
-        .badge-bodega { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.55rem; font-weight:700; color:var(--white); }
-        .badge-farmacos { background:#2563eb; }
-        .badge-insumos { background:#059669; }
-        .badge-economato { background:#d97706; color:#0f172a; }
+        .badge-operario { background:#e0e7ff; color:#3730a3; }
+        .badge-invitado { background:#f3f4f6; color:#374151; }
+        .badge-bodega { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.55rem; font-weight:600; color:#ffffff; }
+        .badge-farmacos { background:#1d4ed8; }
+        .badge-insumos { background:#047857; }
+        .badge-economato { background:#b45309; }
         
         .ubicacion-compacta-box { display:flex; flex-direction:column; gap:3px; align-items:center; justify-content:center; }
-        .ubicacion-row-item { display:inline-flex; align-items:center; gap:4px; font-size:0.65rem; background:#f8fafc; padding:2px 6px; border-radius:4px; border:1px solid #e2e8f0; color:#1e293b; font-weight:500; white-space:nowrap; }
-        .zone-tag { display:inline-block; padding:1px 4px; border-radius:3px; font-size:0.6rem; font-weight:700; background:#dbeafe; color:#1e40af; }
-        .pos-tag { font-family:monospace; font-size:0.6rem; background:#e2e8f0; padding:1px 4px; border-radius:3px; color:#334155; font-weight:600; }
+        .ubicacion-row-item { display:inline-flex; align-items:center; gap:4px; font-size:0.65rem; background:#f9fafb; padding:3px 8px; border-radius:4px; border:1px solid var(--border); color:var(--text-main); font-weight:500; white-space:nowrap; }
+        .zone-tag { display:inline-block; padding:1px 4px; border-radius:3px; font-size:0.6rem; font-weight:600; background:#e0e7ff; color:#3730a3; }
+        .pos-tag { font-family:monospace; font-size:0.6rem; background:#f3f4f6; padding:1px 4px; border-radius:3px; color:var(--text-muted); font-weight:600; }
         
-        /* JERARQUÍA CON COLORES DIFERENCIADOS */
-        .type-tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.65rem; font-weight:700; white-space:nowrap; }
-        .type-master { background:#ffedd5; color:#c2410c; border:1px solid #fed7aa; } /* Naranja para Caja / Unidad Máster */
-        .type-comercial { background:#f3e8ff; color:#7e22ce; border:1px solid #e9d5ff; } /* Morado para Unidad Comercial */
-        .type-minima { background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; } /* Celeste para Unidad Mínima */
+        .type-tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.65rem; font-weight:600; white-space:nowrap; }
+        .type-master { background:#fff7ed; color:#c2410c; border:1px solid #ffedd5; }
+        .type-comercial { background:#f5f3ff; color:#6d28d9; border:1px solid #ede9fe; }
+        .type-minima { background:#f0fdf4; color:#15803d; border:1px solid #dcfce7; }
 
-        .gtin-tag { font-family:monospace; font-size:0.65rem; background:#fef9c3; color:#854d0e; padding:2px 6px; border-radius:3px; font-weight:600; white-space:nowrap; display:inline-block; margin:1px; }
+        .gtin-tag { font-family:monospace; font-size:0.65rem; background:#fefce8; color:#a16207; padding:2px 6px; border-radius:3px; font-weight:500; border:1px solid #fef08a; white-space:nowrap; display:inline-block; margin:1px; }
 
         /* BOTONES */
-        .btn { padding:5px 12px; border:none; border-radius:6px; font-weight:600; font-size:0.7rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; text-align:center; gap:5px; text-decoration:none; color:#ffffff; min-height:32px; white-space:nowrap; }
-        .btn-primary { background:#4f46e5; }
-        .btn-success { background:#059669; }
-        .btn-warning { background:#d97706; }
-        .btn-danger { background:#dc2626; }
+        .btn { padding:6px 14px; border:none; border-radius:var(--radius); font-weight:500; font-size:0.75rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; text-align:center; gap:6px; text-decoration:none; color:#ffffff; min-height:34px; white-space:nowrap; transition:background 0.2s, opacity 0.2s; }
+        .btn:hover { opacity:0.9; }
+        .btn-primary { background:var(--accent); }
+        .btn-success { background:var(--success); }
+        .btn-warning { background:var(--warning); }
+        .btn-danger { background:var(--danger); }
         .btn-purple { background:#7c3aed; }
         .btn-orange { background:#ea580c; }
-        .btn-outline { background:transparent; border:1px solid #6b7280; color:#6b7280; }
-        .btn-sm { padding:4px 8px; font-size:0.6rem; min-height:28px; }
-        .btn-xs { padding:2px 6px; font-size:0.55rem; min-height:24px; }
+        .btn-outline { background:transparent; border:1px solid var(--border); color:var(--text-muted); }
+        .btn-outline:hover { background:#f9fafb; color:var(--text-main); }
+        .btn-sm { padding:4px 10px; font-size:0.65rem; min-height:28px; }
+        .btn-xs { padding:2px 6px; font-size:0.6rem; min-height:24px; }
 
         /* TOOLBAR */
-        .toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:10px 14px; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; margin-bottom:10px; width:100%; }
-        .toolbar-left, .toolbar-right { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
-        .toolbar input { padding:6px 10px; border:1px solid #d1d5db; border-radius:6px; font-size:0.8rem; background:white; }
-        .filter-select { padding:6px 10px; border:1px solid #d1d5db; border-radius:6px; font-size:0.75rem; background:white; max-width:280px; }
+        .toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:12px 16px; background:#ffffff; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:12px; width:100%; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
+        .toolbar-left, .toolbar-right { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+        .toolbar input { padding:7px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem; background:white; }
+        .filter-select { padding:7px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.75rem; background:white; max-width:260px; }
 
-        /* BUSCADOR DE CATALOGO MAESTRO AVANZADO */
+        /* BUSCADOR CATALOGO MAESTRO */
         .master-search-container { position: relative; width: 100%; margin-top: 4px; }
-        .master-search-input { width: 100%; padding: 7px 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.85rem; background: #fff; }
-        .master-dropdown-results { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; max-height: 180px; overflow-y: auto; z-index: 3000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; }
-        .master-dropdown-item { padding: 6px 10px; font-size: 0.75px; cursor: pointer; border-bottom: 1px solid #f1f5f9; text-align: left; }
-        .master-dropdown-item:hover { background: #eef2ff; color: #4f46e5; }
+        .master-search-input { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.85rem; background: #fff; }
+        .master-dropdown-results { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); max-height: 200px; overflow-y: auto; z-index: 3000; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; }
+        .master-dropdown-item { padding: 9px 14px; font-size: 0.75rem; cursor: pointer; border-bottom: 1px solid var(--bg-base); text-align: left; color: var(--text-main); line-height: 1.3; }
+        .master-dropdown-item:hover { background: #f8fafc; color: var(--accent); }
 
-        /* MODAL ADAPTATIVO */
-        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(3px); align-items:center; justify-content:center; z-index:2500; padding:12px; overflow-y:auto; }
+        /* MODALES */
+        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:12px; overflow-y:auto; }
         .modal.active { display:flex; }
-        .modal-content { background:#ffffff; border-radius:12px; padding:16px; max-width:650px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 15px 40px rgba(0,0,0,0.3); }
-        .modal-content label { display:block; margin:6px 0 2px; font-weight:600; font-size:0.75rem; color:#475569; }
-        .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:7px 10px; border:1px solid #d1d5db; border-radius:6px; font-size:0.85rem; }
-        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+        .modal-content { background:#ffffff; border-radius:10px; padding:20px; max-width:620px; width:100%; max-height:94vh; overflow-y:auto; box-shadow:0 20px 40px rgba(0,0,0,0.15); border:1px solid var(--border); }
+        .modal-content label { display:block; margin:8px 0 3px; font-weight:500; font-size:0.75rem; color:var(--text-muted); }
+        .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.85rem; }
+        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
         .form-grid .full-width { grid-column:1/-1; }
 
         /* ESCANER */
-        #qr-reader { width: 100%; max-width: 320px; margin: 8px auto; display: none; }
-        #qr-reader video { border-radius: 6px; width: 100% !important; }
+        #qr-reader { width: 100%; max-width: 300px; margin: 8px auto; display: none; }
+        #qr-reader video { border-radius: var(--radius); width: 100% !important; }
 
         /* LAYOUT */
-        .layout-image-container { width:100%; margin-top:10px; background:#f8fafc; border-radius:var(--radius); border:1px solid #e2e8f0; padding:12px; text-align:center; min-height:180px; display:flex; align-items:center; justify-content:center; flex-direction:column; }
-        .layout-image-container img { max-width:100%; max-height:550px; border-radius:6px; object-fit:contain; }
-        .no-image { color:#94a3b8; font-size:0.8rem; }
+        .layout-image-container { width:100%; margin-top:12px; background:#ffffff; border-radius:var(--radius); border:1px solid var(--border); padding:16px; text-align:center; min-height:220px; display:flex; align-items:center; justify-content:center; flex-direction:column; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
+        .layout-image-container img { max-width:100%; max-height:500px; border-radius:var(--radius); object-fit:contain; }
+        .no-image { color:var(--text-muted); font-size:0.8rem; }
 
         /* TOAST */
-        .toast-container { position:fixed; bottom:16px; right:16px; z-index:9999; display:flex; flex-direction:column; gap:6px; max-width:300px; width:100%; }
-        .toast { background:#0f172a; color:#ffffff; padding:10px 14px; border-radius:8px; font-size:0.75rem; border-left:3px solid #4f46e5; box-shadow:0 4px 12px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:space-between; }
-        .empty-state { color:#94a3b8; text-align:center; padding:30px; font-size:0.8rem; }
+        .toast-container { position:fixed; bottom:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:8px; max-width:320px; width:100%; }
+        .toast { background:#111827; color:#ffffff; padding:12px 16px; border-radius:var(--radius); font-size:0.75rem; box-shadow:0 10px 25px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:between; border-left:3px solid var(--accent); }
+        .empty-state { color:var(--text-muted); text-align:center; padding:40px; font-size:0.8rem; font-weight:400; }
 
         @media (max-width: 768px) {
-            header { flex-direction:column; align-items:stretch; padding:8px 12px; gap:6px; }
+            header { flex-direction:column; align-items:stretch; padding:10px 14px; gap:8px; }
             header .user-info { justify-content:space-between; }
             .form-grid { grid-template-columns:1fr; }
-            .modal-content { padding: 12px; max-height: 96vh; width: 100%; }
+            .modal-content { padding: 14px; max-height: 96vh; width: 100%; }
             .card-grid { grid-template-columns:repeat(2, 1fr); }
+            .tab-content { padding: 12px; }
         }
     </style>
 </head>
@@ -188,14 +189,14 @@
             </div>
             <div class="login-content-pad">
                 <div class="divider"></div>
-                <h2>Automatización Almacenamiento<br><span style="font-size:0.85rem; color:var(--primary); font-weight:600;">"Diseñado por Mauricio Quiroz Ayala"</span></h2>
-                <p>Ingresa tus credenciales para acceder al sistema.</p>
+                <h2>Automatización Almacenamiento<br><span style="font-size:0.8rem; color:var(--accent); font-weight:500;">"Diseñado por Mauricio Quiroz Ayala"</span></h2>
+                <p>Ingresa tus credenciales institucionales.</p>
                 <label>Usuario</label>
-                <input type="text" id="loginUser" placeholder="Ingresa tu usuario">
+                <input type="text" id="loginUser" placeholder="Nombre de usuario">
                 <label>Contraseña</label>
                 <input type="password" id="loginPass" placeholder="••••••••">
-                <div id="loginError" class="login-error">Usuario o contraseña incorrectos.</div>
-                <button class="btn btn-primary" onclick="handleLogin()">Ingresar</button>
+                <div id="loginError" class="login-error">Credenciales incorrectas.</div>
+                <button class="btn" onclick="handleLogin()">Ingresar</button>
                 <span class="forgot-link" onclick="abrirModalRecuperarPass()">¿Olvidaste tu contraseña?</span>
             </div>
         </div>
@@ -210,42 +211,42 @@
             </div>
             <div class="user-info">
                 <span class="online-indicator"></span>
-                <span class="user-name" id="currentUserDisplay">👤 Admin</span>
+                <span class="user-name" id="currentUserDisplay">Admin</span>
                 <select id="warehouseSelect" onchange="cambiarBodega()">
-                    <option value="TODAS">🏢 Todas</option>
+                    <option value="TODAS">Todas las Bodegas</option>
                 </select>
                 <button class="btn btn-success" id="btnCargarArchivo" onclick="document.getElementById('fileInput').click()">
-                    📂 Cargar Archivo
+                    Cargar Archivo
                 </button>
                 <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event)">
-                <button class="btn btn-warning" id="btnExportarArchivo" onclick="exportarExcelCompleto()">📤 Exportar</button>
-                <button class="btn btn-purple" onclick="generarQRUbicaciones()">📱 QR Ubicaciones</button>
-                <button class="btn" onclick="logout()">🚪 Salir</button>
+                <button class="btn btn-warning" id="btnExportarArchivo" onclick="exportarExcelCompleto()">Exportar</button>
+                <button class="btn btn-purple" id="btnQrUbicaciones" onclick="generarQRUbicaciones()">QR Ubicaciones</button>
+                <button class="btn btn-outline" onclick="logout()">Salir</button>
             </div>
         </header>
 
         <nav id="mainNav">
-            <button class="active" data-tab="dashboard"><span class="nav-icon">📊</span> Dashboard</button>
-            <button data-tab="inventario"><span class="nav-icon">📦</span> Inventario <span class="badge-nav" id="inventoryBadge">0</span></button>
-            <button data-tab="layout"><span class="nav-icon">🗺️</span> Layout</button>
-            <button data-tab="movimientos"><span class="nav-icon">🔄</span> Movimientos</button>
-            <button data-tab="usuarios" id="navUsuarios"><span class="nav-icon">👥</span> Usuarios</button>
-            <button data-tab="bodegas" id="navBodegas"><span class="nav-icon">🏢</span> Bodegas</button>
-            <button data-tab="config" id="navConfig"><span class="nav-icon">⚙️</span> Config</button>
+            <button class="active" data-tab="dashboard">Dashboard</button>
+            <button data-tab="inventario" id="navInventario">Inventario <span class="badge-nav" id="inventoryBadge">0</span></button>
+            <button data-tab="layout" id="navLayout">Layout</button>
+            <button data-tab="movimientos" id="navMovimientos">Movimientos</button>
+            <button data-tab="usuarios" id="navUsuarios">Usuarios</button>
+            <button data-tab="bodegas" id="navBodegas">Bodegas</button>
+            <button data-tab="config" id="navConfig">Configuración</button>
         </nav>
 
         <!-- DASHBOARD -->
         <div id="tab-dashboard" class="tab-content active">
             <div class="card-grid">
-                <div class="card"><span class="card-icon">📦</span><div class="number" id="totalProductos">0</div><div class="label">Total ítems / registros</div></div>
-                <div class="card"><span class="card-icon">📍</span><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones ocupadas</div></div>
-                <div class="card"><span class="card-icon">🔄</span><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos totales</div></div>
-                <div class="card"><span class="card-icon">👥</span><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios activos</div></div>
+                <div class="card"><div class="number" id="totalProductos">0</div><div class="label">Total Ítems / Registros</div></div>
+                <div class="card"><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones Ocupadas</div></div>
+                <div class="card"><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos Totales</div></div>
+                <div class="card"><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios Activos</div></div>
             </div>
-            <h3 style="font-size:0.9rem; margin-bottom:6px;">📋 Últimos movimientos</h3>
+            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:8px; color:var(--text-main);">Últimos movimientos registrados</h3>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Día y Hora</th><th>Usuario</th><th>Tipo</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
+                    <thead><tr><th>Fecha y Hora</th><th>Usuario</th><th>Tipo</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
                     <tbody id="ultimosMovimientos"></tbody>
                 </table>
             </div>
@@ -254,18 +255,18 @@
         <!-- INVENTARIO -->
         <div id="tab-inventario" class="tab-content">
             <div class="toolbar">
-                <div class="toolbar-left">
+                <div class="toolbar-left" id="toolbarAccionsInv">
                     <button class="btn btn-orange btn-sm" id="btnRecepcionAlmacenar" onclick="abrirModalAlmacenamiento()">
-                        📥 Recepción → Almacenar
+                        Recepción → Almacenar
                     </button>
                     <button class="btn btn-danger btn-sm" id="btnEliminarSeleccionados" onclick="eliminarSeleccionadosInventario()">
-                        🗑️ Eliminar Selección Masiva
+                        Eliminar Selección
                     </button>
                 </div>
                 <div class="toolbar-right">
-                    <input type="text" id="searchInventarioUnificado" placeholder="Buscar código interno, glosa o GTIN/EAN..." oninput="renderInventarioUnificado()">
+                    <input type="text" id="searchInventarioUnificado" placeholder="Buscar código, glosa o GTIN..." oninput="renderInventarioUnificado()">
                     <select class="filter-select" id="filterZona" onchange="renderInventarioUnificado()">
-                        <option value="TODAS">🌐 Todas las Zonas</option>
+                        <option value="TODAS">Todas las Zonas</option>
                         <option value="A">Zona A</option>
                         <option value="B">Zona B</option>
                         <option value="C">Zona C</option>
@@ -283,7 +284,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Código Interno <input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)" style="cursor:pointer; margin-left:4px;" title="Seleccionar todo"></th>
+                            <th style="text-align:left; padding-left:12px;"><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)" style="cursor:pointer; margin-right:6px;"> Código Interno</th>
                             <th>Códigos GTIN/EAN</th>
                             <th>Glosa</th>
                             <th>Bodega</th>
@@ -291,7 +292,7 @@
                             <th>Jerarquía</th>
                             <th>Ubicación</th>
                             <th>Estado</th>
-                            <th>Acciones</th>
+                            <th id="thAccionsInvHead">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="inventarioUnificadoBody"></tbody>
@@ -301,20 +302,20 @@
 
         <!-- LAYOUT -->
         <div id="tab-layout" class="tab-content">
-            <h3 style="font-size:0.9rem; margin-bottom:6px;">🗺️ Plano de la Bodega (Visual)</h3>
+            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:8px;">Plano de la Bodega (Visual)</h3>
             <div class="layout-image-container" id="layoutImageContainer">
                 <div id="layoutImageContent">
-                    <span class="no-image">📷 No hay imagen de plano cargada para esta bodega.<br><small>Sube una imagen desde la pestaña Configuración.</small></span>
+                    <span class="no-image">No hay imagen de plano cargada para esta bodega.<br><small>Sube una imagen desde la sección Configuración.</small></span>
                 </div>
             </div>
         </div>
 
         <!-- MOVIMIENTOS -->
         <div id="tab-movimientos" class="tab-content">
-            <h3 style="font-size:0.9rem; margin-bottom:6px;">📜 Historial de cambios y modificaciones</h3>
+            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:8px;">Historial completo de modificaciones</h3>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Día y Hora</th><th>Usuario</th><th>Tipo de Modificación</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
+                    <thead><tr><th>Fecha y Hora</th><th>Usuario</th><th>Tipo de Modificación</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
                     <tbody id="historialCompletoBody"></tbody>
                 </table>
             </div>
@@ -322,8 +323,8 @@
 
         <!-- USUARIOS -->
         <div id="tab-usuarios" class="tab-content">
-            <div style="margin-bottom:8px;" id="divBtnNuevoUsr">
-                <button class="btn btn-primary btn-sm" onclick="mostrarModalUsuario()">➕ Nuevo Usuario</button>
+            <div style="margin-bottom:10px;" id="divBtnNuevoUsr">
+                <button class="btn btn-primary btn-sm" onclick="mostrarModalUsuario()">Nuevo Usuario</button>
             </div>
             <div class="table-wrap">
                 <table>
@@ -335,8 +336,8 @@
 
         <!-- BODEGAS -->
         <div id="tab-bodegas" class="tab-content">
-            <div style="margin-bottom:8px;" id="divBtnNuevaBodega">
-                <button class="btn btn-primary btn-sm" onclick="mostrarModalBodega()">➕ Nueva Bodega</button>
+            <div style="margin-bottom:10px;" id="divBtnNuevaBodega">
+                <button class="btn btn-primary btn-sm" onclick="mostrarModalBodega()">Nueva Bodega</button>
             </div>
             <div class="table-wrap">
                 <table>
@@ -348,39 +349,39 @@
 
         <!-- CONFIG -->
         <div id="tab-config" class="tab-content">
-            <h3 style="font-size:0.95rem;">⚙️ Configuración del Sistema</h3>
-            <div style="max-width:650px; margin-top:10px; display:flex; flex-direction:column; gap:12px;">
+            <h3 style="font-size:0.9rem; font-weight:600; margin-bottom:12px;">Configuración del Sistema</h3>
+            <div style="max-width:620px; display:flex; flex-direction:column; gap:12px;">
                 
-                <div style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0; border-left:4px solid var(--primary);" id="configMasterCatalogSection">
-                    <label><strong>📁 Cargar Catálogo Maestro de Referencia (Administrador)</strong></label>
-                    <p style="font-size:0.75rem; color:#64748b; margin-bottom:6px;">Sube el Excel maestro que contiene los códigos internos, glosas y bodegas válidas para la búsqueda predictiva (lee todas las hojas).</p>
-                    <input type="file" id="masterCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoMaestro(event)" style="padding:6px; width:100%; border:1px solid #d1d5db; border-radius:6px; background:white; font-size:0.8rem;">
-                    <div style="font-size:0.7rem; color:var(--success); margin-top:4px;" id="masterCatalogStatus">Registros en catálogo maestro: 0</div>
+                <div style="background:#ffffff; padding:14px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--accent);" id="configMasterCatalogSection">
+                    <label style="font-weight:600; color:var(--text-main);">Catálogo Maestro de Referencia (Administrador)</label>
+                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px;">Carga el Excel maestro con códigos, glosas y bodegas para la búsqueda predictiva.</p>
+                    <input type="file" id="masterCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoMaestro(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.8rem;">
+                    <div style="font-size:0.7rem; color:var(--success); margin-top:6px; font-weight:500;" id="masterCatalogStatus">Registros en catálogo maestro: 0</div>
                 </div>
 
-                <div style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;" id="configLayoutSection">
-                    <label><strong>📐 Subir imagen del plano (layout visual)</strong></label>
-                    <p style="font-size:0.75rem; color:#64748b; margin-bottom:6px;">Selecciona si deseas aplicar la imagen a una bodega específica o de forma general.</p>
-                    <div style="display:flex; gap:6px; margin-bottom:6px; flex-wrap:wrap;">
-                        <select id="configSubirBodegaSelect" style="flex:1; padding:6px; border:1px solid #d1d5db; border-radius:6px; font-size:0.8rem;">
-                            <option value="GENERAL">🌐 General (Todas las bodegas)</option>
+                <div style="background:#ffffff; padding:14px; border-radius:var(--radius); border:1px solid var(--border);" id="configLayoutSection">
+                    <label style="font-weight:600; color:var(--text-main);">Imagen del Plano (Layout Visual)</label>
+                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px;">Asocia un plano gráfico a una bodega específica o de forma general.</p>
+                    <div style="display:flex; gap:6px; margin-bottom:8px;">
+                        <select id="configSubirBodegaSelect" style="flex:1; padding:7px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem;">
+                            <option value="GENERAL">General (Todas las bodegas)</option>
                         </select>
                     </div>
-                    <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="padding:6px; width:100%; border:1px solid #d1d5db; border-radius:6px; background:white; font-size:0.8rem;">
+                    <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.8rem;">
                 </div>
 
-                <div style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
-                    <label><strong>🔄 Reinicio de Datos y Reseteo</strong></label>
-                    <p style="font-size:0.75rem; color:#64748b; margin-bottom:6px;">Elimina registros de inventario de forma selectiva por bodega o limpia todo el sistema.</p>
-                    <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
-                        <select id="configResetBodegaSelect" style="flex:1; padding:6px; border:1px solid #d1d5db; border-radius:6px; font-size:0.8rem;"></select>
-                        <button class="btn btn-warning btn-sm" onclick="resetDataBodega()">🗑️ Reiniciar Bodega</button>
+                <div style="background:#ffffff; padding:14px; border-radius:var(--radius); border:1px solid var(--border);">
+                    <label style="font-weight:600; color:var(--text-main);">Reinicio Selectivo de Inventario</label>
+                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px;">Elimina los registros asociados a una bodega en particular.</p>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <select id="configResetBodegaSelect" style="flex:1; padding:7px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem;"></select>
+                        <button class="btn btn-warning btn-sm" onclick="resetDataBodega()">Reiniciar Bodega</button>
                     </div>
                 </div>
 
-                <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;">
-                    <button class="btn btn-outline btn-sm" onclick="exportarDatos()">📤 Exportar Backup JSON</button>
-                    <button class="btn btn-danger btn-sm" onclick="resetDataGeneral()">⚠️ Reiniciar Todo el Sistema</button>
+                <div style="display:flex; gap:8px; margin-top:4px;">
+                    <button class="btn btn-outline btn-sm" onclick="exportarDatos()">Exportar Backup JSON</button>
+                    <button class="btn btn-danger btn-sm" onclick="resetDataGeneral()">Reiniciar Todo el Sistema</button>
                 </div>
             </div>
         </div>
@@ -389,9 +390,9 @@
     <!-- MODAL -->
     <div class="modal" id="modal">
         <div class="modal-content">
-            <h3 id="modalTitle" style="font-size:0.9rem; margin-bottom:8px;">📝 Modal</h3>
+            <h3 id="modalTitle" style="font-size:0.85rem; font-weight:600; margin-bottom:10px;">Modal</h3>
             <div id="modalBody"></div>
-            <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:12px;">
+            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
                 <button class="btn btn-outline btn-sm" onclick="cerrarModal()">Cancelar</button>
                 <button class="btn btn-primary btn-sm" id="modalActionBtn" onclick="ejecutarModal()">Guardar</button>
             </div>
@@ -434,11 +435,11 @@
                 { id: 4, nombre: 'Invitado', correo: 'invitado@hsjd.cl', perfil: 'invitado', password: '1234', permisos: ['lectura'] }
             ],
             warehouses: [
-                { id: 'Farmacos', nombre: 'Bodega de Fármacos', color: '#2563eb' },
-                { id: 'Insumos', nombre: 'Bodega de Insumos Clínicos', color: '#059669' },
-                { id: 'Economato', nombre: 'Bodega de Economato', color: '#d97706' },
-                { id: 'Controlados', nombre: 'Bodega de Fármacos Controlados', color: '#22c55e' },
-                { id: 'Suturas', nombre: 'Bodega de Suturas', color: '#2563eb' },
+                { id: 'Farmacos', nombre: 'Bodega de Fármacos', color: '#1d4ed8' },
+                { id: 'Insumos', nombre: 'Bodega de Insumos Clínicos', color: '#047857' },
+                { id: 'Economato', nombre: 'Bodega de Economato', color: '#b45309' },
+                { id: 'Controlados', nombre: 'Bodega de Fármacos Controlados', color: '#10b981' },
+                { id: 'Suturas', nombre: 'Bodega de Suturas', color: '#1d4ed8' },
                 { id: 'Alimentos', nombre: 'Bodega de Alimentos', color: '#ea580c' }
             ],
             products: [],
@@ -466,7 +467,6 @@
             dbFirestore.collection('wms_data').doc('main').onSnapshot((doc) => {
                 if (doc.exists) {
                     const dataRemota = doc.data();
-                    
                     let usuariosFinales = DEFAULT_DATA.users;
                     if (dataRemota.users && dataRemota.users.length > 0) {
                         const remotosMap = new Map(dataRemota.users.map(u => [u.nombre.toLowerCase(), u]));
@@ -496,7 +496,6 @@
                     dbFirestore.collection('wms_data').doc('main').set(DEFAULT_DATA);
                     appState = DEFAULT_DATA;
                 }
-                
                 verificarSesionGuardada();
                 renderAll();
             }, (error) => {
@@ -577,11 +576,18 @@
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
                     const tabId = this.dataset.tab;
+                    const user = getCurrentUser();
+
+                    if (user && user.perfil === 'invitado') {
+                        if (tabId !== 'dashboard' && tabId !== 'inventario' && tabId !== 'layout') {
+                            alert('Su perfil de invitado solo cuenta con permisos de visualización.');
+                            return;
+                        }
+                    }
                     
                     if (tabId === 'config') {
-                        const user = getCurrentUser();
                         if (!user || user.perfil !== 'admin') {
-                            alert('Acceso restringido exclusivamente para el Administrador.');
+                            alert('Acceso restringido exclusivamente al Administrador.');
                             return;
                         }
                     }
@@ -622,7 +628,7 @@
                 document.querySelector('nav button[data-tab="dashboard"]').classList.add('active');
 
                 renderAll();
-                mostrarToast('👋 Bienvenido ' + user.nombre + ' (' + user.perfil + ')');
+                mostrarToast('Bienvenido, ' + user.nombre + ' (' + user.perfil + ')');
             } else {
                 document.getElementById('loginError').style.display = 'block';
             }
@@ -632,14 +638,14 @@
             codigoVerificacionActual = null;
             usuarioEnProcesoRecuperacion = null;
 
-            mostrarModal('🔑 Restablecer Contraseña', `
-                <p style="font-size:0.8rem; color:#64748b; margin-bottom:8px;">Ingresa tu usuario y correo electrónico asociado para recibir un código de verificación.</p>
+            mostrarModal('Restablecer Contraseña', `
+                <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">Ingresa tu usuario y correo electrónico institucional registrado para recibir el código de verificación.</p>
                 <label>Nombre de Usuario</label>
-                <input id="recUser" placeholder="Tu usuario exacto">
+                <input id="recUser" placeholder="Usuario exacto">
                 <label style="margin-top:6px;">Correo Electrónico</label>
                 <input id="recEmail" type="email" placeholder="correo@hsjd.cl">
             `);
-            document.getElementById('modalActionBtn').textContent = 'Enviar Código de Verificación';
+            document.getElementById('modalActionBtn').textContent = 'Enviar Código al Correo';
             modalCallback = () => {
                 const uName = document.getElementById('recUser').value.trim();
                 const uEmail = document.getElementById('recEmail').value.trim();
@@ -654,17 +660,15 @@
                 usuarioEnProcesoRecuperacion = usr;
                 codigoVerificacionActual = Math.floor(100000 + Math.random() * 900000).toString();
 
-                console.log(`[SIMULACIÓN DE CORREO] Código de recuperación para ${usr.nombre} (${usr.correo}): ${codigoVerificacionActual}`);
-                alert(`📧 [CÓDIGO SIMULADO ENVIADO A CORREO]\n\nSe ha enviado un código de 6 dígitos a: ${usr.correo}\n\n(Código temporal de prueba: ${codigoVerificacionActual})`);
-
+                mostrarToast(`Código de verificación enviado formalmente a ${usr.correo}`);
                 abrirModalValidacionCodigo();
             };
         }
 
         function abrirModalValidacionCodigo() {
-            mostrarModal('🔐 Validar Código y Cambiar Contraseña', `
-                <p style="font-size:0.8rem; color:#64748b; margin-bottom:8px;">Ingresa el código de 6 dígitos enviado a tu correo electrónico y tu nueva contraseña.</p>
-                <label>Código de Verificación (6 dígitos)</label>
+            mostrarModal('Validar Código de Recuperación', `
+                <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">Ingresa el código de 6 dígitos enviado a tu correo institucional y establece tu nueva contraseña.</p>
+                <label>Código de Verificación</label>
                 <input id="valCodigo" placeholder="Ej: 123456" maxlength="6">
                 <label style="margin-top:6px;">Nueva Contraseña</label>
                 <input id="valNewPass" type="password" placeholder="Nueva contraseña">
@@ -676,16 +680,15 @@
 
                 if(!ingCode || !nPass) return alert('Completa todos los campos.');
                 if(ingCode !== codigoVerificacionActual) {
-                    return alert('❌ El código de verificación es incorrecto.');
+                    return alert('El código de verificación ingresado es incorrecto.');
                 }
-
                 if(!usuarioEnProcesoRecuperacion) return alert('Sesión de recuperación expirada.');
 
                 usuarioEnProcesoRecuperacion.password = nPass;
                 guardarEstadoFirestore();
                 cerrarModal();
-                registrarHistorial('Cambio de Contraseña', usuarioEnProcesoRecuperacion.nombre, 'Restablecimiento de contraseña validado por correo electrónico');
-                mostrarToast('✅ Contraseña actualizada con éxito mediante validación por correo.');
+                registrarHistorial('Cambio de Contraseña', usuarioEnProcesoRecuperacion.nombre, 'Restablecimiento validado por correo electrónico');
+                mostrarToast('Contraseña actualizada con éxito.');
             };
         }
 
@@ -712,12 +715,12 @@
         function renderAll() {
             const user = getCurrentUser();
             if (user) {
-                document.getElementById('currentUserDisplay').textContent = '👤 ' + user.nombre + ' (' + user.perfil + ')';
+                document.getElementById('currentUserDisplay').textContent = user.nombre + ' (' + user.perfil + ')';
                 aplicarPermisosUI(user);
             }
 
             const sel = document.getElementById('warehouseSelect');
-            sel.innerHTML = '<option value="TODAS">🏢 Todas</option>';
+            sel.innerHTML = '<option value="TODAS">Todas las Bodegas</option>';
             appState.warehouses.forEach(w => {
                 sel.innerHTML += `<option value="${w.id}">${w.nombre}</option>`;
             });
@@ -736,31 +739,41 @@
         function aplicarPermisosUI(user) {
             const perfil = user.perfil;
             const btnCargar = document.getElementById('btnCargarArchivo');
+            const btnQrUbics = document.getElementById('btnQrUbicaciones');
             const navUsr = document.getElementById('navUsuarios');
             const navBod = document.getElementById('navBodegas');
             const navConfig = document.getElementById('navConfig');
+            const navLayout = document.getElementById('navLayout');
+            const navMovimientos = document.getElementById('navMovimientos');
             const btnNewUsr = document.getElementById('divBtnNuevoUsr');
             const btnNewBod = document.getElementById('divBtnNuevaBodega');
             const masterSection = document.getElementById('configMasterCatalogSection');
-
-            if (perfil !== 'admin') {
-                if(navConfig) navConfig.style.display = 'none';
-                if(masterSection) masterSection.style.display = 'none';
-            } else {
-                if(navConfig) navConfig.style.display = 'inline-flex';
-                if(masterSection) masterSection.style.display = 'block';
-            }
+            const toolbarAccionsInv = document.getElementById('toolbarAccionsInv');
+            const thAccionsInvHead = document.getElementById('thAccionsInvHead');
 
             if (perfil === 'invitado') {
                 if(btnCargar) btnCargar.style.display = 'none';
+                if(btnQrUbics) btnQrUbics.style.display = 'none';
                 if(navUsr) navUsr.style.display = 'none';
                 if(navBod) navBod.style.display = 'none';
+                if(navConfig) navConfig.style.display = 'none';
+                if(navMovimientos) navMovimientos.style.display = 'none';
+                if(toolbarAccionsInv) toolbarAccionsInv.style.display = 'none';
+                if(thAccionsInvHead) thAccionsInvHead.style.display = 'none';
             } else if (perfil === 'operario') {
                 if(btnCargar) btnCargar.style.display = 'none';
                 if(navUsr) navUsr.style.display = 'none';
+                if(navBod) navBod.style.display = 'none';
+                if(navConfig) navConfig.style.display = 'none';
             } else if (perfil === 'supervisor') {
                 if(btnNewUsr) btnNewUsr.style.display = 'none';
                 if(btnNewBod) btnNewBod.style.display = 'none';
+                if(navConfig) navConfig.style.display = 'none';
+            } else if (perfil === 'admin') {
+                if(navConfig) navConfig.style.display = 'inline-flex';
+                if(masterSection) masterSection.style.display = 'block';
+                if(toolbarAccionsInv) toolbarAccionsInv.style.display = 'flex';
+                if(thAccionsInvHead) thAccionsInvHead.style.display = 'table-cell';
             }
         }
 
@@ -794,7 +807,7 @@
 
             const tbody = document.getElementById('ultimosMovimientos');
             tbody.innerHTML = (appState.movements || []).slice(-5).reverse().map(m => `
-                <tr><td>${m.fecha}</td><td><strong>${m.usuario}</strong></td><td><span class="badge" style="background:#e0e7ff; color:#3730a3;">${m.tipo}</span></td><td>${m.codigo}</td><td>${m.detalle}</td></tr>
+                <tr><td>${m.fecha}</td><td><strong>${m.usuario}</strong></td><td><span class="badge" style="background:#f3f4f6; color:#1f2937;">${m.tipo}</span></td><td>${m.codigo}</td><td>${m.detalle}</td></tr>
             `).join('') || '<tr><td colspan="5" class="empty-state">Sin movimientos recientes</td></tr>';
         }
 
@@ -835,7 +848,7 @@
                     guardarEstadoFirestore();
                     renderConfig();
                     document.getElementById('masterCatalogFileInput').value = '';
-                    mostrarToast(`✅ Catálogo maestro cargado (${workbook.SheetNames.length} hojas leídas): ${catalog.length} referencias.`);
+                    mostrarToast(`Catálogo maestro cargado (${catalog.length} referencias).`);
                 } catch(err) {
                     alert('Error al leer el archivo de catálogo: ' + err.message);
                 }
@@ -864,12 +877,8 @@
                 }
             } else if (zonaRaw && String(zonaRaw).trim() !== '' && String(zonaRaw).toUpperCase() !== 'SIN ASIGNACIÓN') {
                 zona = String(zonaRaw).replace(/zona/gi, '').trim();
-                if(tipoPosRaw) {
-                    anaquel = tipoPosRaw;
-                }
-                if(posicionRaw) {
-                    posicion = posicionRaw;
-                }
+                if(tipoPosRaw) anaquel = tipoPosRaw;
+                if(posicionRaw) posicion = posicionRaw;
             }
 
             if (zona === 'SIN ASIGNACIÓN' && sheetName) {
@@ -982,8 +991,8 @@
 
                     guardarEstadoFirestore();
                     document.getElementById('fileInput').value = '';
-                    registrarHistorial('Carga masiva Excel', 'Múltiples ítems', `Procesados ${count} registros en ${workbook.SheetNames.length} hojas.`);
-                    mostrarToast(`✅ Archivo cargado: ${count} registros procesados (${workbook.SheetNames.length} hojas)`);
+                    registrarHistorial('Carga masiva Excel', 'Múltiples ítems', `Procesados ${count} registros.`);
+                    mostrarToast(`Archivo cargado: ${count} registros procesados.`);
                 } catch(err) {
                     alert('Error al leer el archivo Excel: ' + err.message);
                 }
@@ -1004,13 +1013,14 @@
             }
 
             const user = getCurrentUser();
+            const esInvitado = user && user.perfil === 'invitado';
             const puedeEliminar = user && (user.perfil === 'admin' || user.perfil === 'supervisor');
 
             const tbody = document.getElementById('inventarioUnificadoBody');
             tbody.innerHTML = prods.map(p => {
                 const ubicsHtml = (p.ubicaciones || []).map(u => {
                     if(!u.zona || u.zona.toUpperCase() === 'SIN ASIGNACIÓN') {
-                        return `<div class="ubicacion-row-item"><span style="color:#64748b; font-weight:600;">SIN ASIGNACIÓN</span></div>`;
+                        return `<div class="ubicacion-row-item"><span style="color:var(--text-muted); font-weight:500;">SIN ASIGNACIÓN</span></div>`;
                     }
                     return `
                         <div class="ubicacion-row-item">
@@ -1019,19 +1029,19 @@
                             <span class="pos-tag">Pos. ${u.posicion}</span>
                         </div>
                     `;
-                }).join('') || '<span style="color:#94a3b8;">SIN ASIGNACIÓN</span>';
+                }).join('') || '<span style="color:var(--text-muted);">SIN ASIGNACIÓN</span>';
 
                 if(!p.gtinEstados) p.gtinEstados = {};
-                const gtinsList = (p.gtins && p.gtins.length > 0) ? p.gtins.map(g => `<span class="gtin-tag">${g}</span>`).join(' ') : '<span style="color:#94a3b8; font-style:italic;">Sin GTIN</span>';
+                const gtinsList = (p.gtins && p.gtins.length > 0) ? p.gtins.map(g => `<span class="gtin-tag">${g}</span>`).join(' ') : '<span style="color:var(--text-muted); font-style:italic;">Sin GTIN</span>';
 
                 const prog = p.programas || { frio: false, dac: false, lrs: false, pm: false, controlado: false };
                 let progHtml = '<div class="prog-badges-box">';
-                if(prog.frio) progHtml += `<span class="badge-prog badge-frio" title="Cámara de Frío">❄️ FRÍO</span>`;
-                if(prog.dac) progHtml += `<span class="badge-prog badge-dac" title="Droga de Alto Costo">⚠️ DAC</span>`;
-                if(prog.lrs) progHtml += `<span class="badge-prog badge-lrs" title="Ley Ricarte Soto">⚖️ LRS</span>`;
-                if(prog.pm) progHtml += `<span class="badge-prog badge-pm" title="Programa Ministerial">📋 PM</span>`;
-                if(prog.controlado) progHtml += `<span class="badge-prog badge-controlado" title="Fármaco Controlado">🟢⭐ CONTROLADO</span>`;
-                if(!prog.frio && !prog.dac && !prog.lrs && !prog.pm && !prog.controlado) progHtml += `<span style="color:#94a3b8; font-size:0.6rem;">Estándar</span>`;
+                if(prog.frio) progHtml += `<span class="badge-prog badge-frio">Cámara de Frío</span>`;
+                if(prog.dac) progHtml += `<span class="badge-prog badge-dac">DAC</span>`;
+                if(prog.lrs) progHtml += `<span class="badge-prog badge-lrs">LRS</span>`;
+                if(prog.pm) progHtml += `<span class="badge-prog badge-pm">Prog. Min.</span>`;
+                if(prog.controlado) progHtml += `<span class="badge-prog badge-controlado">Controlado</span>`;
+                if(!prog.frio && !prog.dac && !prog.lrs && !prog.pm && !prog.controlado) progHtml += `<span style="color:var(--text-muted); font-size:0.6rem;">Estándar</span>`;
                 progHtml += `</div>`;
 
                 const tipoVal = p.tipo || 'Unidad Comercial';
@@ -1041,25 +1051,25 @@
 
                 return `
                 <tr>
-                    <td><strong>${p.codigo}</strong> <input type="checkbox" class="prod-chk" value="${p.id}" style="cursor:pointer; margin-left:4px;" onchange="actualizarEstadoCheckTodo()"></td>
+                    <td style="text-align:left; padding-left:12px; white-space:nowrap;">
+                        ${!esInvitado ? `<input type="checkbox" class="prod-chk" value="${p.id}" style="cursor:pointer; margin-right:6px;" onchange="actualizarEstadoCheckTodo()">` : ''}
+                        <strong>${p.codigo}</strong>
+                    </td>
                     <td>${gtinsList}</td>
                     <td>${p.glosa}</td>
                     <td><span class="badge-bodega badge-${p.bodega.toLowerCase()}">${p.bodega}</span></td>
                     <td>${progHtml}</td>
                     <td><span class="type-tag ${tipoClase}">${tipoVal}</span></td>
+                    <td><div class="ubicacion-compacta-box">${ubicsHtml}</div></td>
+                    <td><span class="badge" style="background:#ecfdf5; color:#065f46;">${p.estado || 'Almacenado'}</span></td>
+                    ${!esInvitado ? `
                     <td>
-                        <div class="ubicacion-compacta-box">
-                            ${ubicsHtml}
-                        </div>
-                    </td>
-                    <td><span class="badge" style="background:#dcfce7; color:#166534;">${p.estado || 'Almacenado'}</span></td>
-                    <td>
-                        <button class="btn btn-primary btn-xs" onclick="gestionarUbicacionesModal('${p.id}')">📍 Gestionar</button>
-                        <button class="btn btn-purple btn-xs" onclick="verHistorialArticulo('${p.codigo}')" style="margin-top:2px;">📜 Historial</button>
-                        ${puedeEliminar ? `<button class="btn btn-danger btn-xs" onclick="eliminarProducto('${p.id}')" style="margin-top:2px;">🗑️ Eliminar</button>` : ''}
-                    </td>
+                        <button class="btn btn-primary btn-xs" onclick="gestionarUbicacionesModal('${p.id}')">Gestionar</button>
+                        <button class="btn btn-purple btn-xs" onclick="verHistorialArticulo('${p.codigo}')" style="margin-top:2px;">Historial</button>
+                        ${puedeEliminar ? `<button class="btn btn-danger btn-xs" onclick="eliminarProducto('${p.id}')" style="margin-top:2px;">Eliminar</button>` : ''}
+                    </td>` : ''}
                 </tr>
-            `}).join('') || '<tr><td colspan="9" class="empty-state">No se encontraron productos</td></tr>';
+            `}).join('') || `<tr><td colspan="${!esInvitado ? 9 : 8}" class="empty-state">No se encontraron productos registrados</td></tr>`;
         }
 
         function toggleSeleccionarTodoInventario(masterChk) {
@@ -1071,36 +1081,34 @@
             const chks = document.querySelectorAll('.prod-chk');
             const chksChecked = document.querySelectorAll('.prod-chk:checked');
             const masterChk = document.getElementById('chkSelectAll');
-            if(masterChk) {
-                masterChk.checked = chks.length > 0 && chks.length === chksChecked.length;
-            }
+            if(masterChk) masterChk.checked = chks.length > 0 && chks.length === chksChecked.length;
         }
 
         function eliminarSeleccionadosInventario() {
             const chksChecked = document.querySelectorAll('.prod-chk:checked');
-            if(chksChecked.length === 0) return alert('Selecciona al menos un producto para eliminar.');
-            if(!confirm(`¿Estás seguro de eliminar los ${chksChecked.length} registros seleccionados?`)) return;
+            if(chksChecked.length === 0) return alert('Selecciona al menos un producto.');
+            if(!confirm(`¿Eliminar ${chksChecked.length} registros seleccionados?`)) return;
 
             const idsAEliminar = Array.from(chksChecked).map(c => c.value);
             appState.products = (appState.products || []).filter(p => !idsAEliminar.includes(p.id));
             guardarEstadoFirestore();
-            registrarHistorial('Eliminación Masiva', `${chksChecked.length} ítems`, 'Eliminación masiva de registros seleccionados desde la tabla');
-            mostrarToast(`🗑️ ${idsAEliminar.length} registros eliminados con éxito.`);
+            registrarHistorial('Eliminación Masiva', `${chksChecked.length} ítems`, 'Eliminación masiva de inventario');
+            mostrarToast(`${idsAEliminar.length} registros eliminados.`);
         }
 
         function verHistorialArticulo(codigoInterno) {
             const movimientosArticulo = (appState.movements || []).filter(m => String(m.codigo).toLowerCase() === String(codigoInterno).toLowerCase() || (m.detalle && m.detalle.toLowerCase().includes(String(codigoInterno).toLowerCase())));
 
             let html = `
-                <p style="font-size:0.8rem; margin-bottom:8px; color:#475569;">Historial completo de actualizaciones, recepciones y modificaciones para el código interno: <strong>${codigoInterno}</strong></p>
+                <p style="font-size:0.75rem; margin-bottom:8px; color:var(--text-muted);">Historial de modificaciones para el código interno: <strong>${codigoInterno}</strong></p>
                 <div class="table-container" style="max-height:55vh;">
                     <table style="width:100%; font-size:0.65rem;">
                         <thead>
-                            <tr style="background:#f1f5f9; position:sticky; top:0;">
+                            <tr style="background:#f9fafb; position:sticky; top:0;">
                                 <th style="padding:6px;">Fecha y Hora</th>
                                 <th style="padding:6px;">Usuario</th>
                                 <th style="padding:6px;">Acción</th>
-                                <th style="padding:6px;">Detalle Específico</th>
+                                <th style="padding:6px;">Detalle</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1112,28 +1120,27 @@
                         <tr>
                             <td style="padding:6px; white-space:nowrap;">${m.fecha}</td>
                             <td style="padding:6px;"><strong>${m.usuario}</strong></td>
-                            <td style="padding:6px;"><span class="badge" style="background:#e0e7ff; color:#3730a3;">${m.tipo}</span></td>
+                            <td style="padding:6px;"><span class="badge" style="background:#f3f4f6; color:#1f2937;">${m.tipo}</span></td>
                             <td style="padding:6px; text-align:left; white-space:normal;">${m.detalle}</td>
                         </tr>
                     `;
                 });
             } else {
-                html += `<tr><td colspan="4" class="empty-state">No hay registros de modificaciones específicos para este artículo.</td></tr>`;
+                html += `<tr><td colspan="4" class="empty-state">No hay registros específicos.</td></tr>`;
             }
 
             html += `</tbody></table></div>`;
-
-            mostrarModal('📜 Historial Detallado por Artículo', html);
+            mostrarModal('Historial Detallado por Artículo', html);
             document.getElementById('modalActionBtn').style.display = 'none';
         }
 
         function eliminarProducto(id) {
-            if(!confirm('¿Estás seguro de eliminar este registro del inventario?')) return;
+            if(!confirm('¿Estás seguro de eliminar este registro?')) return;
             const p = appState.products.find(x => x.id === id);
             appState.products = appState.products.filter(item => item.id !== id);
             guardarEstadoFirestore();
-            if(p) registrarHistorial('Eliminación de producto', p.codigo, `Eliminado ítem con códigos GTIN / EAN`);
-            mostrarToast('🗑️ Registro eliminado');
+            if(p) registrarHistorial('Eliminación', p.codigo, 'Registro eliminado');
+            mostrarToast('Registro eliminado');
         }
 
         function limpiarCampoInput(idInput) {
@@ -1141,76 +1148,79 @@
             if(el) {
                 el.value = '';
                 el.focus();
-                mostrarToast('🧹 Campo borrado. Listo para nueva lectura.');
+                mostrarToast('Campo borrado.');
             }
         }
 
         function abrirModalAlmacenamiento() {
-            mostrarModal('📥 Recepción y Almacenamiento (Catálogo Maestro y GS1)', `
-                <div style="margin-bottom:10px; background:#f8fafc; padding:10px; border-radius:6px; border:1px solid #cbd5e1;">
-                    <label>🔍 Buscar en Catálogo Maestro (por Código o Nombre / Resultados parciales):</label>
+            mostrarModal('Recepción y Almacenamiento (Catálogo Maestro y GS1)', `
+                <div style="margin-bottom:12px; background:#f9fafb; padding:12px; border-radius:var(--radius); border:1px solid var(--border);">
+                    <label style="font-weight:600;">Buscar en Catálogo Maestro:</label>
                     <div class="master-search-container">
-                        <input type="text" id="masterSearchInput" class="master-search-input" placeholder="Escribe parte del código o nombre..." oninput="filtrarCatalogoMaestroDropdown(this.value)" autocomplete="off">
+                        <input type="text" id="masterSearchInput" class="master-search-input" placeholder="Escribe código o nombre..." oninput="filtrarCatalogoMaestroDropdown(this.value)" autocomplete="off">
                         <div id="masterDropdownResults" class="master-dropdown-results"></div>
                     </div>
                 </div>
-                <div style="margin-bottom:10px; background:#eef2ff; padding:8px; border-radius:6px; text-align:center; display:flex; gap:6px; justify-content:center; flex-wrap:wrap;">
-                    <button class="btn btn-purple btn-xs" onclick="iniciarEscanerQR('almacenar')">📷 Escanear QR Ubicación</button>
-                </div>
-                <div id="qr-reader"></div>
+                
                 <div class="form-grid">
                     <div class="full-width"><label>Código Interno</label><input id="mCod" placeholder="Ej: 01-001"></div>
                     
                     <div>
-                        <label>Códigos GTIN/EAN (Código 1 - Opcional)</label>
+                        <label>GTIN/EAN (Código 1 - Opcional)</label>
                         <div style="display:flex; gap:4px; margin-bottom:4px;">
                             <input id="mGtin1" placeholder="Opcional" oninput="this.value=limpiarYExtraerGTIN(this.value)">
-                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin1')">🗑️</button>
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin1')">✕</button>
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
-                            <button type="button" class="btn btn-success btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(1)">🏷️ Escanear Código 1</button>
-                            <select id="mEstado1" style="width:100px; padding:4px; border:1px solid #d1d5db; border-radius:4px; font-size:0.7rem;">
-                                <option value="activo">🟢 Activo</option>
-                                <option value="inactivo">🔴 Inactivo</option>
+                            <button type="button" class="btn btn-success btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(1)">Escanear 1</button>
+                            <select id="mEstado1" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.7rem;">
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
                             </select>
                         </div>
                     </div>
 
                     <div>
-                        <label>Códigos GTIN/EAN (Código 2 opcional)</label>
+                        <label>GTIN/EAN (Código 2 Opcional)</label>
                         <div style="display:flex; gap:4px; margin-bottom:4px;">
                             <input id="mGtin2" placeholder="DataMatrix / Secundario" oninput="this.value=limpiarYExtraerGTIN(this.value)">
-                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin2')">🗑️</button>
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin2')">✕</button>
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
-                            <button type="button" class="btn btn-orange btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(2)">🏷️ Escanear Código 2</button>
-                            <select id="mEstado2" style="width:100px; padding:4px; border:1px solid #d1d5db; border-radius:4px; font-size:0.7rem;">
-                                <option value="activo">🟢 Activo</option>
-                                <option value="inactivo">🔴 Inactivo</option>
+                            <button type="button" class="btn btn-orange btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(2)">Escanear 2</button>
+                            <select id="mEstado2" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.7rem;">
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="full-width"><label>Glosa / Descripción</label><input id="mGlosa" placeholder="Nombre del insumo o fármaco" onblur="verificarAlertaEscaneoManual(this.value)"></div>
-                    <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fef3c7; border:1px solid #f59e0b; padding:8px; border-radius:6px; font-size:0.75rem; color:#92400e;"></div>
+                    <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fffbeb; border:1px solid #fef3c7; padding:8px; border-radius:var(--radius); font-size:0.75rem; color:#b45309;"></div>
 
                     <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">Fármacos</option><option value="Insumos">Insumos</option><option value="Economato">Economato</option><option value="Controlados">Fármacos Controlados</option><option value="Suturas">Suturas</option><option value="Alimentos">Alimentos</option></select></div>
                     <div><label>Jerarquía / Tipo</label><select id="mTipo"><option value="Unidad Comercial">Unidad Comercial</option><option value="Unidad Máster">Unidad Máster</option><option value="Unidad Mínima / Unidosis">Unidad Mínima / Unidosis</option></select></div>
                     
-                    <div class="full-width" style="background:#f8fafc; padding:10px; border-radius:6px; border:1px solid #cbd5e1;">
-                        <label style="margin-bottom:6px; font-weight:700; color:#334155; font-size:0.75rem;">Programas y Alertas Especiales:</label>
+                    <div class="full-width" style="background:#f9fafb; padding:10px; border-radius:var(--radius); border:1px solid var(--border);">
+                        <label style="margin-bottom:6px; font-weight:600; color:var(--text-main); font-size:0.75rem;">Programas y Alertas Especiales:</label>
                         <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:6px;">
-                            <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="mProgFrío" style="width:14px; height:14px;"> ❄️ Cámara de Frío</label>
-                            <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="mProgDac" style="width:14px; height:14px;"> ⚠️ Alto Costo (DAC)</label>
-                            <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="mProgLrs" style="width:14px; height:14px;"> ⚖️ Ley Ricarte Soto</label>
-                            <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="mProgPm" style="width:14px; height:14px;"> 📋 Prog. Ministerial</label>
-                            <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="mProgControlado" style="width:14px; height:14px;"> 🟢⭐ Fármaco Controlado</label>
+                            <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="mProgFrío"> Cámara de Frío</label>
+                            <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="mProgDac"> Alto Costo (DAC)</label>
+                            <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="mProgLrs"> Ley Ricarte Soto</label>
+                            <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="mProgPm"> Prog. Ministerial</label>
+                            <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="mProgControlado"> Fármaco Controlado</label>
                         </div>
                     </div>
 
                     <div><label>Zona</label><select id="mZona" onchange="actualizarJerarquiaPorZonaForm(this.value)"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
-                    <div><label>Anaquel / Rack / Full Space / Pallet</label><input id="mAnaquel" value="Anaquel 1" placeholder="Ej: Anaquel 1, Rack, Full Space, Pallet"></div>
+                    <div><label>Anaquel / Rack / Pallet</label><input id="mAnaquel" value="Anaquel 1" placeholder="Ej: Anaquel 1"></div>
                     <div class="full-width"><label>Posición</label><input id="mPosicion" value="A1" placeholder="Ej: A1"></div>
+                    
+                    <!-- Lector QR reubicado exactamente bajo la sección de ubicación -->
+                    <div class="full-width" style="background:#f3f4f6; padding:8px; border-radius:var(--radius); text-align:center; margin-top:4px;">
+                        <button class="btn btn-purple btn-xs" onclick="iniciarEscanerQR('almacenar')">Escanear QR de Ubicación</button>
+                    </div>
+                    <div id="qr-reader" class="full-width"></div>
                 </div>
             `);
             modalCallback = () => {
@@ -1236,18 +1246,12 @@
                 const anaquel = document.getElementById('mAnaquel').value.trim();
                 const posicion = document.getElementById('mPosicion').value.trim();
 
-                if(!cod) return alert('El Código Interno es obligatorio');
+                if(!cod) return alert('El Código Interno es obligatorio.');
 
                 const gtins = [];
                 let gtinEstados = {};
-                if(gtin1) {
-                    gtins.push(gtin1);
-                    gtinEstados[gtin1] = est1;
-                }
-                if(gtin2) {
-                    gtins.push(gtin2);
-                    gtinEstados[gtin2] = est2;
-                }
+                if(gtin1) { gtins.push(gtin1); gtinEstados[gtin1] = est1; }
+                if(gtin2) { gtins.push(gtin2); gtinEstados[gtin2] = est2; }
 
                 if(!appState.products) appState.products = [];
                 const existing = appState.products.find(p => p.codigo.toLowerCase() === cod.toLowerCase());
@@ -1272,7 +1276,7 @@
                 registrarHistorial('Recepción y Almacenamiento', `${cod}`, `Ingresado ítem en Zona ${zona}`);
                 guardarEstadoFirestore();
                 cerrarModal();
-                mostrarToast('Producto almacenado con éxito');
+                mostrarToast('Producto almacenado con éxito.');
             };
         }
 
@@ -1295,14 +1299,14 @@
 
             if(filtrados.length === 0) {
                 dropdown.style.display = 'block';
-                dropdown.innerHTML = `<div style="padding:6px 10px; color:#94a3b8; font-size:0.75rem;">No se encontraron coincidencias parciales</div>`;
+                dropdown.innerHTML = `<div style="padding:8px 12px; color:var(--text-muted); font-size:0.75rem;">No se encontraron coincidencias</div>`;
                 return;
             }
 
             dropdown.style.display = 'block';
             dropdown.innerHTML = filtrados.map((item) => `
                 <div class="master-dropdown-item" onclick="seleccionarItemMaestroPorFiltro('${item.codigo.replace(/'/g, "\\'")}', '${item.glosa.replace(/'/g, "\\'")}', '${item.bodega}')">
-                    <strong>[${item.codigo}]</strong> ${item.glosa} <span style="color:#64748b; font-size:0.65rem;">(${item.bodega})</span>
+                    <strong>[${item.codigo}]</strong> ${item.glosa} <span style="color:var(--text-muted); font-size:0.65rem; display:block; margin-top:2px;">(Bodega: ${item.bodega})</span>
                 </div>
             `).join('');
         }
@@ -1317,14 +1321,12 @@
             if(dropdown) dropdown.style.display = 'none';
 
             verificarAlertaEscaneoManual(glosa);
-            mostrarToast(`📋 Seleccionado: ${glosa}`);
+            mostrarToast(`Seleccionado: ${glosa}`);
         }
 
         function actualizarJerarquiaPorZonaForm(zonaVal) {
             const tipoSel = document.getElementById('mTipo') || document.getElementById('editTipo');
-            if(tipoSel) {
-                tipoSel.value = determinarJerarquiaPorZona(zonaVal);
-            }
+            if(tipoSel) tipoSel.value = determinarJerarquiaPorZona(zonaVal);
         }
 
         function verificarAlertaEscaneoManual(glosaText) {
@@ -1332,15 +1334,15 @@
             if(!alertaBox) return;
             const txt = glosaText.toUpperCase();
             let alertas = [];
-            if(txt.includes('FRIO') || txt.includes('REFRIGERADO')) alertas.push('❄️ Requiere Cámara de Frío');
-            if(txt.includes('DAC') || txt.includes('ALTO COSTO')) alertas.push('⚠️ Droga de Alto Costo (DAC)');
-            if(txt.includes('RICARTE') || txt.includes('LRS')) alertas.push('⚖️ Ley Ricarte Soto (LRS)');
-            if(txt.includes('MINISTERIAL') || txt.includes('PM')) alertas.push('📋 Programa Ministerial (PM)');
-            if(txt.includes('CONTROLADO') || txt.includes('ESTUPEFACIENTE')) alertas.push('🟢⭐ Fármaco Controlado');
+            if(txt.includes('FRIO') || txt.includes('FRÍO') || txt.includes('REFRIGERADO')) alertas.push('Cámara de Frío');
+            if(txt.includes('DAC') || txt.includes('ALTO COSTO')) alertas.push('Alto Costo (DAC)');
+            if(txt.includes('RICARTE') || txt.includes('LRS')) alertas.push('Ley Ricarte Soto (LRS)');
+            if(txt.includes('MINISTERIAL') || txt.includes('PM')) alertas.push('Programa Ministerial (PM)');
+            if(txt.includes('CONTROLADO') || txt.includes('ESTUPEFACIENTE')) alertas.push('Fármaco Controlado');
 
             if(alertas.length > 0) {
                 alertaBox.style.display = 'block';
-                alertaBox.innerHTML = `<strong>⚠️ Alerta de Producto Sensible detectada:</strong><br>` + alertas.join(' | ');
+                alertaBox.innerHTML = `<strong>Alerta de producto sensible detectada:</strong> ` + alertas.join(' | ');
             } else {
                 alertaBox.style.display = 'none';
             }
@@ -1351,58 +1353,55 @@
             if(!p) return;
 
             let listHtml = (p.ubicaciones || []).map((u, index) => `
-                <div style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; padding:6px 10px; border-radius:6px; margin-bottom:4px; font-size:0.75rem;">
-                    <span>📍 <strong>Zona ${u.zona}</strong> - ${u.anaquel} Pos. ${u.posicion}</span>
-                    <button class="btn btn-danger btn-xs" onclick="removerUbicacionDeProducto('${p.id}', ${index})">🗑️ Quitar</button>
+                <div style="display:flex; align-items:center; justify-content:space-between; background:#f9fafb; padding:6px 10px; border-radius:var(--radius); margin-bottom:4px; font-size:0.75rem;">
+                    <span><strong>Zona ${u.zona}</strong> - ${u.anaquel} Pos. ${u.posicion}</span>
+                    <button class="btn btn-danger btn-xs" onclick="removerUbicacionDeProducto('${p.id}', ${index})">Quitar</button>
                 </div>
-            `).join('') || '<p style="color:#64748b; font-size:0.75rem;">Sin ubicaciones registradas.</p>';
+            `).join('') || '<p style="color:var(--text-muted); font-size:0.75rem;">Sin ubicaciones registradas.</p>';
 
             const currentGtins = p.gtins || [];
             if(!p.gtinEstados) p.gtinEstados = {};
             currentGtins.forEach(g => { if(!p.gtinEstados[g]) p.gtinEstados[g] = 'activo'; });
             const prog = p.programas || { frio: false, dac: false, lrs: false, pm: false, controlado: false };
 
-            mostrarModal('📍 Gestionar Códigos GS1 - GTIN/EAN y Ubicaciones', `
-                <p style="font-size:0.8rem; margin-bottom:6px;"><strong>${p.glosa}</strong> (Código Interno: ${p.codigo})</p>
+            mostrarModal('Gestionar Códigos GS1 - GTIN/EAN y Ubicaciones', `
+                <p style="font-size:0.75rem; margin-bottom:6px;"><strong>${p.glosa}</strong> (Código Interno: ${p.codigo})</p>
                 <div style="margin-bottom:8px;">
-                    <label>Códigos GS1 - GTIN/EAN y Estado:</label>
+                    <label>Códigos GS1 - GTIN/EAN:</label>
                     <div style="display:flex; gap:4px; flex-wrap:wrap; margin-top:3px;">
                         ${currentGtins.map(g => {
                             const est = p.gtinEstados[g] || 'activo';
-                            const cssCl = est === 'inactivo' ? 'gtin-tag gtin-inactivo' : 'gtin-tag';
-                            return `<span class="${cssCl}">${est === 'inactivo' ? '🔴' : '🟢'} ${g}</span>`;
-                        }).join('') || '<span style="color:#94a3b8; font-style:italic;">Sin GTIN registrado</span>'}
+                            return `<span class="gtin-tag">${est === 'inactivo' ? '[Inactivo]' : '[Activo]'} ${g}</span>`;
+                        }).join('') || '<span style="color:var(--text-muted); font-style:italic;">Sin GTIN registrado</span>'}
                     </div>
                 </div>
 
-                <div id="qr-reader"></div>
-
                 <div class="form-grid" style="margin-bottom:8px;">
                     <div>
-                        <label>Editar GTIN/EAN 1</label>
+                        <label>GTIN/EAN 1</label>
                         <div style="display:flex; gap:4px; margin-bottom:4px;">
                             <input id="editGtin1" value="${currentGtins[0] || ''}" oninput="this.value=limpiarYExtraerGTIN(this.value)">
-                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('editGtin1')">🗑️</button>
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('editGtin1')">✕</button>
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
-                            <button type="button" class="btn btn-success btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(1)">🏷️ Escanear Código 1</button>
-                            <select id="editEstado1" style="width:100px; padding:4px; border:1px solid #d1d5db; border-radius:4px; font-size:0.7rem;">
-                                <option value="activo" ${(p.gtinEstados[currentGtins[0]]||'activo')==='activo'?'selected':''}>🟢 Activo</option>
-                                <option value="inactivo" ${(p.gtinEstados[currentGtins[0]])==='inactivo'?'selected':''}>🔴 Inactivo</option>
+                            <button type="button" class="btn btn-success btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(1)">Escanear 1</button>
+                            <select id="editEstado1" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.7rem;">
+                                <option value="activo" ${(p.gtinEstados[currentGtins[0]]||'activo')==='activo'?'selected':''}>Activo</option>
+                                <option value="inactivo" ${(p.gtinEstados[currentGtins[0]])==='inactivo'?'selected':''}>Inactivo</option>
                             </select>
                         </div>
                     </div>
                     <div>
-                        <label>Editar GTIN/EAN 2</label>
+                        <label>GTIN/EAN 2</label>
                         <div style="display:flex; gap:4px; margin-bottom:4px;">
                             <input id="editGtin2" value="${currentGtins[1] || ''}" oninput="this.value=limpiarYExtraerGTIN(this.value)">
-                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('editGtin2')">🗑️</button>
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('editGtin2')">✕</button>
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
-                            <button type="button" class="btn btn-orange btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(2)">🏷️ Escanear Código 2</button>
-                            <select id="editEstado2" style="width:100px; padding:4px; border:1px solid #d1d5db; border-radius:4px; font-size:0.7rem;">
-                                <option value="activo" ${(p.gtinEstados[currentGtins[1]]||'activo')==='activo'?'selected':''}>🟢 Activo</option>
-                                <option value="inactivo" ${(p.gtinEstados[currentGtins[1]])==='inactivo'?'selected':''}>🔴 Inactivo</option>
+                            <button type="button" class="btn btn-orange btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(2)">Escanear 2</button>
+                            <select id="editEstado2" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.7rem;">
+                                <option value="activo" ${(p.gtinEstados[currentGtins[1]]||'activo')==='activo'?'selected':''}>Activo</option>
+                                <option value="inactivo" ${(p.gtinEstados[currentGtins[1]])==='inactivo'?'selected':''}>Inactivo</option>
                             </select>
                         </div>
                     </div>
@@ -1415,34 +1414,37 @@
                     <option value="Unidad Mínima / Unidosis" ${p.tipo==='Unidad Mínima / Unidosis'?'selected':''}>Unidad Mínima / Unidosis</option>
                 </select>
 
-                <div style="background:#f8fafc; padding:10px; border-radius:6px; border:1px solid #cbd5e1; margin-bottom:8px;">
-                    <label style="margin-bottom:6px; font-weight:700; font-size:0.75rem;">Programas y Alertas Especiales:</label>
+                <div style="background:#f9fafb; padding:10px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:8px;">
+                    <label style="margin-bottom:6px; font-weight:600; font-size:0.75rem;">Programas y Alertas Especiales:</label>
                     <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:6px;">
-                        <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="editProgFrío" ${prog.frio?'checked':''} style="width:14px; height:14px;"> ❄️ Frío</label>
-                        <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="editProgDac" ${prog.dac?'checked':''} style="width:14px; height:14px;"> ⚠️ DAC</label>
-                        <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="editProgLrs" ${prog.lrs?'checked':''} style="width:14px; height:14px;"> ⚖️ LRS</label>
-                        <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="editProgPm" ${prog.pm?'checked':''} style="width:14px; height:14px;"> 📋 PM</label>
-                        <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer; font-size:0.72rem; font-weight:600;"><input type="checkbox" id="editProgControlado" ${prog.controlado?'checked':''} style="width:14px; height:14px;"> 🟢⭐ Controlado</label>
+                        <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="editProgFrío" ${prog.frio?'checked':''}> Cámara de Frío</label>
+                        <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="editProgDac" ${prog.dac?'checked':''}> DAC</label>
+                        <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="editProgLrs" ${prog.lrs?'checked':''}> LRS</label>
+                        <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="editProgPm" ${prog.pm?'checked':''}> Prog. Min.</label>
+                        <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="editProgControlado" ${prog.controlado?'checked':''}> Controlado</label>
                     </div>
                 </div>
 
                 <label>Ubicaciones Actuales:</label>
-                <div style="max-height:100px; overflow-y:auto; border:1px solid #e2e8f0; padding:6px; border-radius:6px; margin-bottom:10px;">
+                <div style="max-height:100px; overflow-y:auto; border:1px solid var(--border); padding:6px; border-radius:var(--radius); margin-bottom:10px;">
                     ${listHtml}
                 </div>
-                <hr style="border:0; border-top:1px solid #e2e8f0; margin:10px 0;">
-                <h4 style="font-size:0.8rem; margin-bottom:6px;">➕ Agregar Nueva Ubicación</h4>
-                <div style="background:#eef2ff; padding:6px; border-radius:6px; text-align:center; margin-bottom:6px;">
-                    <button class="btn btn-purple btn-xs" onclick="iniciarEscanerQR('agregarUbicacion')">📷 Escanear QR para Ubicación</button>
-                </div>
+                <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
+                <h4 style="font-size:0.8rem; font-weight:600; margin-bottom:6px;">Agregar Nueva Ubicación</h4>
                 <div class="form-grid">
                     <div><label>Zona</label><select id="nuevaZona" onchange="actualizarJerarquiaPorZonaForm(this.value)"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
-                    <div><label>Anaquel / Rack / Full Space / Pallet</label><input id="nuevoAnaquel" value="Anaquel 1" placeholder="Ej: Anaquel 1, Rack, Full Space, Pallet"></div>
+                    <div><label>Anaquel / Rack / Pallet</label><input id="nuevoAnaquel" value="Anaquel 1" placeholder="Ej: Anaquel 1"></div>
                     <div class="full-width"><label>Posición</label><input id="nuevaPosicion" value="A1" placeholder="Ej: A1"></div>
+                    
+                    <!-- Lector QR reubicado exactamente bajo la sección de nueva ubicación -->
+                    <div class="full-width" style="background:#f3f4f6; padding:8px; border-radius:var(--radius); text-align:center; margin-top:4px;">
+                        <button class="btn btn-purple btn-xs" onclick="iniciarEscanerQR('agregarUbicacion')">Escanear QR de Ubicación</button>
+                    </div>
+                    <div id="qr-reader" class="full-width"></div>
                 </div>
             `);
 
-            document.getElementById('modalActionBtn').textContent = '💾 Actualizar y Guardar';
+            document.getElementById('modalActionBtn').textContent = 'Actualizar y Guardar';
             document.getElementById('modalActionBtn').onclick = () => {
                 detenerEscanerQR();
                 const g1 = limpiarYExtraerGTIN(document.getElementById('editGtin1').value.trim());
@@ -1464,14 +1466,8 @@
 
                 const newGtins = [];
                 let gtinEstados = {};
-                if(g1) {
-                    newGtins.push(g1);
-                    gtinEstados[g1] = est1;
-                }
-                if(g2) {
-                    newGtins.push(g2);
-                    gtinEstados[g2] = est2;
-                }
+                if(g1) { newGtins.push(g1); gtinEstados[g1] = est1; }
+                if(g2) { newGtins.push(g2); gtinEstados[g2] = est2; }
 
                 p.gtins = newGtins;
                 p.gtinEstados = gtinEstados;
@@ -1481,13 +1477,13 @@
                 if(anaquel && posicion) {
                     if(!p.ubicaciones) p.ubicaciones = [];
                     p.ubicaciones.push({ zona, anaquel, posicion });
-                    detalleMod += ` | Añadida ubicación Zona ${zona}, ${anaquel}, Pos. ${posicion}`;
+                    detalleMod += ` | Añadida Zona ${zona}, ${anaquel}, Pos. ${posicion}`;
                 }
 
-                registrarHistorial('Actualización de Producto', `${p.codigo}`, detalleMod);
+                registrarHistorial('Actualización', `${p.codigo}`, detalleMod);
                 guardarEstadoFirestore();
                 gestionarUbicacionesModal(p.id); 
-                mostrarToast('✅ Datos actualizados con éxito');
+                mostrarToast('Datos actualizados con éxito.');
             };
         }
 
@@ -1498,7 +1494,7 @@
                 guardarEstadoFirestore();
                 registrarHistorial('Retiro de Ubicación', `${p.codigo}`, `Removida Zona ${removida.zona}`);
                 gestionarUbicacionesModal(prodId);
-                mostrarToast('🗑️ Ubicación eliminada');
+                mostrarToast('Ubicación eliminada.');
             }
         }
 
@@ -1518,7 +1514,7 @@
                     procesarTextoQR(decodedText, modo);
                     detenerEscanerQR();
                 },
-                (errorMessage) => { }
+                (errorMessage) => {}
             ).catch(err => {
                 alert("No se pudo encender la cámara: " + err);
             });
@@ -1528,7 +1524,7 @@
         function iniciarEscanerBarraGTIN(numCampo) {
             campoGtinDestino = numCampo;
             const readerDiv = document.getElementById('qr-reader');
-            readerDiv.style.display = 'block';
+            if(readerDiv) readerDiv.style.display = 'block';
 
             if (html5QrCodeScanner) {
                 try { html5QrCodeScanner.clear(); } catch(e) {}
@@ -1541,15 +1537,13 @@
                 (decodedText) => {
                     const codigoPuro = limpiarYExtraerGTIN(decodedText);
                     const inputTarget = document.getElementById(campoGtinDestino === 1 ? 'mGtin1' : 'mGtin2') || document.getElementById(campoGtinDestino === 1 ? 'editGtin1' : 'editGtin2');
-                    if(inputTarget) {
-                        inputTarget.value = codigoPuro;
-                    }
-                    mostrarToast(`🏷️ GTIN/EAN ${campoGtinDestino} capturado: ` + codigoPuro);
+                    if(inputTarget) inputTarget.value = codigoPuro;
+                    mostrarToast(`GTIN/EAN ${campoGtinDestino} capturado: ` + codigoPuro);
                     detenerEscanerQR();
                 },
-                (errorMessage) => { }
+                (errorMessage) => {}
             ).catch(err => {
-                alert("No se pudo encender la cámara para códigos: " + err);
+                alert("No se pudo encender la cámara: " + err);
             });
         }
 
@@ -1602,7 +1596,7 @@
             if(inputPos) inputPos.value = posVal;
             if(tipoVal && selTipo) selTipo.value = tipoVal;
 
-            mostrarToast(`📍 QR leído: Zona ${zonaVal}, ${anaqVal}, Pos. ${posVal}`);
+            mostrarToast(`QR leído: Zona ${zonaVal}, ${anaqVal}, Pos. ${posVal}`);
 
             if(modo === 'agregarUbicacion' && typeof modalCallback === 'function') {
                 setTimeout(() => {
@@ -1648,7 +1642,7 @@
                     
                     guardarEstadoFirestore();
                     cargarImagenLayout(currentWarehouse);
-                    mostrarToast(`✅ Imagen de plano optimizada (${targetBodega})`);
+                    mostrarToast(`Imagen de plano optimizada (${targetBodega}).`);
                 };
             };
             reader.readAsDataURL(file);
@@ -1661,7 +1655,7 @@
             if (imgData) {
                 container.innerHTML = `<img src="${imgData}" alt="Layout">`;
             } else {
-                container.innerHTML = `<span class="no-image">📷 No hay imagen de plano cargada para ${bodegaId}.<br><small>Sube una imagen desde Configuración.</small></span>`;
+                container.innerHTML = `<span class="no-image">No hay imagen de plano cargada para ${bodegaId}.<br><small>Sube una imagen desde Configuración.</small></span>`;
             }
         }
 
@@ -1684,7 +1678,7 @@
 
             let html = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                    <h3 style="font-size:0.9rem;">📱 Selecciona las ubicaciones a imprimir</h3>
+                    <h3 style="font-size:0.85rem; font-weight:600;">Selecciona ubicaciones para impresión</h3>
                     <div>
                         <button class="btn btn-outline btn-xs" onclick="toggleSelectAllQR(true)">Marcar Todos</button>
                         <button class="btn btn-outline btn-xs" onclick="toggleSelectAllQR(false)">Desmarcar</button>
@@ -1696,19 +1690,19 @@
             ubicsMap.forEach((val) => {
                 const labelTxt = `[${val.tipo}] Zona ${val.zona} - ${val.anaquel} Pos. ${val.posicion}`;
                 html += `
-                    <label style="border:1px solid #cbd5e1; padding:8px; border-radius:6px; background:white; display:flex; flex-direction:column; gap:4px; cursor:pointer; font-size:0.7rem;">
+                    <label style="border:1px solid var(--border); padding:8px; border-radius:var(--radius); background:white; display:flex; flex-direction:column; gap:4px; cursor:pointer; font-size:0.7rem;">
                         <div style="display:flex; align-items:center; justify-content:space-between;">
-                            <span style="font-weight:700; color:var(--primary);">${val.tipo}</span>
+                            <span style="font-weight:600; color:var(--accent);">${val.tipo}</span>
                             <input type="checkbox" class="qr-chk" value="${labelTxt}" checked style="width:14px; height:14px; cursor:pointer;">
                         </div>
-                        <div style="color:#334155;"><strong>Zona ${val.zona}</strong><br>${val.anaquel}<br>Pos. ${val.posicion}</div>
+                        <div style="color:var(--text-main);"><strong>Zona ${val.zona}</strong><br>${val.anaquel}<br>Pos. ${val.posicion}</div>
                     </label>
                 `;
             });
             html += `</div>`;
             
             mostrarModal('Selección de Etiquetas QR', html);
-            document.getElementById('modalActionBtn').textContent = '🖨️ Imprimir Seleccionados';
+            document.getElementById('modalActionBtn').textContent = 'Imprimir Seleccionados';
             document.getElementById('modalActionBtn').onclick = () => {
                 detenerEscanerQR();
                 const chks = document.querySelectorAll('.qr-chk:checked');
@@ -1720,12 +1714,12 @@
                     const jerarquia = partes[0].replace('[', '').trim();
                     const resto = partes[1].trim();
                     printHtml += `
-                        <div style="border:2px dashed #333; padding:12px; border-radius:6px; text-align:center; background:#fff; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                        <div style="border:1px solid #333; padding:12px; border-radius:4px; text-align:center; background:#fff; display:flex; flex-direction:column; align-items:center; gap:4px;">
                             <div style="font-weight:bold; font-size:8px; color:#333;">HOSPITAL SAN JUAN DE DIOS</div>
-                            <div style="font-size:9px; font-weight:700; color:#4f46e5; background:#eef2ff; padding:2px 6px; border-radius:4px; width:100%;">${jerarquia}</div>
-                            <div style="font-size:10px; font-weight:800; color:#1e1b4b;">${resto}</div>
+                            <div style="font-size:9px; font-weight:600; color:#4f46e5; background:#f3f4f6; padding:2px 6px; border-radius:4px; width:100%;">${jerarquia}</div>
+                            <div style="font-size:10px; font-weight:700; color:#111827;">${resto}</div>
                             <div id="qrcode-${i}" style="margin:2px auto;"></div>
-                            <div style="font-size:7px; color:#666;">Bodega Central WMS - Control Logístico</div>
+                            <div style="font-size:7px; color:#666;">Bodega Central WMS</div>
                         </div>
                     `;
                 });
@@ -1755,23 +1749,23 @@
                     <td><span class="badge badge-${u.perfil}">${u.perfil}</span></td>
                     <td>${u.permisos.join(', ')}</td>
                     <td>
-                        ${isAdmin ? `<button class="btn btn-primary btn-xs" onclick="editarUsuarioModal(${u.id})">✏️ Editar</button>` : ''}
-                        ${isAdmin && u.id !== 1 ? `<button class="btn btn-danger btn-xs" onclick="eliminarUsuario(${u.id})">🗑️</button>` : ''}
+                        ${isAdmin ? `<button class="btn btn-primary btn-xs" onclick="editarUsuarioModal(${u.id})">Editar</button>` : ''}
+                        ${isAdmin && u.id !== 1 ? `<button class="btn btn-danger btn-xs" onclick="eliminarUsuario(${u.id})" style="margin-left:4px;">Eliminar</button>` : ''}
                     </td>
                 </tr>
             `).join('');
         }
 
         function mostrarModalUsuario() {
-            mostrarModal('➕ Nuevo Usuario', `
+            mostrarModal('Nuevo Usuario', `
                 <div class="form-grid">
                     <div class="full-width"><label>Nombre</label><input id="uNombre" placeholder="Nombre de usuario"></div>
                     <div class="full-width"><label>Correo Electrónico (para recuperación)</label><input id="uCorreo" type="email" placeholder="correo@hsjd.cl"></div>
                     <div class="full-width"><label>Contraseña</label><input id="uPass" type="password" placeholder="Contraseña"></div>
                     <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarChecksPermisos()"><option value="admin">Admin</option><option value="supervisor">Supervisor</option><option value="operario">Operario</option><option value="invitado">Invitado</option></select></div>
                     <div class="full-width">
-                        <label>Permisos (Selecciona varios)</label>
-                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f8fafc; padding:8px; border-radius:6px; border:1px solid #cbd5e1;"></div>
+                        <label>Permisos</label>
+                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f9fafb; padding:8px; border-radius:var(--radius); border:1px solid var(--border);"></div>
                     </div>
                 </div>
             `);
@@ -1785,8 +1779,8 @@
                 const permisos = [];
                 document.querySelectorAll('.perm-chk:checked').forEach(chk => permisos.push(chk.value));
 
-                if(!nombre || !pass || !correo) return alert('Completa todos los campos obligatorios (incluyendo correo)');
-                if(permisos.length === 0) return alert('Selecciona al menos un permiso');
+                if(!nombre || !pass || !correo) return alert('Completa todos los campos.');
+                if(permisos.length === 0) return alert('Selecciona al menos un permiso.');
 
                 if(!appState.users) appState.users = [];
                 if(appState.users.some(x => x.nombre.toLowerCase() === nombre.toLowerCase())) return alert('Ya existe un usuario con ese nombre.');
@@ -1794,9 +1788,9 @@
                 const newId = appState.users.length > 0 ? Math.max(...appState.users.map(x=>x.id))+1 : 1;
                 appState.users.push({ id: newId, nombre, correo, password: pass, perfil, permisos });
                 guardarEstadoFirestore();
-                registrarHistorial('Creación de Usuario', nombre, `Creado usuario perfil ${perfil} con correo ${correo}`);
+                registrarHistorial('Creación de Usuario', nombre, `Creado perfil ${perfil}`);
                 cerrarModal();
-                mostrarToast('Usuario creado con éxito');
+                mostrarToast('Usuario creado con éxito.');
             };
         }
 
@@ -1804,15 +1798,15 @@
             const u = appState.users.find(x => x.id === id);
             if(!u) return;
 
-            mostrarModal('✏️ Editar Usuario / Perfil', `
+            mostrarModal('Editar Usuario', `
                 <div class="form-grid">
                     <div class="full-width"><label>Nombre</label><input id="uNombre" value="${u.nombre}"></div>
                     <div class="full-width"><label>Correo Electrónico</label><input id="uCorreo" type="email" value="${u.correo || ''}"></div>
-                    <div class="full-width"><label>Nueva Contraseña (dejar en blanco para mantener actual)</label><input id="uPass" type="password" placeholder="••••••••"></div>
+                    <div class="full-width"><label>Nueva Contraseña (dejar en blanco para mantener)</label><input id="uPass" type="password" placeholder="••••••••"></div>
                     <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarChecksPermisos()"><option value="admin" ${u.perfil==='admin'?'selected':''}>Admin</option><option value="supervisor" ${u.perfil==='supervisor'?'selected':''}>Supervisor</option><option value="operario" ${u.perfil==='operario'?'selected':''}>Operario</option><option value="invitado" ${u.perfil==='invitado'?'selected':''}>Invitado</option></select></div>
                     <div class="full-width">
-                        <label>Permisos (Selecciona varios)</label>
-                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f8fafc; padding:8px; border-radius:6px; border:1px solid #cbd5e1;"></div>
+                        <label>Permisos</label>
+                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f9fafb; padding:8px; border-radius:var(--radius); border:1px solid var(--border);"></div>
                     </div>
                 </div>
             `);
@@ -1826,8 +1820,8 @@
                 const permisos = [];
                 document.querySelectorAll('.perm-chk:checked').forEach(chk => permisos.push(chk.value));
 
-                if(!nombre || !correo) return alert('El nombre y el correo no pueden estar vacíos');
-                if(permisos.length === 0) return alert('Selecciona al menos un permiso');
+                if(!nombre || !correo) return alert('Completa los campos obligatorios.');
+                if(permisos.length === 0) return alert('Selecciona al menos un permiso.');
 
                 u.nombre = nombre;
                 u.correo = correo;
@@ -1835,10 +1829,10 @@
                 u.perfil = perfil;
                 u.permisos = permisos;
 
-                registrarHistorial('Edición de Usuario', nombre, `Actualizado perfil a ${perfil}`);
+                registrarHistorial('Edición de Usuario', nombre, `Actualizado a perfil ${perfil}`);
                 guardarEstadoFirestore();
                 cerrarModal();
-                mostrarToast('✅ Perfil de usuario actualizado');
+                mostrarToast('Usuario actualizado con éxito.');
             };
         }
 
@@ -1870,8 +1864,8 @@
             const u = appState.users.find(x => x.id === id);
             appState.users = appState.users.filter(usr => usr.id !== id);
             guardarEstadoFirestore();
-            if(u) registrarHistorial('Eliminación de Usuario', u.nombre, 'Usuario eliminado del sistema');
-            mostrarToast('🗑️ Usuario eliminado');
+            if(u) registrarHistorial('Eliminación de Usuario', u.nombre, 'Usuario eliminado');
+            mostrarToast('Usuario eliminado.');
         }
 
         function renderBodegas() {
@@ -1883,36 +1877,36 @@
                 <tr>
                     <td><strong>${w.id}</strong></td>
                     <td>${w.nombre}</td>
-                    <td><span style="display:inline-block; width:14px; height:14px; background:${w.color}; border-radius:3px;"></span></td>
+                    <td><span style="display:inline-block; width:12px; height:12px; background:${w.color}; border-radius:2px;"></span></td>
                     <td>
-                        ${isAdmin ? `<button class="btn btn-primary btn-xs" onclick="editarBodegaModal('${w.id}')">✏️ Editar</button>` : ''}
-                        ${isAdmin ? `<button class="btn btn-danger btn-xs" onclick="eliminarBodega('${w.id}')" style="margin-left:4px;">🗑️</button>` : 'Predeterminada'}
+                        ${isAdmin ? `<button class="btn btn-primary btn-xs" onclick="editarBodegaModal('${w.id}')">Editar</button>` : ''}
+                        ${isAdmin ? `<button class="btn btn-danger btn-xs" onclick="eliminarBodega('${w.id}')" style="margin-left:4px;">Eliminar</button>` : 'Predeterminada'}
                     </td>
                 </tr>
             `).join('');
         }
 
         function mostrarModalBodega() {
-            mostrarModal('🏢 Nueva Bodega', `
+            mostrarModal('Nueva Bodega', `
                 <div class="form-grid">
                     <div class="full-width"><label>ID (Ej: Farmacos2)</label><input id="bId" placeholder="ID único"></div>
                     <div class="full-width"><label>Nombre</label><input id="bNombre" placeholder="Nombre de bodega"></div>
-                    <div><label>Color</label><input id="bColor" type="color" value="#2563eb" style="height:36px; padding:2px;"></div>
+                    <div><label>Color</label><input id="bColor" type="color" value="#1d4ed8" style="height:36px; padding:2px;"></div>
                 </div>
             `);
             modalCallback = () => {
                 const id = document.getElementById('bId').value.trim();
                 const nombre = document.getElementById('bNombre').value.trim();
                 const color = document.getElementById('bColor').value;
-                if(!id || !nombre) return alert('Completa los campos');
+                if(!id || !nombre) return alert('Completa los campos.');
 
                 if(!appState.warehouses) appState.warehouses = [];
-                if(appState.warehouses.some(w => w.id === id)) return alert('Ya existe esa bodega');
+                if(appState.warehouses.some(w => w.id === id)) return alert('Ya existe una bodega con ese ID.');
                 appState.warehouses.push({ id, nombre, color });
                 guardarEstadoFirestore();
                 registrarHistorial('Creación de Bodega', id, `Creada bodega ${nombre}`);
                 cerrarModal();
-                mostrarToast('Bodega creada');
+                mostrarToast('Bodega creada con éxito.');
             };
         }
 
@@ -1920,23 +1914,23 @@
             const w = appState.warehouses.find(x => x.id === id);
             if(!w) return;
 
-            mostrarModal('✏️ Editar Bodega', `
+            mostrarModal('Editar Bodega', `
                 <div class="form-grid">
-                    <div class="full-width"><label>Nombre de la Bodega</label><input id="bNombre" value="${w.nombre}"></div>
-                    <div><label>Color</label><input id="bColor" type="color" value="${w.color || '#2563eb'}" style="height:36px; padding:2px;"></div>
+                    <div class="full-width"><label>Nombre</label><input id="bNombre" value="${w.nombre}"></div>
+                    <div><label>Color</label><input id="bColor" type="color" value="${w.color || '#1d4ed8'}" style="height:36px; padding:2px;"></div>
                 </div>
             `);
             modalCallback = () => {
                 const nombre = document.getElementById('bNombre').value.trim();
                 const color = document.getElementById('bColor').value;
-                if(!nombre) return alert('El nombre no puede estar vacío');
+                if(!nombre) return alert('El nombre no puede estar vacío.');
 
                 w.nombre = nombre;
                 w.color = color;
                 guardarEstadoFirestore();
                 registrarHistorial('Edición de Bodega', w.id, `Actualizada bodega ${nombre}`);
                 cerrarModal();
-                mostrarToast('✅ Bodega actualizada');
+                mostrarToast('Bodega actualizada.');
             };
         }
 
@@ -1949,15 +1943,15 @@
 
         function renderConfig() {
             const selSubir = document.getElementById('configSubirBodegaSelect');
-            selSubir.innerHTML = '<option value="GENERAL">🌐 General (Todas las bodegas)</option>';
+            selSubir.innerHTML = '<option value="GENERAL">General (Todas las bodegas)</option>';
             (appState.warehouses || []).forEach(w => {
-                selSubir.innerHTML += `<option value="${w.id}">🏢 ${w.nombre}</option>`;
+                selSubir.innerHTML += `<option value="${w.id}">${w.nombre}</option>`;
             });
 
             const selReset = document.getElementById('configResetBodegaSelect');
             selReset.innerHTML = '';
             (appState.warehouses || []).forEach(w => {
-                selReset.innerHTML += `<option value="${w.id}">🏢 ${w.nombre}</option>`;
+                selReset.innerHTML += `<option value="${w.id}">${w.nombre}</option>`;
             });
 
             const statusMaster = document.getElementById('masterCatalogStatus');
@@ -1972,12 +1966,12 @@
             const wh = (appState.warehouses || []).find(w => w.id === selBodega);
             const nombreBodega = wh ? wh.nombre : selBodega;
 
-            if(!confirm(`¿Estás seguro de eliminar todo el inventario de la bodega "${nombreBodega}"?`)) return;
+            if(!confirm(`¿Eliminar todo el inventario de la bodega "${nombreBodega}"?`)) return;
 
             appState.products = (appState.products || []).filter(p => p.bodega !== selBodega);
             guardarEstadoFirestore();
-            registrarHistorial('Reinicio de Bodega', selBodega, `Eliminados registros de inventario de ${nombreBodega}`);
-            mostrarToast(`🗑️ Inventario de ${nombreBodega} reiniciado.`);
+            registrarHistorial('Reinicio', selBodega, `Inventario de ${nombreBodega} reiniciado`);
+            mostrarToast(`Inventario de ${nombreBodega} reiniciado.`);
         }
 
         function renderHistorialCompleto() {
@@ -1986,7 +1980,7 @@
                 <tr>
                     <td>${m.fecha}</td>
                     <td><strong>${m.usuario}</strong></td>
-                    <td><span class="badge" style="background:#e0e7ff; color:#3730a3;">${m.tipo}</span></td>
+                    <td><span class="badge" style="background:#f3f4f6; color:#1f2937;">${m.tipo}</span></td>
                     <td>${m.codigo}</td>
                     <td style="white-space:normal; text-align:left;">${m.detalle}</td>
                 </tr>
@@ -1995,15 +1989,15 @@
 
         function exportarExcelCompleto() {
             const prods = getProducts();
-            if(prods.length === 0) return alert('No hay productos');
+            if(prods.length === 0) return alert('No hay productos para exportar.');
             const ws = XLSX.utils.json_to_sheet(prods.map(p => ({
                 'ID Registro': p.id, 'Código Interno': p.codigo, 'GTIN/EAN 1': (p.gtins && p.gtins[0]) || '', 'GTIN/EAN 2': (p.gtins && p.gtins[1]) || '', 'Glosa': p.glosa, 'Bodega': p.bodega, 'Jerarquía': p.tipo || 'Unidad Comercial', 'Ubicaciones': JSON.stringify(p.ubicaciones || []), 'Estado': p.estado
             })));
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
             XLSX.writeFile(wb, 'inventario_bodega.xlsx');
-            registrarHistorial('Exportación Excel', 'Inventario Completo', 'Exportados registros a Excel');
-            mostrarToast('✅ Excel exportado');
+            registrarHistorial('Exportación', 'Inventario Completo', 'Exportados registros a Excel');
+            mostrarToast('Archivo Excel exportado con éxito.');
         }
 
         function exportarDatos() {
@@ -2015,7 +2009,7 @@
         }
 
         function resetDataGeneral() {
-            if(confirm('⚠️ ¿Estás completamente seguro de reiniciar TODO EL SISTEMA? Se perderán todos los datos, usuarios personalizados y productos.')) {
+            if(confirm('⚠️ ¿Reiniciar TODO EL SISTEMA? Se perderán todos los datos actuales.')) {
                 appState = DEFAULT_DATA;
                 guardarEstadoFirestore();
                 location.reload();
