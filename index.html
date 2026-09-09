@@ -96,12 +96,12 @@
         .card .number { font-size:1.9rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; }
         .card .label { color:var(--text-muted); font-size:0.7rem; margin-top:6px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
 
-        /* TABLAS Y CONTENEDORES RESPONSIVE UNIFICADOS */
+        /* TABLAS Y CONTENEDORES RESPONSIVE UNIFICADOS SIN MARCOS NI SCROLL INNECESARIO */
         .table-wrap { width:100%; }
-        .table-container { max-height:65vh; overflow-x:auto; overflow-y:auto; border-radius:var(--radius); border:1px solid var(--border); background:white; width:100%; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
-        table { width:100%; border-collapse:collapse; font-size:0.75rem; table-layout: auto; }
-        th { background:#f8fafc; text-align:left; padding:12px; font-weight:600; color:var(--text-muted); position:sticky; top:0; z-index:10; font-size:0.7rem; text-transform:uppercase; border-bottom:1px solid var(--border); white-space:nowrap; }
-        td { padding:12px; border-bottom:1px solid var(--border); vertical-align:middle; text-align:left; font-size:0.75rem; color:var(--text-main); }
+        .table-container { max-height:65vh; overflow-y:auto; overflow-x:auto; background:transparent; width:100%; }
+        table { width:100%; border-collapse:collapse; font-size:0.75rem; table-layout: fixed; }
+        th { background:#f8fafc; text-align:left; padding:12px; font-weight:600; color:var(--text-muted); position:sticky; top:0; z-index:10; font-size:0.7rem; text-transform:uppercase; border-bottom:1px solid var(--border); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        td { padding:12px; border-bottom:1px solid var(--border); vertical-align:middle; text-align:left; font-size:0.75rem; color:var(--text-main); word-break:break-word; }
         tr:hover td { background:#f8fafc; }
 
         td input[type="checkbox"], th input[type="checkbox"] {
@@ -151,7 +151,7 @@
         .gtin-tag { font-family:monospace; font-size:0.7rem; background:#fefce8; color:#a16207; padding:2px 6px; border-radius:3px; font-weight:500; border:1px solid #fef08a; white-space:nowrap; display:inline-block; margin:1px; }
 
         /* ACCIONES */
-        .acciones-cell { display: flex; flex-direction: column; gap: 4px; align-items: stretch; min-width: 100px; }
+        .acciones-cell { display: flex; flex-direction: column; gap: 4px; align-items: stretch; min-width: 90px; }
         .btn-action-primary { background: #0284c7; color: #ffffff; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: background 0.2s; }
         .btn-action-primary:hover { background: #0369a1; }
         .btn-action-secondary { background: #f8fafc; color: #475569; border: 1px solid var(--border); padding: 4px 10px; border-radius: 4px; font-size: 0.68rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.2s; }
@@ -217,6 +217,11 @@
         }
 
         /* MEDIA QUERIES RESPONSIVE ADAPTATIVAS (MÓVIL, PDA, TABLET, PC) */
+        @media (min-width: 1024px) {
+            .table-container { overflow-x: hidden !important; }
+            table { table-layout: fixed; width: 100%; }
+        }
+
         @media (max-width: 480px) {
             body { font-size: 11px; }
             .card-grid { grid-template-columns: 1fr; }
@@ -225,12 +230,14 @@
             .toolbar-left, .toolbar-right { width: 100%; flex-direction: column; }
             .toolbar-right input, .toolbar-right select { width: 100%; max-width: none; }
             nav button { padding: 8px 10px; font-size: 0.7rem; }
+            .table-container { overflow-x: auto; }
         }
 
         @media (min-width: 481px) and (max-width: 768px) {
             .card-grid { grid-template-columns: repeat(2, 1fr); }
             .modal-content { padding: 16px; width: 95%; }
             .toolbar { flex-direction: column; align-items: stretch; }
+            .table-container { overflow-x: auto; }
         }
 
         @media (max-width: 768px) {
@@ -365,15 +372,15 @@
                     <table>
                         <thead>
                             <tr>
-                                <th style="text-align:left; padding-left:14px;"><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)"> Código Interno</th>
-                                <th>Códigos GTIN/EAN</th>
-                                <th>Glosa</th>
-                                <th>Bodega</th>
-                                <th style="text-align:center;">Programas / Alertas Especiales</th>
-                                <th style="text-align:center;">Jerarquía</th>
-                                <th>Ubicación</th>
-                                <th style="text-align:center;">Estado</th>
-                                <th id="thAccionsInvHead" style="text-align:center;">Acciones</th>
+                                <th style="width: 14%; text-align:left; padding-left:14px;"><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)"> Código Interno</th>
+                                <th style="width: 12%;">Códigos GTIN/EAN</th>
+                                <th style="width: 20%;">Glosa</th>
+                                <th style="width: 9%;">Bodega</th>
+                                <th style="width: 13%; text-align:center;">Programas / Alertas</th>
+                                <th style="width: 10%; text-align:center;">Jerarquía</th>
+                                <th style="width: 12%;">Ubicación</th>
+                                <th style="width: 10%; text-align:center;">Estado</th>
+                                <th id="thAccionsInvHead" style="width: 10%; text-align:center;">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="inventarioUnificadoBody"></tbody>
