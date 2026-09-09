@@ -15,18 +15,17 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
-            --bg-base: #fcfcfc;
+            --bg-base: #f8fafc;
             --surface: #ffffff;
             --text-main: #111827;
             --text-muted: #4b5563;
-            --border: #e5e7eb;
+            --border: #e2e8f0;
             --primary: #1e293b;
-            --primary-hover: #0f172a;
             --accent: #4f46e5;
             --success: #047857;
             --warning: #b45309;
             --danger: #b91c1c;
-            --radius: 6px;
+            --radius: 10px;
         }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background:var(--bg-base); color:var(--text-main); padding:0; margin:0; width:100%; min-height:100vh; display:flex; flex-direction:column; font-size: 13px; overflow-x: hidden; }
@@ -42,22 +41,20 @@
         #loginModal h2 { margin-bottom:6px; font-size:0.95rem; color:var(--text-main); font-weight:600; }
         #loginModal p { color:var(--text-muted); margin-bottom:14px; font-size:0.75rem; }
         #loginModal label { display:block; font-weight:500; margin:8px 0 3px; font-size:0.7rem; text-align:left; color:var(--text-muted); }
-        #loginModal input { width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.85rem; background:#fff; transition:border-color 0.2s; }
+        #loginModal input { width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.85rem; background:#fff; }
         #loginModal input:focus { outline:none; border-color:var(--accent); }
         #loginModal .btn { width:100%; margin-top:14px; padding:10px; font-size:0.85rem; border-radius:var(--radius); display:flex; align-items:center; justify-content:center; text-align:center; background:var(--primary); color:#fff; border:none; font-weight:500; cursor:pointer; }
         .login-error { color:var(--danger); font-size:0.75rem; margin-top:6px; display:none; }
         .forgot-link { display:inline-block; margin-top:10px; font-size:0.7rem; color:var(--accent); cursor:pointer; text-decoration:none; font-weight:500; }
-        .forgot-link:hover { text-decoration:underline; }
 
         /* HEADER */
         header { background: #111827; color: #f9fafb; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.08); }
-        header .header-left .header-title { font-weight:600; font-size:0.9rem; color:#f9fafb; letter-spacing:-0.01em; }
+        header .header-left .header-title { font-weight:600; font-size:0.9rem; color:#f9fafb; }
         header .header-left .header-sub { font-size:0.55rem; color:#9ca3af; }
         header .header-left .header-sub span { color:#93c5fd; }
         header .user-info { display:flex; align-items:center; gap:8px; font-size:0.65rem; flex-wrap:wrap; }
         header .user-info select { padding:5px 10px; border-radius:4px; border:1px solid #374151; background:#1f2937; color:#f9fafb; font-weight:400; font-size:0.65rem; }
-        header .user-info .btn { background:#374151; color:#f9fafb; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-weight:400; font-size:0.65rem; display:inline-flex; align-items:center; gap:4px; min-height:28px; transition:background 0.2s; }
-        header .user-info .btn:hover { background:#4b5563; }
+        header .user-info .btn { background:#374151; color:#f9fafb; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-weight:400; font-size:0.65rem; display:inline-flex; align-items:center; gap:4px; min-height:28px; }
         header .user-info .btn-success { background:#065f46; }
         header .user-info .btn-warning { background:#92400e; }
         header .user-info .btn-purple { background:#5b21b6; }
@@ -66,32 +63,47 @@
 
         /* NAV */
         nav { display:flex; background:#ffffff; border-bottom:1px solid var(--border); overflow-x:auto; -webkit-overflow-scrolling:touch; padding:0 16px; width: 100%; }
-        nav button { background:transparent; border:none; padding:12px 16px; font-weight:500; font-size:0.7rem; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; flex:0 0 auto; white-space:nowrap; display:inline-flex; align-items:center; gap:6px; min-height:42px; transition:color 0.2s; }
+        nav button { background:transparent; border:none; padding:12px 16px; font-weight:500; font-size:0.7rem; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; flex:0 0 auto; white-space:nowrap; display:inline-flex; align-items:center; gap:6px; min-height:42px; }
         nav button:hover { color:var(--text-main); }
         nav button.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
         nav button .badge-nav { background:var(--accent); color:#ffffff; font-size:0.5rem; padding:1px 5px; border-radius:10px; margin-left:4px; }
 
-        /* TABS */
-        .tab-content { display:none; padding:20px; width:100%; flex:1; }
+        /* TABS CON MÁRGENES AMPLIOS */
+        .tab-content { display:none; padding:24px; width:100%; max-width:1400px; margin:0 auto; flex:1; }
         .tab-content.active { display:block; }
 
-        /* CARDS */
-        .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:12px; margin-bottom:16px; width:100%; }
-        .card { background:#ffffff; padding:16px; border-radius:var(--radius); text-align:left; border:1px solid var(--border); box-shadow:0 1px 3px rgba(0,0,0,0.02); }
-        .card .number { font-size:1.5rem; font-weight:600; color:var(--text-main); letter-spacing:-0.02em; }
-        .card .label { color:var(--text-muted); font-size:0.65rem; margin-top:4px; font-weight:500; text-transform:uppercase; letter-spacing:0.03em; }
+        /* DASHBOARD MODERNO CON TARJETAS MEJORADAS Y EFECTOS VISUALES */
+        .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(210px,1fr)); gap:16px; margin-bottom:24px; width:100%; }
+        .card { background:linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); padding:20px; border-radius:var(--radius); text-align:left; border:1px solid var(--border); box-shadow:0 4px 12px rgba(0,0,0,0.03); position:relative; overflow:hidden; transition:transform 0.2s ease, box-shadow 0.2s ease; }
+        .card:hover { transform: translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,0.06); }
+        .card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--accent); }
+        .card:nth-child(2)::before { background: var(--success); }
+        .card:nth-child(3)::before { background: var(--warning); }
+        .card:nth-child(4)::before { background: #7c3aed; }
+        .card .number { font-size:1.8rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; }
+        .card .label { color:var(--text-muted); font-size:0.7rem; margin-top:6px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
 
-        /* TABLAS */
-        .table-wrap { overflow-x:auto; margin-top:10px; -webkit-overflow-scrolling:touch; width:100%; }
-        .table-container { max-height:65vh; overflow:auto; border-radius:var(--radius); border:1px solid var(--border); -webkit-overflow-scrolling:touch; background:white; width:100%; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
+        /* TABLAS CON ALINEACIÓN VERTICAL CENTRADA PERFECTA */
+        .table-wrap { overflow-x:auto; margin-top:10px; width:100%; }
+        .table-container { max-height:65vh; overflow:auto; border-radius:var(--radius); border:1px solid var(--border); background:white; width:100%; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
         table { width:100%; border-collapse:collapse; font-size:0.7rem; min-width:100%; }
-        th { background:#f9fafb; text-align:center; padding:10px 12px; font-weight:600; color:var(--text-muted); position:sticky; top:0; z-index:10; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.04em; border-bottom:1px solid var(--border); white-space:nowrap; }
-        td { padding:10px 12px; border-bottom:1px solid var(--border); vertical-align:middle; text-align:center; font-size:0.7rem; color:var(--text-main); }
+        th { background:#f9fafb; text-align:center; padding:12px; font-weight:600; color:var(--text-muted); position:sticky; top:0; z-index:10; font-size:0.65rem; text-transform:uppercase; border-bottom:1px solid var(--border); white-space:nowrap; }
+        td { padding:12px; border-bottom:1px solid var(--border); vertical-align:middle; text-align:center; font-size:0.7rem; color:var(--text-main); }
         tr:hover td { background:#f9fafb; }
 
+        /* ALINEACIÓN PERFECTA DE CASILLAS CON EL EJE CENTRAL DEL TEXTO */
+        td input[type="checkbox"], th input[type="checkbox"] {
+            vertical-align: middle;
+            position: relative;
+            top: -1px;
+            cursor: pointer;
+            width: 15px;
+            height: 15px;
+        }
+
         /* ETIQUETAS DE PROGRAMAS Y ALERTAS */
-        .prog-badges-box { display:flex; gap:4px; flex-wrap:wrap; justify-content:center; align-items:center; }
-        .badge-prog { display:inline-block; padding:2px 6px; border-radius:4px; font-size:0.55rem; font-weight:600; white-space:nowrap; letter-spacing:0.02em; }
+        .prog-badges-box { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+        .badge-prog { display:inline-block; padding:3px 8px; border-radius:4px; font-size:0.6rem; font-weight:600; white-space:nowrap; }
         .badge-frio { background:#f0f9ff; color:#0369a1; border:1px solid #bae6fd; }
         .badge-dac { background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; }
         .badge-lrs { background:#fffbeb; color:#b45309; border:1px solid #fde68a; }
@@ -109,7 +121,7 @@
         .badge-economato { background:#b45309; }
         
         .ubicacion-compacta-box { display:flex; flex-direction:column; gap:3px; align-items:center; justify-content:center; }
-        .ubicacion-row-item { display:inline-flex; align-items:center; gap:4px; font-size:0.65rem; background:#f9fafb; padding:3px 8px; border-radius:4px; border:1px solid var(--border); color:var(--text-main); font-weight:500; white-space:nowrap; }
+        .ubicacion-row-item { display:inline-flex; align-items:center; gap:4px; font-size:0.65rem; background:#f9fafb; padding:4px 10px; border-radius:4px; border:1px solid var(--border); color:var(--text-main); font-weight:500; white-space:nowrap; }
         .zone-tag { display:inline-block; padding:1px 4px; border-radius:3px; font-size:0.6rem; font-weight:600; background:#e0e7ff; color:#3730a3; }
         .pos-tag { font-family:monospace; font-size:0.6rem; background:#f3f4f6; padding:1px 4px; border-radius:3px; color:var(--text-muted); font-weight:600; }
         
@@ -121,7 +133,7 @@
         .gtin-tag { font-family:monospace; font-size:0.65rem; background:#fefce8; color:#a16207; padding:2px 6px; border-radius:3px; font-weight:500; border:1px solid #fef08a; white-space:nowrap; display:inline-block; margin:1px; }
 
         /* BOTONES */
-        .btn { padding:6px 14px; border:none; border-radius:var(--radius); font-weight:500; font-size:0.75rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; text-align:center; gap:6px; text-decoration:none; color:#ffffff; min-height:34px; white-space:nowrap; transition:background 0.2s, opacity 0.2s; }
+        .btn { padding:7px 14px; border:none; border-radius:var(--radius); font-weight:500; font-size:0.75rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; text-align:center; gap:6px; text-decoration:none; color:#ffffff; min-height:34px; white-space:nowrap; transition:opacity 0.2s; }
         .btn:hover { opacity:0.9; }
         .btn-primary { background:var(--accent); }
         .btn-success { background:var(--success); }
@@ -130,53 +142,52 @@
         .btn-purple { background:#7c3aed; }
         .btn-orange { background:#ea580c; }
         .btn-outline { background:transparent; border:1px solid var(--border); color:var(--text-muted); }
-        .btn-outline:hover { background:#f9fafb; color:var(--text-main); }
-        .btn-sm { padding:4px 10px; font-size:0.65rem; min-height:28px; }
-        .btn-xs { padding:2px 6px; font-size:0.6rem; min-height:24px; }
+        .btn-sm { padding:5px 10px; font-size:0.65rem; min-height:28px; }
+        .btn-xs { padding:3px 8px; font-size:0.6rem; min-height:24px; }
 
         /* TOOLBAR */
-        .toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:12px 16px; background:#ffffff; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:12px; width:100%; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
-        .toolbar-left, .toolbar-right { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-        .toolbar input { padding:7px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem; background:white; }
-        .filter-select { padding:7px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.75rem; background:white; max-width:260px; }
+        .toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding:16px; background:#ffffff; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:16px; width:100%; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
+        .toolbar-left, .toolbar-right { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+        .toolbar input { padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem; background:white; }
+        .filter-select { padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.75rem; background:white; max-width:260px; }
 
         /* BUSCADOR CATALOGO MAESTRO */
         .master-search-container { position: relative; width: 100%; margin-top: 4px; }
-        .master-search-input { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.85rem; background: #fff; }
+        .master-search-input { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.85rem; background: #fff; }
         .master-dropdown-results { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); max-height: 200px; overflow-y: auto; z-index: 3000; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; }
-        .master-dropdown-item { padding: 9px 14px; font-size: 0.75rem; cursor: pointer; border-bottom: 1px solid var(--bg-base); text-align: left; color: var(--text-main); line-height: 1.3; }
+        .master-dropdown-item { padding: 10px 14px; font-size: 0.75rem; cursor: pointer; border-bottom: 1px solid var(--bg-base); text-align: left; color: var(--text-main); line-height: 1.3; }
         .master-dropdown-item:hover { background: #f8fafc; color: var(--accent); }
 
         /* MODALES */
-        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:12px; overflow-y:auto; }
+        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:16px; overflow-y:auto; }
         .modal.active { display:flex; }
-        .modal-content { background:#ffffff; border-radius:10px; padding:20px; max-width:620px; width:100%; max-height:94vh; overflow-y:auto; box-shadow:0 20px 40px rgba(0,0,0,0.15); border:1px solid var(--border); }
-        .modal-content label { display:block; margin:8px 0 3px; font-weight:500; font-size:0.75rem; color:var(--text-muted); }
-        .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.85rem; }
-        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .modal-content { background:#ffffff; border-radius:12px; padding:24px; max-width:680px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.15); border:1px solid var(--border); }
+        .modal-content label { display:block; margin:10px 0 4px; font-weight:500; font-size:0.75rem; color:var(--text-muted); }
+        .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.85rem; }
+        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
         .form-grid .full-width { grid-column:1/-1; }
 
         /* ESCANER */
-        #qr-reader { width: 100%; max-width: 300px; margin: 8px auto; display: none; }
+        #qr-reader { width: 100%; max-width: 320px; margin: 10px auto; display: none; }
         #qr-reader video { border-radius: var(--radius); width: 100% !important; }
 
         /* LAYOUT */
-        .layout-image-container { width:100%; margin-top:12px; background:#ffffff; border-radius:var(--radius); border:1px solid var(--border); padding:16px; text-align:center; min-height:220px; display:flex; align-items:center; justify-content:center; flex-direction:column; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
+        .layout-image-container { width:100%; margin-top:16px; background:#ffffff; border-radius:var(--radius); border:1px solid var(--border); padding:20px; text-align:center; min-height:240px; display:flex; align-items:center; justify-content:center; flex-direction:column; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
         .layout-image-container img { max-width:100%; max-height:500px; border-radius:var(--radius); object-fit:contain; }
         .no-image { color:var(--text-muted); font-size:0.8rem; }
 
         /* TOAST */
-        .toast-container { position:fixed; bottom:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:8px; max-width:320px; width:100%; }
+        .toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; max-width:320px; width:100%; }
         .toast { background:#111827; color:#ffffff; padding:12px 16px; border-radius:var(--radius); font-size:0.75rem; box-shadow:0 10px 25px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:between; border-left:3px solid var(--accent); }
         .empty-state { color:var(--text-muted); text-align:center; padding:40px; font-size:0.8rem; font-weight:400; }
 
         @media (max-width: 768px) {
-            header { flex-direction:column; align-items:stretch; padding:10px 14px; gap:8px; }
+            header { flex-direction:column; align-items:stretch; padding:12px 16px; gap:8px; }
             header .user-info { justify-content:space-between; }
             .form-grid { grid-template-columns:1fr; }
-            .modal-content { padding: 14px; max-height: 96vh; width: 100%; }
+            .modal-content { padding: 16px; max-height: 96vh; width: 100%; }
             .card-grid { grid-template-columns:repeat(2, 1fr); }
-            .tab-content { padding: 12px; }
+            .tab-content { padding: 16px; }
         }
     </style>
 </head>
@@ -215,11 +226,13 @@
                 <select id="warehouseSelect" onchange="cambiarBodega()">
                     <option value="TODAS">Todas las Bodegas</option>
                 </select>
+                <!-- BOTONES CON VISIBILIDAD RESTRINGIDA POR PERFIL -->
                 <button class="btn btn-success" id="btnCargarArchivo" onclick="document.getElementById('fileInput').click()">
                     Cargar Archivo
                 </button>
                 <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event)">
                 <button class="btn btn-warning" id="btnExportarArchivo" onclick="exportarExcelCompleto()">Exportar</button>
+                
                 <button class="btn btn-purple" id="btnQrUbicaciones" onclick="generarQRUbicaciones()">QR Ubicaciones</button>
                 <button class="btn btn-outline" onclick="logout()">Salir</button>
             </div>
@@ -243,7 +256,7 @@
                 <div class="card"><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos Totales</div></div>
                 <div class="card"><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios Activos</div></div>
             </div>
-            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:8px; color:var(--text-main);">Últimos movimientos registrados</h3>
+            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:10px; color:var(--text-main);">Últimos movimientos registrados</h3>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>Fecha y Hora</th><th>Usuario</th><th>Tipo</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
@@ -284,7 +297,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="text-align:left; padding-left:12px;"><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)" style="cursor:pointer; margin-right:6px;"> Código Interno</th>
+                            <th style="text-align:left; padding-left:14px;"><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)"> Código Interno</th>
                             <th>Códigos GTIN/EAN</th>
                             <th>Glosa</th>
                             <th>Bodega</th>
@@ -302,7 +315,7 @@
 
         <!-- LAYOUT -->
         <div id="tab-layout" class="tab-content">
-            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:8px;">Plano de la Bodega (Visual)</h3>
+            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:10px;">Plano de la Bodega (Visual)</h3>
             <div class="layout-image-container" id="layoutImageContainer">
                 <div id="layoutImageContent">
                     <span class="no-image">No hay imagen de plano cargada para esta bodega.<br><small>Sube una imagen desde la sección Configuración.</small></span>
@@ -312,7 +325,7 @@
 
         <!-- MOVIMIENTOS -->
         <div id="tab-movimientos" class="tab-content">
-            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:8px;">Historial completo de modificaciones</h3>
+            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:10px;">Historial completo de modificaciones</h3>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>Fecha y Hora</th><th>Usuario</th><th>Tipo de Modificación</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
@@ -323,7 +336,7 @@
 
         <!-- USUARIOS -->
         <div id="tab-usuarios" class="tab-content">
-            <div style="margin-bottom:10px;" id="divBtnNuevoUsr">
+            <div style="margin-bottom:12px;" id="divBtnNuevoUsr">
                 <button class="btn btn-primary btn-sm" onclick="mostrarModalUsuario()">Nuevo Usuario</button>
             </div>
             <div class="table-wrap">
@@ -336,7 +349,7 @@
 
         <!-- BODEGAS -->
         <div id="tab-bodegas" class="tab-content">
-            <div style="margin-bottom:10px;" id="divBtnNuevaBodega">
+            <div style="margin-bottom:12px;" id="divBtnNuevaBodega">
                 <button class="btn btn-primary btn-sm" onclick="mostrarModalBodega()">Nueva Bodega</button>
             </div>
             <div class="table-wrap">
@@ -349,32 +362,32 @@
 
         <!-- CONFIG -->
         <div id="tab-config" class="tab-content">
-            <h3 style="font-size:0.9rem; font-weight:600; margin-bottom:12px;">Configuración del Sistema</h3>
-            <div style="max-width:620px; display:flex; flex-direction:column; gap:12px;">
+            <h3 style="font-size:0.9rem; font-weight:600; margin-bottom:14px;">Configuración del Sistema</h3>
+            <div style="max-width:680px; display:flex; flex-direction:column; gap:14px;">
                 
-                <div style="background:#ffffff; padding:14px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--accent);" id="configMasterCatalogSection">
+                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--accent);" id="configMasterCatalogSection">
                     <label style="font-weight:600; color:var(--text-main);">Catálogo Maestro de Referencia (Administrador)</label>
                     <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px;">Carga el Excel maestro con códigos, glosas y bodegas para la búsqueda predictiva.</p>
                     <input type="file" id="masterCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoMaestro(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.8rem;">
                     <div style="font-size:0.7rem; color:var(--success); margin-top:6px; font-weight:500;" id="masterCatalogStatus">Registros en catálogo maestro: 0</div>
                 </div>
 
-                <div style="background:#ffffff; padding:14px; border-radius:var(--radius); border:1px solid var(--border);" id="configLayoutSection">
+                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border);" id="configLayoutSection">
                     <label style="font-weight:600; color:var(--text-main);">Imagen del Plano (Layout Visual)</label>
                     <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px;">Asocia un plano gráfico a una bodega específica o de forma general.</p>
-                    <div style="display:flex; gap:6px; margin-bottom:8px;">
-                        <select id="configSubirBodegaSelect" style="flex:1; padding:7px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem;">
+                    <div style="display:flex; gap:8px; margin-bottom:8px;">
+                        <select id="configSubirBodegaSelect" style="flex:1; padding:8px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem;">
                             <option value="GENERAL">General (Todas las bodegas)</option>
                         </select>
                     </div>
                     <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.8rem;">
                 </div>
 
-                <div style="background:#ffffff; padding:14px; border-radius:var(--radius); border:1px solid var(--border);">
+                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border);">
                     <label style="font-weight:600; color:var(--text-main);">Reinicio Selectivo de Inventario</label>
                     <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px;">Elimina los registros asociados a una bodega en particular.</p>
                     <div style="display:flex; gap:8px; align-items:center;">
-                        <select id="configResetBodegaSelect" style="flex:1; padding:7px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem;"></select>
+                        <select id="configResetBodegaSelect" style="flex:1; padding:8px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem;"></select>
                         <button class="btn btn-warning btn-sm" onclick="resetDataBodega()">Reiniciar Bodega</button>
                     </div>
                 </div>
@@ -390,9 +403,9 @@
     <!-- MODAL -->
     <div class="modal" id="modal">
         <div class="modal-content">
-            <h3 id="modalTitle" style="font-size:0.85rem; font-weight:600; margin-bottom:10px;">Modal</h3>
+            <h3 id="modalTitle" style="font-size:0.85rem; font-weight:600; margin-bottom:12px;">Modal</h3>
             <div id="modalBody"></div>
-            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:18px;">
                 <button class="btn btn-outline btn-sm" onclick="cerrarModal()">Cancelar</button>
                 <button class="btn btn-primary btn-sm" id="modalActionBtn" onclick="ejecutarModal()">Guardar</button>
             </div>
@@ -739,6 +752,7 @@
         function aplicarPermisosUI(user) {
             const perfil = user.perfil;
             const btnCargar = document.getElementById('btnCargarArchivo');
+            const btnExportar = document.getElementById('btnExportarArchivo');
             const btnQrUbics = document.getElementById('btnQrUbicaciones');
             const navUsr = document.getElementById('navUsuarios');
             const navBod = document.getElementById('navBodegas');
@@ -751,8 +765,17 @@
             const toolbarAccionsInv = document.getElementById('toolbarAccionsInv');
             const thAccionsInvHead = document.getElementById('thAccionsInvHead');
 
+            // RESTRICCIONES DE BOTONES SEGÚN PERFIL SOLICITADAS:
+            // - Cargar Archivo: Visible solo para administrador
+            // - Exportar: Visible para administrador y supervisor (restringido para el resto)
+            if (btnCargar) {
+                btnCargar.style.display = (perfil === 'admin') ? 'inline-flex' : 'none';
+            }
+            if (btnExportar) {
+                btnExportar.style.display = (perfil === 'admin' || perfil === 'supervisor') ? 'inline-flex' : 'none';
+            }
+
             if (perfil === 'invitado') {
-                if(btnCargar) btnCargar.style.display = 'none';
                 if(btnQrUbics) btnQrUbics.style.display = 'none';
                 if(navUsr) navUsr.style.display = 'none';
                 if(navBod) navBod.style.display = 'none';
@@ -761,7 +784,6 @@
                 if(toolbarAccionsInv) toolbarAccionsInv.style.display = 'none';
                 if(thAccionsInvHead) thAccionsInvHead.style.display = 'none';
             } else if (perfil === 'operario') {
-                if(btnCargar) btnCargar.style.display = 'none';
                 if(navUsr) navUsr.style.display = 'none';
                 if(navBod) navBod.style.display = 'none';
                 if(navConfig) navConfig.style.display = 'none';
@@ -1037,10 +1059,10 @@
                 const prog = p.programas || { frio: false, dac: false, lrs: false, pm: false, controlado: false };
                 let progHtml = '<div class="prog-badges-box">';
                 if(prog.frio) progHtml += `<span class="badge-prog badge-frio">Cámara de Frío</span>`;
-                if(prog.dac) progHtml += `<span class="badge-prog badge-dac">DAC</span>`;
-                if(prog.lrs) progHtml += `<span class="badge-prog badge-lrs">LRS</span>`;
-                if(prog.pm) progHtml += `<span class="badge-prog badge-pm">Prog. Min.</span>`;
-                if(prog.controlado) progHtml += `<span class="badge-prog badge-controlado">Controlado</span>`;
+                if(prog.dac) progHtml += `<span class="badge-prog badge-dac">Alto Costo (DAC)</span>`;
+                if(prog.lrs) progHtml += `<span class="badge-prog badge-lrs">Ley Ricarte Soto</span>`;
+                if(prog.pm) progHtml += `<span class="badge-prog badge-pm">Programa Ministerial</span>`;
+                if(prog.controlado) progHtml += `<span class="badge-prog badge-controlado">Fármaco Controlado</span>`;
                 if(!prog.frio && !prog.dac && !prog.lrs && !prog.pm && !prog.controlado) progHtml += `<span style="color:var(--text-muted); font-size:0.6rem;">Estándar</span>`;
                 progHtml += `</div>`;
 
@@ -1051,8 +1073,8 @@
 
                 return `
                 <tr>
-                    <td style="text-align:left; padding-left:12px; white-space:nowrap;">
-                        ${!esInvitado ? `<input type="checkbox" class="prod-chk" value="${p.id}" style="cursor:pointer; margin-right:6px;" onchange="actualizarEstadoCheckTodo()">` : ''}
+                    <td style="text-align:left; padding-left:14px; white-space:nowrap;">
+                        ${!esInvitado ? `<input type="checkbox" class="prod-chk" value="${p.id}" style="margin-right:6px;" onchange="actualizarEstadoCheckTodo()">` : ''}
                         <strong>${p.codigo}</strong>
                     </td>
                     <td>${gtinsList}</td>
@@ -1100,7 +1122,7 @@
             const movimientosArticulo = (appState.movements || []).filter(m => String(m.codigo).toLowerCase() === String(codigoInterno).toLowerCase() || (m.detalle && m.detalle.toLowerCase().includes(String(codigoInterno).toLowerCase())));
 
             let html = `
-                <p style="font-size:0.75rem; margin-bottom:8px; color:var(--text-muted);">Historial de modificaciones para el código interno: <strong>${codigoInterno}</strong></p>
+                <p style="font-size:0.75rem; margin-bottom:10px; color:var(--text-muted);">Historial de modificaciones para el código interno: <strong>${codigoInterno}</strong></p>
                 <div class="table-container" style="max-height:55vh;">
                     <table style="width:100%; font-size:0.65rem;">
                         <thead>
@@ -1154,7 +1176,7 @@
 
         function abrirModalAlmacenamiento() {
             mostrarModal('Recepción y Almacenamiento (Catálogo Maestro y GS1)', `
-                <div style="margin-bottom:12px; background:#f9fafb; padding:12px; border-radius:var(--radius); border:1px solid var(--border);">
+                <div style="margin-bottom:12px; background:#f9fafb; padding:14px; border-radius:var(--radius); border:1px solid var(--border);">
                     <label style="font-weight:600;">Buscar en Catálogo Maestro:</label>
                     <div class="master-search-container">
                         <input type="text" id="masterSearchInput" class="master-search-input" placeholder="Escribe código o nombre..." oninput="filtrarCatalogoMaestroDropdown(this.value)" autocomplete="off">
@@ -1167,13 +1189,13 @@
                     
                     <div>
                         <label>GTIN/EAN (Código 1 - Opcional)</label>
-                        <div style="display:flex; gap:4px; margin-bottom:4px;">
+                        <div style="display:flex; gap:6px; margin-bottom:4px;">
                             <input id="mGtin1" placeholder="Opcional" oninput="this.value=limpiarYExtraerGTIN(this.value)">
                             <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin1')">✕</button>
                         </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
                             <button type="button" class="btn btn-success btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(1)">Escanear 1</button>
-                            <select id="mEstado1" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.7rem;">
+                            <select id="mEstado1" style="width:95px; padding:5px; border:1px solid var(--border); border-radius:4px; font-size:0.7rem;">
                                 <option value="activo">Activo</option>
                                 <option value="inactivo">Inactivo</option>
                             </select>
@@ -1182,13 +1204,13 @@
 
                     <div>
                         <label>GTIN/EAN (Código 2 Opcional)</label>
-                        <div style="display:flex; gap:4px; margin-bottom:4px;">
+                        <div style="display:flex; gap:6px; margin-bottom:4px;">
                             <input id="mGtin2" placeholder="DataMatrix / Secundario" oninput="this.value=limpiarYExtraerGTIN(this.value)">
                             <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin2')">✕</button>
                         </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
                             <button type="button" class="btn btn-orange btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(2)">Escanear 2</button>
-                            <select id="mEstado2" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.7rem;">
+                            <select id="mEstado2" style="width:95px; padding:5px; border:1px solid var(--border); border-radius:4px; font-size:0.7rem;">
                                 <option value="activo">Activo</option>
                                 <option value="inactivo">Inactivo</option>
                             </select>
@@ -1196,28 +1218,27 @@
                     </div>
 
                     <div class="full-width"><label>Glosa / Descripción</label><input id="mGlosa" placeholder="Nombre del insumo o fármaco" onblur="verificarAlertaEscaneoManual(this.value)"></div>
-                    <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fffbeb; border:1px solid #fef3c7; padding:8px; border-radius:var(--radius); font-size:0.75rem; color:#b45309;"></div>
+                    <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fffbeb; border:1px solid #fef3c7; padding:10px; border-radius:var(--radius); font-size:0.75rem; color:#b45309;"></div>
 
                     <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">Fármacos</option><option value="Insumos">Insumos</option><option value="Economato">Economato</option><option value="Controlados">Fármacos Controlados</option><option value="Suturas">Suturas</option><option value="Alimentos">Alimentos</option></select></div>
                     <div><label>Jerarquía / Tipo</label><select id="mTipo"><option value="Unidad Comercial">Unidad Comercial</option><option value="Unidad Máster">Unidad Máster</option><option value="Unidad Mínima / Unidosis">Unidad Mínima / Unidosis</option></select></div>
                     
-                    <div class="full-width" style="background:#f9fafb; padding:10px; border-radius:var(--radius); border:1px solid var(--border);">
-                        <label style="margin-bottom:6px; font-weight:600; color:var(--text-main); font-size:0.75rem;">Programas y Alertas Especiales:</label>
-                        <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:6px;">
-                            <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="mProgFrío"> Cámara de Frío</label>
-                            <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="mProgDac"> Alto Costo (DAC)</label>
-                            <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="mProgLrs"> Ley Ricarte Soto</label>
-                            <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="mProgPm"> Prog. Ministerial</label>
-                            <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="mProgControlado"> Fármaco Controlado</label>
+                    <div class="full-width" style="background:#f9fafb; padding:12px; border-radius:var(--radius); border:1px solid var(--border);">
+                        <label style="margin-bottom:8px; font-weight:600; color:var(--text-main); font-size:0.75rem;">Programas y Alertas Especiales:</label>
+                        <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px;">
+                            <label style="display:flex; align-items:center; gap:8px; background:#f0f9ff; padding:8px 10px; border-radius:6px; border:1px solid #bae6fd; cursor:pointer; font-size:0.72rem; color:#0369a1; font-weight:600;"><input type="checkbox" id="mProgFrío"> Cámara de Frío</label>
+                            <label style="display:flex; align-items:center; gap:8px; background:#fef2f2; padding:8px 10px; border-radius:6px; border:1px solid #fecaca; cursor:pointer; font-size:0.72rem; color:#b91c1c; font-weight:600;"><input type="checkbox" id="mProgDac"> Alto Costo (DAC)</label>
+                            <label style="display:flex; align-items:center; gap:8px; background:#fffbeb; padding:8px 10px; border-radius:6px; border:1px solid #fde68a; cursor:pointer; font-size:0.72rem; color:#b45309; font-weight:600;"><input type="checkbox" id="mProgLrs"> Ley Ricarte Soto</label>
+                            <label style="display:flex; align-items:center; gap:8px; background:#faf5ff; padding:8px 10px; border-radius:6px; border:1px solid #e9d5ff; cursor:pointer; font-size:0.72rem; color:#6b21a8; font-weight:600;"><input type="checkbox" id="mProgPm"> Programa Ministerial</label>
+                            <label style="display:flex; align-items:center; gap:8px; background:#ecfdf5; padding:8px 10px; border-radius:6px; border:1px solid #a7f3d0; cursor:pointer; font-size:0.72rem; color:#047857; font-weight:600;"><input type="checkbox" id="mProgControlado"> Fármaco Controlado</label>
                         </div>
                     </div>
 
                     <div><label>Zona</label><select id="mZona" onchange="actualizarJerarquiaPorZonaForm(this.value)"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
-                    <div><label>Anaquel / Rack / Pallet</label><input id="mAnaquel" value="Anaquel 1" placeholder="Ej: Anaquel 1"></div>
-                    <div class="full-width"><label>Posición</label><input id="mPosicion" value="A1" placeholder="Ej: A1"></div>
+                    <div><label>Anaquel / Rack / Full Space / Pallet</label><select id="mAnaquel"><option value="">-- Seleccionar --</option><option value="Anaquel 1">Anaquel 1</option><option value="Rack">Rack</option><option value="Full Space">Full Space</option><option value="Pallet">Pallet</option></select></div>
+                    <div class="full-width"><label>Posición</label><input id="mPosicion" value="" placeholder="Ej: A1 (dejar en blanco para lectura QR)"></div>
                     
-                    <!-- Lector QR reubicado exactamente bajo la sección de ubicación -->
-                    <div class="full-width" style="background:#f3f4f6; padding:8px; border-radius:var(--radius); text-align:center; margin-top:4px;">
+                    <div class="full-width" style="background:#f3f4f6; padding:10px; border-radius:var(--radius); text-align:center; margin-top:6px;">
                         <button class="btn btn-purple btn-xs" onclick="iniciarEscanerQR('almacenar')">Escanear QR de Ubicación</button>
                     </div>
                     <div id="qr-reader" class="full-width"></div>
@@ -1299,7 +1320,7 @@
 
             if(filtrados.length === 0) {
                 dropdown.style.display = 'block';
-                dropdown.innerHTML = `<div style="padding:8px 12px; color:var(--text-muted); font-size:0.75rem;">No se encontraron coincidencias</div>`;
+                dropdown.innerHTML = `<div style="padding:10px 14px; color:var(--text-muted); font-size:0.75rem;">No se encontraron coincidencias</div>`;
                 return;
             }
 
@@ -1336,8 +1357,8 @@
             let alertas = [];
             if(txt.includes('FRIO') || txt.includes('FRÍO') || txt.includes('REFRIGERADO')) alertas.push('Cámara de Frío');
             if(txt.includes('DAC') || txt.includes('ALTO COSTO')) alertas.push('Alto Costo (DAC)');
-            if(txt.includes('RICARTE') || txt.includes('LRS')) alertas.push('Ley Ricarte Soto (LRS)');
-            if(txt.includes('MINISTERIAL') || txt.includes('PM')) alertas.push('Programa Ministerial (PM)');
+            if(txt.includes('RICARTE') || txt.includes('LRS')) alertas.push('Ley Ricarte Soto');
+            if(txt.includes('MINISTERIAL') || txt.includes('PM')) alertas.push('Programa Ministerial');
             if(txt.includes('CONTROLADO') || txt.includes('ESTUPEFACIENTE')) alertas.push('Fármaco Controlado');
 
             if(alertas.length > 0) {
@@ -1353,7 +1374,7 @@
             if(!p) return;
 
             let listHtml = (p.ubicaciones || []).map((u, index) => `
-                <div style="display:flex; align-items:center; justify-content:space-between; background:#f9fafb; padding:6px 10px; border-radius:var(--radius); margin-bottom:4px; font-size:0.75rem;">
+                <div style="display:flex; align-items:center; justify-content:space-between; background:#f9fafb; padding:8px 12px; border-radius:var(--radius); margin-bottom:6px; font-size:0.75rem;">
                     <span><strong>Zona ${u.zona}</strong> - ${u.anaquel} Pos. ${u.posicion}</span>
                     <button class="btn btn-danger btn-xs" onclick="removerUbicacionDeProducto('${p.id}', ${index})">Quitar</button>
                 </div>
@@ -1365,10 +1386,10 @@
             const prog = p.programas || { frio: false, dac: false, lrs: false, pm: false, controlado: false };
 
             mostrarModal('Gestionar Códigos GS1 - GTIN/EAN y Ubicaciones', `
-                <p style="font-size:0.75rem; margin-bottom:6px;"><strong>${p.glosa}</strong> (Código Interno: ${p.codigo})</p>
-                <div style="margin-bottom:8px;">
+                <p style="font-size:0.75rem; margin-bottom:8px;"><strong>${p.glosa}</strong> (Código Interno: ${p.codigo})</p>
+                <div style="margin-bottom:10px;">
                     <label>Códigos GS1 - GTIN/EAN:</label>
-                    <div style="display:flex; gap:4px; flex-wrap:wrap; margin-top:3px;">
+                    <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;">
                         ${currentGtins.map(g => {
                             const est = p.gtinEstados[g] || 'activo';
                             return `<span class="gtin-tag">${est === 'inactivo' ? '[Inactivo]' : '[Activo]'} ${g}</span>`;
@@ -1376,16 +1397,16 @@
                     </div>
                 </div>
 
-                <div class="form-grid" style="margin-bottom:8px;">
+                <div class="form-grid" style="margin-bottom:10px;">
                     <div>
                         <label>GTIN/EAN 1</label>
-                        <div style="display:flex; gap:4px; margin-bottom:4px;">
+                        <div style="display:flex; gap:6px; margin-bottom:4px;">
                             <input id="editGtin1" value="${currentGtins[0] || ''}" oninput="this.value=limpiarYExtraerGTIN(this.value)">
                             <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('editGtin1')">✕</button>
                         </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
                             <button type="button" class="btn btn-success btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(1)">Escanear 1</button>
-                            <select id="editEstado1" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.7rem;">
+                            <select id="editEstado1" style="width:95px; padding:5px; border:1px solid var(--border); border-radius:4px; font-size:0.7rem;">
                                 <option value="activo" ${(p.gtinEstados[currentGtins[0]]||'activo')==='activo'?'selected':''}>Activo</option>
                                 <option value="inactivo" ${(p.gtinEstados[currentGtins[0]])==='inactivo'?'selected':''}>Inactivo</option>
                             </select>
@@ -1393,13 +1414,13 @@
                     </div>
                     <div>
                         <label>GTIN/EAN 2</label>
-                        <div style="display:flex; gap:4px; margin-bottom:4px;">
+                        <div style="display:flex; gap:6px; margin-bottom:4px;">
                             <input id="editGtin2" value="${currentGtins[1] || ''}" oninput="this.value=limpiarYExtraerGTIN(this.value)">
                             <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('editGtin2')">✕</button>
                         </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
                             <button type="button" class="btn btn-orange btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(2)">Escanear 2</button>
-                            <select id="editEstado2" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.7rem;">
+                            <select id="editEstado2" style="width:95px; padding:5px; border:1px solid var(--border); border-radius:4px; font-size:0.7rem;">
                                 <option value="activo" ${(p.gtinEstados[currentGtins[1]]||'activo')==='activo'?'selected':''}>Activo</option>
                                 <option value="inactivo" ${(p.gtinEstados[currentGtins[1]])==='inactivo'?'selected':''}>Inactivo</option>
                             </select>
@@ -1408,36 +1429,36 @@
                 </div>
 
                 <label>Jerarquía / Tipo</label>
-                <select id="editTipo" style="margin-bottom:8px;">
+                <select id="editTipo" style="margin-bottom:10px;">
                     <option value="Unidad Comercial" ${p.tipo==='Unidad Comercial'?'selected':''}>Unidad Comercial</option>
                     <option value="Unidad Máster" ${p.tipo==='Unidad Máster'?'selected':''}>Unidad Máster</option>
                     <option value="Unidad Mínima / Unidosis" ${p.tipo==='Unidad Mínima / Unidosis'?'selected':''}>Unidad Mínima / Unidosis</option>
                 </select>
 
-                <div style="background:#f9fafb; padding:10px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:8px;">
-                    <label style="margin-bottom:6px; font-weight:600; font-size:0.75rem;">Programas y Alertas Especiales:</label>
-                    <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:6px;">
-                        <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="editProgFrío" ${prog.frio?'checked':''}> Cámara de Frío</label>
-                        <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="editProgDac" ${prog.dac?'checked':''}> DAC</label>
-                        <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="editProgLrs" ${prog.lrs?'checked':''}> LRS</label>
-                        <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="editProgPm" ${prog.pm?'checked':''}> Prog. Min.</label>
-                        <label style="display:flex; align-items:center; gap:6px; background:#fff; padding:6px 8px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:0.72rem;"><input type="checkbox" id="editProgControlado" ${prog.controlado?'checked':''}> Controlado</label>
+                <div style="background:#f9fafb; padding:12px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:10px;">
+                    <label style="margin-bottom:8px; font-weight:600; font-size:0.75rem;">Programas y Alertas Especiales:</label>
+                    <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px;">
+                        <label style="display:flex; align-items:center; gap:8px; background:#f0f9ff; padding:8px 10px; border-radius:6px; border:1px solid #bae6fd; cursor:pointer; font-size:0.72rem; color:#0369a1; font-weight:600;"><input type="checkbox" id="editProgFrío" ${prog.frio?'checked':''}> Cámara de Frío</label>
+                        <label style="display:flex; align-items:center; gap:8px; background:#fef2f2; padding:8px 10px; border-radius:6px; border:1px solid #fecaca; cursor:pointer; font-size:0.72rem; color:#b91c1c; font-weight:600;"><input type="checkbox" id="editProgDac" ${prog.dac?'checked':''}> Alto Costo (DAC)</label>
+                        <label style="display:flex; align-items:center; gap:8px; background:#fffbeb; padding:8px 10px; border-radius:6px; border:1px solid #fde68a; cursor:pointer; font-size:0.72rem; color:#b45309; font-weight:600;"><input type="checkbox" id="editProgLrs" ${prog.lrs?'checked':''}> Ley Ricarte Soto</label>
+                        <label style="display:flex; align-items:center; gap:8px; background:#faf5ff; padding:8px 10px; border-radius:6px; border:1px solid #e9d5ff; cursor:pointer; font-size:0.72rem; color:#6b21a8; font-weight:600;"><input type="checkbox" id="editProgPm" ${prog.pm?'checked':''}> Programa Ministerial</label>
+                        <label style="display:flex; align-items:center; gap:8px; background:#ecfdf5; padding:8px 10px; border-radius:6px; border:1px solid #a7f3d0; cursor:pointer; font-size:0.72rem; color:#047857; font-weight:600;"><input type="checkbox" id="editProgControlado" ${prog.controlado?'checked':''}> Fármaco Controlado</label>
                     </div>
                 </div>
 
                 <label>Ubicaciones Actuales:</label>
-                <div style="max-height:100px; overflow-y:auto; border:1px solid var(--border); padding:6px; border-radius:var(--radius); margin-bottom:10px;">
+                <div style="max-height:110px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:var(--radius); margin-bottom:12px;">
                     ${listHtml}
                 </div>
-                <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
-                <h4 style="font-size:0.8rem; font-weight:600; margin-bottom:6px;">Agregar Nueva Ubicación</h4>
+                <hr style="border:0; border-top:1px solid var(--border); margin:12px 0;">
+                <h4 style="font-size:0.8rem; font-weight:600; margin-bottom:8px;">Agregar Nueva Ubicación</h4>
+                
                 <div class="form-grid">
                     <div><label>Zona</label><select id="nuevaZona" onchange="actualizarJerarquiaPorZonaForm(this.value)"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
-                    <div><label>Anaquel / Rack / Pallet</label><input id="nuevoAnaquel" value="Anaquel 1" placeholder="Ej: Anaquel 1"></div>
-                    <div class="full-width"><label>Posición</label><input id="nuevaPosicion" value="A1" placeholder="Ej: A1"></div>
+                    <div><label>Anaquel / Rack / Full Space / Pallet</label><select id="nuevoAnaquel"><option value="">-- Seleccionar --</option><option value="Anaquel 1">Anaquel 1</option><option value="Rack">Rack</option><option value="Full Space">Full Space</option><option value="Pallet">Pallet</option></select></div>
+                    <div class="full-width"><label>Posición</label><input id="nuevaPosicion" value="" placeholder="Ej: A1 (dejar en blanco para lectura QR)"></div>
                     
-                    <!-- Lector QR reubicado exactamente bajo la sección de nueva ubicación -->
-                    <div class="full-width" style="background:#f3f4f6; padding:8px; border-radius:var(--radius); text-align:center; margin-top:4px;">
+                    <div class="full-width" style="background:#f3f4f6; padding:10px; border-radius:var(--radius); text-align:center; margin-top:6px;">
                         <button class="btn btn-purple btn-xs" onclick="iniciarEscanerQR('agregarUbicacion')">Escanear QR de Ubicación</button>
                     </div>
                     <div id="qr-reader" class="full-width"></div>
@@ -1576,7 +1597,7 @@
                 const matchZona = texto.match(/zona\s*([a-j])/i) || texto.match(/z([a-j])/i);
                 if(matchZona) zonaVal = matchZona[1].toUpperCase();
 
-                const matchAnaq = texto.match(/anaquel\s*(\d+)/i) || texto.match(/(rack|full\s*space|pallet)[^\d]*(\d+)?/i);
+                const matchAnaq = texto.match(/(anaquel\s*\d+|rack|full\s*space|pallet)/i);
                 if(matchAnaq) anaqVal = matchAnaq[0];
 
                 const matchPos = texto.match(/pos[i|c][i|o]n\s*([a-z0-9]+)/i);
@@ -1584,7 +1605,7 @@
             }
 
             const selZona = document.getElementById('mZona') || document.getElementById('nuevaZona');
-            const inputAnaq = document.getElementById('mAnaquel') || document.getElementById('nuevoAnaquel');
+            const selAnaq = document.getElementById('mAnaquel') || document.getElementById('nuevoAnaquel');
             const inputPos = document.getElementById('mPosicion') || document.getElementById('nuevaPosicion');
             const selTipo = document.getElementById('mTipo') || document.getElementById('editTipo');
 
@@ -1592,7 +1613,7 @@
                 selZona.value = zonaVal;
                 actualizarJerarquiaPorZonaForm(zonaVal);
             }
-            if(inputAnaq) inputAnaq.value = anaqVal;
+            if(selAnaq) selAnaq.value = anaqVal;
             if(inputPos) inputPos.value = posVal;
             if(tipoVal && selTipo) selTipo.value = tipoVal;
 
@@ -1667,8 +1688,9 @@
                 if(p.ubicaciones) {
                     p.ubicaciones.forEach(u => {
                         if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÓN') {
-                            const key = `${p.tipo || 'Unidad Comercial'}|${u.zona}|${u.anaquel}|${u.posicion}`;
-                            ubicsMap.set(key, { tipo: p.tipo || 'Unidad Comercial', zona: u.zona, anaquel: u.anaquel, posicion: u.posicion });
+                            const anaqStr = u.anaquel || 'Anaquel 1';
+                            const key = `${p.tipo || 'Unidad Comercial'}|${u.zona}|${anaqStr}|${u.posicion}`;
+                            ubicsMap.set(key, { tipo: p.tipo || 'Unidad Comercial', zona: u.zona, anaquel: anaqStr, posicion: u.posicion });
                         }
                     });
                 }
@@ -1677,20 +1699,20 @@
             if(ubicsMap.size === 0) return alert('No hay ubicaciones válidas registradas.');
 
             let html = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                     <h3 style="font-size:0.85rem; font-weight:600;">Selecciona ubicaciones para impresión</h3>
                     <div>
                         <button class="btn btn-outline btn-xs" onclick="toggleSelectAllQR(true)">Marcar Todos</button>
                         <button class="btn btn-outline btn-xs" onclick="toggleSelectAllQR(false)">Desmarcar</button>
                     </div>
                 </div>
-                <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:8px; max-height:50vh; overflow:auto; padding:4px;">
+                <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(160px,1fr)); gap:10px; max-height:50vh; overflow:auto; padding:4px;">
             `;
 
             ubicsMap.forEach((val) => {
-                const labelTxt = `[${val.tipo}] Zona ${val.zona} - ${val.anaquel} Pos. ${val.posicion}`;
+                const labelTxt = `Zona ${val.zona} - ${val.anaquel} - Pos. ${val.posicion}`;
                 html += `
-                    <label style="border:1px solid var(--border); padding:8px; border-radius:var(--radius); background:white; display:flex; flex-direction:column; gap:4px; cursor:pointer; font-size:0.7rem;">
+                    <label style="border:1px solid var(--border); padding:10px; border-radius:var(--radius); background:white; display:flex; flex-direction:column; gap:4px; cursor:pointer; font-size:0.7rem;">
                         <div style="display:flex; align-items:center; justify-content:space-between;">
                             <span style="font-weight:600; color:var(--accent);">${val.tipo}</span>
                             <input type="checkbox" class="qr-chk" value="${labelTxt}" checked style="width:14px; height:14px; cursor:pointer;">
@@ -1701,7 +1723,7 @@
             });
             html += `</div>`;
             
-            mostrarModal('Selección de Etiquetas QR', html);
+            mostrarModal('Selección de Etiquetas QR de Ubicación', html);
             document.getElementById('modalActionBtn').textContent = 'Imprimir Seleccionados';
             document.getElementById('modalActionBtn').onclick = () => {
                 detenerEscanerQR();
@@ -1710,23 +1732,20 @@
                 
                 let printHtml = `<div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:15px; padding:20px; font-family:sans-serif;">`;
                 chks.forEach((chk, i) => {
-                    const partes = chk.value.split(']');
-                    const jerarquia = partes[0].replace('[', '').trim();
-                    const resto = partes[1].trim();
+                    const textoQR = chk.value;
                     printHtml += `
-                        <div style="border:1px solid #333; padding:12px; border-radius:4px; text-align:center; background:#fff; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                        <div style="border:1px solid #333; padding:14px; border-radius:6px; text-align:center; background:#fff; display:flex; flex-direction:column; align-items:center; gap:6px;">
                             <div style="font-weight:bold; font-size:8px; color:#333;">HOSPITAL SAN JUAN DE DIOS</div>
-                            <div style="font-size:9px; font-weight:600; color:#4f46e5; background:#f3f4f6; padding:2px 6px; border-radius:4px; width:100%;">${jerarquia}</div>
-                            <div style="font-size:10px; font-weight:700; color:#111827;">${resto}</div>
-                            <div id="qrcode-${i}" style="margin:2px auto;"></div>
-                            <div style="font-size:7px; color:#666;">Bodega Central WMS</div>
+                            <div style="font-size:11px; font-weight:700; color:#111827;">${textoQR}</div>
+                            <div id="qrcode-${i}" style="margin:4px auto;"></div>
+                            <div style="font-size:7px; color:#666; font-weight:600;">Bodega Central Abastecimiento - Gestión Logística</div>
                         </div>
                     `;
                 });
                 printHtml += `</div>`;
 
                 const win = window.open('', '_blank');
-                win.document.write(`<html><head><title>Imprimir Etiquetas QR</title><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script></head><body onload="window.print();">` + printHtml + `<script>` + Array.from(chks).map((chk, i) => `new QRCode(document.getElementById("qrcode-${i}"), { text: "${chk.value}", width: 90, height: 90 });`).join('') + `<\/script></body></html>`);
+                win.document.write(`<html><head><title>Imprimir Etiquetas QR</title><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script></head><body onload="window.print();">` + printHtml + `<script>` + Array.from(chks).map((chk, i) => `new QRCode(document.getElementById("qrcode-${i}"), { text: "${chk.value}", width: 100, height: 100 });`).join('') + `<\/script></body></html>`);
                 win.document.close();
                 cerrarModal();
             };
@@ -1765,7 +1784,7 @@
                     <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarChecksPermisos()"><option value="admin">Admin</option><option value="supervisor">Supervisor</option><option value="operario">Operario</option><option value="invitado">Invitado</option></select></div>
                     <div class="full-width">
                         <label>Permisos</label>
-                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f9fafb; padding:8px; border-radius:var(--radius); border:1px solid var(--border);"></div>
+                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f9fafb; padding:10px; border-radius:var(--radius); border:1px solid var(--border);"></div>
                     </div>
                 </div>
             `);
@@ -1806,7 +1825,7 @@
                     <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarChecksPermisos()"><option value="admin" ${u.perfil==='admin'?'selected':''}>Admin</option><option value="supervisor" ${u.perfil==='supervisor'?'selected':''}>Supervisor</option><option value="operario" ${u.perfil==='operario'?'selected':''}>Operario</option><option value="invitado" ${u.perfil==='invitado'?'selected':''}>Invitado</option></select></div>
                     <div class="full-width">
                         <label>Permisos</label>
-                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f9fafb; padding:8px; border-radius:var(--radius); border:1px solid var(--border);"></div>
+                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f9fafb; padding:10px; border-radius:var(--radius); border:1px solid var(--border);"></div>
                     </div>
                 </div>
             `);
