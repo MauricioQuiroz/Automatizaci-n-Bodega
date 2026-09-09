@@ -53,6 +53,7 @@
         header .header-left .header-sub { font-size:0.6rem; color:#94a3b8; }
         header .header-left .header-sub span { color:#38bdf8; }
         header .user-info { display:flex; align-items:center; gap:8px; font-size:0.65rem; flex-wrap:wrap; }
+        header .user-info .warehouse-label { color:#94a3b8; font-weight:500; font-size:0.65rem; }
         header .user-info select { padding:6px 10px; border-radius:4px; border:1px solid #334155; background:#1e293b; color:#f8fafc; font-weight:400; font-size:0.65rem; }
         header .user-info .btn { background:#334155; color:#f8fafc; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-weight:400; font-size:0.65rem; display:inline-flex; align-items:center; gap:4px; min-height:28px; }
         header .user-info .btn-success { background:#0d9488; }
@@ -71,7 +72,7 @@
         .tab-content { display:none; padding:28px 24px; width:100%; max-width:1400px; margin:0 auto; flex:1; }
         .tab-content.active { display:block; }
 
-        /* DASHBOARD - ESTILO NEUTRO / PLATA (OPCIÓN 2) */
+        /* CARD GRID */
         .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:16px; margin-bottom:24px; width:100%; }
         .card { background:#ffffff; padding:20px; border-radius:var(--radius); text-align:left; border:1px solid var(--border); box-shadow:0 2px 4px rgba(0,0,0,0.02); position:relative; overflow:hidden; }
         .card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:#64748b; }
@@ -99,9 +100,14 @@
             height: 16px;
         }
 
-        /* PROGRAMAS Y ETIQUETAS - COLUMNA VERTICAL ESTRICTA A LA IZQUIERDA */
+        /* PROGRAMAS Y ETIQUETAS - COLUMNA VERTICAL ESTRICTA A LA IZQUIERDA EN MODALES */
         .prog-column-box { display: flex; flex-direction: column; gap: 8px; width: 100%; align-items: stretch; }
         .prog-option-item { display: flex; align-items: center; justify-content: flex-start; gap: 10px; background: #fff; padding: 10px 12px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; font-size: 0.75rem; width: 100%; }
+        
+        /* CENTRADO EXCLUSIVO EN LA VISTA DE INVENTARIO PARA LA COLUMNA DE PROGRAMAS */
+        .prog-cell-inventario { text-align: center !important; }
+        .prog-cell-inventario .prog-badges-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 100%; }
+
         .badge-prog { display: inline-block; font-size: 0.7rem; font-weight: 600; white-space: nowrap; padding: 3px 8px; border-radius: 4px; text-align: left; }
         .badge-frio { background:#e0f2fe; color:#0284c7; border:1px solid #bae6fd; }
         .badge-dac { background:#ffe4e6; color:#e11d48; border:1px solid #fecdd3; }
@@ -124,7 +130,6 @@
         .zone-tag { display:inline-block; padding:1px 5px; border-radius:3px; font-size:0.65rem; font-weight:600; background:#e0f2fe; color:#0369a1; }
         .pos-tag { font-family:monospace; font-size:0.65rem; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--text-muted); font-weight:600; }
         
-        /* JERARQUÍA - OPCIÓN C (Platino refinado vs Blanco/Gris tenue) */
         .type-tag { display:inline-block; padding:4px 10px; border-radius:6px; font-size:0.7rem; font-weight:600; white-space:nowrap; text-align: center; }
         .type-master { background: #e2e8f0; color: #0f172a; border: 1px solid #cbd5e1; }
         .type-comercial { background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
@@ -132,14 +137,14 @@
 
         .gtin-tag { font-family:monospace; font-size:0.7rem; background:#fefce8; color:#a16207; padding:2px 6px; border-radius:3px; font-weight:500; border:1px solid #fef08a; white-space:nowrap; display:inline-block; margin:1px; }
 
-        /* ACCIONES UNIFORMES Y ELEGANTES EN TABLA (SIN ICONOS) */
-        .acciones-cell { display: flex; flex-direction: column; gap: 4px; align-items: stretch; min-width: 110px; }
+        /* ACCIONES UNIFORMES Y ELEGANTES EN TABLA (COLUMNA VERTICAL UNIFICADA) */
+        .acciones-cell { display: flex; flex-direction: column; gap: 4px; align-items: stretch; min-width: 100px; }
         .btn-action-primary { background: #0284c7; color: #ffffff; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: background 0.2s; }
         .btn-action-primary:hover { background: #0369a1; }
         .btn-action-secondary { background: #f8fafc; color: #475569; border: 1px solid var(--border); padding: 4px 10px; border-radius: 4px; font-size: 0.68rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.2s; }
         .btn-action-secondary:hover { background: #f1f5f9; color: var(--text-main); border-color: #94a3b8; }
-        .btn-action-danger { background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; padding: 4px 10px; border-radius: 4px; font-size: 0.68rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
-        .btn-action-danger:hover { background: #ffe4e6; }
+        .btn-action-danger { background: #e11d48; color: #ffffff; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+        .btn-action-danger:hover { background: #be123c; }
 
         /* BOTONES GENERALES */
         .btn { padding:8px 16px; border:none; border-radius:var(--radius); font-weight:500; font-size:0.75rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; text-align:center; gap:6px; text-decoration:none; color:#ffffff; min-height:36px; white-space:nowrap; transition:opacity 0.2s; }
@@ -167,7 +172,7 @@
         .master-dropdown-item { padding: 10px 14px; font-size: 0.75rem; cursor: pointer; border-bottom: 1px solid var(--bg-base); text-align: left; color: var(--text-main); line-height: 1.3; }
         .master-dropdown-item:hover { background: #f8fafc; color: var(--accent); }
 
-        /* MODALES CON MARGEN INFERIOR DE SEGURIDAD MÓVIL */
+        /* MODALES */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:16px; overflow-y:auto; }
         .modal.active { display:flex; }
         .modal-content { background:#ffffff; border-radius:12px; padding:24px 24px 40px 24px; max-width:720px; width:100%; max-height:85vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.2); border:1px solid var(--border); text-align: left; margin-bottom: 30px; }
@@ -189,6 +194,14 @@
         .toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; max-width:320px; width:100%; }
         .toast { background:#0f172a; color:#ffffff; padding:12px 16px; border-radius:var(--radius); font-size:0.75rem; box-shadow:0 10px 25px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:space-between; border-left:3px solid var(--accent); }
         .empty-state { color:var(--text-muted); text-align:center; padding:40px; font-size:0.8rem; font-weight:400; }
+
+        @media print {
+            .etiqueta-qr-print-card {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                margin-bottom: 15px;
+            }
+        }
 
         @media (max-width: 768px) {
             header { flex-direction:column; align-items:stretch; padding:12px 16px; gap:8px; }
@@ -233,6 +246,7 @@
             <div class="user-info">
                 <span class="online-indicator"></span>
                 <span class="user-name" id="currentUserDisplay">Admin</span>
+                <span class="warehouse-label">Vista:</span>
                 <select id="warehouseSelect" onchange="cambiarBodega()">
                     <option value="TODAS">Todas las Bodegas</option>
                 </select>
@@ -242,7 +256,7 @@
                 <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event)">
                 <button class="btn btn-warning" id="btnExportarArchivo" onclick="exportarExcelCompleto()">Exportar</button>
                 
-                <button class="btn btn-teal" id="btnQrUbicaciones" onclick="generarQRUbicaciones()">QR Ubicaciones</button>
+                <button class="btn btn-teal" id="btnQrUbicaciones" onclick="abrirModalQRUbicaciones()">QR Ubicaciones</button>
                 <button class="btn btn-outline" onclick="logout()">Salir</button>
             </div>
         </header>
@@ -310,7 +324,7 @@
                             <th>Códigos GTIN/EAN</th>
                             <th>Glosa</th>
                             <th>Bodega</th>
-                            <th>Programas / Alertas Especiales</th>
+                            <th style="text-align:center;">Programas / Alertas Especiales</th>
                             <th style="text-align:center;">Jerarquía</th>
                             <th>Ubicación</th>
                             <th style="text-align:center;">Estado</th>
@@ -351,7 +365,7 @@
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Perfil</th><th>Permisos</th><th>Acciones</th></tr></thead>
+                    <thead><tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Perfil</th><th>Permisos</th><th style="text-align:center;">Acciones</th></tr></thead>
                     <tbody id="usuariosBody"></tbody>
                 </table>
             </div>
@@ -364,7 +378,7 @@
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>ID</th><th>Nombre</th><th>Color</th><th id="thBodegasAccionsHead">Acciones</th></tr></thead>
+                    <thead><tr><th>ID</th><th>Nombre</th><th>Color</th><th id="thBodegasAccionsHead" style="text-align:center;">Acciones</th></tr></thead>
                     <tbody id="bodegasBody"></tbody>
                 </table>
             </div>
@@ -380,6 +394,13 @@
                     <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Carga el Excel maestro con códigos, glosas y bodegas para la búsqueda predictiva.</p>
                     <input type="file" id="masterCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoMaestro(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.8rem;">
                     <div style="font-size:0.7rem; color:var(--success); margin-top:6px; font-weight:500; text-align: left;" id="masterCatalogStatus">Registros en catálogo maestro: 0</div>
+                </div>
+
+                <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border);" id="configLocationsMasterSection">
+                    <label style="font-weight:600; color:var(--text-main); text-align: left;">Maestro de Ubicaciones QR (Excel)</label>
+                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Carga un Excel con columnas <strong>Zona</strong>, <strong>Anaquel</strong>, <strong>Posicion</strong> (y opcional <strong>Tipo</strong>) para el generador de QR.</p>
+                    <input type="file" id="locationsCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoUbicaciones(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.8rem;">
+                    <div style="font-size:0.7rem; color:var(--success); margin-top:6px; font-weight:500; text-align: left;" id="locationsCatalogStatus">Ubicaciones maestras cargadas: 0</div>
                 </div>
 
                 <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border);" id="configLayoutSection">
@@ -447,7 +468,8 @@
             products: [],
             movements: [],
             layouts: {},
-            masterCatalog: []
+            masterCatalog: [],
+            locationsCatalog: []
         };
 
         const DEFAULT_DATA = {
@@ -468,7 +490,8 @@
             products: [],
             movements: [],
             layouts: {},
-            masterCatalog: []
+            masterCatalog: [],
+            locationsCatalog: []
         };
 
         const PERFILES_CONFIG = {
@@ -513,7 +536,8 @@
                         }), 
                         movements: dataRemota.movements || [],
                         layouts: dataRemota.layouts || {},
-                        masterCatalog: dataRemota.masterCatalog || []
+                        masterCatalog: dataRemota.masterCatalog || [],
+                        locationsCatalog: dataRemota.locationsCatalog || []
                     };
                 } else {
                     dbFirestore.collection('wms_data').doc('main').set(DEFAULT_DATA);
@@ -879,6 +903,46 @@
             reader.readAsArrayBuffer(file);
         }
 
+        function cargarCatalogoUbicaciones(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    let locs = [];
+
+                    workbook.SheetNames.forEach(name => {
+                        const sheet = workbook.Sheets[name];
+                        const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+                        json.forEach((row) => {
+                            const keys = Object.keys(row);
+                            const zona = String(row[keys.find(k => /^ZONA$/i.test(k))] || '').trim();
+                            const anaquel = String(row[keys.find(k => /^ANAQUEL$|RACK|TIPO_POS/i.test(k))] || 'Anaquel 1').trim();
+                            const posicion = String(row[keys.find(k => /^POSICION$|POSICIÓN/i.test(k))] || '').trim();
+                            const tipoExplicit = String(row[keys.find(k => /^TIPO$|JERARQUIA/i.test(k))] || '').trim();
+
+                            if (zona) {
+                                const tipo = tipoExplicit || determinarJerarquiaPorZona(zona);
+                                locs.push({ zona, anaquel, posicion: posicion || 'A1', tipo });
+                            }
+                        });
+                    });
+
+                    appState.locationsCatalog = locs;
+                    guardarEstadoFirestore();
+                    renderConfig();
+                    document.getElementById('locationsCatalogFileInput').value = '';
+                    mostrarToast(`Maestro de ubicaciones cargado (${locs.length} registros).`);
+                } catch(err) {
+                    alert('Error al leer el archivo de ubicaciones: ' + err.message);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
         function extraerUbicacionDesdeTextoHojaONombre(sheetName, row, keys) {
             let zona = 'SIN ASIGNACIÓN';
             let anaquel = 'Anaquel 1';
@@ -1081,7 +1145,7 @@
                     <td>${gtinsList}</td>
                     <td>${p.glosa}</td>
                     <td><span class="badge-bodega badge-${p.bodega.toLowerCase()}">${p.bodega}</span></td>
-                    <td>${progHtml}</td>
+                    <td class="prog-cell-inventario">${progHtml}</td>
                     <td style="text-align:center;"><span class="type-tag ${tipoClase}">${tipoVal}</span></td>
                     <td><div class="ubicacion-compacta-box">${ubicsHtml}</div></td>
                     <td style="text-align:center;"><span class="badge" style="background:#f0fdf4; color:#15803d;">${p.estado || 'Almacenado'}</span></td>
@@ -1226,7 +1290,6 @@
                     <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">Fármacos</option><option value="Insumos">Insumos</option><option value="Economato">Economato</option><option value="Controlados">Fármacos Controlados</option><option value="Suturas">Suturas</option><option value="Alimentos">Alimentos</option></select></div>
                     <div><label>Jerarquía / Tipo</label><select id="mTipo"><option value="Unidad Comercial">Unidad Comercial</option><option value="Unidad Máster">Unidad Máster</option><option value="Unidad Mínima / Unidosis">Unidad Mínima / Unidosis</option></select></div>
                     
-                    <!-- PROGRAMAS CON COLUMNA VERTICAL ESTRICTA A LA IZQUIERDA -->
                     <div class="full-width" style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); text-align: left;">
                         <label style="margin-bottom:10px; font-weight:600; color:var(--text-main); font-size:0.75rem; text-align: left;">Programas y Alertas Especiales:</label>
                         <div class="prog-column-box">
@@ -1238,12 +1301,10 @@
                         </div>
                     </div>
 
-                    <!-- UBICACIONES COMPLETADAS AUTOMÁTICAMENTE POR QR -->
                     <input type="hidden" id="mZona" value="SIN ASIGNACIÓN">
                     <input type="hidden" id="mAnaquel" value="Anaquel 1">
                     <input type="hidden" id="mPosicion" value="">
 
-                    <!-- CUADRO DE UBICACIÓN QR CENTRADO -->
                     <div class="full-width" style="background:#f1f5f9; padding:14px; border-radius:var(--radius); text-align:center; margin-top:6px; border:1px solid var(--border);">
                         <label style="font-weight:600; margin-bottom:6px; display:block; font-size:0.75rem; text-align: center;">Asignación de Ubicación por QR</label>
                         <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:10px; text-align: center;">La zona, tipo de almacenamiento y posición se completan automáticamente escaneando el código QR.</p>
@@ -1446,7 +1507,6 @@
                     <option value="Unidad Mínima / Unidosis" ${p.tipo==='Unidad Mínima / Unidosis'?'selected':''}>Unidad Mínima / Unidosis</option>
                 </select>
 
-                <!-- PROGRAMAS CON COLUMNA VERTICAL ESTRICTA A LA IZQUIERDA -->
                 <div style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:12px; text-align: left;">
                     <label style="margin-bottom:10px; font-weight:600; font-size:0.75rem; text-align: left;">Programas y Alertas Especiales:</label>
                     <div class="prog-column-box">
@@ -1470,7 +1530,6 @@
                 <input type="hidden" id="nuevaPosicion" value="">
 
                 <div class="form-grid" style="text-align: left;">
-                    <!-- CUADRO DE UBICACIÓN QR CENTRADO -->
                     <div class="full-width" style="background:#f1f5f9; padding:12px; border-radius:var(--radius); text-align:center; margin-top:6px; border:1px solid var(--border);">
                         <label style="font-weight:600; margin-bottom:6px; display:block; font-size:0.75rem; text-align: center;">Asignación de Ubicación por QR</label>
                         <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:10px; text-align: center;">La zona, tipo de almacenamiento y posición se completan automáticamente escaneando el código QR.</p>
@@ -1621,7 +1680,7 @@
 
             const selZona = document.getElementById('mZona') || document.getElementById('nuevaZona');
             const selAnaq = document.getElementById('mAnaquel') || document.getElementById('nuevoAnaquel');
-            const inputPos = document.getElementById('mPosicion') || document.getElementById('nuevaPosicion');
+            const inputPos = document.getElementById('mPosicion') || document.getElementById('nuevoPosicion');
             const selTipo = document.getElementById('mTipo') || document.getElementById('editTipo');
 
             if(selZona) {
@@ -1704,79 +1763,136 @@
             }
         }
 
-        function generarQRUbicaciones() {
-            const prods = getProducts();
-            const ubicsMap = new Map();
-            
-            prods.forEach(p => {
-                if(p.ubicaciones) {
-                    p.ubicaciones.forEach(u => {
-                        if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÓN') {
-                            const anaqStr = u.anaquel || 'Anaquel 1';
-                            const key = `${p.tipo || 'Unidad Comercial'}|${u.zona}|${anaqStr}|${u.posicion}`;
-                            ubicsMap.set(key, { tipo: p.tipo || 'Unidad Comercial', zona: u.zona, anaquel: anaqStr, posicion: u.posicion });
-                        }
-                    });
-                }
-            });
+        let locationsFiltradasCache = [];
 
-            if(ubicsMap.size === 0) return alert('No hay ubicaciones válidas registradas.');
+        function abrirModalQRUbicaciones() {
+            let baseList = [];
+            if (appState.locationsCatalog && appState.locationsCatalog.length > 0) {
+                baseList = appState.locationsCatalog;
+            } else {
+                const ubicsMap = new Map();
+                (appState.products || []).forEach(p => {
+                    if(p.ubicaciones) {
+                        p.ubicaciones.forEach(u => {
+                            if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÓN') {
+                                const anaqStr = u.anaquel || 'Anaquel 1';
+                                const key = `${p.tipo || 'Unidad Comercial'}|${u.zona}|${anaqStr}|${u.posicion}`;
+                                ubicsMap.set(key, { tipo: p.tipo || 'Unidad Comercial', zona: u.zona, anaquel: anaqStr, posicion: u.posicion });
+                            }
+                        });
+                    }
+                });
+                baseList = Array.from(ubicsMap.values());
+            }
+
+            if(baseList.length === 0) return alert('No hay ubicaciones registradas ni cargadas en el maestro.');
+
+            locationsFiltradasCache = baseList;
 
             let html = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                    <h3 style="font-size:0.85rem; font-weight:600;">Selecciona ubicaciones para impresión</h3>
+                <div style="margin-bottom:12px; background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border);">
+                    <label style="font-weight:600; margin-bottom:6px;">Filtrar Ubicaciones:</label>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+                        <input id="filtroZona" placeholder="Zona (Ej: A)" oninput="renderizarListaFiltroQR()" style="padding:6px; font-size:0.75rem;">
+                        <input id="filtroAnaquel" placeholder="Anaquel / Rack" oninput="renderizarListaFiltroQR()" style="padding:6px; font-size:0.75rem;">
+                        <input id="filtroPosicion" placeholder="Posición" oninput="renderizarListaFiltroQR()" style="padding:6px; font-size:0.75rem;">
+                    </div>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <span style="font-size:0.75rem; color:var(--text-muted);" id="contadorUbicacionesQR">Mostrando ${baseList.length} ubicaciones</span>
                     <div>
                         <button class="btn btn-outline btn-xs" onclick="toggleSelectAllQR(true)">Marcar Todos</button>
                         <button class="btn btn-outline btn-xs" onclick="toggleSelectAllQR(false)">Desmarcar</button>
                     </div>
                 </div>
-                <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(170px,1fr)); gap:10px; max-height:50vh; overflow:auto; padding:4px;">
+                <div id="contenedorGridQR" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(170px,1fr)); gap:10px; max-height:45vh; overflow:auto; padding:4px;">
+                </div>
             `;
 
-            ubicsMap.forEach((val) => {
+            mostrarModal('Selección de Etiquetas QR de Ubicación', html);
+            document.getElementById('modalActionBtn').textContent = 'Imprimir Seleccionados';
+            document.getElementById('modalActionBtn').onclick = ejecutarImpresionQR;
+
+            renderizarListaFiltroQR();
+        }
+
+        function renderizarListaFiltroQR() {
+            const fZona = (document.getElementById('filtroZona')?.value || '').trim().toLowerCase();
+            const fAnaquel = (document.getElementById('filtroAnaquel')?.value || '').trim().toLowerCase();
+            const fPos = (document.getElementById('filtroPosicion')?.value || '').trim().toLowerCase();
+
+            let baseList = [];
+            if (appState.locationsCatalog && appState.locationsCatalog.length > 0) {
+                baseList = appState.locationsCatalog;
+            } else {
+                const ubicsMap = new Map();
+                (appState.products || []).forEach(p => {
+                    if(p.ubicaciones) {
+                        p.ubicaciones.forEach(u => {
+                            if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÓN') {
+                                const anaqStr = u.anaquel || 'Anaquel 1';
+                                const key = `${p.tipo || 'Unidad Comercial'}|${u.zona}|${anaqStr}|${u.posicion}`;
+                                ubicsMap.set(key, { tipo: p.tipo || 'Unidad Comercial', zona: u.zona, anaquel: anaqStr, posicion: u.posicion });
+                            }
+                        });
+                    }
+                });
+                baseList = Array.from(ubicsMap.values());
+            }
+
+            const filtradas = baseList.filter(val => {
+                const matchZ = !fZona || String(val.zona).toLowerCase().includes(fZona);
+                const matchA = !fAnaquel || String(val.anaquel).toLowerCase().includes(fAnaquel);
+                const matchP = !fPos || String(val.posicion).toLowerCase().includes(fPos);
+                return matchZ && matchA && matchP;
+            });
+
+            const grid = document.getElementById('contenedorGridQR');
+            const contador = document.getElementById('contadorUbicacionesQR');
+            if(contador) contador.textContent = `Mostrando ${filtradas.length} ubicaciones`;
+            if(!grid) return;
+
+            grid.innerHTML = filtradas.map((val) => {
                 const labelTxt = `Zona ${val.zona} - ${val.anaquel} - Pos. ${val.posicion}`;
-                html += `
+                return `
                     <label style="border:1px solid var(--border); padding:10px; border-radius:var(--radius); background:white; display:flex; flex-direction:column; gap:4px; cursor:pointer; font-size:0.7rem;">
                         <div style="display:flex; align-items:center; justify-content:space-between;">
-                            <span style="font-weight:600; color:var(--accent);">${val.tipo}</span>
+                            <span style="font-weight:600; color:var(--accent);">${val.tipo || determinarJerarquiaPorZona(val.zona)}</span>
                             <input type="checkbox" class="qr-chk" value="${labelTxt}" checked style="width:15px; height:15px; cursor:pointer;">
                         </div>
                         <div style="color:var(--text-main);"><strong>Zona ${val.zona}</strong><br>${val.anaquel}<br>Pos. ${val.posicion}</div>
                     </label>
                 `;
-            });
-            html += `</div>`;
-            
-            mostrarModal('Selección de Etiquetas QR de Ubicación', html);
-            document.getElementById('modalActionBtn').textContent = 'Imprimir Seleccionados';
-            document.getElementById('modalActionBtn').onclick = () => {
-                detenerEscanerQR();
-                const chks = document.querySelectorAll('.qr-chk:checked');
-                if(chks.length === 0) return alert('Selecciona al menos una etiqueta.');
-                
-                let printHtml = `<div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:15px; padding:20px; font-family:sans-serif;">`;
-                chks.forEach((chk, i) => {
-                    const textoQR = chk.value;
-                    printHtml += `
-                        <div style="border:1px solid #333; padding:14px; border-radius:6px; text-align:center; background:#fff; display:flex; flex-direction:column; align-items:center; gap:6px;">
-                            <div style="font-weight:bold; font-size:8px; color:#333;">HOSPITAL SAN JUAN DE DIOS</div>
-                            <div style="font-size:11px; font-weight:700; color:#0f172a;">${textoQR}</div>
-                            <div id="qrcode-${i}" style="margin:4px auto;"></div>
-                            <div style="font-size:7px; color:#475569; font-weight:600;">Sistema de Automatización de Almacenamiento</div>
-                        </div>
-                    `;
-                });
-                printHtml += `</div>`;
-
-                const win = window.open('', '_blank');
-                win.document.write(`<html><head><title>Imprimir Etiquetas QR</title><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script></head><body onload="window.print();">` + printHtml + `<script>` + Array.from(chks).map((chk, i) => `new QRCode(document.getElementById("qrcode-${i}"), { text: "${chk.value}", width: 100, height: 100 });`).join('') + `<\/script></body></html>`);
-                win.document.close();
-                cerrarModal();
-            };
+            }).join('') || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:var(--text-muted);">No se encontraron ubicaciones con esos filtros.</div>';
         }
 
         function toggleSelectAllQR(status) {
             document.querySelectorAll('.qr-chk').forEach(c => c.checked = status);
+        }
+
+        function ejecutarImpresionQR() {
+            detenerEscanerQR();
+            const chks = document.querySelectorAll('.qr-chk:checked');
+            if(chks.length === 0) return alert('Selecciona al menos una etiqueta.');
+            
+            let printHtml = `<div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:15px; padding:20px; font-family:sans-serif;">`;
+            chks.forEach((chk, i) => {
+                const textoQR = chk.value;
+                printHtml += `
+                    <div class="etiqueta-qr-print-card" style="border:1px solid #333; padding:14px; border-radius:6px; text-align:center; background:#fff; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                        <div style="font-weight:bold; font-size:8px; color:#333;">HOSPITAL SAN JUAN DE DIOS</div>
+                        <div style="font-size:11px; font-weight:700; color:#0f172a;">${textoQR}</div>
+                        <div id="qrcode-${i}" style="margin:4px auto;"></div>
+                        <div style="font-size:7px; color:#475569; font-weight:600;">Sistema de Automatización de Almacenamiento</div>
+                    </div>
+                `;
+            });
+            printHtml += `</div>`;
+
+            const win = window.open('', '_blank');
+            win.document.write(`<html><head><title>Imprimir Etiquetas QR</title><style>@media print { .etiqueta-qr-print-card { page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 15px; } }</style><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script></head><body onload="window.print();">` + printHtml + `<script>` + Array.from(chks).map((chk, i) => `new QRCode(document.getElementById("qrcode-${i}"), { text: "${chk.value}", width: 100, height: 100 });`).join('') + `<\/script></body></html>`);
+            win.document.close();
+            cerrarModal();
         }
 
         function renderUsuarios() {
@@ -1791,9 +1907,11 @@
                     <td>${u.correo || 'Sin correo'}</td>
                     <td><span class="badge badge-${u.perfil}">${u.perfil}</span></td>
                     <td>${u.permisos.join(', ')}</td>
-                    <td>
-                        ${isAdmin ? `<button class="btn btn-primary btn-xs" onclick="editarUsuarioModal(${u.id})">Editar</button>` : ''}
-                        ${isAdmin && u.id !== 1 ? `<button class="btn btn-danger btn-xs" onclick="eliminarUsuario(${u.id})" style="margin-left:4px;">Eliminar</button>` : ''}
+                    <td style="text-align:center;">
+                        <div class="acciones-cell">
+                            ${isAdmin ? `<button class="btn-action-primary" onclick="editarUsuarioModal(${u.id})">Editar</button>` : ''}
+                            ${isAdmin && u.id !== 1 ? `<button class="btn-action-danger" onclick="eliminarUsuario(${u.id})">Eliminar</button>` : ''}
+                        </div>
                     </td>
                 </tr>
             `).join('');
@@ -1916,7 +2034,7 @@
             const user = getCurrentUser();
             const isAdmin = user && user.perfil === 'admin';
             const btnNuevoBodega = document.getElementById('divBtnNuevaBodega');
-            const thBodegasAccions = document.getElementById('thBodegasAccionesHead');
+            const thBodegasAccions = document.getElementById('thBodegasAccionsHead');
 
             if(btnNuevoBodega) btnNuevoBodega.style.display = isAdmin ? 'block' : 'none';
             if(thBodegasAccions) thBodegasAccions.style.display = isAdmin ? 'table-cell' : 'none';
@@ -1927,9 +2045,11 @@
                     <td>${w.nombre}</td>
                     <td><span style="display:inline-block; width:12px; height:12px; background:${w.color}; border-radius:2px;"></span></td>
                     ${isAdmin ? `
-                    <td>
-                        <button class="btn btn-primary btn-xs" onclick="editarBodegaModal('${w.id}')">Editar</button>
-                        <button class="btn btn-danger btn-xs" onclick="eliminarBodega('${w.id}')" style="margin-left:4px;">Eliminar</button>
+                    <td style="text-align:center;">
+                        <div class="acciones-cell">
+                            <button class="btn-action-primary" onclick="editarBodegaModal('${w.id}')">Editar</button>
+                            <button class="btn-action-danger" onclick="eliminarBodega('${w.id}')">Eliminar</button>
+                        </div>
                     </td>` : ''}
                 </tr>
             `).join('');
@@ -2007,6 +2127,12 @@
             if(statusMaster) {
                 const count = (appState.masterCatalog || []).length;
                 statusMaster.textContent = `Registros en catálogo maestro: ${count}`;
+            }
+
+            const statusLocs = document.getElementById('locationsCatalogStatus');
+            if(statusLocs) {
+                const countLocs = (appState.locationsCatalog || []).length;
+                statusLocs.textContent = `Ubicaciones maestras cargadas: ${countLocs}`;
             }
         }
 
