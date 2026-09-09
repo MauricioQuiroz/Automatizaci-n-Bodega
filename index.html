@@ -57,7 +57,7 @@
         header .user-info .btn { background:#334155; color:#f8fafc; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-weight:400; font-size:0.65rem; display:inline-flex; align-items:center; gap:4px; min-height:28px; }
         header .user-info .btn-success { background:#0d9488; }
         header .user-info .btn-warning { background:#d97706; }
-        header .user-info .btn-teal { background:#7c3aed; } /* Cambiado a tono violeta para no confundir con Cargar Archivo */
+        header .user-info .btn-teal { background:#7c3aed; }
         header .user-info .user-name { color:#94a3b8; font-size:0.65rem; font-weight:500; }
         header .user-info .online-indicator { display:inline-block; width:6px; height:6px; border-radius:50%; background:#10b981; margin-right:4px; }
 
@@ -122,11 +122,11 @@
         .zone-tag { display:inline-block; padding:1px 5px; border-radius:3px; font-size:0.65rem; font-weight:600; background:#e0f2fe; color:#0369a1; }
         .pos-tag { font-family:monospace; font-size:0.65rem; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--text-muted); font-weight:600; }
         
-        /* UNIDAD COMERCIAL EN TONOS VIOLETA */
-        .type-tag { display:inline-block; padding:3px 8px; border-radius:4px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
-        .type-master { background:#fff7ed; color:#c2410c; border:1px solid #ffedd5; }
-        .type-comercial { background:#f3e8ff; color:#7c3aed; border:1px solid #e9d5ff; }
-        .type-minima { background:#f5f3ff; color:#6d28d9; border:1px solid #ede9fe; }
+        /* JERARQUÍA EN TONOS PLATA Y GRISES CLARO ELEGANTES */
+        .type-tag { display:inline-block; padding:4px 10px; border-radius:6px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+        .type-master { background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); color: #1e293b; border: 1px solid #94a3b8; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .type-comercial { background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
+        .type-minima { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
 
         .gtin-tag { font-family:monospace; font-size:0.7rem; background:#fefce8; color:#a16207; padding:2px 6px; border-radius:3px; font-weight:500; border:1px solid #fef08a; white-space:nowrap; display:inline-block; margin:1px; }
 
@@ -146,7 +146,7 @@
         .btn-success { background:var(--success); }
         .btn-warning { background:var(--warning); }
         .btn-danger { background:var(--danger); }
-        .btn-teal { background:#7c3aed; } /* Cambiado a tono violeta */
+        .btn-teal { background:#7c3aed; }
         .btn-orange { background:#ea580c; }
         .btn-outline { background:transparent; border:1px solid var(--border); color:var(--text-muted); }
         .btn-sm { padding:6px 12px; font-size:0.7rem; min-height:30px; }
@@ -1240,11 +1240,14 @@
                         </div>
                     </div>
 
-                    <div><label>Zona</label><select id="mZona" onchange="actualizarJerarquiaPorZonaForm(this.value)"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
-                    <div><label>Anaquel / Rack / Full Space / Pallet</label><select id="mAnaquel"><option value="">-- Seleccionar --</option><option value="Anaquel 1">Anaquel 1</option><option value="Rack">Rack</option><option value="Full Space">Full Space</option><option value="Pallet">Pallet</option></select></div>
-                    <div class="full-width"><label>Posición</label><input id="mPosicion" value="" placeholder="A1"></div>
-                    
-                    <div class="full-width" style="background:#f1f5f9; padding:12px; border-radius:var(--radius); text-align:center; margin-top:6px;">
+                    <!-- UBICACIONES COMPLETADAS AUTOMÁTICAMENTE POR QR (CAMPOS OCULTOS/INTERNOS) -->
+                    <input type="hidden" id="mZona" value="SIN ASIGNACIÓN">
+                    <input type="hidden" id="mAnaquel" value="Anaquel 1">
+                    <input type="hidden" id="mPosicion" value="">
+
+                    <div class="full-width" style="background:#f1f5f9; padding:14px; border-radius:var(--radius); text-align:center; margin-top:6px; border:1px solid var(--border);">
+                        <label style="font-weight:600; margin-bottom:6px; display:block; font-size:0.75rem;">Asignación de Ubicación por QR</label>
+                        <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:10px;">La zona, anaquel y posición se completan automáticamente escaneando el código QR.</p>
                         <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('almacenar')">Escanear QR de Ubicación</button>
                     </div>
                     <div id="qr-reader" class="full-width"></div>
@@ -1463,12 +1466,14 @@
                 <hr style="border:0; border-top:1px solid var(--border); margin:12px 0;">
                 <h4 style="font-size:0.8rem; font-weight:600; margin-bottom:8px; text-align: left;">Agregar Nueva Ubicación</h4>
                 
+                <input type="hidden" id="nuevaZona" value="SIN ASIGNACIÓN">
+                <input type="hidden" id="nuevoAnaquel" value="Anaquel 1">
+                <input type="hidden" id="nuevaPosicion" value="">
+
                 <div class="form-grid" style="text-align: left;">
-                    <div><label>Zona</label><select id="nuevaZona" onchange="actualizarJerarquiaPorZonaForm(this.value)"><option value="SIN ASIGNACIÓN">SIN ASIGNACIÓN</option><option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option><option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option></select></div>
-                    <div><label>Anaquel / Rack / Full Space / Pallet</label><select id="nuevoAnaquel"><option value="">-- Seleccionar --</option><option value="Anaquel 1">Anaquel 1</option><option value="Rack">Rack</option><option value="Full Space">Full Space</option><option value="Pallet">Pallet</option></select></div>
-                    <div class="full-width"><label>Posición</label><input id="nuevaPosicion" value="" placeholder="A1"></div>
-                    
-                    <div class="full-width" style="background:#f1f5f9; padding:12px; border-radius:var(--radius); text-align:center; margin-top:6px;">
+                    <div class="full-width" style="background:#f1f5f9; padding:12px; border-radius:var(--radius); text-align:center; margin-top:6px; border:1px solid var(--border);">
+                        <label style="font-weight:600; margin-bottom:6px; display:block; font-size:0.75rem;">Asignación de Ubicación por QR</label>
+                        <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:10px;">La zona, anaquel y posición se completan automáticamente escaneando el código QR.</p>
                         <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('agregarUbicacion')">Escanear QR de Ubicación</button>
                     </div>
                     <div id="qr-reader" class="full-width"></div>
@@ -1505,7 +1510,7 @@
                 p.tipo = nuevoTipo;
 
                 let detalleMod = `Actualizados datos | Tipo [${nuevoTipo}]`;
-                if(anaquel && posicion) {
+                if(zona && zona !== 'SIN ASIGNACIÓN') {
                     if(!p.ubicaciones) p.ubicaciones = [];
                     p.ubicaciones.push({ zona, anaquel, posicion });
                     detalleMod += ` | Añadida Zona ${zona}, ${anaquel}, Pos. ${posicion}`;
