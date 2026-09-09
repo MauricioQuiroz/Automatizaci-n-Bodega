@@ -433,6 +433,22 @@
             <h3 style="font-size:0.9rem; font-weight:600; margin-bottom:16px; text-align: left;">Configuración del Sistema</h3>
             <div style="max-width:720px; display:flex; flex-direction:column; gap:16px; text-align: left;">
                 
+                <!-- INTERRUPTOR DE INTEGRACIÓN ERP (BLOQUEO / DESBLOQUEO GLOBAL) -->
+                <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--success);">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <label style="font-weight:600; color:var(--text-main); text-align: left; font-size:0.85rem;">Módulo de Integración ERP (Trazabilidad Avanzada)</label>
+                            <p style="font-size:0.7rem; color:var(--text-muted); margin-top:2px; text-align: left;">Habilita o deshabilita globalmente los campos de lotes, vencimientos, series y factores de empaque en todo el sistema.</p>
+                        </div>
+                        <label style="position:relative; display:inline-block; width:46px; height:24px; cursor:pointer; margin:0;">
+                            <input type="checkbox" id="toggleErpConfig" onchange="toggleErpGlobal(this)" style="opacity:0; width:0; height:0;">
+                            <span id="erpSliderBg" style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:#cbd5e1; transition:.3s; border-radius:24px;"></span>
+                            <span id="erpSliderCircle" style="position:absolute; content:''; height:18px; width:18px; left:3px; bottom:3px; background-color:white; transition:.3s; border-radius:50%;"></span>
+                        </label>
+                    </div>
+                    <div style="font-size:0.7rem; color:var(--success); margin-top:8px; font-weight:500;" id="erpStatusText">Estado actual: Bloqueado (Fase Futura)</div>
+                </div>
+
                 <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--accent);" id="configMasterCatalogSection">
                     <label style="font-weight:600; color:var(--text-main); text-align: left;">Catálogo Maestro de Referencia (Administrador)</label>
                     <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Carga el Excel maestro con códigos, glosas y bodegas para la búsqueda predictiva.</p>
@@ -513,7 +529,8 @@
             movements: [],
             layouts: {},
             masterCatalog: [],
-            locationsCatalog: []
+            locationsCatalog: [],
+            erpUnlocked: false
         };
 
         const DEFAULT_DATA = {
@@ -535,7 +552,8 @@
             movements: [],
             layouts: {},
             masterCatalog: [],
-            locationsCatalog: []
+            locationsCatalog: [],
+            erpUnlocked: false
         };
 
         const PERFILES_CONFIG = {
@@ -576,12 +594,14 @@
                             if(!p.gtinEstados) p.gtinEstados = {};
                             p.gtins.forEach(g => { if(!p.gtinEstados[g]) p.gtinEstados[g] = 'activo'; });
                             if(!p.programas) p.programas = { frio: false, dac: false, lrs: false, pm: false, controlado: false };
+                            if(!p.erpData) p.erpData = { lote: '', vencimiento: '', serie: '', factorEmpaque: 1 };
                             return p;
                         }), 
                         movements: dataRemota.movements || [],
                         layouts: dataRemota.layouts || {},
                         masterCatalog: dataRemota.masterCatalog || [],
-                        locationsCatalog: dataRemota.locationsCatalog || []
+                        locationsCatalog: dataRemota.locationsCatalog || [],
+                        erpUnlocked: dataRemota.erpUnlocked !== undefined ? dataRemota.erpUnlocked : false
                     };
                 } else {
                     dbFirestore.collection('wms_data').doc('main').set(DEFAULT_DATA);
@@ -598,6 +618,34 @@
             dbFirestore.collection('wms_data').doc('main').set(appState).catch((error) => {
                 console.error("Error al guardar: ", error);
             });
+        }
+
+        function toggleErpGlobal(checkboxEl) {
+            appState.erpUnlocked = checkboxEl.checked;
+            guardarEstadoFirestore();
+            actualizarUIConfigErp();
+            mostrarToast(appState.erpUnlocked ? 'Módulo ERP desbloqueado para pruebas.' : 'Módulo ERP bloqueado.');
+        }
+
+        function actualizarUIConfigErp() {
+            const chk = document.getElementById('toggleErpConfig');
+            const bg = document.getElementById('erpSliderBg');
+            const circle = document.getElementById('erpSliderCircle');
+            const statusText = document.getElementById('erpStatusText');
+            if(!chk) return;
+
+            chk.checked = appState.erpUnlocked;
+            if(appState.erpUnlocked) {
+                bg.style.backgroundColor = '#0284c7';
+                circle.style.transform = 'translateX(22px)';
+                statusText.textContent = 'Estado actual: Desbloqueado (Campos activos para pruebas)';
+                statusText.style.color = '#0284c7';
+            } else {
+                bg.style.backgroundColor = '#cbd5e1';
+                circle.style.transform = 'translateX(0)';
+                statusText.textContent = 'Estado actual: Bloqueado (Fase Futura)';
+                statusText.style.color = '#0d9488';
+            }
         }
 
         function registrarHistorial(tipoMod, codigoItem, detalle) {
@@ -695,7 +743,10 @@
                     if (tabId === 'movimientos') renderHistorialCompleto();
                     if (tabId === 'usuarios') renderUsuarios();
                     if (tabId === 'bodegas') renderBodegas();
-                    if (tabId === 'config') renderConfig();
+                    if (tabId === 'config') {
+                        renderConfig();
+                        actualizarUIConfigErp();
+                    }
                 });
             });
 
@@ -823,6 +874,7 @@
             renderUsuarios();
             renderBodegas();
             renderConfig();
+            actualizarUIConfigErp();
             
             document.getElementById('inventoryBadge').textContent = getProducts().length;
         }
@@ -1113,7 +1165,8 @@
                                     programas: programas,
                                     tipo: tipo,
                                     ubicaciones: [{ zona, anaquel, posicion }],
-                                    estado: 'Almacenado'
+                                    estado: 'Almacenado',
+                                    erpData: { lote: '', vencimiento: '', serie: '', factorEmpaque: 1 }
                                 });
                             }
                             count++;
@@ -1286,6 +1339,11 @@
         }
 
         function abrirModalAlmacenamiento() {
+            const erpActive = appState.erpUnlocked;
+            const erpOpacity = erpActive ? '1' : '0.65';
+            const erpDisabledAttr = erpActive ? '' : 'disabled';
+            const erpBgStyle = erpActive ? '#ffffff' : '#f1f5f9';
+
             mostrarModal('Crear Nuevo Registro y Almacenamiento', `
                 <div style="margin-bottom:14px; background:#f8fafc; padding:16px; border-radius:var(--radius); border:1px solid var(--border); text-align: left;">
                     <label style="font-weight:600; text-align: left;">Buscar en Catálogo Maestro:</label>
@@ -1345,6 +1403,20 @@
                         </div>
                     </div>
 
+                    <!-- MÓDULO ERP PREPARADO Y CONTROLADO DESDE CONFIGURACIÓN -->
+                    <div class="full-width" style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); opacity:${erpOpacity};">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <label style="font-weight:600; color:var(--text-main); font-size:0.75rem; margin:0;">Trazabilidad Avanzada ERP (Lote, Vencimiento, Serie y Stock)</label>
+                            <span style="font-size:0.65rem; background:${erpActive ? '#0284c7' : '#e2e8f0'}; color:${erpActive ? '#fff' : '#475569'}; padding:2px 6px; border-radius:4px; font-weight:600;">${erpActive ? 'Activo (Desbloqueado)' : 'Bloqueado por Configuración'}</span>
+                        </div>
+                        <div class="form-grid">
+                            <div><label>N° de Lote (IA 10)</label><input type="text" id="mErpLote" placeholder="Ej: LOTE2026-9" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                            <div><label>Fecha Vencimiento (IA 17)</label><input type="date" id="mErpVenc" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                            <div><label>N° de Serie (IA 21)</label><input type="text" id="mErpSerie" placeholder="Ej: SN987654" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                            <div><label>Factor Empaque / Cantidad</label><input type="number" id="mErpFactor" placeholder="Ej: 10" value="1" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                        </div>
+                    </div>
+
                     <input type="hidden" id="mZona" value="SIN ASIGNACIÓN">
                     <input type="hidden" id="mAnaquel" value="Anaquel 1">
                     <input type="hidden" id="mPosicion" value="">
@@ -1368,6 +1440,13 @@
                 const bodega = document.getElementById('mBodega').value;
                 const tipo = document.getElementById('mTipo').value;
                 
+                const erpData = {
+                    lote: document.getElementById('mErpLote')?.value || '',
+                    vencimiento: document.getElementById('mErpVenc')?.value || '',
+                    serie: document.getElementById('mErpSerie')?.value || '',
+                    factorEmpaque: parseInt(document.getElementById('mErpFactor')?.value || '1')
+                };
+
                 const programas = {
                     frio: document.getElementById('mProgFrío').checked,
                     dac: document.getElementById('mProgDac').checked,
@@ -1394,6 +1473,7 @@
                     existing.glosa = glosa || existing.glosa;
                     existing.tipo = tipo;
                     existing.programas = programas;
+                    existing.erpData = erpData;
                     if(!existing.gtinEstados) existing.gtinEstados = {};
                     gtins.forEach(g => { 
                         if(!existing.gtins.includes(g)) existing.gtins.push(g);
@@ -1404,7 +1484,7 @@
                 } else {
                     const newId = '_' + Math.random().toString(36).substr(2, 9);
                     appState.products.push({
-                        id: newId, codigo: cod, gtins: gtins, gtinEstados: gtinEstados, glosa: glosa || cod, bodega: bodega, programas: programas, tipo: tipo, ubicaciones: [{ zona, anaquel, posicion }], estado: 'Almacenado'
+                        id: newId, codigo: cod, gtins: gtins, gtinEstados: gtinEstados, glosa: glosa || cod, bodega: bodega, programas: programas, tipo: tipo, ubicaciones: [{ zona, anaquel, posicion }], estado: 'Almacenado', erpData: erpData
                     });
                 }
                 registrarHistorial('Registro y Asignación', `${cod}`, `Ingresado ítem en Zona ${zona}`);
@@ -1568,6 +1648,11 @@
             const p = appState.products.find(x => x.id === id);
             if(!p) return;
 
+            const erpActive = appState.erpUnlocked;
+            const erpOpacity = erpActive ? '1' : '0.65';
+            const erpDisabledAttr = erpActive ? '' : 'disabled';
+            const erpBgStyle = erpActive ? '#ffffff' : '#f1f5f9';
+
             let listHtml = (p.ubicaciones || []).map((u, index) => `
                 <div style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; padding:8px 12px; border-radius:var(--radius); margin-bottom:6px; font-size:0.75rem;">
                     <span><strong>Zona ${u.zona}</strong> - ${u.anaquel} Pos. ${u.posicion}</span>
@@ -1579,6 +1664,7 @@
             if(!p.gtinEstados) p.gtinEstados = {};
             currentGtins.forEach(g => { if(!p.gtinEstados[g]) p.gtinEstados[g] = 'activo'; });
             const prog = p.programas || { frio: false, dac: false, lrs: false, pm: false, controlado: false };
+            const erpData = p.erpData || { lote: '', vencimiento: '', serie: '', factorEmpaque: 1 };
 
             mostrarModal('Gestión de Artículo', `
                 <p style="font-size:0.75rem; margin-bottom:8px; line-height:1.4; text-align: left;">
@@ -1644,6 +1730,20 @@
                     </div>
                 </div>
 
+                <!-- MÓDULO ERP PREPARADO -->
+                <div style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:12px; opacity:${erpOpacity};">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <label style="font-weight:600; color:var(--text-main); font-size:0.75rem; margin:0;">Trazabilidad Avanzada ERP</label>
+                        <span style="font-size:0.65rem; background:${erpActive ? '#0284c7' : '#e2e8f0'}; color:${erpActive ? '#fff' : '#475569'}; padding:2px 6px; border-radius:4px; font-weight:600;">${erpActive ? 'Activo' : 'Bloqueado'}</span>
+                    </div>
+                    <div class="form-grid">
+                        <div><label>N° de Lote (IA 10)</label><input type="text" id="editErpLote" value="${erpData.lote || ''}" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                        <div><label>Fecha Vencimiento (IA 17)</label><input type="date" id="editErpVenc" value="${erpData.vencimiento || ''}" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                        <div><label>N° de Serie (IA 21)</label><input type="text" id="editErpSerie" value="${erpData.serie || ''}" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                        <div><label>Factor Empaque / Cantidad</label><input type="number" id="editErpFactor" value="${erpData.factorEmpaque || 1}" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                    </div>
+                </div>
+
                 <label style="text-align: left;">Ubicaciones Actuales:</label>
                 <div style="max-height:110px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:var(--radius); margin-bottom:12px; text-align: left;">
                     ${listHtml}
@@ -1676,6 +1776,13 @@
                 const anaquel = document.getElementById('nuevoAnaquel').value.trim();
                 const posicion = document.getElementById('nuevaPosicion').value.trim();
                 const nuevoTipo = document.getElementById('editTipo').value;
+
+                p.erpData = {
+                    lote: document.getElementById('editErpLote')?.value || '',
+                    vencimiento: document.getElementById('editErpVenc')?.value || '',
+                    serie: document.getElementById('editErpSerie')?.value || '',
+                    factorEmpaque: parseInt(document.getElementById('editErpFactor')?.value || '1')
+                };
 
                 p.programas = {
                     frio: document.getElementById('editProgFrío').checked,
@@ -2306,7 +2413,7 @@
             const prods = getProducts();
             if(prods.length === 0) return alert('No hay productos para exportar.');
             const ws = XLSX.utils.json_to_sheet(prods.map(p => ({
-                'ID Registro': p.id, 'Código Interno': p.codigo, 'GTIN/EAN 1': (p.gtins && p.gtins[0]) || '', 'GTIN/EAN 2': (p.gtins && p.gtins[1]) || '', 'Glosa': p.glosa, 'Bodega': p.bodega, 'Jerarquía': p.tipo || 'Unidad Comercial', 'Ubicaciones': JSON.stringify(p.ubicaciones || []), 'Estado': p.estado
+                'ID Registro': p.id, 'Código Interno': p.codigo, 'GTIN/EAN 1': (p.gtins && p.gtins[0]) || '', 'GTIN/EAN 2': (p.gtins && p.gtins[1]) || '', 'Glosa': p.glosa, 'Bodega': p.bodega, 'Jerarquía': p.tipo || 'Unidad Comercial', 'Lote': p.erpData?.lote || '', 'Vencimiento': p.erpData?.vencimiento || '', 'Serie': p.erpData?.serie || '', 'Factor Empaque': p.erpData?.factorEmpaque || 1, 'Ubicaciones': JSON.stringify(p.ubicaciones || []), 'Estado': p.estado
             })));
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
