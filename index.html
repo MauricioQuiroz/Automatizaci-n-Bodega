@@ -96,10 +96,10 @@
         .card .number { font-size:1.9rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; }
         .card .label { color:var(--text-muted); font-size:0.7rem; margin-top:6px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
 
-        /* TABLAS */
-        .table-wrap { overflow-x:auto; margin-top:10px; width:100%; }
-        .table-container { max-height:65vh; overflow:auto; border-radius:var(--radius); border:1px solid var(--border); background:white; width:100%; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
-        table { width:100%; border-collapse:collapse; font-size:0.75rem; min-width:100%; }
+        /* TABLAS Y CONTENEDORES RESPONSIVE UNIFICADOS */
+        .table-wrap { width:100%; }
+        .table-container { max-height:65vh; overflow-x:auto; overflow-y:auto; border-radius:var(--radius); border:1px solid var(--border); background:white; width:100%; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
+        table { width:100%; border-collapse:collapse; font-size:0.75rem; table-layout: auto; }
         th { background:#f8fafc; text-align:left; padding:12px; font-weight:600; color:var(--text-muted); position:sticky; top:0; z-index:10; font-size:0.7rem; text-transform:uppercase; border-bottom:1px solid var(--border); white-space:nowrap; }
         td { padding:12px; border-bottom:1px solid var(--border); vertical-align:middle; text-align:left; font-size:0.75rem; color:var(--text-main); }
         tr:hover td { background:#f8fafc; }
@@ -318,7 +318,7 @@
                 <div class="card"><div class="number" id="totalProductos">0</div><div class="label">Total Ítems / Registros</div></div>
                 <div class="card"><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones Ocupadas</div></div>
                 <div class="card"><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos Totales</div></div>
-                <div class="card"><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios Activos</div></div>
+                <div class="card"><div class="number" id="totalUsuariosConectados">0</div><div class="label">Usuarios Activos / Creados</div></div>
             </div>
             <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:12px; color:var(--text-main); text-align: left;">Últimos movimientos registrados</h3>
             <div class="table-wrap">
@@ -360,23 +360,25 @@
                     </select>
                 </div>
             </div>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="text-align:left; padding-left:14px;"><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)"> Código Interno</th>
-                            <th>Códigos GTIN/EAN</th>
-                            <th>Glosa</th>
-                            <th>Bodega</th>
-                            <th style="text-align:center;">Programas / Alertas Especiales</th>
-                            <th style="text-align:center;">Jerarquía</th>
-                            <th>Ubicación</th>
-                            <th style="text-align:center;">Estado</th>
-                            <th id="thAccionsInvHead" style="text-align:center;">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="inventarioUnificadoBody"></tbody>
-                </table>
+            <div class="table-wrap">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="text-align:left; padding-left:14px;"><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)"> Código Interno</th>
+                                <th>Códigos GTIN/EAN</th>
+                                <th>Glosa</th>
+                                <th>Bodega</th>
+                                <th style="text-align:center;">Programas / Alertas Especiales</th>
+                                <th style="text-align:center;">Jerarquía</th>
+                                <th>Ubicación</th>
+                                <th style="text-align:center;">Estado</th>
+                                <th id="thAccionsInvHead" style="text-align:center;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventarioUnificadoBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -408,10 +410,12 @@
                 <button class="btn btn-primary btn-sm" onclick="mostrarModalUsuario()">Nuevo Usuario</button>
             </div>
             <div class="table-wrap">
-                <table>
-                    <thead><tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Perfil</th><th>Permisos</th><th style="text-align:center;">Acciones</th></tr></thead>
-                    <tbody id="usuariosBody"></tbody>
-                </table>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Perfil</th><th>Permisos</th><th style="text-align:center;">Acciones</th></tr></thead>
+                        <tbody id="usuariosBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -421,10 +425,12 @@
                 <button class="btn btn-primary btn-sm" onclick="mostrarModalBodega()">Nueva Bodega</button>
             </div>
             <div class="table-wrap">
-                <table>
-                    <thead><tr><th>ID</th><th>Nombre</th><th>Color</th><th id="thBodegasAccionsHead" style="text-align:center;">Acciones</th></tr></thead>
-                    <tbody id="bodegasBody"></tbody>
-                </table>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>ID</th><th>Nombre</th><th>Color</th><th id="thBodegasAccionsHead" style="text-align:center;">Acciones</th></tr></thead>
+                        <tbody id="bodegasBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -571,6 +577,19 @@
             return 'Unidad Comercial';
         }
 
+        // Latido periódico para mantener activo al usuario actual en Firestore (Presencia en tiempo real)
+        function iniciarLatidoPresencia() {
+            setInterval(() => {
+                const usr = getCurrentUser();
+                if (usr) {
+                    dbFirestore.collection('wms_data').doc('presencia_' + usr.nombre.toLowerCase()).set({
+                        usuario: usr.nombre,
+                        ultimoAcceso: firebase.firestore.FieldValue.serverTimestamp()
+                    }).catch(err => console.error("Error actualizando latido:", err));
+                }
+            }, 10000); // Cada 10 segundos
+        }
+
         function inicializarListenersTiempoReal() {
             dbFirestore.collection('wms_data').doc('main').onSnapshot((doc) => {
                 if (doc.exists) {
@@ -611,6 +630,29 @@
                 renderAll();
             }, (error) => {
                 console.error("Error en sincronización: ", error);
+            });
+
+            // Escuchar cambios en la colección de presencia para contar usuarios activos en tiempo real
+            dbFirestore.collection('wms_data').onSnapshot((snapshot) => {
+                let activos = 0;
+                const ahora = new Date().getTime();
+                snapshot.forEach(docSnap => {
+                    if (docSnap.id.startsWith('presencia_')) {
+                        const data = docSnap.data();
+                        if (data && data.ultimoAcceso) {
+                            const timestampAcceso = data.ultimoAcceso.toDate().getTime();
+                            // Considerar activo si se conectó en los últimos 30 segundos
+                            if (ahora - timestampAcceso < 30000) {
+                                activos++;
+                            }
+                        }
+                    }
+                });
+                const elem = document.getElementById('totalUsuariosConectados');
+                if (elem) {
+                    const totalCreados = (appState.users || []).length;
+                    elem.textContent = `${activos} Activos / ${totalCreados} Creados`;
+                }
             });
         }
 
@@ -704,6 +746,7 @@
                     currentUserId = user.id;
                     document.getElementById('loginModal').style.display = 'none';
                     document.getElementById('app').style.display = 'flex';
+                    iniciarLatidoPresencia();
                 }
             }
         }
@@ -769,6 +812,7 @@
                 document.getElementById('tab-dashboard').classList.add('active');
                 document.querySelector('nav button[data-tab="dashboard"]').classList.add('active');
 
+                iniciarLatidoPresencia();
                 renderAll();
                 mostrarToast('Bienvenido, ' + user.nombre + ' (' + user.perfil + ')');
             } else {
@@ -946,7 +990,6 @@
             });
             document.getElementById('totalUbicaciones').textContent = ubics.size;
             document.getElementById('totalMovimientos').textContent = (appState.movements || []).length;
-            document.getElementById('totalUsuarios').textContent = (appState.users || []).length;
 
             const tbody = document.getElementById('ultimosMovimientos');
             tbody.innerHTML = (appState.movements || []).slice(-5).reverse().map(m => `
