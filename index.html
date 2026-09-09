@@ -32,11 +32,11 @@
         
         .app { width:100%; min-height:100vh; background:var(--surface); display:flex; flex-direction:column; }
 
-        /* LOGIN RESPONSIVE - Tamaño y banner optimizados */
-        #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:20px; overflow-y:auto; }
+        /* LOGIN RESPONSIVE */
+        #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:16px; overflow-y:auto; }
         #loginModal .login-box { background:var(--surface); padding:0; border-radius:22px; max-width:440px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.25); text-align:center; position:relative; z-index:2001; margin:auto; overflow:hidden; border:1px solid var(--border); }
-        #loginModal .login-box .hospital-logo img { width:100%; max-height:160px; object-fit:contain; display:block; margin:0 auto; background:#fff; }
-        .login-content-pad { padding: 14px 28px 28px 28px; }
+        #loginModal .login-box .hospital-logo img { width:100%; max-height:150px; object-fit:contain; display:block; margin:0 auto; background:#fff; }
+        .login-content-pad { padding: 14px 24px 24px 24px; }
         .divider { width:45px; height:3px; background:var(--accent); margin:10px auto 16px; border-radius:3px; }
         #loginModal h2 { margin-bottom:8px; font-size:1.05rem; color:var(--primary); font-weight:700; line-height: 1.3; }
         #loginModal p { color:var(--text-muted); margin-bottom:18px; font-size:0.8rem; }
@@ -47,26 +47,26 @@
         .login-error { color:var(--danger); font-size:0.78rem; margin-top:8px; display:none; }
         .forgot-link { display:inline-block; font-size:0.78rem; color:var(--accent); cursor:pointer; text-decoration:none; font-weight:600; }
 
-        /* HEADER MULTIDISPOSITIVO */
-        header { background: #0f172a; color: #f8fafc; padding: 12px 20px; display: flex; flex-direction: column; gap: 10px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .header-top-row { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; flex-wrap: wrap; }
-        .header-left .header-title { font-weight: 600; font-size: 0.95rem; color: #f8fafc; line-height: 1.2; }
-        .header-left .header-sub { font-size: 0.62rem; color: #94a3b8; margin-top: 2px; }
+        /* HEADER MULTIDISPOSITIVO ADAPTABLE */
+        header { background: #0f172a; color: #f8fafc; padding: 10px 16px; display: flex; flex-direction: column; gap: 8px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .header-top-row { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 8px; flex-wrap: wrap; }
+        .header-left .header-title { font-weight: 600; font-size: 0.9rem; color: #f8fafc; line-height: 1.2; }
+        .header-left .header-sub { font-size: 0.6rem; color: #94a3b8; margin-top: 2px; }
         .header-left .header-sub span { color: #38bdf8; font-weight: 500; }
         
-        .header-actions-row { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 8px; flex-wrap: wrap; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.08); }
-        .user-status-pill { display: inline-flex; align-items: center; background: rgba(30, 41, 59, 0.9); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); font-size: 0.7rem; gap: 8px; }
+        .header-actions-row { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 6px; flex-wrap: wrap; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .user-status-pill { display: inline-flex; align-items: center; background: rgba(30, 41, 59, 0.9); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); font-size: 0.68rem; gap: 6px; }
         .user-status-pill .user-name { color: #f8fafc; font-weight: 600; }
-        .online-indicator { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 6px #10b981; }
+        .online-indicator { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #10b981; box-shadow: 0 0 6px #10b981; }
         
         .header-controls-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
         
         .warehouse-select-wrapper { display: inline-flex; align-items: center; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 2px 8px; gap: 6px; }
-        .warehouse-select-wrapper label { color: #94a3b8; font-size: 0.62rem; font-weight: 500; text-transform: uppercase; white-space: nowrap; }
+        .warehouse-select-wrapper label { color: #94a3b8; font-size: 0.6rem; font-weight: 500; text-transform: uppercase; white-space: nowrap; }
         .warehouse-select-wrapper select { background: transparent; border: none; color: #f8fafc; font-weight: 500; font-size: 0.68rem; padding: 4px 2px; cursor: pointer; outline: none; }
         .warehouse-select-wrapper select option { background: #1e293b; color: #f8fafc; }
 
-        header .user-info .btn { background:#334155; color:#ffffff; border:none; padding:5px 10px; border-radius:6px; cursor:pointer; font-weight:500; font-size:0.68rem; display:inline-flex; align-items:center; gap:4px; min-height:28px; transition: background 0.2s; }
+        header .user-info .btn { background:#334155; color:#ffffff; border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-weight:500; font-size:0.65rem; display:inline-flex; align-items:center; gap:4px; min-height:26px; transition: background 0.2s; }
         header .user-info .btn:hover { background: #475569; }
         header .user-info .btn-success { background:#0d9488; }
         header .user-info .btn-success:hover { background:#0f766e; }
@@ -75,33 +75,33 @@
         header .user-info .btn-teal { background:#7c3aed; }
         header .user-info .btn-teal:hover { background:#6d28d9; }
 
-        /* NAV */
-        nav { display:flex; background:#ffffff; border-bottom:1px solid var(--border); overflow-x:auto; -webkit-overflow-scrolling:touch; padding:0 20px; width: 100%; }
-        nav button { background:transparent; border:none; padding:12px 16px; font-weight:500; font-size:0.75rem; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; flex:0 0 auto; white-space:nowrap; display:inline-flex; align-items:center; gap:6px; min-height:42px; }
+        /* NAV ADAPTABLE A TOUCH Y ESCRITORIO */
+        nav { display:flex; background:#ffffff; border-bottom:1px solid var(--border); overflow-x:auto; -webkit-overflow-scrolling:touch; padding:0 12px; width: 100%; }
+        nav button { background:transparent; border:none; padding:10px 14px; font-weight:500; font-size:0.72rem; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; flex:0 0 auto; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; min-height:38px; }
         nav button:hover { color:var(--text-main); }
         nav button.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
-        nav button .badge-nav { background:var(--accent); color:#ffffff; font-size:0.55rem; padding:1px 6px; border-radius:10px; margin-left:4px; }
+        nav button .badge-nav { background:var(--accent); color:#ffffff; font-size:0.55rem; padding:1px 5px; border-radius:10px; margin-left:4px; }
 
-        .tab-content { display:none; padding:28px 24px; width:100%; max-width:1400px; margin:0 auto; flex:1; }
+        .tab-content { display:none; padding:16px 12px; width:100%; max-width:1400px; margin:0 auto; flex:1; }
         .tab-content.active { display:block; }
 
         /* CARD GRID */
-        .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:16px; margin-bottom:24px; width:100%; }
-        .card { background:#ffffff; padding:20px; border-radius:var(--radius); text-align:left; border:1px solid var(--border); box-shadow:0 2px 4px rgba(0,0,0,0.02); position:relative; overflow:hidden; }
+        .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin-bottom:18px; width:100%; }
+        .card { background:#ffffff; padding:16px; border-radius:var(--radius); text-align:left; border:1px solid var(--border); box-shadow:0 2px 4px rgba(0,0,0,0.02); position:relative; overflow:hidden; }
         .card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:#64748b; }
         .card:nth-child(1)::before { background: #01349b; }
         .card:nth-child(2)::before { background: #0284c7; }
         .card:nth-child(3)::before { background: #0369a1; }
         .card:nth-child(4)::before { background: #38bdf8; }
-        .card .number { font-size:1.4rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; line-height: 1.2; word-break: break-word; }
-        .card .label { color:var(--text-muted); font-size:0.7rem; margin-top:6px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
+        .card .number { font-size:1.3rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; line-height: 1.2; word-break: break-word; }
+        .card .label { color:var(--text-muted); font-size:0.68rem; margin-top:4px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
 
-        /* TABLAS Y CONTENEDORES RESPONSIVE */
-        .table-wrap { width:100%; }
-        .table-container { max-height:65vh; overflow-y:auto; overflow-x:auto; background:transparent; width:100%; }
-        table { width:100%; border-collapse:collapse; font-size:0.75rem; table-layout: fixed; }
-        th { background:#f8fafc; text-align:left; padding:12px; font-weight:600; color:var(--text-muted); position:sticky; top:0; z-index:10; font-size:0.7rem; text-transform:uppercase; border-bottom:1px solid var(--border); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        td { padding:12px; border-bottom:1px solid var(--border); vertical-align:middle; text-align:left; font-size:0.75rem; color:var(--text-main); word-break:break-word; }
+        /* TABLAS Y CONTENEDORES RESPONSIVOS OPTIMIZADOS PARA PDA / MÓVIL / TABLET / ESCRITORIO */
+        .table-wrap { width:100%; overflow-x:auto; -webkit-overflow-scrolling: touch; }
+        .table-container { max-height:62vh; overflow-y:auto; overflow-x:auto; background:transparent; width:100%; border: 1px solid var(--border); border-radius: var(--radius); }
+        table { width:100%; border-collapse:collapse; font-size:0.72rem; min-width: 780px; }
+        th { background:#f8fafc; text-align:left; padding:10px 8px; font-weight:600; color:var(--text-muted); position:sticky; top:0; z-index:10; font-size:0.68rem; text-transform:uppercase; border-bottom:1px solid var(--border); white-space:nowrap; }
+        td { padding:10px 8px; border-bottom:1px solid var(--border); vertical-align:middle; text-align:left; font-size:0.72rem; color:var(--text-main); }
         tr:hover td { background:#f8fafc; }
 
         td input[type="checkbox"], th input[type="checkbox"] {
@@ -109,19 +109,19 @@
             position: relative;
             top: -1px;
             cursor: pointer;
-            width: 16px;
-            height: 16px;
+            width: 15px;
+            height: 15px;
         }
 
-        /* PROGRAMAS Y CATEGORÍAS - 2 Columnas y alineación vertical central perfecta */
-        .prog-column-box { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; align-items: stretch; }
-        .prog-option-item { display: flex; align-items: center; justify-content: flex-start; gap: 10px; background: #fff; padding: 10px 12px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; font-size: 0.72rem; width: 100%; text-align: left; box-sizing: border-box; }
-        .prog-option-item input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; margin: 0; flex-shrink: 0; align-self: center; position: static; top: auto; }
+        /* PROGRAMAS Y CATEGORÍAS */
+        .prog-column-box { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; align-items: stretch; }
+        .prog-option-item { display: flex; align-items: center; justify-content: flex-start; gap: 8px; background: #fff; padding: 8px 10px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; font-size: 0.7rem; width: 100%; text-align: left; box-sizing: border-box; }
+        .prog-option-item input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; margin: 0; flex-shrink: 0; align-self: center; }
         
         .prog-cell-inventario { text-align: center !important; }
-        .prog-cell-inventario .prog-badges-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 100%; }
+        .prog-cell-inventario .prog-badges-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; width: 100%; }
 
-        .badge-prog { display: inline-block; font-size: 0.7rem; font-weight: 600; white-space: nowrap; padding: 3px 8px; border-radius: 4px; text-align: left; }
+        .badge-prog { display: inline-block; font-size: 0.65rem; font-weight: 600; white-space: nowrap; padding: 2px 6px; border-radius: 4px; text-align: left; }
         .badge-frio { background:#e0f2fe; color:#0284c7; border:1px solid #bae6fd; }
         .badge-dac { background:#ffe4e6; color:#e11d48; border:1px solid #fecdd3; }
         .badge-lrs { background:#fef3c7; color:#d97706; border:1px solid #fde68a; }
@@ -136,39 +136,39 @@
         .badge-mezcla { background:#fce7f3; color:#be185d; border:1px solid #fbcfe8; }
         .badge-unguentos { background:#fef9c3; color:#854d0e; border:1px solid #fef08a; }
 
-        .badge { display:inline-block; padding:3px 10px; border-radius:50px; font-size:0.65rem; font-weight:500; }
+        .badge { display:inline-block; padding:2px 8px; border-radius:50px; font-size:0.62rem; font-weight:500; white-space: nowrap; }
         .badge-admin { background:#ffe4e6; color:#be123c; }
         .badge-supervisor { background:#fef3c7; color:#b45309; }
         .badge-operario { background:#e0f2fe; color:#0369a1; }
         .badge-invitado { background:#f1f5f9; color:#475569; }
-        .badge-bodega { display:inline-block; padding:3px 10px; border-radius:4px; font-size:0.6rem; font-weight:600; color:#ffffff; }
+        .badge-bodega { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.6rem; font-weight:600; color:#ffffff; white-space: nowrap; }
         .badge-farmacos { background:#0284c7; }
         .badge-insumos { background:#0d9488; }
         .badge-economato { background:#d97706; }
         
-        .ubicacion-compacta-box { display:flex; flex-direction:column; gap:4px; align-items:flex-start; justify-content:center; width: 100%; }
-        .ubicacion-row-item { display:inline-flex; align-items:center; gap:4px; font-size:0.65rem; background:#f8fafc; padding:3px 6px; border-radius:4px; border:1px solid var(--border); color:var(--text-main); font-weight:500; white-space:normal; max-width:100%; word-break:break-all; }
-        .zone-tag { display:inline-block; padding:1px 4px; border-radius:3px; font-size:0.6rem; font-weight:600; background:#e0f2fe; color:#0369a1; }
-        .pos-tag { font-family:monospace; font-size:0.6rem; background:#f1f5f9; padding:1px 4px; border-radius:3px; color:var(--text-muted); font-weight:600; }
+        .ubicacion-compacta-box { display:flex; flex-direction:column; gap:3px; align-items:flex-start; justify-content:center; width: 100%; }
+        .ubicacion-row-item { display:inline-flex; align-items:center; gap:4px; font-size:0.62rem; background:#f8fafc; padding:2px 6px; border-radius:4px; border:1px solid var(--border); color:var(--text-main); font-weight:500; white-space:nowrap; }
+        .zone-tag { display:inline-block; padding:1px 3px; border-radius:3px; font-size:0.58rem; font-weight:600; background:#e0f2fe; color:#0369a1; }
+        .pos-tag { font-family:monospace; font-size:0.58rem; background:#f1f5f9; padding:1px 3px; border-radius:3px; color:var(--text-muted); font-weight:600; }
         
-        .type-tag { display:inline-block; padding:4px 8px; border-radius:6px; font-size:0.65rem; font-weight:600; white-space:nowrap; text-align: center; }
+        .type-tag { display:inline-block; padding:3px 6px; border-radius:6px; font-size:0.62rem; font-weight:600; white-space:nowrap; text-align: center; }
         .type-master { background: #e2e8f0; color: #0f172a; border: 1px solid #cbd5e1; }
         .type-comercial { background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
         .type-minima { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
 
-        .gtin-tag { font-family:monospace; font-size:0.65rem; background:#fefce8; color:#a16207; padding:2px 4px; border-radius:3px; font-weight:500; border:1px solid #fef08a; white-space:nowrap; display:inline-block; margin:1px; }
+        .gtin-tag { font-family:monospace; font-size:0.62rem; background:#fefce8; color:#a16207; padding:2px 4px; border-radius:3px; font-weight:500; border:1px solid #fef08a; white-space:nowrap; display:inline-block; margin:1px; }
 
-        /* ACCIONES - 3 Filas apiladas en columna, dimensiones ajustadas */
-        .acciones-cell { display: flex; flex-direction: column; gap: 4px; align-items: stretch; justify-content: center; width: 85px; margin: 0 auto; }
-        .btn-action-primary { background: #0284c7; color: #ffffff; border: none; padding: 4px 6px; border-radius: 4px; font-size: 0.62rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; white-space: nowrap; width: 100%; }
+        /* ACCIONES */
+        .acciones-cell { display: flex; flex-direction: column; gap: 4px; align-items: stretch; justify-content: center; width: 80px; margin: 0 auto; }
+        .btn-action-primary { background: #0284c7; color: #ffffff; border: none; padding: 4px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; white-space: nowrap; width: 100%; min-height: 24px; }
         .btn-action-primary:hover { background: #0369a1; }
-        .btn-action-secondary { background: #f8fafc; color: #475569; border: 1px solid var(--border); padding: 4px 6px; border-radius: 4px; font-size: 0.62rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; white-space: nowrap; width: 100%; }
+        .btn-action-secondary { background: #f8fafc; color: #475569; border: 1px solid var(--border); padding: 4px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; white-space: nowrap; width: 100%; min-height: 24px; }
         .btn-action-secondary:hover { background: #f1f5f9; color: var(--text-main); border-color: #94a3b8; }
-        .btn-action-danger { background: #e11d48; color: #ffffff; border: none; padding: 4px 6px; border-radius: 4px; font-size: 0.62rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; white-space: nowrap; width: 100%; }
+        .btn-action-danger { background: #e11d48; color: #ffffff; border: none; padding: 4px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; white-space: nowrap; width: 100%; min-height: 24px; }
         .btn-action-danger:hover { background: #be123c; }
 
-        /* BOTONES */
-        .btn { padding:8px 16px; border:none; border-radius:var(--radius); font-weight:500; font-size:0.75rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; text-align:center; gap:6px; text-decoration:none; color:#ffffff; min-height:36px; white-space:nowrap; transition:opacity 0.2s; }
+        /* BOTONES TOUCH-FRIENDLY */
+        .btn { padding:8px 14px; border:none; border-radius:var(--radius); font-weight:500; font-size:0.72rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; text-align:center; gap:5px; text-decoration:none; color:#ffffff; min-height:36px; white-space:nowrap; transition:opacity 0.2s; }
         .btn:hover { opacity:0.9; }
         .btn-primary { background:var(--accent); }
         .btn-success { background:var(--success); }
@@ -177,44 +177,47 @@
         .btn-teal { background:#7c3aed; }
         .btn-orange { background:#ea580c; }
         .btn-outline { background:transparent; border:1px solid var(--border); color:var(--text-muted); }
-        .btn-sm { padding:6px 12px; font-size:0.7rem; min-height:30px; }
-        .btn-xs { padding:4px 8px; font-size:0.65rem; min-height:26px; }
+        .btn-sm { padding:6px 10px; font-size:0.68rem; min-height:32px; }
+        .btn-xs { padding:4px 8px; font-size:0.62rem; min-height:26px; }
 
         /* TOOLBAR */
-        .toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding:16px; background:#ffffff; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:16px; width:100%; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
-        .toolbar-left, .toolbar-right { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-        .toolbar input { padding:9px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem; background:white; }
-        .filter-select { padding:9px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.75rem; background:white; max-width:260px; }
+        .toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:12px; background:#ffffff; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:14px; width:100%; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
+        .toolbar-left, .toolbar-right { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+        .toolbar input { padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.78rem; background:white; }
+        .filter-select { padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.72rem; background:white; max-width:240px; }
 
         /* BUSCADOR */
         .master-search-container { position: relative; width: 100%; margin-top: 4px; }
-        .master-search-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.85rem; background: #fff; }
-        .master-dropdown-results { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); max-height: 200px; overflow-y: auto; z-index: 3000; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; }
-        .master-dropdown-item { padding: 10px 14px; font-size: 0.75rem; cursor: pointer; border-bottom: 1px solid var(--bg-base); text-align: left; color: var(--text-main); line-height: 1.3; }
+        .master-search-input { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.8rem; background: #fff; }
+        .master-dropdown-results { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); max-height: 180px; overflow-y: auto; z-index: 3000; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; }
+        .master-dropdown-item { padding: 9px 12px; font-size: 0.72rem; cursor: pointer; border-bottom: 1px solid var(--bg-base); text-align: left; color: var(--text-main); line-height: 1.3; }
         .master-dropdown-item:hover { background: #f8fafc; color: var(--accent); }
 
-        /* MODALES */
-        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:16px; overflow-y:auto; }
+        /* MODALES ADAPTABLES A PANTALLAS TÁCTILES Y MÓVILES */
+        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:10px; overflow-y:auto; }
         .modal.active { display:flex; }
-        .modal-content { background:#ffffff; border-radius:12px; padding:24px 24px 20px 24px; max-width:840px; width:100%; max-height:88vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.2); border:1px solid var(--border); text-align: left; margin-bottom: 10px; }
-        .modal-content label { display:block; margin:10px 0 4px; font-weight:500; font-size:0.75rem; color:var(--text-muted); text-align: left; }
-        .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.85rem; }
-        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+        .modal-content { background:#ffffff; border-radius:12px; padding:18px; max-width:800px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.2); border:1px solid var(--border); text-align: left; margin:auto; }
+        
+        .modal-content.modal-compact { max-width: 480px !important; }
+
+        .modal-content label { display:block; margin:8px 0 3px; font-weight:500; font-size:0.72rem; color:var(--text-muted); text-align: left; }
+        .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem; }
+        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
         .form-grid .full-width { grid-column:1/-1; }
 
         /* ESCANER */
-        #qr-reader { width: 100%; max-width: 320px; margin: 10px auto; display: none; }
+        #qr-reader { width: 100%; max-width: 300px; margin: 8px auto; display: none; }
         #qr-reader video { border-radius: var(--radius); width: 100% !important; }
 
         /* LAYOUT */
-        .layout-image-container { width:100%; margin-top:16px; background:#ffffff; border-radius:var(--radius); border:1px solid var(--border); padding:20px; text-align:center; min-height:240px; display:flex; align-items:center; justify-content:center; flex-direction:column; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
-        .layout-image-container img { max-width:100%; max-height:500px; border-radius:var(--radius); object-fit:contain; }
-        .no-image { color:var(--text-muted); font-size:0.8rem; }
+        .layout-image-container { width:100%; margin-top:12px; background:#ffffff; border-radius:var(--radius); border:1px solid var(--border); padding:16px; text-align:center; min-height:220px; display:flex; align-items:center; justify-content:center; flex-direction:column; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
+        .layout-image-container img { max-width:100%; max-height:450px; border-radius:var(--radius); object-fit:contain; }
+        .no-image { color:var(--text-muted); font-size:0.75rem; }
 
         /* TOAST */
-        .toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; max-width:320px; width:100%; }
-        .toast { background:#0f172a; color:#ffffff; padding:12px 16px; border-radius:var(--radius); font-size:0.75rem; box-shadow:0 10px 25px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:space-between; border-left:3px solid var(--accent); }
-        .empty-state { color:var(--text-muted); text-align:center; padding:40px; font-size:0.8rem; font-weight:400; }
+        .toast-container { position:fixed; bottom:16px; right:16px; z-index:9999; display:flex; flex-direction:column; gap:8px; max-width:300px; width:100%; }
+        .toast { background:#0f172a; color:#ffffff; padding:10px 14px; border-radius:var(--radius); font-size:0.72rem; box-shadow:0 10px 25px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:space-between; border-left:3px solid var(--accent); }
+        .empty-state { color:var(--text-muted); text-align:center; padding:30px; font-size:0.75rem; font-weight:400; }
 
         @media print {
             .etiqueta-qr-print-card {
@@ -224,38 +227,38 @@
             }
         }
 
-        @media (min-width: 1024px) {
-            .table-container { overflow-x: hidden !important; }
-            table { table-layout: fixed; width: 100%; }
-        }
+        /* MEDIA QUERIES ESPECÍFICAS PARA CADA DISPOSITIVO (Celular, PDA Zebra TC27, Tablet Zebra, Escritorio) */
 
-        @media (max-width: 480px) {
+        /* 1. Celulares pequeños y PDAs Zebra TC27 (ancho <= 600px) */
+        @media (max-width: 600px) {
             body { font-size: 11px; }
-            .card-grid { grid-template-columns: 1fr; }
-            .modal-content { padding: 12px; width: 100%; max-height: 95vh; }
-            .toolbar { flex-direction: column; align-items: stretch; }
-            .toolbar-left, .toolbar-right { width: 100%; flex-direction: column; }
-            .toolbar-right input, .toolbar-right select { width: 100%; max-width: none; }
-            nav button { padding: 8px 10px; font-size: 0.7rem; }
-            .table-container { overflow-x: auto; }
-        }
-
-        @media (min-width: 481px) and (max-width: 768px) {
-            .card-grid { grid-template-columns: repeat(2, 1fr); }
-            .modal-content { padding: 16px; width: 95%; }
-            .toolbar { flex-direction: column; align-items: stretch; }
-            .table-container { overflow-x: auto; }
-        }
-
-        @media (max-width: 768px) {
-            header { padding: 10px 14px; }
+            .toolbar { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px; }
+            .toolbar-left, .toolbar-right { width: 100%; flex-direction: column; gap: 6px; }
+            .toolbar-right input, .toolbar-right select, .toolbar-left .btn { width: 100%; max-width: none; }
+            .card-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .card { padding: 12px; }
+            .card .number { font-size: 1.1rem; }
+            .modal-content { padding: 12px; width: 100%; max-height: 94vh; margin: 4px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .prog-column-box { grid-template-columns: 1fr; }
+            nav button { padding: 8px 10px; font-size: 0.68rem; min-height: 36px; }
+            header { padding: 8px 10px; }
             .header-top-row { flex-direction: column; align-items: flex-start; gap: 4px; }
-            .header-actions-row { flex-direction: column; align-items: stretch; gap: 8px; }
-            .header-controls-group { width: 100%; justify-content: space-between; flex-wrap: wrap; }
+            .header-actions-row { flex-direction: column; align-items: stretch; gap: 6px; }
+            .header-controls-group { width: 100%; justify-content: space-between; }
             .warehouse-select-wrapper { flex: 1; }
             .warehouse-select-wrapper select { width: 100%; }
-            .form-grid { grid-template-columns: 1fr; }
-            .tab-content { padding: 16px 12px; }
+        }
+
+        /* 2. Tablets Zebra y pantallas medianas (601px - 1024px) */
+        @media (min-width: 601px) and (max-width: 1024px) {
+            .card-grid { grid-template-columns: repeat(2, 1fr); }
+            .modal-content { width: 90%; max-width: 720px; }
+        }
+
+        /* 3. Computador de escritorio (>= 1025px) */
+        @media (min-width: 1025px) {
+            .table-container { overflow-x: auto; }
         }
     </style>
 </head>
@@ -263,12 +266,12 @@
     <!-- LOGIN -->
     <div id="loginModal">
         <div class="login-box">
-            <div class="hospital-logo" style="padding: 18px 24px 0 24px; background: #fff;">
-                <img src="./banner.png" alt="Banner Hospital San Juan de Dios" style="width: 100%; max-height: 160px; object-fit: contain; border-radius: 12px;" onerror="this.src='./1000166962_2.png';">
+            <div class="hospital-logo" style="padding: 16px 20px 0 20px; background: #fff;">
+                <img src="./banner.png" alt="Banner Hospital San Juan de Dios" style="width: 100%; max-height: 140px; object-fit: contain; border-radius: 10px;" onerror="this.src='./1000166962_2.png';">
             </div>
             <div class="login-content-pad">
                 <div class="divider"></div>
-                <h2 style="font-size: 1.05rem; font-weight: 700; color: var(--primary); line-height: 1.3; margin-bottom: 8px;">Sistema de Automatización de Almacenamiento</h2>
+                <h2>Sistema de Automatización de Almacenamiento</h2>
                 <p>Ingresa tus credenciales de acceso.</p>
                 <label>Usuario</label>
                 <input type="text" id="loginUser" placeholder="Nombre de usuario">
@@ -276,9 +279,9 @@
                 <input type="password" id="loginPass" placeholder="••••••••">
                 <div id="loginError" class="login-error">Credenciales incorrectas.</div>
                 <button class="btn btn-primary" onclick="handleLogin()">Ingresar</button>
-                <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 8px; align-items: center;">
+                <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 6px; align-items: center;">
                     <span class="forgot-link" onclick="abrirModalRecuperarPass()">¿Olvidaste tu contraseña?</span>
-                    <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 500; font-style: italic;">"Diseñado por Mauricio Quiroz Ayala"</span>
+                    <span style="font-size: 0.68rem; color: var(--text-muted); font-weight: 500; font-style: italic;">"Diseñado por Mauricio Quiroz Ayala"</span>
                 </div>
             </div>
         </div>
@@ -299,19 +302,19 @@
             </div>
             <div class="header-actions-row">
                 <div class="warehouse-select-wrapper">
-                    <label for="warehouseSelect">Bodega Actual:</label>
+                    <label for="warehouseSelect">Bodega:</label>
                     <select id="warehouseSelect" onchange="cambiarBodega()">
                         <option value="TODAS">Todas las Bodegas</option>
                     </select>
                 </div>
                 <div class="header-controls-group">
-                    <button class="btn btn-success" id="btnCargarArchivo" onclick="document.getElementById('fileInput').click()">
-                        Cargar Archivo
+                    <button class="btn btn-success btn-sm" id="btnCargarArchivo" onclick="document.getElementById('fileInput').click()">
+                        Cargar
                     </button>
                     <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event)">
-                    <button class="btn btn-warning" id="btnExportarArchivo" onclick="exportarExcelCompleto()">Exportar</button>
-                    <button class="btn btn-teal" id="btnQrUbicaciones" onclick="abrirModalQRUbicaciones()">QR Ubicaciones</button>
-                    <button class="btn btn-outline" style="color: #ffffff; border-color: rgba(255,255,255,0.3);" onclick="logout()">Salir</button>
+                    <button class="btn btn-warning btn-sm" id="btnExportarArchivo" onclick="exportarExcelCompleto()">Exportar</button>
+                    <button class="btn btn-teal btn-sm" id="btnQrUbicaciones" onclick="abrirModalQRUbicaciones()">QR Ubic.</button>
+                    <button class="btn btn-outline btn-sm" style="color: #ffffff; border-color: rgba(255,255,255,0.3);" onclick="logout()">Salir</button>
                 </div>
             </div>
         </header>
@@ -329,12 +332,12 @@
         <!-- DASHBOARD -->
         <div id="tab-dashboard" class="tab-content active">
             <div class="card-grid">
-                <div class="card"><div class="number" id="totalProductos">0</div><div class="label">Total Ítems / Registros</div></div>
-                <div class="card"><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones Ocupadas</div></div>
-                <div class="card"><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos Totales</div></div>
-                <div class="card"><div class="number" id="totalUsuariosConectados">0</div><div class="label">Usuarios Activos / Creados</div></div>
+                <div class="card"><div class="number" id="totalProductos">0</div><div class="label">Total Ítems</div></div>
+                <div class="card"><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones</div></div>
+                <div class="card"><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos</div></div>
+                <div class="card"><div class="number" id="totalUsuariosConectados">0</div><div class="label">Usuarios Activos</div></div>
             </div>
-            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:12px; color:var(--text-main); text-align: left;">Últimos movimientos registrados</h3>
+            <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:10px; color:var(--text-main); text-align: left;">Últimos movimientos registrados</h3>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>Fecha y Hora</th><th>Usuario</th><th>Tipo</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
@@ -348,13 +351,13 @@
             <div class="toolbar">
                 <div class="toolbar-left" id="toolbarAccionsInv">
                     <button class="btn btn-orange btn-sm" id="btnRecepcionAlmacenar" onclick="abrirModalAlmacenamiento()">
-                        Crear nuevo registro y asignación de almacenamiento
+                        Nuevo Registro y Almacenamiento
                     </button>
                     <button class="btn btn-teal btn-sm" id="btnReubicarArticulos" onclick="abrirModalReubicacion()">
-                        Reubicar Artículo(s)
+                        Reubicar
                     </button>
                     <button class="btn btn-danger btn-sm" id="btnEliminarSeleccionados" onclick="eliminarSeleccionadosInventario()">
-                        Eliminar Selección
+                        Eliminar
                     </button>
                 </div>
                 <div class="toolbar-right">
@@ -379,15 +382,15 @@
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 12%; text-align:left; padding-left:14px;"><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)"> Cód. Interno</th>
-                                <th style="width: 14%;">GTIN/EAN</th>
-                                <th style="width: 20%;">Glosa</th>
-                                <th style="width: 10%;">Bodega</th>
+                                <th style="width: 11%; text-align:left; padding-left:10px;"><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)"> Cód. Int.</th>
+                                <th style="width: 13%;">GTIN/EAN</th>
+                                <th style="width: 18%;">Glosa</th>
+                                <th style="width: 9%;">Bodega</th>
                                 <th style="width: 16%; text-align:center;">Programas / Categorías</th>
                                 <th style="width: 11%; text-align:center;">Jerarquía</th>
-                                <th style="width: 17%;">Ubicación</th>
-                                <th style="width: 8%; text-align:center;">Estado</th>
-                                <th id="thAccionsInvHead" style="width: 9%; text-align:center;">Acciones</th>
+                                <th style="width: 13%;">Ubicación</th>
+                                <th style="width: 9%; text-align:center;">Estado</th>
+                                <th id="thAccionsInvHead" style="width: 10%; text-align:center;">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="inventarioUnificadoBody"></tbody>
@@ -398,8 +401,8 @@
 
         <!-- LAYOUT -->
         <div id="tab-layout" class="tab-content">
-            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:4px; text-align: left;" id="layoutTitleHeading">Plano de la Bodega (Visual)</h3>
-            <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:12px; text-align: left;" id="layoutSubtitleContext">Vista activa: Todas las Bodegas</p>
+            <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:4px; text-align: left;" id="layoutTitleHeading">Plano de la Bodega (Visual)</h3>
+            <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:10px; text-align: left;" id="layoutSubtitleContext">Vista activa: Todas las Bodegas</p>
             <div class="layout-image-container" id="layoutImageContainer">
                 <div id="layoutImageContent">
                     <span class="no-image">No hay imagen de plano cargada para esta bodega.<br><small>Sube una imagen desde la sección Configuración.</small></span>
@@ -409,7 +412,7 @@
 
         <!-- MOVIMIENTOS -->
         <div id="tab-movimientos" class="tab-content">
-            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:12px; text-align: left;">Historial completo de modificaciones</h3>
+            <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:10px; text-align: left;">Historial completo de modificaciones</h3>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>Fecha y Hora</th><th>Usuario</th><th>Tipo de Modificación</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
@@ -420,19 +423,19 @@
 
         <!-- USUARIOS -->
         <div id="tab-usuarios" class="tab-content">
-            <div style="margin-bottom:14px; text-align: left;" id="divBtnNuevoUsr">
+            <div style="margin-bottom:12px; text-align: left;" id="divBtnNuevoUsr">
                 <button class="btn btn-primary btn-sm" onclick="mostrarModalUsuario()">Nuevo Usuario</button>
             </div>
             <div class="table-wrap">
                 <div class="table-container">
-                    <table style="table-layout: auto;">
+                    <table>
                         <thead>
                             <tr>
                                 <th style="width: 8%;">ID</th>
-                                <th style="width: 20%;">Nombre</th>
-                                <th style="width: 25%;">Correo</th>
+                                <th style="width: 22%;">Nombre</th>
+                                <th style="width: 26%;">Correo</th>
                                 <th style="width: 12%;">Perfil</th>
-                                <th style="width: 23%;">Permisos</th>
+                                <th style="width: 20%;">Permisos</th>
                                 <th style="width: 12%; text-align:center;">Acciones</th>
                             </tr>
                         </thead>
@@ -444,7 +447,7 @@
 
         <!-- BODEGAS -->
         <div id="tab-bodegas" class="tab-content">
-            <div style="margin-bottom:14px; text-align: left;" id="divBtnNuevaBodega">
+            <div style="margin-bottom:12px; text-align: left;" id="divBtnNuevaBodega">
                 <button class="btn btn-primary btn-sm" onclick="mostrarModalBodega()">Nueva Bodega</button>
             </div>
             <div class="table-wrap">
@@ -459,72 +462,72 @@
 
         <!-- CONFIG -->
         <div id="tab-config" class="tab-content">
-            <h3 style="font-size:0.9rem; font-weight:600; margin-bottom:16px; text-align: left;">Configuración del Sistema</h3>
-            <div style="max-width:720px; display:flex; flex-direction:column; gap:16px; text-align: left;">
+            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:14px; text-align: left;">Configuración del Sistema</h3>
+            <div style="max-width:720px; display:flex; flex-direction:column; gap:14px; text-align: left;">
                 
                 <!-- GESTIÓN DINÁMICA DE PROGRAMAS Y CATEGORÍAS (CRUD) -->
-                <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--accent);">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--accent);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
                         <div>
-                            <label style="font-weight:600; color:var(--text-main); font-size:0.85rem;">Gestión de Programas y Categorías Especiales</label>
-                            <p style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">Crea, edita o elimina los programas y categorías disponibles para el inventario.</p>
+                            <label style="font-weight:600; color:var(--text-main); font-size:0.8rem;">Gestión de Programas y Categorías Especiales</label>
+                            <p style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Crea, edita o elimina los programas y categorías disponibles.</p>
                         </div>
                         <button class="btn btn-primary btn-xs" onclick="abrirModalProgramaCRUD()">+ Nuevo Programa</button>
                     </div>
-                    <div id="listaProgramasConfigContainer" style="display:flex; flex-direction:column; gap:6px; margin-top:10px; max-height:180px; overflow-y:auto; padding:4px;"></div>
+                    <div id="listaProgramasConfigContainer" style="display:flex; flex-direction:column; gap:6px; margin-top:8px; max-height:160px; overflow-y:auto; padding:2px;"></div>
                 </div>
 
                 <!-- INTEGRACIÓN ERP -->
-                <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--success);">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--success);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                         <div>
-                            <label style="font-weight:600; color:var(--text-main); font-size:0.85rem;">Módulo de Integración ERP (Trazabilidad Avanzada)</label>
-                            <p style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">Habilita o deshabilita globalmente los campos de lotes, vencimientos, series y factores de empaque en todo el sistema.</p>
+                            <label style="font-weight:600; color:var(--text-main); font-size:0.8rem;">Módulo de Integración ERP (Trazabilidad Avanzada)</label>
+                            <p style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Habilita globalmente lotes, vencimientos, series y factores de empaque.</p>
                         </div>
-                        <label style="position:relative; display:inline-block; width:46px; height:24px; cursor:pointer; margin:0;">
+                        <label style="position:relative; display:inline-block; width:44px; height:22px; cursor:pointer; margin:0;">
                             <input type="checkbox" id="toggleErpConfig" onchange="toggleErpGlobal(this)" style="opacity:0; width:0; height:0;">
-                            <span id="erpSliderBg" style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:#cbd5e1; transition:.3s; border-radius:24px;"></span>
-                            <span id="erpSliderCircle" style="position:absolute; content:''; height:18px; width:18px; left:3px; bottom:3px; background-color:white; transition:.3s; border-radius:50%;"></span>
+                            <span id="erpSliderBg" style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:#cbd5e1; transition:.3s; border-radius:22px;"></span>
+                            <span id="erpSliderCircle" style="position:absolute; content:''; height:16px; width:16px; left:3px; bottom:3px; background-color:white; transition:.3s; border-radius:50%;"></span>
                         </label>
                     </div>
-                    <div style="font-size:0.7rem; color:var(--success); margin-top:8px; font-weight:500;" id="erpStatusText">Estado actual: Bloqueado (Fase Futura)</div>
+                    <div style="font-size:0.68rem; color:var(--success); margin-top:6px; font-weight:500;" id="erpStatusText">Estado actual: Bloqueado (Fase Futura)</div>
                 </div>
 
-                <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--accent);" id="configMasterCatalogSection">
-                    <label style="font-weight:600; color:var(--text-main); text-align: left;">Catálogo Maestro de Referencia (Administrador)</label>
-                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Carga el Excel maestro con códigos, glosas, bodegas y columna concatenada <strong>UBICACION</strong>.</p>
-                    <input type="file" id="masterCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoMaestro(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.8rem;">
-                    <div style="font-size:0.7rem; color:var(--success); margin-top:6px; font-weight:500; text-align: left;" id="masterCatalogStatus">Registros en catálogo maestro: 0</div>
+                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--accent);" id="configMasterCatalogSection">
+                    <label style="font-weight:600; color:var(--text-main); text-align: left; font-size:0.8rem;">Catálogo Maestro de Referencia (Administrador)</label>
+                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:6px; text-align: left;">Carga el Excel maestro con códigos, glosas, bodegas y columna UBICACION.</p>
+                    <input type="file" id="masterCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoMaestro(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.75rem;">
+                    <div style="font-size:0.68rem; color:var(--success); margin-top:4px; font-weight:500; text-align: left;" id="masterCatalogStatus">Registros en catálogo maestro: 0</div>
                 </div>
 
-                <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border);" id="configLocationsMasterSection">
-                    <label style="font-weight:600; color:var(--text-main); text-align: left;">Maestro de Ubicaciones QR (Excel)</label>
-                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Carga un Excel con columnas <strong>Zona</strong>, <strong>Anaquel</strong>, <strong>Posicion</strong> para el generador de QR.</p>
-                    <input type="file" id="locationsCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoUbicaciones(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.8rem;">
-                    <div style="font-size:0.7rem; color:var(--success); margin-top:6px; font-weight:500; text-align: left;" id="locationsCatalogStatus">Ubicaciones maestras cargadas: 0</div>
+                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border);" id="configLocationsMasterSection">
+                    <label style="font-weight:600; color:var(--text-main); text-align: left; font-size:0.8rem;">Maestro de Ubicaciones QR (Excel)</label>
+                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:6px; text-align: left;">Carga un Excel con columnas Zona, Anaquel, Posicion.</p>
+                    <input type="file" id="locationsCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoUbicaciones(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.75rem;">
+                    <div style="font-size:0.68rem; color:var(--success); margin-top:4px; font-weight:500; text-align: left;" id="locationsCatalogStatus">Ubicaciones maestras cargadas: 0</div>
                 </div>
 
-                <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border);" id="configLayoutSection">
-                    <label style="font-weight:600; color:var(--text-main); text-align: left;">Imagen del Plano (Layout Visual)</label>
-                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Asocia un plano gráfico a una bodega específica o de forma general.</p>
-                    <div style="display:flex; gap:8px; margin-bottom:8px;">
-                        <select id="configSubirBodegaSelect" style="flex:1; padding:9px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem;">
+                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border);" id="configLayoutSection">
+                    <label style="font-weight:600; color:var(--text-main); text-align: left; font-size:0.8rem;">Imagen del Plano (Layout Visual)</label>
+                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:6px; text-align: left;">Asocia un plano gráfico a una bodega específica o de forma general.</p>
+                    <div style="display:flex; gap:8px; margin-bottom:6px;">
+                        <select id="configSubirBodegaSelect" style="flex:1; padding:8px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.75rem;">
                             <option value="GENERAL">General (Todas las bodegas)</option>
                         </select>
                     </div>
-                    <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.8rem;">
+                    <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.75rem;">
                 </div>
 
-                <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border);">
-                    <label style="font-weight:600; color:var(--text-main); text-align: left;">Reinicio Selectivo de Inventario</label>
-                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Elimina los registros asociados a una bodega en particular.</p>
-                    <div style="display:flex; gap:8px; align-items:center;">
-                        <select id="configResetBodegaSelect" style="flex:1; padding:9px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem;"></select>
+                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border);">
+                    <label style="font-weight:600; color:var(--text-main); text-align: left; font-size:0.8rem;">Reinicio Selectivo de Inventario</label>
+                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:6px; text-align: left;">Elimina los registros asociados a una bodega en particular.</p>
+                    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                        <select id="configResetBodegaSelect" style="flex:1; min-width:180px; padding:8px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.75rem;"></select>
                         <button class="btn btn-warning btn-sm" onclick="resetDataBodega()">Reiniciar Bodega</button>
                     </div>
                 </div>
 
-                <div style="display:flex; gap:8px; margin-top:4px;">
+                <div style="display:flex; gap:8px; margin-top:2px; flex-wrap:wrap;">
                     <button class="btn btn-outline btn-sm" onclick="exportarDatos()">Exportar Backup JSON</button>
                     <button class="btn btn-danger btn-sm" onclick="resetDataGeneral()">Reiniciar Todo el Sistema</button>
                 </div>
@@ -534,10 +537,10 @@
 
     <!-- MODAL -->
     <div class="modal" id="modal">
-        <div class="modal-content">
-            <h3 id="modalTitle" style="font-size:0.85rem; font-weight:600; margin-bottom:14px; text-align: left;">Modal</h3>
+        <div class="modal-content" id="modalContentWrapper">
+            <h3 id="modalTitle" style="font-size:0.8rem; font-weight:600; margin-bottom:12px; text-align: left;">Modal</h3>
             <div id="modalBody" style="text-align: left;"></div>
-            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px; flex-wrap:wrap;">
                 <button class="btn btn-outline btn-sm" onclick="cerrarModal()">Cancelar</button>
                 <button class="btn btn-primary btn-sm" id="modalActionBtn" onclick="ejecutarModal()">Guardar</button>
             </div>
@@ -875,12 +878,12 @@
             usuarioEnProcesoRecuperacion = null;
 
             mostrarModal('Restablecer Contraseña', `
-                <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px; text-align: left;">Ingresa tu usuario y correo electrónico institucional registrado para recibir el código de verificación.</p>
+                <p style="font-size:0.72rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Ingresa tu usuario y correo electrónico institucional registrado para recibir el código de verificación.</p>
                 <label>Nombre de Usuario</label>
                 <input id="recUser" placeholder="Usuario exacto">
                 <label style="margin-top:6px;">Correo Electrónico</label>
                 <input id="recEmail" type="email" placeholder="correo@hsjd.cl">
-            `);
+            `, true);
             document.getElementById('modalActionBtn').textContent = 'Enviar Código al Correo';
             modalCallback = () => {
                 const uName = document.getElementById('recUser').value.trim();
@@ -903,12 +906,12 @@
 
         function abrirModalValidacionCodigo() {
             mostrarModal('Validar Código de Recuperación', `
-                <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px; text-align: left;">Ingresa el código de 6 dígitos enviado a tu correo institucional y establece tu nueva contraseña.</p>
+                <p style="font-size:0.72rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Ingresa el código de 6 dígitos enviado a tu correo institucional y establece tu nueva contraseña.</p>
                 <label>Código de Verificación</label>
                 <input id="valCodigo" placeholder="Ej: 123456" maxlength="6">
                 <label style="margin-top:6px;">Nueva Contraseña</label>
                 <input id="valNewPass" type="password" placeholder="Nueva contraseña">
-            `);
+            `, true);
             document.getElementById('modalActionBtn').textContent = 'Actualizar Contraseña';
             modalCallback = () => {
                 const ingCode = document.getElementById('valCodigo').value.trim();
@@ -1043,7 +1046,7 @@
 
             const tbody = document.getElementById('ultimosMovimientos');
             tbody.innerHTML = (appState.movements || []).slice(-5).reverse().map(m => `
-                <tr><td>${m.fecha}</td><td><strong>${m.usuario}</strong></td><td><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td><td>${m.codigo}</td><td>${m.detalle}</td></tr>
+                <tr><td style="white-space:nowrap;">${m.fecha}</td><td><strong>${m.usuario}</strong></td><td><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td><td>${m.codigo}</td><td>${m.detalle}</td></tr>
             `).join('') || '<tr><td colspan="5" class="empty-state">Sin movimientos recientes</td></tr>';
         }
 
@@ -1405,7 +1408,7 @@
                 });
 
                 if(activeCount === 0) {
-                    progHtml += `<span style="color:var(--text-muted); font-size:0.65rem;">Estándar</span>`;
+                    progHtml += `<span style="color:var(--text-muted); font-size:0.62rem;">Estándar</span>`;
                 }
                 progHtml += `</div>`;
 
@@ -1416,19 +1419,19 @@
 
                 return `
                 <tr>
-                    <td style="text-align:left; padding-left:14px; white-space:nowrap;">
-                        ${!esInvitado ? `<input type="checkbox" class="prod-chk" value="${p.id}" style="margin-right:6px;" onchange="actualizarEstadoCheckTodo()">` : ''}
+                    <td style="text-align:left; padding-left:10px; white-space:nowrap;">
+                        ${!esInvitado ? `<input type="checkbox" class="prod-chk" value="${p.id}" style="margin-right:4px;" onchange="actualizarEstadoCheckTodo()">` : ''}
                         <strong>${p.codigo}</strong>
                     </td>
-                    <td>${gtinsList}</td>
-                    <td>${p.glosa}</td>
-                    <td><span class="badge-bodega badge-${p.bodega.toLowerCase()}">${p.bodega}</span></td>
+                    <td style="white-space:nowrap;">${gtinsList}</td>
+                    <td style="min-width:140px;">${p.glosa}</td>
+                    <td style="white-space:nowrap;"><span class="badge-bodega badge-${p.bodega.toLowerCase()}">${p.bodega}</span></td>
                     <td class="prog-cell-inventario">${progHtml}</td>
-                    <td style="text-align:center;"><span class="type-tag ${tipoClase}">${tipoVal}</span></td>
-                    <td><div class="ubicacion-compacta-box">${ubicsHtml}</div></td>
-                    <td style="text-align:center;"><span class="badge" style="background:#f0fdf4; color:#15803d;">${p.estado || 'Almacenado'}</span></td>
+                    <td style="text-align:center; white-space:nowrap;"><span class="type-tag ${tipoClase}">${tipoVal}</span></td>
+                    <td style="white-space:nowrap;"><div class="ubicacion-compacta-box">${ubicsHtml}</div></td>
+                    <td style="text-align:center; white-space:nowrap;"><span class="badge" style="background:#f0fdf4; color:#15803d;">${p.estado || 'Almacenado'}</span></td>
                     ${!esInvitado ? `
-                    <td style="text-align:center;">
+                    <td style="text-align:center; white-space:nowrap;">
                         <div class="acciones-cell">
                             <button class="btn-action-primary" onclick="gestionarUbicacionesModal('${p.id}')">Editar</button>
                             <button class="btn-action-secondary" onclick="verHistorialArticulo('${p.codigo}')">Historial</button>
@@ -1468,9 +1471,9 @@
             const movimientosArticulo = (appState.movements || []).filter(m => String(m.codigo).toLowerCase() === String(codigoInterno).toLowerCase() || (m.detalle && m.detalle.toLowerCase().includes(String(codigoInterno).toLowerCase())));
 
             let html = `
-                <p style="font-size:0.75rem; margin-bottom:10px; color:var(--text-muted); text-align: left;">Historial de modificaciones para el código interno: <strong>${codigoInterno}</strong></p>
-                <div class="table-container" style="max-height:55vh;">
-                    <table style="width:100%; font-size:0.65rem;">
+                <p style="font-size:0.72rem; margin-bottom:8px; color:var(--text-muted); text-align: left;">Historial de modificaciones para el código interno: <strong>${codigoInterno}</strong></p>
+                <div class="table-container" style="max-height:50vh;">
+                    <table style="width:100%; font-size:0.65rem; min-width: 450px;">
                         <thead>
                             <tr style="background:#f8fafc; position:sticky; top:0;">
                                 <th style="padding:6px;">Fecha y Hora</th>
@@ -1498,7 +1501,7 @@
             }
 
             html += `</tbody></table></div>`;
-            mostrarModal('Historial Detallado por Artículo', html);
+            mostrarModal('Historial Detallado por Artículo', html, true);
             document.getElementById('modalActionBtn').style.display = 'none';
         }
 
@@ -1563,7 +1566,7 @@
             }).join('');
 
             mostrarModal('Crear Nuevo Registro y Almacenamiento', `
-                <div style="margin-bottom:14px; background:#f8fafc; padding:16px; border-radius:var(--radius); border:1px solid var(--border); text-align: left;">
+                <div style="margin-bottom:12px; background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); text-align: left;">
                     <label style="font-weight:600; text-align: left;">Buscar en Catálogo Maestro:</label>
                     <div class="master-search-container">
                         <input type="text" id="masterSearchInput" class="master-search-input" placeholder="Escribe código o nombre..." oninput="filtrarCatalogoMaestroDropdown(this.value)" autocomplete="off">
@@ -1582,7 +1585,7 @@
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
                             <button type="button" class="btn btn-success btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(1)">Escanear 1</button>
-                            <select id="mEstado1" style="width:95px; padding:5px; border:1px solid var(--border); border-radius:4px; font-size:0.7rem;">
+                            <select id="mEstado1" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.68rem;">
                                 <option value="activo">Activo</option>
                                 <option value="inactivo">Inactivo</option>
                             </select>
@@ -1597,7 +1600,7 @@
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
                             <button type="button" class="btn btn-orange btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(2)">Escanear 2</button>
-                            <select id="mEstado2" style="width:95px; padding:5px; border:1px solid var(--border); border-radius:4px; font-size:0.7rem;">
+                            <select id="mEstado2" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.68rem;">
                                 <option value="activo">Activo</option>
                                 <option value="inactivo">Inactivo</option>
                             </select>
@@ -1605,22 +1608,22 @@
                     </div>
 
                     <div class="full-width"><label>Glosa / Descripción</label><input id="mGlosa" placeholder="Nombre del insumo o fármaco" onblur="verificarAlertaEscaneoManual(this.value)"></div>
-                    <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fef3c7; border:1px solid #fde68a; padding:10px; border-radius:var(--radius); font-size:0.75rem; color:#b45309; text-align: left;"></div>
+                    <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fef3c7; border:1px solid #fde68a; padding:8px; border-radius:var(--radius); font-size:0.72rem; color:#b45309; text-align: left;"></div>
 
                     <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">Fármacos</option><option value="Insumos">Insumos</option><option value="Economato">Economato</option><option value="Controlados">Fármacos Controlados</option><option value="Suturas">Suturas</option><option value="Alimentos">Alimentos</option></select></div>
                     <div><label>Jerarquía / Tipo</label><select id="mTipo"><option value="Unidad Comercial">Unidad Comercial</option><option value="Unidad Máster">Unidad Máster</option><option value="Unidad Mínima / Unidosis">Unidad Mínima / Unidosis</option></select></div>
                     
-                    <div class="full-width" style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); text-align: left;">
-                        <label style="margin-bottom:10px; font-weight:600; color:var(--text-main); font-size:0.75rem; text-align: left;">Programas y Categorías Especiales (2 Columnas):</label>
+                    <div class="full-width" style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); text-align: left;">
+                        <label style="margin-bottom:8px; font-weight:600; color:var(--text-main); font-size:0.72rem; text-align: left;">Programas y Categorías Especiales (2 Columnas):</label>
                         <div class="prog-column-box">
                             ${progCheckboxesHtml}
                         </div>
                     </div>
 
-                    <div class="full-width" style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); opacity:${erpOpacity};">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <label style="font-weight:600; color:var(--text-main); font-size:0.75rem; margin:0;">Trazabilidad Avanzada ERP (Lote, Vencimiento, Serie y Stock)</label>
-                            <span style="font-size:0.65rem; background:${erpActive ? '#0284c7' : '#e2e8f0'}; color:${erpActive ? '#fff' : '#475569'}; padding:2px 6px; border-radius:4px; font-weight:600;">${erpActive ? 'Activo (Desbloqueado)' : 'Bloqueado por Configuración'}</span>
+                    <div class="full-width" style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); opacity:${erpOpacity};">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:4px;">
+                            <label style="font-weight:600; color:var(--text-main); font-size:0.72rem; margin:0;">Trazabilidad Avanzada ERP</label>
+                            <span style="font-size:0.62rem; background:${erpActive ? '#0284c7' : '#e2e8f0'}; color:${erpActive ? '#fff' : '#475569'}; padding:2px 6px; border-radius:4px; font-weight:600;">${erpActive ? 'Activo' : 'Bloqueado'}</span>
                         </div>
                         <div class="form-grid">
                             <div><label>N° de Lote (IA 10)</label><input type="text" id="mErpLote" placeholder="Ej: LOTE2026-9" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
@@ -1634,14 +1637,14 @@
                     <input type="hidden" id="mAnaquel" value="Anaquel 1">
                     <input type="hidden" id="mPosicion" value="">
 
-                    <div class="full-width" style="background:#f1f5f9; padding:14px; border-radius:var(--radius); text-align:center; margin-top:6px; border:1px solid var(--border);">
-                        <label style="font-weight:600; margin-bottom:6px; display:block; font-size:0.75rem; text-align: center;">Asignación de Ubicación por QR</label>
-                        <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:10px; text-align: center;">La zona, tipo de almacenamiento y posición se completan automáticamente escaneando el código QR.</p>
+                    <div class="full-width" style="background:#f1f5f9; padding:12px; border-radius:var(--radius); text-align:center; margin-top:4px; border:1px solid var(--border);">
+                        <label style="font-weight:600; margin-bottom:4px; display:block; font-size:0.72rem; text-align: center;">Asignación de Ubicación por QR</label>
+                        <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:8px; text-align: center;">Escanee el código QR de ubicación.</p>
                         <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('almacenar')">Escanear QR de Ubicación</button>
                     </div>
                     <div id="qr-reader" class="full-width"></div>
                 </div>
-            `);
+            `, false);
             modalCallback = () => {
                 detenerEscanerQR();
                 const cod = document.getElementById('mCod').value.trim();
@@ -1735,26 +1738,26 @@
 
         function abrirModalReubicacion() {
             mostrarModal('Reubicar Artículo(s)', `
-                <div style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:12px; text-align: left;">
-                    <label style="font-weight:600; font-size:0.75rem; margin-bottom:4px;">1. Ingrese o escanee GTIN(s) a reubicar (separados por coma o salto de línea):</label>
-                    <textarea id="reubGtinsInput" rows="3" placeholder="Ej: 7800012345678, 7800087654321" style="width:100%; padding:8px; font-size:0.8rem; border:1px solid var(--border); border-radius:var(--radius);"></textarea>
+                <div style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:10px; text-align: left;">
+                    <label style="font-weight:600; font-size:0.72rem; margin-bottom:4px;">1. Ingrese o escanee GTIN(s) a reubicar:</label>
+                    <textarea id="reubGtinsInput" rows="2" placeholder="Ej: 7800012345678" style="width:100%; padding:8px; font-size:0.78rem; border:1px solid var(--border); border-radius:var(--radius);"></textarea>
                     <div style="display:flex; gap:8px; margin-top:6px;">
                         <button type="button" class="btn btn-success btn-xs" onclick="iniciarEscanerBarraReubicacion()">Escanear GTIN con Cámara</button>
                     </div>
                 </div>
 
-                <div style="background:#f1f5f9; padding:14px; border-radius:var(--radius); border:1px solid var(--border); text-align:center; margin-bottom:10px;">
-                    <label style="font-weight:600; margin-bottom:6px; display:block; font-size:0.75rem; text-align: center;">2. Asignar Nueva Ubicación por Código QR</label>
-                    <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:10px; text-align: center;">Escanee la etiqueta QR de la nueva ubicación destino.</p>
+                <div style="background:#f1f5f9; padding:12px; border-radius:var(--radius); border:1px solid var(--border); text-align:center; margin-bottom:8px;">
+                    <label style="font-weight:600; margin-bottom:4px; display:block; font-size:0.72rem; text-align: center;">2. Asignar Nueva Ubicación por Código QR</label>
+                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:8px; text-align: center;">Escanee la etiqueta QR de la nueva ubicación destino.</p>
                     <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('reubicar')">Escanear QR de Nueva Ubicación</button>
                 </div>
 
                 <input type="hidden" id="reubZona" value="SIN ASIGNACIÓN">
                 <input type="hidden" id="reubAnaquel" value="Anaquel 1">
                 <input type="hidden" id="reubPosicion" value="">
-                <div id="reubDestinoPreview" style="font-size:0.75rem; color:var(--success); font-weight:600; text-align:center; margin-bottom:6px;">Nueva ubicación destino: Pendiente de escaneo QR</div>
+                <div id="reubDestinoPreview" style="font-size:0.72rem; color:var(--success); font-weight:600; text-align:center; margin-bottom:6px;">Nueva ubicación destino: Pendiente de escaneo QR</div>
                 <div id="qr-reader" class="full-width"></div>
-            `);
+            `, false);
 
             modalCallback = () => {
                 detenerEscanerQR();
@@ -1798,7 +1801,7 @@
             html5QrCodeScanner = new Html5Qrcode("qr-reader");
             html5QrCodeScanner.start(
                 { facingMode: "environment" },
-                { fps: 10, qrbox: { width: 240, height: 110 } },
+                { fps: 10, qrbox: { width: 220, height: 100 } },
                 (decodedText) => {
                     const codigoPuro = limpiarYExtraerGTIN(decodedText);
                     const textarea = document.getElementById('reubGtinsInput');
@@ -1834,14 +1837,14 @@
 
             if(filtrados.length === 0) {
                 dropdown.style.display = 'block';
-                dropdown.innerHTML = `<div style="padding:10px 14px; color:var(--text-muted); font-size:0.75rem;">No se encontraron coincidencias</div>`;
+                dropdown.innerHTML = `<div style="padding:8px 12px; color:var(--text-muted); font-size:0.72rem;">No se encontraron coincidencias</div>`;
                 return;
             }
 
             dropdown.style.display = 'block';
             dropdown.innerHTML = filtrados.map((item) => `
                 <div class="master-dropdown-item" onclick="seleccionarItemMaestroPorFiltro('${item.codigo.replace(/'/g, "\\'")}', '${item.glosa.replace(/'/g, "\\'")}', '${item.bodega}')">
-                    <strong>[${item.codigo}]</strong> ${item.glosa} <span style="color:var(--text-muted); font-size:0.65rem; display:block; margin-top:2px;">(Bodega: ${item.bodega})</span>
+                    <strong>[${item.codigo}]</strong> ${item.glosa} <span style="color:var(--text-muted); font-size:0.62rem; display:block; margin-top:2px;">(Bodega: ${item.bodega})</span>
                 </div>
             `).join('');
         }
@@ -1874,11 +1877,11 @@
             const erpBgStyle = erpActive ? '#ffffff' : '#f1f5f9';
 
             let listHtml = (p.ubicaciones || []).map((u, index) => `
-                <div style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; padding:8px 12px; border-radius:var(--radius); margin-bottom:6px; font-size:0.75rem;">
+                <div style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; padding:6px 10px; border-radius:var(--radius); margin-bottom:4px; font-size:0.72rem;">
                     <span><strong>Zona ${u.zona}</strong> - ${u.anaquel} Pos. ${u.posicion}</span>
                     <button class="btn btn-danger btn-xs" onclick="removerUbicacionDeProducto('${p.id}', ${index})">Quitar</button>
                 </div>
-            `).join('') || '<p style="color:var(--text-muted); font-size:0.75rem; text-align: left;">Sin ubicaciones registradas.</p>';
+            `).join('') || '<p style="color:var(--text-muted); font-size:0.72rem; text-align: left;">Sin ubicaciones registradas.</p>';
 
             const currentGtins = p.gtins || [];
             if(!p.gtinEstados) p.gtinEstados = {};
@@ -1900,13 +1903,13 @@
             const erpData = p.erpData || { lote: '', vencimiento: '', serie: '', factorEmpaque: 1 };
 
             mostrarModal('Gestión de Artículo', `
-                <p style="font-size:0.75rem; margin-bottom:8px; line-height:1.4; text-align: left;">
+                <p style="font-size:0.72rem; margin-bottom:8px; line-height:1.3; text-align: left;">
                     <strong>${p.glosa}</strong><br>
-                    <span style="color:var(--text-muted); font-size:0.7rem; display:block; margin-top:2px;">Código Interno: ${p.codigo}</span>
+                    <span style="color:var(--text-muted); font-size:0.68rem; display:block; margin-top:2px;">Código Interno: ${p.codigo}</span>
                 </p>
-                <div style="margin-bottom:10px; text-align: left;">
+                <div style="margin-bottom:8px; text-align: left;">
                     <label>Códigos GS1 - GTIN/EAN:</label>
-                    <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;">
+                    <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:3px;">
                         ${currentGtins.map(g => {
                             const est = p.gtinEstados[g] || 'activo';
                             return `<span class="gtin-tag">${est === 'inactivo' ? '[Inactivo]' : '[Activo]'} ${g}</span>`;
@@ -1914,7 +1917,7 @@
                     </div>
                 </div>
 
-                <div class="form-grid" style="margin-bottom:10px; text-align: left;">
+                <div class="form-grid" style="margin-bottom:8px; text-align: left;">
                     <div>
                         <label>GTIN/EAN 1</label>
                         <div style="display:flex; gap:6px; margin-bottom:4px;">
@@ -1923,7 +1926,7 @@
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
                             <button type="button" class="btn btn-success btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(1)">Escanear 1</button>
-                            <select id="editEstado1" style="width:95px; padding:5px; border:1px solid var(--border); border-radius:4px; font-size:0.7rem;">
+                            <select id="editEstado1" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.68rem;">
                                 <option value="activo" ${(p.gtinEstados[currentGtins[0]]||'activo')==='activo'?'selected':''}>Activo</option>
                                 <option value="inactivo" ${(p.gtinEstados[currentGtins[0]])==='inactivo'?'selected':''}>Inactivo</option>
                             </select>
@@ -1937,7 +1940,7 @@
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
                             <button type="button" class="btn btn-orange btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(2)">Escanear 2</button>
-                            <select id="editEstado2" style="width:95px; padding:5px; border:1px solid var(--border); border-radius:4px; font-size:0.7rem;">
+                            <select id="editEstado2" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.68rem;">
                                 <option value="activo" ${(p.gtinEstados[currentGtins[1]]||'activo')==='activo'?'selected':''}>Activo</option>
                                 <option value="inactivo" ${(p.gtinEstados[currentGtins[1]])==='inactivo'?'selected':''}>Inactivo</option>
                             </select>
@@ -1946,24 +1949,24 @@
                 </div>
 
                 <label style="text-align: left;">Jerarquía / Tipo</label>
-                <select id="editTipo" style="margin-bottom:10px;">
+                <select id="editTipo" style="margin-bottom:8px;">
                     <option value="Unidad Comercial" ${p.tipo==='Unidad Comercial'?'selected':''}>Unidad Comercial</option>
                     <option value="Unidad Máster" ${p.tipo==='Unidad Máster'?'selected':''}>Unidad Máster</option>
                     <option value="Unidad Mínima / Unidosis" ${p.tipo==='Unidad Mínima / Unidosis'?'selected':''}>Unidad Mínima / Unidosis</option>
                 </select>
 
-                <div style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:12px; text-align: left;">
-                    <label style="margin-bottom:10px; font-weight:600; font-size:0.75rem; text-align: left;">Programas y Alertas Especiales (2 Columnas):</label>
-                    <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fef3c7; border:1px solid #fde68a; padding:10px; border-radius:var(--radius); font-size:0.75rem; color:#b45309; margin-bottom:8px;"></div>
+                <div style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:10px; text-align: left;">
+                    <label style="margin-bottom:8px; font-weight:600; font-size:0.72rem; text-align: left;">Programas y Alertas Especiales (2 Columnas):</label>
+                    <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fef3c7; border:1px solid #fde68a; padding:8px; border-radius:var(--radius); font-size:0.72rem; color:#b45309; margin-bottom:6px;"></div>
                     <div class="prog-column-box">
                         ${editProgHtml}
                     </div>
                 </div>
 
-                <div style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:12px; opacity:${erpOpacity};">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                        <label style="font-weight:600; color:var(--text-main); font-size:0.75rem; margin:0;">Trazabilidad Avanzada ERP</label>
-                        <span style="font-size:0.65rem; background:${erpActive ? '#0284c7' : '#e2e8f0'}; color:${erpActive ? '#fff' : '#475569'}; padding:2px 6px; border-radius:4px; font-weight:600;">${erpActive ? 'Activo' : 'Bloqueado'}</span>
+                <div style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:10px; opacity:${erpOpacity};">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:4px;">
+                        <label style="font-weight:600; color:var(--text-main); font-size:0.72rem; margin:0;">Trazabilidad Avanzada ERP</label>
+                        <span style="font-size:0.62rem; background:${erpActive ? '#0284c7' : '#e2e8f0'}; color:${erpActive ? '#fff' : '#475569'}; padding:2px 6px; border-radius:4px; font-weight:600;">${erpActive ? 'Activo' : 'Bloqueado'}</span>
                     </div>
                     <div class="form-grid">
                         <div><label>N° de Lote (IA 10)</label><input type="text" id="editErpLote" value="${erpData.lote || ''}" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
@@ -1974,25 +1977,25 @@
                 </div>
 
                 <label style="text-align: left;">Ubicaciones Actuales:</label>
-                <div style="max-height:110px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:var(--radius); margin-bottom:12px; text-align: left;">
+                <div style="max-height:100px; overflow-y:auto; border:1px solid var(--border); padding:6px; border-radius:var(--radius); margin-bottom:10px; text-align: left;">
                     ${listHtml}
                 </div>
-                <hr style="border:0; border-top:1px solid var(--border); margin:12px 0;">
-                <h4 style="font-size:0.8rem; font-weight:600; margin-bottom:8px; text-align: left;">Agregar Nueva Ubicación</h4>
+                <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
+                <h4 style="font-size:0.75rem; font-weight:600; margin-bottom:6px; text-align: left;">Agregar Nueva Ubicación</h4>
                 
                 <input type="hidden" id="nuevaZona" value="SIN ASIGNACIÓN">
                 <input type="hidden" id="nuevoAnaquel" value="Anaquel 1">
                 <input type="hidden" id="nuevaPosicion" value="">
 
                 <div class="form-grid" style="text-align: left;">
-                    <div class="full-width" style="background:#f1f5f9; padding:12px; border-radius:var(--radius); text-align:center; margin-top:6px; border:1px solid var(--border);">
-                        <label style="font-weight:600; margin-bottom:6px; display:block; font-size:0.75rem; text-align: center;">Asignación de Ubicación por QR</label>
-                        <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:10px; text-align: center;">La zona, tipo de almacenamiento y posición se completan automáticamente escaneando el código QR.</p>
+                    <div class="full-width" style="background:#f1f5f9; padding:10px; border-radius:var(--radius); text-align:center; margin-top:4px; border:1px solid var(--border);">
+                        <label style="font-weight:600; margin-bottom:4px; display:block; font-size:0.72rem; text-align: center;">Asignación de Ubicación por QR</label>
+                        <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:8px; text-align: center;">Escanee el código QR de ubicación.</p>
                         <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('agregarUbicacion')">Escanear QR de Ubicación</button>
                     </div>
                     <div id="qr-reader" class="full-width"></div>
                 </div>
-            `);
+            `, false);
 
             verificarAlertasCheckboxesForm();
 
@@ -2067,7 +2070,7 @@
             html5QrCodeScanner = new Html5Qrcode("qr-reader");
             html5QrCodeScanner.start(
                 { facingMode: "environment" },
-                { fps: 10, qrbox: { width: 220, height: 130 } },
+                { fps: 10, qrbox: { width: 200, height: 110 } },
                 (decodedText) => {
                     procesarTextoQR(decodedText, modo);
                     detenerEscanerQR();
@@ -2091,7 +2094,7 @@
             html5QrCodeScanner = new Html5Qrcode("qr-reader");
             html5QrCodeScanner.start(
                 { facingMode: "environment" },
-                { fps: 10, qrbox: { width: 240, height: 110 } },
+                { fps: 10, qrbox: { width: 220, height: 100 } },
                 (decodedText) => {
                     const codigoPuro = limpiarYExtraerGTIN(decodedText);
                     const inputTarget = document.getElementById(campoGtinDestino === 1 ? 'mGtin1' : 'mGtin2') || document.getElementById(campoGtinDestino === 1 ? 'editGtin1' : 'editGtin2');
@@ -2267,26 +2270,26 @@
             locationsFiltradasCache = baseList;
 
             let html = `
-                <div style="margin-bottom:12px; background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border);">
-                    <label style="font-weight:600; margin-bottom:6px;">Filtrar Ubicaciones:</label>
-                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
-                        <input id="filtroZona" placeholder="Zona (Ej: A)" oninput="renderizarListaFiltroQR()" style="padding:6px; font-size:0.75rem;">
-                        <input id="filtroAnaquel" placeholder="Anaquel / Rack" oninput="renderizarListaFiltroQR()" style="padding:6px; font-size:0.75rem;">
-                        <input id="filtroPosicion" placeholder="Posición" oninput="renderizarListaFiltroQR()" style="padding:6px; font-size:0.75rem;">
+                <div style="margin-bottom:10px; background:#f8fafc; padding:10px; border-radius:var(--radius); border:1px solid var(--border);">
+                    <label style="font-weight:600; margin-bottom:4px;">Filtrar Ubicaciones:</label>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px;">
+                        <input id="filtroZona" placeholder="Zona (Ej: A)" oninput="renderizarListaFiltroQR()" style="padding:6px; font-size:0.72rem;">
+                        <input id="filtroAnaquel" placeholder="Anaquel" oninput="renderizarListaFiltroQR()" style="padding:6px; font-size:0.72rem;">
+                        <input id="filtroPosicion" placeholder="Posición" oninput="renderizarListaFiltroQR()" style="padding:6px; font-size:0.72rem;">
                     </div>
                 </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <span style="font-size:0.75rem; color:var(--text-muted);" id="contadorUbicacionesQR">Mostrando ${baseList.length} ubicaciones</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:0.72rem; color:var(--text-muted);" id="contadorUbicacionesQR">Mostrando ${baseList.length} ubicaciones</span>
                     <div>
                         <button class="btn btn-outline btn-xs" onclick="toggleSelectAllQR(true)">Marcar Todos</button>
                         <button class="btn btn-outline btn-xs" onclick="toggleSelectAllQR(false)">Desmarcar</button>
                     </div>
                 </div>
-                <div id="contenedorGridQR" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(170px,1fr)); gap:10px; max-height:45vh; overflow:auto; padding:4px;">
+                <div id="contenedorGridQR" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:8px; max-height:45vh; overflow:auto; padding:2px;">
                 </div>
             `;
 
-            mostrarModal('Selección de Etiquetas QR de Ubicación', html);
+            mostrarModal('Selección de Etiquetas QR de Ubicación', html, false);
             document.getElementById('modalActionBtn').textContent = 'Imprimir Seleccionados';
             document.getElementById('modalActionBtn').onclick = ejecutarImpresionQR;
 
@@ -2332,15 +2335,15 @@
             grid.innerHTML = filtradas.map((val) => {
                 const labelTxt = `Zona ${val.zona} - ${val.anaquel} - Pos. ${val.posicion}`;
                 return `
-                    <label style="border:1px solid var(--border); padding:10px; border-radius:var(--radius); background:white; display:flex; flex-direction:column; gap:4px; cursor:pointer; font-size:0.7rem;">
+                    <label style="border:1px solid var(--border); padding:8px; border-radius:var(--radius); background:white; display:flex; flex-direction:column; gap:4px; cursor:pointer; font-size:0.68rem;">
                         <div style="display:flex; align-items:center; justify-content:space-between;">
                             <span style="font-weight:600; color:var(--accent);">${val.tipo || determinarJerarquiaPorZona(val.zona)}</span>
-                            <input type="checkbox" class="qr-chk" value="${labelTxt}" checked style="width:15px; height:15px; cursor:pointer;">
+                            <input type="checkbox" class="qr-chk" value="${labelTxt}" checked style="width:14px; height:14px; cursor:pointer;">
                         </div>
                         <div style="color:var(--text-main);"><strong>Zona ${val.zona}</strong><br>${val.anaquel}<br>Pos. ${val.posicion}</div>
                     </label>
                 `;
-            }).join('') || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:var(--text-muted);">No se encontraron ubicaciones con esos filtros.</div>';
+            }).join('') || '<div style="grid-column:1/-1; text-align:center; padding:16px; color:var(--text-muted);">No se encontraron ubicaciones con esos filtros.</div>';
         }
 
         function toggleSelectAllQR(status) {
@@ -2356,9 +2359,9 @@
             chks.forEach((chk, i) => {
                 const textoQR = chk.value;
                 printHtml += `
-                    <div class="etiqueta-qr-print-card" style="border:1px solid #333; padding:14px; border-radius:6px; text-align:center; background:#fff; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                    <div class="etiqueta-qr-print-card" style="border:1px solid #333; padding:12px; border-radius:6px; text-align:center; background:#fff; display:flex; flex-direction:column; align-items:center; gap:6px;">
                         <div style="font-weight:bold; font-size:8px; color:#333;">HOSPITAL SAN JUAN DE DIOS</div>
-                        <div style="font-size:11px; font-weight:700; color:#0f172a;">${textoQR}</div>
+                        <div style="font-size:10px; font-weight:700; color:#0f172a;">${textoQR}</div>
                         <div id="qrcode-${i}" style="margin:4px auto;"></div>
                         <div style="font-size:7px; color:#475569; font-weight:600;">Sistema de Automatización de Almacenamiento</div>
                     </div>
@@ -2367,7 +2370,7 @@
             printHtml += `</div>`;
 
             const win = window.open('', '_blank');
-            win.document.write(`<html><head><title>Imprimir Etiquetas QR</title><style>@media print { .etiqueta-qr-print-card { page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 15px; } }</style><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script></head><body onload="window.print();">` + printHtml + `<script>` + Array.from(chks).map((chk, i) => `new QRCode(document.getElementById("qrcode-${i}"), { text: "${chk.value}", width: 100, height: 100 });`).join('') + `<\/script></body></html>`);
+            win.document.write(`<html><head><title>Imprimir Etiquetas QR</title><style>@media print { .etiqueta-qr-print-card { page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 15px; } }</style><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script></head><body onload="window.print();">` + printHtml + `<script>` + Array.from(chks).map((chk, i) => `new QRCode(document.getElementById("qrcode-${i}"), { text: "${chk.value}", width: 90, height: 90 });`).join('') + `<\/script></body></html>`);
             win.document.close();
             cerrarModal();
         }
@@ -2380,13 +2383,13 @@
             container.innerHTML = catalogo.map(cp => {
                 const dotColor = cp.color || '#0284c7';
                 return `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:8px 12px; border-radius:var(--radius); border:1px solid var(--border); font-size:0.75rem;">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span style="display:inline-block; width:12px; height:12px; background:${dotColor}; border-radius:50%;"></span>
-                        <span class="badge-prog ${cp.badgeClass || 'badge-frio'}">${cp.nombre}</span>
-                        <span style="color:var(--text-muted); font-size:0.65rem;">(ID: ${cp.id})</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:6px 10px; border-radius:var(--radius); border:1px solid var(--border); font-size:0.72rem; gap:6px;">
+                    <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
+                        <span style="display:inline-block; width:10px; height:10px; background:${dotColor}; border-radius:50%; flex-shrink:0;"></span>
+                        <span class="badge-prog ${cp.badgeClass || 'badge-frio'}" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cp.nombre}</span>
+                        <span style="color:var(--text-muted); font-size:0.62rem; white-space:nowrap;">(${cp.id})</span>
                     </div>
-                    <div style="display:flex; gap:6px;">
+                    <div style="display:flex; gap:4px; flex-shrink:0;">
                         <button class="btn btn-outline btn-xs" onclick="editarProgramaCRUD('${cp.id}')">Editar</button>
                         <button class="btn btn-danger btn-xs" onclick="eliminarProgramaCRUD('${cp.id}')">Eliminar</button>
                     </div>
@@ -2427,16 +2430,16 @@
             mostrarModal(esEdicion ? 'Editar Programa / Categoría' : 'Nuevo Programa / Categoría', `
                 <label>Identificador Único (ID sin espacios)</label>
                 <input id="crudProgId" value="${progObj.id}" ${esEdicion ? 'readonly style="background:#f1f5f9;"' : ''} placeholder="Ej: oncologia">
-                <label style="margin-top:8px;">Nombre Visible</label>
+                <label style="margin-top:6px;">Nombre Visible</label>
                 <input id="crudProgNombre" value="${progObj.nombre}" placeholder="Ej: Oncología">
-                <label style="margin-top:8px;">Estilo Visual / Color de Referencia (Pantone)</label>
+                <label style="margin-top:6px;">Color de Referencia</label>
                 <div style="display:flex; gap:8px; align-items:center;">
-                    <input id="crudProgColor" type="color" value="${progObj.color || '#0284c7'}" style="width:60px; height:38px; padding:2px; cursor:pointer;">
-                    <select id="crudProgBadge" style="padding:9px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem; flex:1;">
+                    <input id="crudProgColor" type="color" value="${progObj.color || '#0284c7'}" style="width:50px; height:34px; padding:2px; cursor:pointer;">
+                    <select id="crudProgBadge" style="padding:8px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.75rem; flex:1;">
                         ${badgeOptions.map(b => `<option value="${b.val}" ${progObj.badgeClass === b.val ? 'selected' : ''}>${b.label}</option>`).join('')}
                     </select>
                 </div>
-            `);
+            `, true);
 
             modalCallback = () => {
                 const idVal = document.getElementById('crudProgId').value.trim().toLowerCase().replace(/\s+/g, '_');
@@ -2508,10 +2511,10 @@
                     <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarChecksPermisos()"><option value="admin">Admin</option><option value="supervisor">Supervisor</option><option value="operario">Operario</option><option value="invitado">Invitado</option></select></div>
                     <div class="full-width">
                         <label>Permisos</label>
-                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border);"></div>
+                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f8fafc; padding:10px; border-radius:var(--radius); border:1px solid var(--border);"></div>
                     </div>
                 </div>
-            `);
+            `, true);
             actualizarChecksPermisos();
             modalCallback = () => {
                 const nombre = document.getElementById('uNombre').value.trim();
@@ -2549,10 +2552,10 @@
                     <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarChecksPermisos()"><option value="admin" ${u.perfil==='admin'?'selected':''}>Admin</option><option value="supervisor" ${u.perfil==='supervisor'?'selected':''}>Supervisor</option><option value="operario" ${u.perfil==='operario'?'selected':''}>Operario</option><option value="invitado" ${u.perfil==='invitado'?'selected':''}>Invitado</option></select></div>
                     <div class="full-width">
                         <label>Permisos</label>
-                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border);"></div>
+                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f8fafc; padding:10px; border-radius:var(--radius); border:1px solid var(--border);"></div>
                     </div>
                 </div>
-            `);
+            `, true);
             actualizarChecksPermisos(u.permisos);
             modalCallback = () => {
                 const nombre = document.getElementById('uNombre').value.trim();
@@ -2594,8 +2597,8 @@
             todasOpciones.forEach(opt => {
                 const isChecked = actualPerms.includes(opt) ? 'checked' : '';
                 container.innerHTML += `
-                    <label style="display:flex; align-items:center; gap:8px; font-size:0.75rem; cursor:pointer;">
-                        <input type="checkbox" class="perm-chk" value="${opt}" ${isChecked} style="width:15px; height:15px;">
+                    <label style="display:flex; align-items:center; gap:6px; font-size:0.72rem; cursor:pointer;">
+                        <input type="checkbox" class="perm-chk" value="${opt}" ${isChecked} style="width:14px; height:14px;">
                         <span>${opt.toUpperCase()}</span>
                     </label>
                 `;
@@ -2625,7 +2628,7 @@
                 <tr>
                     <td><strong>${w.id}</strong></td>
                     <td>${w.nombre}</td>
-                    <td><span style="display:inline-block; width:16px; height:16px; background:${w.color}; border-radius:4px; border:1px solid rgba(0,0,0,0.1);"></span></td>
+                    <td><span style="display:inline-block; width:14px; height:14px; background:${w.color}; border-radius:4px; border:1px solid rgba(0,0,0,0.1);"></span></td>
                     ${isAdmin ? `
                     <td style="text-align:center;">
                         <div class="acciones-cell">
@@ -2642,9 +2645,9 @@
                 <div class="form-grid">
                     <div class="full-width"><label>ID (Ej: Farmacos2)</label><input id="bId" placeholder="ID único"></div>
                     <div class="full-width"><label>Nombre</label><input id="bNombre" placeholder="Nombre de bodega"></div>
-                    <div><label>Color / Tono (Pantone)</label><input id="bColor" type="color" value="#0284c7" style="height:38px; padding:2px; cursor:pointer;"></div>
+                    <div><label>Color</label><input id="bColor" type="color" value="#0284c7" style="height:36px; padding:2px; cursor:pointer;"></div>
                 </div>
-            `);
+            `, true);
             modalCallback = () => {
                 const id = document.getElementById('bId').value.trim();
                 const nombre = document.getElementById('bNombre').value.trim();
@@ -2668,9 +2671,9 @@
             mostrarModal('Editar Bodega', `
                 <div class="form-grid">
                     <div class="full-width"><label>Nombre</label><input id="bNombre" value="${w.nombre}"></div>
-                    <div><label>Color / Tono (Pantone)</label><input id="bColor" type="color" value="${w.color || '#0284c7'}" style="height:38px; padding:2px; cursor:pointer;"></div>
+                    <div><label>Color</label><input id="bColor" type="color" value="${w.color || '#0284c7'}" style="height:36px; padding:2px; cursor:pointer;"></div>
                 </div>
-            `);
+            `, true);
             modalCallback = () => {
                 const nombre = document.getElementById('bNombre').value.trim();
                 const color = document.getElementById('bColor').value;
@@ -2737,7 +2740,7 @@
             const tbody = document.getElementById('historialCompletoBody');
             tbody.innerHTML = (appState.movements || []).slice().reverse().map(m => `
                 <tr>
-                    <td>${m.fecha}</td>
+                    <td style="white-space:nowrap;">${m.fecha}</td>
                     <td><strong>${m.usuario}</strong></td>
                     <td><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td>
                     <td>${m.codigo}</td>
@@ -2775,9 +2778,17 @@
             }
         }
 
-        function mostrarModal(titulo, html) {
+        function mostrarModal(titulo, html, isCompact = false) {
             document.getElementById('modalTitle').textContent = titulo;
             document.getElementById('modalBody').innerHTML = html;
+            
+            const wrapper = document.getElementById('modalContentWrapper');
+            if(isCompact) {
+                wrapper.classList.add('modal-compact');
+            } else {
+                wrapper.classList.remove('modal-compact');
+            }
+
             document.getElementById('modal').classList.add('active');
             document.getElementById('modalActionBtn').style.display = 'inline-flex';
             document.getElementById('modalActionBtn').textContent = 'Guardar';
