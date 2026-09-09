@@ -122,19 +122,6 @@
         .prog-cell-inventario .prog-badges-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; width: 100%; }
 
         .badge-prog { display: inline-block; font-size: 0.65rem; font-weight: 600; white-space: nowrap; padding: 2px 6px; border-radius: 4px; text-align: left; }
-        .badge-frio { background:#e0f2fe; color:#0284c7; border:1px solid #bae6fd; }
-        .badge-dac { background:#ffe4e6; color:#e11d48; border:1px solid #fecdd3; }
-        .badge-lrs { background:#fef3c7; color:#d97706; border:1px solid #fde68a; }
-        .badge-pm { background:#f3e8ff; color:#7c3aed; border:1px solid #e9d5ff; }
-        .badge-controlado { background:#ccfbf1; color:#0d9488; border:1px solid #99f6e4; }
-        .badge-vih { background:#fae8ff; color:#a21caf; border:1px solid #f5d0fe; }
-        .badge-sueros { background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; }
-        .badge-inflamable { background:#ffedd5; color:#c2410c; border:1px solid #fed7aa; }
-        .badge-comp { background:#f1f5f9; color:#334155; border:1px solid #cbd5e1; }
-        .badge-inyectable { background:#dcfce7; color:#15803d; border:1px solid #bbf7d0; }
-        .badge-magistral { background:#ccfbf1; color:#115e59; border:1px solid #99f6e4; }
-        .badge-mezcla { background:#fce7f3; color:#be185d; border:1px solid #fbcfe8; }
-        .badge-unguentos { background:#fef9c3; color:#854d0e; border:1px solid #fef08a; }
 
         .badge { display:inline-block; padding:2px 8px; border-radius:50px; font-size:0.62rem; font-weight:500; white-space: nowrap; }
         .badge-admin { background:#ffe4e6; color:#be123c; }
@@ -142,9 +129,6 @@
         .badge-operario { background:#e0f2fe; color:#0369a1; }
         .badge-invitado { background:#f1f5f9; color:#475569; }
         .badge-bodega { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.6rem; font-weight:600; color:#ffffff; white-space: nowrap; }
-        .badge-farmacos { background:#0284c7; }
-        .badge-insumos { background:#0d9488; }
-        .badge-economato { background:#d97706; }
         
         .ubicacion-compacta-box { display:flex; flex-direction:column; gap:3px; align-items:flex-start; justify-content:center; width: 100%; }
         .ubicacion-row-item { display:inline-flex; align-items:center; gap:4px; font-size:0.62rem; background:#f8fafc; padding:2px 6px; border-radius:4px; border:1px solid var(--border); color:var(--text-main); font-weight:500; white-space:nowrap; }
@@ -1401,8 +1385,9 @@
 
                 catalogoProg.forEach(cp => {
                     if (prog[cp.id]) {
-                        const customStyle = cp.color ? `background: ${cp.color}15; color: ${cp.color}; border: 1px solid ${cp.color}40;` : '';
-                        progHtml += `<span class="badge-prog ${cp.badgeClass || 'badge-frio'}" style="${customStyle}">${cp.nombre}</span>`;
+                        const badgeColor = cp.color || '#0284c7';
+                        const customStyle = `background: ${badgeColor}15; color: ${badgeColor}; border: 1px solid ${badgeColor}40;`;
+                        progHtml += `<span class="badge-prog" style="${customStyle}">${cp.nombre}</span>`;
                         activeCount++;
                     }
                 });
@@ -1417,6 +1402,10 @@
                 if(tipoVal.toLowerCase().includes('máster') || tipoVal.toLowerCase().includes('master')) tipoClase = 'type-master';
                 else if(tipoVal.toLowerCase().includes('mínima') || tipoVal.toLowerCase().includes('minima') || tipoVal.toLowerCase().includes('unidosis')) tipoClase = 'type-minima';
 
+                // Obtener color dinámico para la bodega
+                const whObj = (appState.warehouses || []).find(w => w.id === p.bodega);
+                const bodegaColor = whObj ? whObj.color : '#0284c7';
+
                 return `
                 <tr>
                     <td style="text-align:left; padding-left:10px; white-space:nowrap;">
@@ -1425,7 +1414,7 @@
                     </td>
                     <td style="white-space:nowrap;">${gtinsList}</td>
                     <td style="min-width:140px;">${p.glosa}</td>
-                    <td style="white-space:nowrap;"><span class="badge-bodega badge-${p.bodega.toLowerCase()}">${p.bodega}</span></td>
+                    <td style="white-space:nowrap;"><span class="badge-bodega" style="background:${bodegaColor};">${p.bodega}</span></td>
                     <td class="prog-cell-inventario">${progHtml}</td>
                     <td style="text-align:center; white-space:nowrap;"><span class="type-tag ${tipoClase}">${tipoVal}</span></td>
                     <td style="white-space:nowrap;"><div class="ubicacion-compacta-box">${ubicsHtml}</div></td>
@@ -1556,11 +1545,12 @@
 
             const catalogoProg = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
             let progCheckboxesHtml = catalogoProg.map(cp => {
-                const customStyle = cp.color ? `background: ${cp.color}15; color: ${cp.color}; border: 1px solid ${cp.color}40;` : '';
+                const badgeColor = cp.color || '#0284c7';
+                const customStyle = `background: ${badgeColor}15; color: ${badgeColor}; border: 1px solid ${badgeColor}40;`;
                 return `
                 <label class="prog-option-item">
                     <input type="checkbox" id="mProg_${cp.id}" onchange="verificarAlertasCheckboxesForm()"> 
-                    <span class="badge-prog ${cp.badgeClass || 'badge-frio'}" style="${customStyle}">${cp.nombre}</span>
+                    <span class="badge-prog" style="${customStyle}">${cp.nombre}</span>
                 </label>
             `;
             }).join('');
@@ -1891,11 +1881,12 @@
             const catalogoProg = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
 
             let editProgHtml = catalogoProg.map(cp => {
-                const customStyle = cp.color ? `background: ${cp.color}15; color: ${cp.color}; border: 1px solid ${cp.color}40;` : '';
+                const badgeColor = cp.color || '#0284c7';
+                const customStyle = `background: ${badgeColor}15; color: ${badgeColor}; border: 1px solid ${badgeColor}40;`;
                 return `
                 <label class="prog-option-item">
                     <input type="checkbox" id="editProg_${cp.id}" ${prog[cp.id] ? 'checked' : ''} onchange="verificarAlertasCheckboxesForm()"> 
-                    <span class="badge-prog ${cp.badgeClass || 'badge-frio'}" style="${customStyle}">${cp.nombre}</span>
+                    <span class="badge-prog" style="${customStyle}">${cp.nombre}</span>
                 </label>
             `;
             }).join('');
@@ -2382,11 +2373,12 @@
             const catalogo = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
             container.innerHTML = catalogo.map(cp => {
                 const dotColor = cp.color || '#0284c7';
+                const customStyle = `background: ${dotColor}15; color: ${dotColor}; border: 1px solid ${dotColor}40;`;
                 return `
                 <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:6px 10px; border-radius:var(--radius); border:1px solid var(--border); font-size:0.72rem; gap:6px;">
                     <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
                         <span style="display:inline-block; width:10px; height:10px; background:${dotColor}; border-radius:50%; flex-shrink:0;"></span>
-                        <span class="badge-prog ${cp.badgeClass || 'badge-frio'}" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cp.nombre}</span>
+                        <span class="badge-prog" style="${customStyle} white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cp.nombre}</span>
                         <span style="color:var(--text-muted); font-size:0.62rem; white-space:nowrap;">(${cp.id})</span>
                     </div>
                     <div style="display:flex; gap:4px; flex-shrink:0;">
@@ -2400,7 +2392,7 @@
 
         function abrirModalProgramaCRUD(idEditar = null) {
             const catalogo = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
-            let progObj = { id: '', nombre: '', badgeClass: 'badge-frio', color: '#0284c7' };
+            let progObj = { id: '', nombre: '', color: '#0284c7' };
             let esEdicion = false;
 
             if(idEditar) {
@@ -2411,40 +2403,21 @@
                 }
             }
 
-            const badgeOptions = [
-                { val: 'badge-frio', label: 'Cámara de Frío (Celeste)' },
-                { val: 'badge-dac', label: 'Alto Costo / Rojo' },
-                { val: 'badge-lrs', label: 'Ley Ricarte Soto (Ámbar)' },
-                { val: 'badge-pm', label: 'Ministerial (Morado)' },
-                { val: 'badge-controlado', label: 'Controlado (Teal)' },
-                { val: 'badge-vih', label: 'VIH (Magenta)' },
-                { val: 'badge-sueros', label: 'Sueros (Azul claro)' },
-                { val: 'badge-inflamable', label: 'Inflamable (Naranja)' },
-                { val: 'badge-comp', label: 'Comprimidos (Gris)' },
-                { val: 'badge-inyectable', label: 'Inyectable (Verde)' },
-                { val: 'badge-magistral', label: 'Preparación Magistral (Verde oscuro)' },
-                { val: 'badge-mezcla', label: 'Mezcla Oncológico (Rosado)' },
-                { val: 'badge-unguentos', label: 'Ungüentos / Cremas (Amarillo)' }
-            ];
-
+            // CORRECCIÓN: Se elimina el selector desplegable predefinido y se usa directamente el selector de color personalizado (input type="color")
             mostrarModal(esEdicion ? 'Editar Programa / Categoría' : 'Nuevo Programa / Categoría', `
                 <label>Identificador Único (ID sin espacios)</label>
                 <input id="crudProgId" value="${progObj.id}" ${esEdicion ? 'readonly style="background:#f1f5f9;"' : ''} placeholder="Ej: oncologia">
                 <label style="margin-top:6px;">Nombre Visible</label>
                 <input id="crudProgNombre" value="${progObj.nombre}" placeholder="Ej: Oncología">
-                <label style="margin-top:6px;">Color de Referencia</label>
+                <label style="margin-top:6px;">Color del Programa / Categoría</label>
                 <div style="display:flex; gap:8px; align-items:center;">
-                    <input id="crudProgColor" type="color" value="${progObj.color || '#0284c7'}" style="width:50px; height:34px; padding:2px; cursor:pointer;">
-                    <select id="crudProgBadge" style="padding:8px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.75rem; flex:1;">
-                        ${badgeOptions.map(b => `<option value="${b.val}" ${progObj.badgeClass === b.val ? 'selected' : ''}>${b.label}</option>`).join('')}
-                    </select>
+                    <input id="crudProgColor" type="color" value="${progObj.color || '#0284c7'}" style="width:100%; height:38px; padding:2px; cursor:pointer; border:1px solid var(--border); border-radius:var(--radius); background:#fff;">
                 </div>
             `, true);
 
             modalCallback = () => {
                 const idVal = document.getElementById('crudProgId').value.trim().toLowerCase().replace(/\s+/g, '_');
                 const nombreVal = document.getElementById('crudProgNombre').value.trim();
-                const badgeVal = document.getElementById('crudProgBadge').value;
                 const colorVal = document.getElementById('crudProgColor').value;
 
                 if(!idVal || !nombreVal) return alert('Completa todos los campos.');
@@ -2454,16 +2427,17 @@
                 if(esEdicion) {
                     const idx = appState.programasCatalog.findIndex(x => x.id === idEditar);
                     if(idx !== -1) {
-                        appState.programasCatalog[idx] = { id: idVal, nombre: nombreVal, badgeClass: badgeVal, color: colorVal };
+                        appState.programasCatalog[idx] = { id: idVal, nombre: nombreVal, color: colorVal };
                     }
                 } else {
                     if(appState.programasCatalog.some(x => x.id === idVal)) return alert('Ya existe un programa con ese ID.');
-                    appState.programasCatalog.push({ id: idVal, nombre: nombreVal, badgeClass: badgeVal, color: colorVal });
+                    appState.programasCatalog.push({ id: idVal, nombre: nombreVal, color: colorVal });
                 }
 
                 guardarEstadoFirestore();
                 cerrarModal();
                 renderConfig();
+                renderInventarioUnificado();
                 mostrarToast('Programa / Categoría guardada con éxito.');
             };
         }
@@ -2645,7 +2619,7 @@
                 <div class="form-grid">
                     <div class="full-width"><label>ID (Ej: Farmacos2)</label><input id="bId" placeholder="ID único"></div>
                     <div class="full-width"><label>Nombre</label><input id="bNombre" placeholder="Nombre de bodega"></div>
-                    <div><label>Color</label><input id="bColor" type="color" value="#0284c7" style="height:36px; padding:2px; cursor:pointer;"></div>
+                    <div><label>Color</label><input id="bColor" type="color" value="#0284c7" style="height:36px; padding:2px; cursor:pointer; width:100%;"></div>
                 </div>
             `, true);
             modalCallback = () => {
@@ -2660,6 +2634,7 @@
                 guardarEstadoFirestore();
                 registrarHistorial('Creación de Bodega', id, `Creada bodega ${nombre}`);
                 cerrarModal();
+                renderAll();
                 mostrarToast('Bodega creada con éxito.');
             };
         }
@@ -2671,7 +2646,7 @@
             mostrarModal('Editar Bodega', `
                 <div class="form-grid">
                     <div class="full-width"><label>Nombre</label><input id="bNombre" value="${w.nombre}"></div>
-                    <div><label>Color</label><input id="bColor" type="color" value="${w.color || '#0284c7'}" style="height:36px; padding:2px; cursor:pointer;"></div>
+                    <div><label>Color</label><input id="bColor" type="color" value="${w.color || '#0284c7'}" style="height:36px; padding:2px; cursor:pointer; width:100%;"></div>
                 </div>
             `, true);
             modalCallback = () => {
@@ -2684,6 +2659,7 @@
                 guardarEstadoFirestore();
                 registrarHistorial('Edición de Bodega', w.id, `Actualizada bodega ${nombre}`);
                 cerrarModal();
+                renderAll();
                 mostrarToast('Bodega actualizada.');
             };
         }
@@ -2692,6 +2668,7 @@
             if(!confirm('¿Eliminar bodega?')) return;
             appState.warehouses = appState.warehouses.filter(w => w.id !== id);
             guardarEstadoFirestore();
+            renderAll();
             registrarHistorial('Eliminación de Bodega', id, 'Bodega eliminada');
         }
 
