@@ -32,7 +32,7 @@
         
         .app { width:100%; min-height:100vh; background:var(--surface); display:flex; flex-direction:column; }
 
-        /* LOGIN RESPONSIVE */
+        /* LOGIN RESPONSIVE - Tamaño y banner optimizados */
         #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:20px; overflow-y:auto; }
         #loginModal .login-box { background:var(--surface); padding:0; border-radius:22px; max-width:440px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.25); text-align:center; position:relative; z-index:2001; margin:auto; overflow:hidden; border:1px solid var(--border); }
         #loginModal .login-box .hospital-logo img { width:100%; max-height:160px; object-fit:contain; display:block; margin:0 auto; background:#fff; }
@@ -96,7 +96,7 @@
         .card .number { font-size:1.4rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; line-height: 1.2; word-break: break-word; }
         .card .label { color:var(--text-muted); font-size:0.7rem; margin-top:6px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
 
-        /* TABLAS Y CONTENEDORES RESPONSIVE - Columnas ajustadas para evitar superposición */
+        /* TABLAS Y CONTENEDORES RESPONSIVE */
         .table-wrap { width:100%; }
         .table-container { max-height:65vh; overflow-y:auto; overflow-x:auto; background:transparent; width:100%; }
         table { width:100%; border-collapse:collapse; font-size:0.75rem; table-layout: fixed; }
@@ -113,7 +113,7 @@
             height: 16px;
         }
 
-        /* PROGRAMAS Y CATEGORÍAS */
+        /* PROGRAMAS Y CATEGORÍAS - 2 Columnas y alineación vertical central perfecta */
         .prog-column-box { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; align-items: stretch; }
         .prog-option-item { display: flex; align-items: center; justify-content: flex-start; gap: 10px; background: #fff; padding: 10px 12px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; font-size: 0.72rem; width: 100%; text-align: left; box-sizing: border-box; }
         .prog-option-item input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; margin: 0; flex-shrink: 0; align-self: center; position: static; top: auto; }
@@ -158,7 +158,7 @@
 
         .gtin-tag { font-family:monospace; font-size:0.65rem; background:#fefce8; color:#a16207; padding:2px 4px; border-radius:3px; font-weight:500; border:1px solid #fef08a; white-space:nowrap; display:inline-block; margin:1px; }
 
-        /* ACCIONES */
+        /* ACCIONES - 3 Filas apiladas en columna, dimensiones ajustadas */
         .acciones-cell { display: flex; flex-direction: column; gap: 4px; align-items: stretch; justify-content: center; width: 85px; margin: 0 auto; }
         .btn-action-primary { background: #0284c7; color: #ffffff; border: none; padding: 4px 6px; border-radius: 4px; font-size: 0.62rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; white-space: nowrap; width: 100%; }
         .btn-action-primary:hover { background: #0369a1; }
@@ -193,14 +193,10 @@
         .master-dropdown-item { padding: 10px 14px; font-size: 0.75rem; cursor: pointer; border-bottom: 1px solid var(--bg-base); text-align: left; color: var(--text-main); line-height: 1.3; }
         .master-dropdown-item:hover { background: #f8fafc; color: var(--accent); }
 
-        /* MODALES - Tamaños ajustados específicamente para usuarios y bodegas */
+        /* MODALES */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:16px; overflow-y:auto; }
         .modal.active { display:flex; }
         .modal-content { background:#ffffff; border-radius:12px; padding:24px 24px 20px 24px; max-width:840px; width:100%; max-height:88vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.2); border:1px solid var(--border); text-align: left; margin-bottom: 10px; }
-        
-        /* Modales compactos específicos para Usuario y Bodega */
-        .modal-content.modal-compact { max-width: 520px !important; }
-
         .modal-content label { display:block; margin:10px 0 4px; font-weight:500; font-size:0.75rem; color:var(--text-muted); text-align: left; }
         .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.85rem; }
         .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
@@ -383,13 +379,13 @@
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 10%; text-align:left; padding-left:14px;"><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)"> Cód. Int.</th>
-                                <th style="width: 12%;">GTIN/EAN</th>
-                                <th style="width: 18%;">Glosa</th>
-                                <th style="width: 9%;">Bodega</th>
-                                <th style="width: 17%; text-align:center;">Programas / Categorías</th>
-                                <th style="width: 10%; text-align:center;">Jerarquía</th>
-                                <th style="width: 13%;">Ubicación</th>
+                                <th style="width: 12%; text-align:left; padding-left:14px;"><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)"> Cód. Interno</th>
+                                <th style="width: 14%;">GTIN/EAN</th>
+                                <th style="width: 20%;">Glosa</th>
+                                <th style="width: 10%;">Bodega</th>
+                                <th style="width: 16%; text-align:center;">Programas / Categorías</th>
+                                <th style="width: 11%; text-align:center;">Jerarquía</th>
+                                <th style="width: 17%;">Ubicación</th>
                                 <th style="width: 8%; text-align:center;">Estado</th>
                                 <th id="thAccionsInvHead" style="width: 9%; text-align:center;">Acciones</th>
                             </tr>
@@ -538,7 +534,7 @@
 
     <!-- MODAL -->
     <div class="modal" id="modal">
-        <div class="modal-content" id="modalContentWrapper">
+        <div class="modal-content">
             <h3 id="modalTitle" style="font-size:0.85rem; font-weight:600; margin-bottom:14px; text-align: left;">Modal</h3>
             <div id="modalBody" style="text-align: left;"></div>
             <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
@@ -884,7 +880,7 @@
                 <input id="recUser" placeholder="Usuario exacto">
                 <label style="margin-top:6px;">Correo Electrónico</label>
                 <input id="recEmail" type="email" placeholder="correo@hsjd.cl">
-            `, false);
+            `);
             document.getElementById('modalActionBtn').textContent = 'Enviar Código al Correo';
             modalCallback = () => {
                 const uName = document.getElementById('recUser').value.trim();
@@ -912,7 +908,7 @@
                 <input id="valCodigo" placeholder="Ej: 123456" maxlength="6">
                 <label style="margin-top:6px;">Nueva Contraseña</label>
                 <input id="valNewPass" type="password" placeholder="Nueva contraseña">
-            `, false);
+            `);
             document.getElementById('modalActionBtn').textContent = 'Actualizar Contraseña';
             modalCallback = () => {
                 const ingCode = document.getElementById('valCodigo').value.trim();
@@ -1430,7 +1426,7 @@
                     <td class="prog-cell-inventario">${progHtml}</td>
                     <td style="text-align:center;"><span class="type-tag ${tipoClase}">${tipoVal}</span></td>
                     <td><div class="ubicacion-compacta-box">${ubicsHtml}</div></td>
-                    <td style="text-align:center; white-space:nowrap;"><span class="badge" style="background:#f0fdf4; color:#15803d;">${p.estado || 'Almacenado'}</span></td>
+                    <td style="text-align:center;"><span class="badge" style="background:#f0fdf4; color:#15803d;">${p.estado || 'Almacenado'}</span></td>
                     ${!esInvitado ? `
                     <td style="text-align:center;">
                         <div class="acciones-cell">
@@ -1502,7 +1498,7 @@
             }
 
             html += `</tbody></table></div>`;
-            mostrarModal('Historial Detallado por Artículo', html, false);
+            mostrarModal('Historial Detallado por Artículo', html);
             document.getElementById('modalActionBtn').style.display = 'none';
         }
 
@@ -1645,7 +1641,7 @@
                     </div>
                     <div id="qr-reader" class="full-width"></div>
                 </div>
-            `, false);
+            `);
             modalCallback = () => {
                 detenerEscanerQR();
                 const cod = document.getElementById('mCod').value.trim();
@@ -1758,7 +1754,7 @@
                 <input type="hidden" id="reubPosicion" value="">
                 <div id="reubDestinoPreview" style="font-size:0.75rem; color:var(--success); font-weight:600; text-align:center; margin-bottom:6px;">Nueva ubicación destino: Pendiente de escaneo QR</div>
                 <div id="qr-reader" class="full-width"></div>
-            `, false);
+            `);
 
             modalCallback = () => {
                 detenerEscanerQR();
@@ -1996,7 +1992,7 @@
                     </div>
                     <div id="qr-reader" class="full-width"></div>
                 </div>
-            `, false);
+            `);
 
             verificarAlertasCheckboxesForm();
 
@@ -2290,7 +2286,7 @@
                 </div>
             `;
 
-            mostrarModal('Selección de Etiquetas QR de Ubicación', html, false);
+            mostrarModal('Selección de Etiquetas QR de Ubicación', html);
             document.getElementById('modalActionBtn').textContent = 'Imprimir Seleccionados';
             document.getElementById('modalActionBtn').onclick = ejecutarImpresionQR;
 
@@ -2440,7 +2436,7 @@
                         ${badgeOptions.map(b => `<option value="${b.val}" ${progObj.badgeClass === b.val ? 'selected' : ''}>${b.label}</option>`).join('')}
                     </select>
                 </div>
-            `, true);
+            `);
 
             modalCallback = () => {
                 const idVal = document.getElementById('crudProgId').value.trim().toLowerCase().replace(/\s+/g, '_');
@@ -2515,7 +2511,7 @@
                         <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border);"></div>
                     </div>
                 </div>
-            `, true);
+            `);
             actualizarChecksPermisos();
             modalCallback = () => {
                 const nombre = document.getElementById('uNombre').value.trim();
@@ -2556,7 +2552,7 @@
                         <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border);"></div>
                     </div>
                 </div>
-            `, true);
+            `);
             actualizarChecksPermisos(u.permisos);
             modalCallback = () => {
                 const nombre = document.getElementById('uNombre').value.trim();
@@ -2648,7 +2644,7 @@
                     <div class="full-width"><label>Nombre</label><input id="bNombre" placeholder="Nombre de bodega"></div>
                     <div><label>Color / Tono (Pantone)</label><input id="bColor" type="color" value="#0284c7" style="height:38px; padding:2px; cursor:pointer;"></div>
                 </div>
-            `, true);
+            `);
             modalCallback = () => {
                 const id = document.getElementById('bId').value.trim();
                 const nombre = document.getElementById('bNombre').value.trim();
@@ -2674,7 +2670,7 @@
                     <div class="full-width"><label>Nombre</label><input id="bNombre" value="${w.nombre}"></div>
                     <div><label>Color / Tono (Pantone)</label><input id="bColor" type="color" value="${w.color || '#0284c7'}" style="height:38px; padding:2px; cursor:pointer;"></div>
                 </div>
-            `, true);
+            `);
             modalCallback = () => {
                 const nombre = document.getElementById('bNombre').value.trim();
                 const color = document.getElementById('bColor').value;
@@ -2779,17 +2775,9 @@
             }
         }
 
-        function mostrarModal(titulo, html, isCompact = false) {
+        function mostrarModal(titulo, html) {
             document.getElementById('modalTitle').textContent = titulo;
             document.getElementById('modalBody').innerHTML = html;
-            
-            const wrapper = document.getElementById('modalContentWrapper');
-            if(isCompact) {
-                wrapper.classList.add('modal-compact');
-            } else {
-                wrapper.classList.remove('modal-compact');
-            }
-
             document.getElementById('modal').classList.add('active');
             document.getElementById('modalActionBtn').style.display = 'inline-flex';
             document.getElementById('modalActionBtn').textContent = 'Guardar';
