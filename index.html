@@ -66,7 +66,7 @@
         .warehouse-select-wrapper select { background: transparent; border: none; color: #f8fafc; font-weight: 500; font-size: 0.68rem; padding: 4px 2px; cursor: pointer; outline: none; }
         .warehouse-select-wrapper select option { background: #1e293b; color: #f8fafc; }
 
-        header .user-info .btn { background:#334155; color:#f8fafc; border:none; padding:5px 10px; border-radius:6px; cursor:pointer; font-weight:500; font-size:0.68rem; display:inline-flex; align-items:center; gap:4px; min-height:28px; transition: background 0.2s; }
+        header .user-info .btn { background:#334155; color:#ffffff; border:none; padding:5px 10px; border-radius:6px; cursor:pointer; font-weight:500; font-size:0.68rem; display:inline-flex; align-items:center; gap:4px; min-height:28px; transition: background 0.2s; }
         header .user-info .btn:hover { background: #475569; }
         header .user-info .btn-success { background:#0d9488; }
         header .user-info .btn-success:hover { background:#0f766e; }
@@ -93,10 +93,10 @@
         .card:nth-child(2)::before { background: #0284c7; }
         .card:nth-child(3)::before { background: #0369a1; }
         .card:nth-child(4)::before { background: #38bdf8; }
-        .card .number { font-size:1.9rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; }
+        .card .number { font-size:1.4rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; line-height: 1.2; word-break: break-word; }
         .card .label { color:var(--text-muted); font-size:0.7rem; margin-top:6px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
 
-        /* TABLAS Y CONTENEDORES RESPONSIVE UNIFICADOS SIN MARCOS NI SCROLL INNECESARIO */
+        /* TABLAS Y CONTENEDORES RESPONSIVE SIN MARCOS NI SOLAPAMIENTO */
         .table-wrap { width:100%; }
         .table-container { max-height:65vh; overflow-y:auto; overflow-x:auto; background:transparent; width:100%; }
         table { width:100%; border-collapse:collapse; font-size:0.75rem; table-layout: fixed; }
@@ -113,7 +113,7 @@
             height: 16px;
         }
 
-        /* PROGRAMAS Y ETIQUETAS - ALINEACIÓN AL EJE CENTRAL VERTICAL ESTRICTA */
+        /* PROGRAMAS Y ETIQUETAS */
         .prog-column-box { display: flex; flex-direction: column; gap: 8px; width: 100%; align-items: stretch; }
         .prog-option-item { display: flex; align-items: center; justify-content: flex-start; gap: 14px; background: #fff; padding: 12px 16px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; font-size: 0.75rem; width: 100%; text-align: left; box-sizing: border-box; }
         .prog-option-item input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; margin: 0; flex-shrink: 0; align-self: center; }
@@ -138,25 +138,25 @@
         .badge-insumos { background:#0d9488; }
         .badge-economato { background:#d97706; }
         
-        .ubicacion-compacta-box { display:flex; flex-direction:column; gap:4px; align-items:flex-start; justify-content:center; }
-        .ubicacion-row-item { display:inline-flex; align-items:center; gap:6px; font-size:0.7rem; background:#f8fafc; padding:4px 10px; border-radius:4px; border:1px solid var(--border); color:var(--text-main); font-weight:500; white-space:nowrap; }
-        .zone-tag { display:inline-block; padding:1px 5px; border-radius:3px; font-size:0.65rem; font-weight:600; background:#e0f2fe; color:#0369a1; }
-        .pos-tag { font-family:monospace; font-size:0.65rem; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--text-muted); font-weight:600; }
+        .ubicacion-compacta-box { display:flex; flex-direction:column; gap:4px; align-items:flex-start; justify-content:center; width: 100%; }
+        .ubicacion-row-item { display:inline-flex; align-items:center; gap:4px; font-size:0.65rem; background:#f8fafc; padding:3px 6px; border-radius:4px; border:1px solid var(--border); color:var(--text-main); font-weight:500; white-space:normal; max-width:100%; word-break:break-all; }
+        .zone-tag { display:inline-block; padding:1px 4px; border-radius:3px; font-size:0.6rem; font-weight:600; background:#e0f2fe; color:#0369a1; }
+        .pos-tag { font-family:monospace; font-size:0.6rem; background:#f1f5f9; padding:1px 4px; border-radius:3px; color:var(--text-muted); font-weight:600; }
         
-        .type-tag { display:inline-block; padding:4px 10px; border-radius:6px; font-size:0.7rem; font-weight:600; white-space:nowrap; text-align: center; }
+        .type-tag { display:inline-block; padding:4px 8px; border-radius:6px; font-size:0.65rem; font-weight:600; white-space:nowrap; text-align: center; }
         .type-master { background: #e2e8f0; color: #0f172a; border: 1px solid #cbd5e1; }
         .type-comercial { background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
         .type-minima { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
 
-        .gtin-tag { font-family:monospace; font-size:0.7rem; background:#fefce8; color:#a16207; padding:2px 6px; border-radius:3px; font-weight:500; border:1px solid #fef08a; white-space:nowrap; display:inline-block; margin:1px; }
+        .gtin-tag { font-family:monospace; font-size:0.65rem; background:#fefce8; color:#a16207; padding:2px 4px; border-radius:3px; font-weight:500; border:1px solid #fef08a; white-space:nowrap; display:inline-block; margin:1px; }
 
-        /* ACCIONES */
-        .acciones-cell { display: flex; flex-direction: column; gap: 4px; align-items: stretch; min-width: 90px; }
-        .btn-action-primary { background: #0284c7; color: #ffffff; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: background 0.2s; }
+        /* ACCIONES (COMPACTAS) */
+        .acciones-cell { display: inline-flex; gap: 4px; align-items: center; justify-content: center; }
+        .btn-action-primary { background: #0284c7; color: #ffffff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: background 0.2s; white-space: nowrap; }
         .btn-action-primary:hover { background: #0369a1; }
-        .btn-action-secondary { background: #f8fafc; color: #475569; border: 1px solid var(--border); padding: 4px 10px; border-radius: 4px; font-size: 0.68rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.2s; }
+        .btn-action-secondary { background: #f8fafc; color: #475569; border: 1px solid var(--border); padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.2s; white-space: nowrap; }
         .btn-action-secondary:hover { background: #f1f5f9; color: var(--text-main); border-color: #94a3b8; }
-        .btn-action-danger { background: #e11d48; color: #ffffff; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+        .btn-action-danger { background: #e11d48; color: #ffffff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; }
         .btn-action-danger:hover { background: #be123c; }
 
         /* BOTONES */
@@ -216,7 +216,7 @@
             }
         }
 
-        /* MEDIA QUERIES RESPONSIVE ADAPTATIVAS (MÓVIL, PDA, TABLET, PC) */
+        /* MEDIA QUERIES RESPONSIVE */
         @media (min-width: 1024px) {
             .table-container { overflow-x: hidden !important; }
             table { table-layout: fixed; width: 100%; }
@@ -304,7 +304,7 @@
                     <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event)">
                     <button class="btn btn-warning" id="btnExportarArchivo" onclick="exportarExcelCompleto()">Exportar</button>
                     <button class="btn btn-teal" id="btnQrUbicaciones" onclick="abrirModalQRUbicaciones()">QR Ubicaciones</button>
-                    <button class="btn btn-outline" onclick="logout()">Salir</button>
+                    <button class="btn btn-outline" style="color: #ffffff; border-color: rgba(255,255,255,0.3);" onclick="logout()">Salir</button>
                 </div>
             </div>
         </header>
@@ -372,15 +372,15 @@
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 14%; text-align:left; padding-left:14px;"><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)"> Código Interno</th>
-                                <th style="width: 12%;">Códigos GTIN/EAN</th>
-                                <th style="width: 20%;">Glosa</th>
-                                <th style="width: 9%;">Bodega</th>
-                                <th style="width: 13%; text-align:center;">Programas / Alertas</th>
-                                <th style="width: 10%; text-align:center;">Jerarquía</th>
-                                <th style="width: 12%;">Ubicación</th>
-                                <th style="width: 10%; text-align:center;">Estado</th>
-                                <th id="thAccionsInvHead" style="width: 10%; text-align:center;">Acciones</th>
+                                <th style="width: 13%; text-align:left; padding-left:14px;"><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)"> Cód. Interno</th>
+                                <th style="width: 11%;">GTIN/EAN</th>
+                                <th style="width: 17%;">Glosa</th>
+                                <th style="width: 8%;">Bodega</th>
+                                <th style="width: 12%; text-align:center;">Programas</th>
+                                <th style="width: 9%; text-align:center;">Jerarquía</th>
+                                <th style="width: 15%;">Ubicación</th>
+                                <th style="width: 8%; text-align:center;">Estado</th>
+                                <th id="thAccionsInvHead" style="width: 7%; text-align:center;">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="inventarioUnificadoBody"></tbody>
@@ -418,8 +418,17 @@
             </div>
             <div class="table-wrap">
                 <div class="table-container">
-                    <table>
-                        <thead><tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Perfil</th><th>Permisos</th><th style="text-align:center;">Acciones</th></tr></thead>
+                    <table style="table-layout: auto;">
+                        <thead>
+                            <tr>
+                                <th style="width: 8%;">ID</th>
+                                <th style="width: 20%;">Nombre</th>
+                                <th style="width: 25%;">Correo</th>
+                                <th style="width: 12%;">Perfil</th>
+                                <th style="width: 23%;">Permisos</th>
+                                <th style="width: 12%; text-align:center;">Acciones</th>
+                            </tr>
+                        </thead>
                         <tbody id="usuariosBody"></tbody>
                     </table>
                 </div>
@@ -434,7 +443,7 @@
             <div class="table-wrap">
                 <div class="table-container">
                     <table>
-                        <thead><tr><th>ID</th><th>Nombre</th><th>Color</th><th id="thBodegasAccionsHead" style="text-align:center;">Acciones</th></tr></thead>
+                        <thead><tr><th style="width: 25%;">ID</th><th style="width: 45%;">Nombre</th><th style="width: 15%;">Color</th><th id="thBodegasAccionsHead" style="width: 15%; text-align:center;">Acciones</th></tr></thead>
                         <tbody id="bodegasBody"></tbody>
                     </table>
                 </div>
