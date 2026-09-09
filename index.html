@@ -15,26 +15,26 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
-            --bg-base: #f8fafc;
+            --bg-base: #f1f5f9;
             --surface: #ffffff;
-            --text-main: #111827;
-            --text-muted: #4b5563;
-            --border: #e2e8f0;
-            --primary: #1e293b;
-            --accent: #4f46e5;
-            --success: #047857;
-            --warning: #b45309;
-            --danger: #b91c1c;
-            --radius: 10px;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border: #cbd5e1;
+            --primary: #0f172a;
+            --accent: #0284c7; /* Azul industrial profesional */
+            --success: #0d9488; /* Verde clínico esmeralda */
+            --warning: #d97706; /* Ámbar institucional */
+            --danger: #e11d48; /* Rojo alerta refinado */
+            --radius: 8px;
         }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background:var(--bg-base); color:var(--text-main); padding:0; margin:0; width:100%; min-height:100vh; display:flex; flex-direction:column; font-size: 13px; overflow-x: hidden; }
         
-        .app { width:100%; min-height:100vh; background:var(--surface); display:flex; flex-direction:column; box-shadow:none; border-radius:0; }
+        .app { width:100%; min-height:100vh; background:var(--surface); display:flex; flex-direction:column; }
 
         /* LOGIN */
-        #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.8); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:16px; overflow-y:auto; }
-        #loginModal .login-box { background:var(--surface); padding:0 0 24px 0; border-radius:12px; max-width:380px; width:100%; box-shadow:0 20px 40px rgba(0,0,0,0.15); text-align:center; position:relative; z-index:2001; margin:auto; overflow:hidden; border:1px solid var(--border); }
+        #loginModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:2000; padding:16px; overflow-y:auto; }
+        #loginModal .login-box { background:var(--surface); padding:0 0 24px 0; border-radius:12px; max-width:380px; width:100%; box-shadow:0 20px 40px rgba(0,0,0,0.2); text-align:center; position:relative; z-index:2001; margin:auto; overflow:hidden; border:1px solid var(--border); }
         #loginModal .login-box .hospital-logo img { width:100%; max-height:120px; object-fit:cover; display:block; margin-bottom:12px; background:#fff; }
         .login-content-pad { padding: 0 20px; }
         .divider { width:30px; height:2px; background:var(--accent); margin:6px auto 12px; border-radius:2px; }
@@ -47,124 +47,123 @@
         .login-error { color:var(--danger); font-size:0.75rem; margin-top:6px; display:none; }
         .forgot-link { display:inline-block; margin-top:10px; font-size:0.7rem; color:var(--accent); cursor:pointer; text-decoration:none; font-weight:500; }
 
-        /* HEADER */
-        header { background: #111827; color: #f9fafb; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.08); }
-        header .header-left .header-title { font-weight:600; font-size:0.9rem; color:#f9fafb; }
-        header .header-left .header-sub { font-size:0.55rem; color:#9ca3af; }
-        header .header-left .header-sub span { color:#93c5fd; }
+        /* HEADER CON MARGEN SEGURO Y ESTRUCTURA SÓLIDA */
+        header { background: #0f172a; color: #f8fafc; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        header .header-left .header-title { font-weight:600; font-size:0.95rem; color:#f8fafc; }
+        header .header-left .header-sub { font-size:0.6rem; color:#94a3b8; }
+        header .header-left .header-sub span { color:#38bdf8; }
         header .user-info { display:flex; align-items:center; gap:8px; font-size:0.65rem; flex-wrap:wrap; }
-        header .user-info select { padding:5px 10px; border-radius:4px; border:1px solid #374151; background:#1f2937; color:#f9fafb; font-weight:400; font-size:0.65rem; }
-        header .user-info .btn { background:#374151; color:#f9fafb; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-weight:400; font-size:0.65rem; display:inline-flex; align-items:center; gap:4px; min-height:28px; }
-        header .user-info .btn-success { background:#065f46; }
-        header .user-info .btn-warning { background:#92400e; }
-        header .user-info .btn-purple { background:#5b21b6; }
-        header .user-info .user-name { color:#9ca3af; font-size:0.65rem; font-weight:500; }
-        header .user-info .online-indicator { display:inline-block; width:5px; height:5px; border-radius:50%; background:#10b981; margin-right:3px; }
+        header .user-info select { padding:6px 10px; border-radius:4px; border:1px solid #334155; background:#1e293b; color:#f8fafc; font-weight:400; font-size:0.65rem; }
+        header .user-info .btn { background:#334155; color:#f8fafc; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-weight:400; font-size:0.65rem; display:inline-flex; align-items:center; gap:4px; min-height:28px; }
+        header .user-info .btn-success { background:#0d9488; }
+        header .user-info .btn-warning { background:#d97706; }
+        header .user-info .btn-teal { background:#0f766e; }
+        header .user-info .user-name { color:#94a3b8; font-size:0.65rem; font-weight:500; }
+        header .user-info .online-indicator { display:inline-block; width:6px; height:6px; border-radius:50%; background:#10b981; margin-right:4px; }
 
         /* NAV */
-        nav { display:flex; background:#ffffff; border-bottom:1px solid var(--border); overflow-x:auto; -webkit-overflow-scrolling:touch; padding:0 16px; width: 100%; }
-        nav button { background:transparent; border:none; padding:12px 16px; font-weight:500; font-size:0.7rem; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; flex:0 0 auto; white-space:nowrap; display:inline-flex; align-items:center; gap:6px; min-height:42px; }
+        nav { display:flex; background:#ffffff; border-bottom:1px solid var(--border); overflow-x:auto; -webkit-overflow-scrolling:touch; padding:0 24px; width: 100%; }
+        nav button { background:transparent; border:none; padding:12px 16px; font-weight:500; font-size:0.75rem; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; flex:0 0 auto; white-space:nowrap; display:inline-flex; align-items:center; gap:6px; min-height:42px; }
         nav button:hover { color:var(--text-main); }
         nav button.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
-        nav button .badge-nav { background:var(--accent); color:#ffffff; font-size:0.5rem; padding:1px 5px; border-radius:10px; margin-left:4px; }
+        nav button .badge-nav { background:var(--accent); color:#ffffff; font-size:0.55rem; padding:1px 6px; border-radius:10px; margin-left:4px; }
 
-        /* TABS CON MÁRGENES AMPLIOS */
-        .tab-content { display:none; padding:24px; width:100%; max-width:1400px; margin:0 auto; flex:1; }
+        /* TABS CON MÁRGENES AMPLIOS Y SEGUROS */
+        .tab-content { display:none; padding:28px 24px; width:100%; max-width:1400px; margin:0 auto; flex:1; }
         .tab-content.active { display:block; }
 
-        /* DASHBOARD MODERNO CON TARJETAS MEJORADAS Y EFECTOS VISUALES */
-        .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(210px,1fr)); gap:16px; margin-bottom:24px; width:100%; }
-        .card { background:linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); padding:20px; border-radius:var(--radius); text-align:left; border:1px solid var(--border); box-shadow:0 4px 12px rgba(0,0,0,0.03); position:relative; overflow:hidden; transition:transform 0.2s ease, box-shadow 0.2s ease; }
-        .card:hover { transform: translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,0.06); }
+        /* DASHBOARD REFINADO Y ELEGANTE */
+        .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:16px; margin-bottom:24px; width:100%; }
+        .card { background:#ffffff; padding:20px; border-radius:var(--radius); text-align:left; border:1px solid var(--border); box-shadow:0 2px 4px rgba(0,0,0,0.02); position:relative; overflow:hidden; }
         .card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--accent); }
         .card:nth-child(2)::before { background: var(--success); }
         .card:nth-child(3)::before { background: var(--warning); }
-        .card:nth-child(4)::before { background: #7c3aed; }
-        .card .number { font-size:1.8rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; }
+        .card:nth-child(4)::before { background: #0f766e; }
+        .card .number { font-size:1.9rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; }
         .card .label { color:var(--text-muted); font-size:0.7rem; margin-top:6px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
 
-        /* TABLAS CON ALINEACIÓN VERTICAL CENTRADA PERFECTA */
+        /* TABLAS Y ALINEACIÓN DE CASILLAS */
         .table-wrap { overflow-x:auto; margin-top:10px; width:100%; }
         .table-container { max-height:65vh; overflow:auto; border-radius:var(--radius); border:1px solid var(--border); background:white; width:100%; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
-        table { width:100%; border-collapse:collapse; font-size:0.7rem; min-width:100%; }
-        th { background:#f9fafb; text-align:center; padding:12px; font-weight:600; color:var(--text-muted); position:sticky; top:0; z-index:10; font-size:0.65rem; text-transform:uppercase; border-bottom:1px solid var(--border); white-space:nowrap; }
-        td { padding:12px; border-bottom:1px solid var(--border); vertical-align:middle; text-align:center; font-size:0.7rem; color:var(--text-main); }
-        tr:hover td { background:#f9fafb; }
+        table { width:100%; border-collapse:collapse; font-size:0.75rem; min-width:100%; }
+        th { background:#f8fafc; text-align:center; padding:12px; font-weight:600; color:var(--text-muted); position:sticky; top:0; z-index:10; font-size:0.7rem; text-transform:uppercase; border-bottom:1px solid var(--border); white-space:nowrap; }
+        td { padding:12px; border-bottom:1px solid var(--border); vertical-align:middle; text-align:center; font-size:0.75rem; color:var(--text-main); }
+        tr:hover td { background:#f8fafc; }
 
-        /* ALINEACIÓN PERFECTA DE CASILLAS CON EL EJE CENTRAL DEL TEXTO */
+        /* CASILLAS EXACTAMENTE ALINEADAS CON EL EJE CENTRAL DEL TEXTO */
         td input[type="checkbox"], th input[type="checkbox"] {
             vertical-align: middle;
             position: relative;
             top: -1px;
             cursor: pointer;
-            width: 15px;
-            height: 15px;
+            width: 16px;
+            height: 16px;
         }
 
-        /* ETIQUETAS DE PROGRAMAS Y ALERTAS */
-        .prog-badges-box { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
-        .badge-prog { display:inline-block; padding:3px 8px; border-radius:4px; font-size:0.6rem; font-weight:600; white-space:nowrap; }
-        .badge-frio { background:#f0f9ff; color:#0369a1; border:1px solid #bae6fd; }
-        .badge-dac { background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; }
-        .badge-lrs { background:#fffbeb; color:#b45309; border:1px solid #fde68a; }
-        .badge-pm { background:#faf5ff; color:#6b21a8; border:1px solid #e9d5ff; }
-        .badge-controlado { background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; }
+        /* ETIQUETAS DE PROGRAMAS Y ALERTAS (SOLO TEXTO CON COLOR) */
+        .prog-badges-box { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; align-items:center; }
+        .badge-prog { display:inline-block; font-size:0.72rem; font-weight:600; white-space:nowrap; padding:2px 0; }
+        .badge-frio { color:#0284c7; }
+        .badge-dac { color:#e11d48; }
+        .badge-lrs { color:#d97706; }
+        .badge-pm { color:#7c3aed; }
+        .badge-controlado { color:#0d9488; }
 
-        .badge { display:inline-block; padding:2px 8px; border-radius:50px; font-size:0.6rem; font-weight:500; }
-        .badge-admin { background:#fee2e2; color:#991b1b; }
-        .badge-supervisor { background:#fef3c7; color:#92400e; }
-        .badge-operario { background:#e0e7ff; color:#3730a3; }
-        .badge-invitado { background:#f3f4f6; color:#374151; }
-        .badge-bodega { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.55rem; font-weight:600; color:#ffffff; }
-        .badge-farmacos { background:#1d4ed8; }
-        .badge-insumos { background:#047857; }
-        .badge-economato { background:#b45309; }
+        .badge { display:inline-block; padding:3px 10px; border-radius:50px; font-size:0.65rem; font-weight:500; }
+        .badge-admin { background:#ffe4e6; color:#be123c; }
+        .badge-supervisor { background:#fef3c7; color:#b45309; }
+        .badge-operario { background:#e0f2fe; color:#0369a1; }
+        .badge-invitado { background:#f1f5f9; color:#475569; }
+        .badge-bodega { display:inline-block; padding:3px 10px; border-radius:4px; font-size:0.6rem; font-weight:600; color:#ffffff; }
+        .badge-farmacos { background:#0284c7; }
+        .badge-insumos { background:#0d9488; }
+        .badge-economato { background:#d97706; }
         
-        .ubicacion-compacta-box { display:flex; flex-direction:column; gap:3px; align-items:center; justify-content:center; }
-        .ubicacion-row-item { display:inline-flex; align-items:center; gap:4px; font-size:0.65rem; background:#f9fafb; padding:4px 10px; border-radius:4px; border:1px solid var(--border); color:var(--text-main); font-weight:500; white-space:nowrap; }
-        .zone-tag { display:inline-block; padding:1px 4px; border-radius:3px; font-size:0.6rem; font-weight:600; background:#e0e7ff; color:#3730a3; }
-        .pos-tag { font-family:monospace; font-size:0.6rem; background:#f3f4f6; padding:1px 4px; border-radius:3px; color:var(--text-muted); font-weight:600; }
+        .ubicacion-compacta-box { display:flex; flex-direction:column; gap:4px; align-items:center; justify-content:center; }
+        .ubicacion-row-item { display:inline-flex; align-items:center; gap:6px; font-size:0.7rem; background:#f8fafc; padding:4px 10px; border-radius:4px; border:1px solid var(--border); color:var(--text-main); font-weight:500; white-space:nowrap; }
+        .zone-tag { display:inline-block; padding:1px 5px; border-radius:3px; font-size:0.65rem; font-weight:600; background:#e0f2fe; color:#0369a1; }
+        .pos-tag { font-family:monospace; font-size:0.65rem; background:#f1f5f9; padding:1px 5px; border-radius:3px; color:var(--text-muted); font-weight:600; }
         
-        .type-tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.65rem; font-weight:600; white-space:nowrap; }
+        .type-tag { display:inline-block; padding:3px 8px; border-radius:4px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
         .type-master { background:#fff7ed; color:#c2410c; border:1px solid #ffedd5; }
-        .type-comercial { background:#f5f3ff; color:#6d28d9; border:1px solid #ede9fe; }
-        .type-minima { background:#f0fdf4; color:#15803d; border:1px solid #dcfce7; }
+        .type-comercial { background:#f0fdf4; color:#15803d; border:1px solid #dcfce7; }
+        .type-minima { background:#f5f3ff; color:#6d28d9; border:1px solid #ede9fe; }
 
-        .gtin-tag { font-family:monospace; font-size:0.65rem; background:#fefce8; color:#a16207; padding:2px 6px; border-radius:3px; font-weight:500; border:1px solid #fef08a; white-space:nowrap; display:inline-block; margin:1px; }
+        .gtin-tag { font-family:monospace; font-size:0.7rem; background:#fefce8; color:#a16207; padding:2px 6px; border-radius:3px; font-weight:500; border:1px solid #fef08a; white-space:nowrap; display:inline-block; margin:1px; }
 
         /* BOTONES */
-        .btn { padding:7px 14px; border:none; border-radius:var(--radius); font-weight:500; font-size:0.75rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; text-align:center; gap:6px; text-decoration:none; color:#ffffff; min-height:34px; white-space:nowrap; transition:opacity 0.2s; }
+        .btn { padding:8px 16px; border:none; border-radius:var(--radius); font-weight:500; font-size:0.75rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; text-align:center; gap:6px; text-decoration:none; color:#ffffff; min-height:36px; white-space:nowrap; transition:opacity 0.2s; }
         .btn:hover { opacity:0.9; }
         .btn-primary { background:var(--accent); }
         .btn-success { background:var(--success); }
         .btn-warning { background:var(--warning); }
         .btn-danger { background:var(--danger); }
-        .btn-purple { background:#7c3aed; }
+        .btn-teal { background:#0f766e; }
         .btn-orange { background:#ea580c; }
         .btn-outline { background:transparent; border:1px solid var(--border); color:var(--text-muted); }
-        .btn-sm { padding:5px 10px; font-size:0.65rem; min-height:28px; }
-        .btn-xs { padding:3px 8px; font-size:0.6rem; min-height:24px; }
+        .btn-sm { padding:6px 12px; font-size:0.7rem; min-height:30px; }
+        .btn-xs { padding:4px 8px; font-size:0.65rem; min-height:26px; }
 
         /* TOOLBAR */
         .toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding:16px; background:#ffffff; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:16px; width:100%; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
         .toolbar-left, .toolbar-right { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-        .toolbar input { padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem; background:white; }
-        .filter-select { padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.75rem; background:white; max-width:260px; }
+        .toolbar input { padding:9px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem; background:white; }
+        .filter-select { padding:9px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.75rem; background:white; max-width:260px; }
 
         /* BUSCADOR CATALOGO MAESTRO */
         .master-search-container { position: relative; width: 100%; margin-top: 4px; }
-        .master-search-input { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.85rem; background: #fff; }
+        .master-search-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.85rem; background: #fff; }
         .master-dropdown-results { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); max-height: 200px; overflow-y: auto; z-index: 3000; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; }
         .master-dropdown-item { padding: 10px 14px; font-size: 0.75rem; cursor: pointer; border-bottom: 1px solid var(--bg-base); text-align: left; color: var(--text-main); line-height: 1.3; }
         .master-dropdown-item:hover { background: #f8fafc; color: var(--accent); }
 
-        /* MODALES */
-        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:16px; overflow-y:auto; }
+        /* MODALES AMPLIOS Y SEGUROS */
+        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:16px; overflow-y:auto; }
         .modal.active { display:flex; }
-        .modal-content { background:#ffffff; border-radius:12px; padding:24px; max-width:680px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.15); border:1px solid var(--border); }
+        .modal-content { background:#ffffff; border-radius:12px; padding:24px; max-width:720px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.2); border:1px solid var(--border); }
         .modal-content label { display:block; margin:10px 0 4px; font-weight:500; font-size:0.75rem; color:var(--text-muted); }
-        .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.85rem; }
-        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.85rem; }
+        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
         .form-grid .full-width { grid-column:1/-1; }
 
         /* ESCANER */
@@ -178,7 +177,7 @@
 
         /* TOAST */
         .toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; max-width:320px; width:100%; }
-        .toast { background:#111827; color:#ffffff; padding:12px 16px; border-radius:var(--radius); font-size:0.75rem; box-shadow:0 10px 25px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:between; border-left:3px solid var(--accent); }
+        .toast { background:#0f172a; color:#ffffff; padding:12px 16px; border-radius:var(--radius); font-size:0.75rem; box-shadow:0 10px 25px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:between; border-left:3px solid var(--accent); }
         .empty-state { color:var(--text-muted); text-align:center; padding:40px; font-size:0.8rem; font-weight:400; }
 
         @media (max-width: 768px) {
@@ -187,7 +186,7 @@
             .form-grid { grid-template-columns:1fr; }
             .modal-content { padding: 16px; max-height: 96vh; width: 100%; }
             .card-grid { grid-template-columns:repeat(2, 1fr); }
-            .tab-content { padding: 16px; }
+            .tab-content { padding: 16px 12px; }
         }
     </style>
 </head>
@@ -233,7 +232,7 @@
                 <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event)">
                 <button class="btn btn-warning" id="btnExportarArchivo" onclick="exportarExcelCompleto()">Exportar</button>
                 
-                <button class="btn btn-purple" id="btnQrUbicaciones" onclick="generarQRUbicaciones()">QR Ubicaciones</button>
+                <button class="btn btn-teal" id="btnQrUbicaciones" onclick="generarQRUbicaciones()">QR Ubicaciones</button>
                 <button class="btn btn-outline" onclick="logout()">Salir</button>
             </div>
         </header>
@@ -256,7 +255,7 @@
                 <div class="card"><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos Totales</div></div>
                 <div class="card"><div class="number" id="totalUsuarios">0</div><div class="label">Usuarios Activos</div></div>
             </div>
-            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:10px; color:var(--text-main);">Últimos movimientos registrados</h3>
+            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:12px; color:var(--text-main);">Últimos movimientos registrados</h3>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>Fecha y Hora</th><th>Usuario</th><th>Tipo</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
@@ -315,7 +314,7 @@
 
         <!-- LAYOUT -->
         <div id="tab-layout" class="tab-content">
-            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:10px;">Plano de la Bodega (Visual)</h3>
+            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:12px;">Plano de la Bodega (Visual)</h3>
             <div class="layout-image-container" id="layoutImageContainer">
                 <div id="layoutImageContent">
                     <span class="no-image">No hay imagen de plano cargada para esta bodega.<br><small>Sube una imagen desde la sección Configuración.</small></span>
@@ -325,7 +324,7 @@
 
         <!-- MOVIMIENTOS -->
         <div id="tab-movimientos" class="tab-content">
-            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:10px;">Historial completo de modificaciones</h3>
+            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:12px;">Historial completo de modificaciones</h3>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>Fecha y Hora</th><th>Usuario</th><th>Tipo de Modificación</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
@@ -336,7 +335,7 @@
 
         <!-- USUARIOS -->
         <div id="tab-usuarios" class="tab-content">
-            <div style="margin-bottom:12px;" id="divBtnNuevoUsr">
+            <div style="margin-bottom:14px;" id="divBtnNuevoUsr">
                 <button class="btn btn-primary btn-sm" onclick="mostrarModalUsuario()">Nuevo Usuario</button>
             </div>
             <div class="table-wrap">
@@ -349,7 +348,7 @@
 
         <!-- BODEGAS -->
         <div id="tab-bodegas" class="tab-content">
-            <div style="margin-bottom:12px;" id="divBtnNuevaBodega">
+            <div style="margin-bottom:14px;" id="divBtnNuevaBodega">
                 <button class="btn btn-primary btn-sm" onclick="mostrarModalBodega()">Nueva Bodega</button>
             </div>
             <div class="table-wrap">
@@ -362,32 +361,32 @@
 
         <!-- CONFIG -->
         <div id="tab-config" class="tab-content">
-            <h3 style="font-size:0.9rem; font-weight:600; margin-bottom:14px;">Configuración del Sistema</h3>
-            <div style="max-width:680px; display:flex; flex-direction:column; gap:14px;">
+            <h3 style="font-size:0.9rem; font-weight:600; margin-bottom:16px;">Configuración del Sistema</h3>
+            <div style="max-width:720px; display:flex; flex-direction:column; gap:16px;">
                 
-                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--accent);" id="configMasterCatalogSection">
+                <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--accent);" id="configMasterCatalogSection">
                     <label style="font-weight:600; color:var(--text-main);">Catálogo Maestro de Referencia (Administrador)</label>
                     <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px;">Carga el Excel maestro con códigos, glosas y bodegas para la búsqueda predictiva.</p>
                     <input type="file" id="masterCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoMaestro(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.8rem;">
                     <div style="font-size:0.7rem; color:var(--success); margin-top:6px; font-weight:500;" id="masterCatalogStatus">Registros en catálogo maestro: 0</div>
                 </div>
 
-                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border);" id="configLayoutSection">
+                <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border);" id="configLayoutSection">
                     <label style="font-weight:600; color:var(--text-main);">Imagen del Plano (Layout Visual)</label>
                     <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px;">Asocia un plano gráfico a una bodega específica o de forma general.</p>
                     <div style="display:flex; gap:8px; margin-bottom:8px;">
-                        <select id="configSubirBodegaSelect" style="flex:1; padding:8px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem;">
+                        <select id="configSubirBodegaSelect" style="flex:1; padding:9px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem;">
                             <option value="GENERAL">General (Todas las bodegas)</option>
                         </select>
                     </div>
                     <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.8rem;">
                 </div>
 
-                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border);">
+                <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border);">
                     <label style="font-weight:600; color:var(--text-main);">Reinicio Selectivo de Inventario</label>
                     <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px;">Elimina los registros asociados a una bodega en particular.</p>
                     <div style="display:flex; gap:8px; align-items:center;">
-                        <select id="configResetBodegaSelect" style="flex:1; padding:8px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem;"></select>
+                        <select id="configResetBodegaSelect" style="flex:1; padding:9px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem;"></select>
                         <button class="btn btn-warning btn-sm" onclick="resetDataBodega()">Reiniciar Bodega</button>
                     </div>
                 </div>
@@ -403,9 +402,9 @@
     <!-- MODAL -->
     <div class="modal" id="modal">
         <div class="modal-content">
-            <h3 id="modalTitle" style="font-size:0.85rem; font-weight:600; margin-bottom:12px;">Modal</h3>
+            <h3 id="modalTitle" style="font-size:0.85rem; font-weight:600; margin-bottom:14px;">Modal</h3>
             <div id="modalBody"></div>
-            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:18px;">
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
                 <button class="btn btn-outline btn-sm" onclick="cerrarModal()">Cancelar</button>
                 <button class="btn btn-primary btn-sm" id="modalActionBtn" onclick="ejecutarModal()">Guardar</button>
             </div>
@@ -448,11 +447,11 @@
                 { id: 4, nombre: 'Invitado', correo: 'invitado@hsjd.cl', perfil: 'invitado', password: '1234', permisos: ['lectura'] }
             ],
             warehouses: [
-                { id: 'Farmacos', nombre: 'Bodega de Fármacos', color: '#1d4ed8' },
-                { id: 'Insumos', nombre: 'Bodega de Insumos Clínicos', color: '#047857' },
-                { id: 'Economato', nombre: 'Bodega de Economato', color: '#b45309' },
-                { id: 'Controlados', nombre: 'Bodega de Fármacos Controlados', color: '#10b981' },
-                { id: 'Suturas', nombre: 'Bodega de Suturas', color: '#1d4ed8' },
+                { id: 'Farmacos', nombre: 'Bodega de Fármacos', color: '#0284c7' },
+                { id: 'Insumos', nombre: 'Bodega de Insumos Clínicos', color: '#0d9488' },
+                { id: 'Economato', nombre: 'Bodega de Economato', color: '#d97706' },
+                { id: 'Controlados', nombre: 'Bodega de Fármacos Controlados', color: '#0f766e' },
+                { id: 'Suturas', nombre: 'Bodega de Suturas', color: '#0284c7' },
                 { id: 'Alimentos', nombre: 'Bodega de Alimentos', color: '#ea580c' }
             ],
             products: [],
@@ -765,9 +764,6 @@
             const toolbarAccionsInv = document.getElementById('toolbarAccionsInv');
             const thAccionsInvHead = document.getElementById('thAccionsInvHead');
 
-            // RESTRICCIONES DE BOTONES SEGÚN PERFIL SOLICITADAS:
-            // - Cargar Archivo: Visible solo para administrador
-            // - Exportar: Visible para administrador y supervisor (restringido para el resto)
             if (btnCargar) {
                 btnCargar.style.display = (perfil === 'admin') ? 'inline-flex' : 'none';
             }
@@ -829,7 +825,7 @@
 
             const tbody = document.getElementById('ultimosMovimientos');
             tbody.innerHTML = (appState.movements || []).slice(-5).reverse().map(m => `
-                <tr><td>${m.fecha}</td><td><strong>${m.usuario}</strong></td><td><span class="badge" style="background:#f3f4f6; color:#1f2937;">${m.tipo}</span></td><td>${m.codigo}</td><td>${m.detalle}</td></tr>
+                <tr><td>${m.fecha}</td><td><strong>${m.usuario}</strong></td><td><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td><td>${m.codigo}</td><td>${m.detalle}</td></tr>
             `).join('') || '<tr><td colspan="5" class="empty-state">Sin movimientos recientes</td></tr>';
         }
 
@@ -1063,7 +1059,7 @@
                 if(prog.lrs) progHtml += `<span class="badge-prog badge-lrs">Ley Ricarte Soto</span>`;
                 if(prog.pm) progHtml += `<span class="badge-prog badge-pm">Programa Ministerial</span>`;
                 if(prog.controlado) progHtml += `<span class="badge-prog badge-controlado">Fármaco Controlado</span>`;
-                if(!prog.frio && !prog.dac && !prog.lrs && !prog.pm && !prog.controlado) progHtml += `<span style="color:var(--text-muted); font-size:0.6rem;">Estándar</span>`;
+                if(!prog.frio && !prog.dac && !prog.lrs && !prog.pm && !prog.controlado) progHtml += `<span style="color:var(--text-muted); font-size:0.65rem;">Estándar</span>`;
                 progHtml += `</div>`;
 
                 const tipoVal = p.tipo || 'Unidad Comercial';
@@ -1083,11 +1079,11 @@
                     <td>${progHtml}</td>
                     <td><span class="type-tag ${tipoClase}">${tipoVal}</span></td>
                     <td><div class="ubicacion-compacta-box">${ubicsHtml}</div></td>
-                    <td><span class="badge" style="background:#ecfdf5; color:#065f46;">${p.estado || 'Almacenado'}</span></td>
+                    <td><span class="badge" style="background:#f0fdf4; color:#15803d;">${p.estado || 'Almacenado'}</span></td>
                     ${!esInvitado ? `
                     <td>
                         <button class="btn btn-primary btn-xs" onclick="gestionarUbicacionesModal('${p.id}')">Gestionar</button>
-                        <button class="btn btn-purple btn-xs" onclick="verHistorialArticulo('${p.codigo}')" style="margin-top:2px;">Historial</button>
+                        <button class="btn btn-teal btn-xs" onclick="verHistorialArticulo('${p.codigo}')" style="margin-top:2px;">Historial</button>
                         ${puedeEliminar ? `<button class="btn btn-danger btn-xs" onclick="eliminarProducto('${p.id}')" style="margin-top:2px;">Eliminar</button>` : ''}
                     </td>` : ''}
                 </tr>
@@ -1126,7 +1122,7 @@
                 <div class="table-container" style="max-height:55vh;">
                     <table style="width:100%; font-size:0.65rem;">
                         <thead>
-                            <tr style="background:#f9fafb; position:sticky; top:0;">
+                            <tr style="background:#f8fafc; position:sticky; top:0;">
                                 <th style="padding:6px;">Fecha y Hora</th>
                                 <th style="padding:6px;">Usuario</th>
                                 <th style="padding:6px;">Acción</th>
@@ -1142,7 +1138,7 @@
                         <tr>
                             <td style="padding:6px; white-space:nowrap;">${m.fecha}</td>
                             <td style="padding:6px;"><strong>${m.usuario}</strong></td>
-                            <td style="padding:6px;"><span class="badge" style="background:#f3f4f6; color:#1f2937;">${m.tipo}</span></td>
+                            <td style="padding:6px;"><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td>
                             <td style="padding:6px; text-align:left; white-space:normal;">${m.detalle}</td>
                         </tr>
                     `;
@@ -1176,7 +1172,7 @@
 
         function abrirModalAlmacenamiento() {
             mostrarModal('Recepción y Almacenamiento (Catálogo Maestro y GS1)', `
-                <div style="margin-bottom:12px; background:#f9fafb; padding:14px; border-radius:var(--radius); border:1px solid var(--border);">
+                <div style="margin-bottom:14px; background:#f8fafc; padding:16px; border-radius:var(--radius); border:1px solid var(--border);">
                     <label style="font-weight:600;">Buscar en Catálogo Maestro:</label>
                     <div class="master-search-container">
                         <input type="text" id="masterSearchInput" class="master-search-input" placeholder="Escribe código o nombre..." oninput="filtrarCatalogoMaestroDropdown(this.value)" autocomplete="off">
@@ -1218,19 +1214,20 @@
                     </div>
 
                     <div class="full-width"><label>Glosa / Descripción</label><input id="mGlosa" placeholder="Nombre del insumo o fármaco" onblur="verificarAlertaEscaneoManual(this.value)"></div>
-                    <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fffbeb; border:1px solid #fef3c7; padding:10px; border-radius:var(--radius); font-size:0.75rem; color:#b45309;"></div>
+                    <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fef3c7; border:1px solid #fde68a; padding:10px; border-radius:var(--radius); font-size:0.75rem; color:#b45309;"></div>
 
                     <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">Fármacos</option><option value="Insumos">Insumos</option><option value="Economato">Economato</option><option value="Controlados">Fármacos Controlados</option><option value="Suturas">Suturas</option><option value="Alimentos">Alimentos</option></select></div>
                     <div><label>Jerarquía / Tipo</label><select id="mTipo"><option value="Unidad Comercial">Unidad Comercial</option><option value="Unidad Máster">Unidad Máster</option><option value="Unidad Mínima / Unidosis">Unidad Mínima / Unidosis</option></select></div>
                     
-                    <div class="full-width" style="background:#f9fafb; padding:12px; border-radius:var(--radius); border:1px solid var(--border);">
-                        <label style="margin-bottom:8px; font-weight:600; color:var(--text-main); font-size:0.75rem;">Programas y Alertas Especiales:</label>
-                        <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px;">
-                            <label style="display:flex; align-items:center; gap:8px; background:#f0f9ff; padding:8px 10px; border-radius:6px; border:1px solid #bae6fd; cursor:pointer; font-size:0.72rem; color:#0369a1; font-weight:600;"><input type="checkbox" id="mProgFrío"> Cámara de Frío</label>
-                            <label style="display:flex; align-items:center; gap:8px; background:#fef2f2; padding:8px 10px; border-radius:6px; border:1px solid #fecaca; cursor:pointer; font-size:0.72rem; color:#b91c1c; font-weight:600;"><input type="checkbox" id="mProgDac"> Alto Costo (DAC)</label>
-                            <label style="display:flex; align-items:center; gap:8px; background:#fffbeb; padding:8px 10px; border-radius:6px; border:1px solid #fde68a; cursor:pointer; font-size:0.72rem; color:#b45309; font-weight:600;"><input type="checkbox" id="mProgLrs"> Ley Ricarte Soto</label>
-                            <label style="display:flex; align-items:center; gap:8px; background:#faf5ff; padding:8px 10px; border-radius:6px; border:1px solid #e9d5ff; cursor:pointer; font-size:0.72rem; color:#6b21a8; font-weight:600;"><input type="checkbox" id="mProgPm"> Programa Ministerial</label>
-                            <label style="display:flex; align-items:center; gap:8px; background:#ecfdf5; padding:8px 10px; border-radius:6px; border:1px solid #a7f3d0; cursor:pointer; font-size:0.72rem; color:#047857; font-weight:600;"><input type="checkbox" id="mProgControlado"> Fármaco Controlado</label>
+                    <!-- PROGRAMAS CON DISEÑO LIMPIO Y TEXTO CON COLOR -->
+                    <div class="full-width" style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border);">
+                        <label style="margin-bottom:10px; font-weight:600; color:var(--text-main); font-size:0.75rem;">Programas y Alertas Especiales:</label>
+                        <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px;">
+                            <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="mProgFrío"> <span class="badge-prog badge-frio">Cámara de Frío</span></label>
+                            <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="mProgDac"> <span class="badge-prog badge-dac">Alto Costo (DAC)</span></label>
+                            <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="mProgLrs"> <span class="badge-prog badge-lrs">Ley Ricarte Soto</span></label>
+                            <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="mProgPm"> <span class="badge-prog badge-pm">Programa Ministerial</span></label>
+                            <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="mProgControlado"> <span class="badge-prog badge-controlado">Fármaco Controlado</span></label>
                         </div>
                     </div>
 
@@ -1238,8 +1235,8 @@
                     <div><label>Anaquel / Rack / Full Space / Pallet</label><select id="mAnaquel"><option value="">-- Seleccionar --</option><option value="Anaquel 1">Anaquel 1</option><option value="Rack">Rack</option><option value="Full Space">Full Space</option><option value="Pallet">Pallet</option></select></div>
                     <div class="full-width"><label>Posición</label><input id="mPosicion" value="" placeholder="Ej: A1 (dejar en blanco para lectura QR)"></div>
                     
-                    <div class="full-width" style="background:#f3f4f6; padding:10px; border-radius:var(--radius); text-align:center; margin-top:6px;">
-                        <button class="btn btn-purple btn-xs" onclick="iniciarEscanerQR('almacenar')">Escanear QR de Ubicación</button>
+                    <div class="full-width" style="background:#f1f5f9; padding:12px; border-radius:var(--radius); text-align:center; margin-top:6px;">
+                        <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('almacenar')">Escanear QR de Ubicación</button>
                     </div>
                     <div id="qr-reader" class="full-width"></div>
                 </div>
@@ -1374,7 +1371,7 @@
             if(!p) return;
 
             let listHtml = (p.ubicaciones || []).map((u, index) => `
-                <div style="display:flex; align-items:center; justify-content:space-between; background:#f9fafb; padding:8px 12px; border-radius:var(--radius); margin-bottom:6px; font-size:0.75rem;">
+                <div style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; padding:8px 12px; border-radius:var(--radius); margin-bottom:6px; font-size:0.75rem;">
                     <span><strong>Zona ${u.zona}</strong> - ${u.anaquel} Pos. ${u.posicion}</span>
                     <button class="btn btn-danger btn-xs" onclick="removerUbicacionDeProducto('${p.id}', ${index})">Quitar</button>
                 </div>
@@ -1435,14 +1432,15 @@
                     <option value="Unidad Mínima / Unidosis" ${p.tipo==='Unidad Mínima / Unidosis'?'selected':''}>Unidad Mínima / Unidosis</option>
                 </select>
 
-                <div style="background:#f9fafb; padding:12px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:10px;">
-                    <label style="margin-bottom:8px; font-weight:600; font-size:0.75rem;">Programas y Alertas Especiales:</label>
-                    <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px;">
-                        <label style="display:flex; align-items:center; gap:8px; background:#f0f9ff; padding:8px 10px; border-radius:6px; border:1px solid #bae6fd; cursor:pointer; font-size:0.72rem; color:#0369a1; font-weight:600;"><input type="checkbox" id="editProgFrío" ${prog.frio?'checked':''}> Cámara de Frío</label>
-                        <label style="display:flex; align-items:center; gap:8px; background:#fef2f2; padding:8px 10px; border-radius:6px; border:1px solid #fecaca; cursor:pointer; font-size:0.72rem; color:#b91c1c; font-weight:600;"><input type="checkbox" id="editProgDac" ${prog.dac?'checked':''}> Alto Costo (DAC)</label>
-                        <label style="display:flex; align-items:center; gap:8px; background:#fffbeb; padding:8px 10px; border-radius:6px; border:1px solid #fde68a; cursor:pointer; font-size:0.72rem; color:#b45309; font-weight:600;"><input type="checkbox" id="editProgLrs" ${prog.lrs?'checked':''}> Ley Ricarte Soto</label>
-                        <label style="display:flex; align-items:center; gap:8px; background:#faf5ff; padding:8px 10px; border-radius:6px; border:1px solid #e9d5ff; cursor:pointer; font-size:0.72rem; color:#6b21a8; font-weight:600;"><input type="checkbox" id="editProgPm" ${prog.pm?'checked':''}> Programa Ministerial</label>
-                        <label style="display:flex; align-items:center; gap:8px; background:#ecfdf5; padding:8px 10px; border-radius:6px; border:1px solid #a7f3d0; cursor:pointer; font-size:0.72rem; color:#047857; font-weight:600;"><input type="checkbox" id="editProgControlado" ${prog.controlado?'checked':''}> Fármaco Controlado</label>
+                <!-- PROGRAMAS CON DISEÑO LIMPIO Y TEXTO CON COLOR -->
+                <div style="background:#f8fafc; padding:14px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:12px;">
+                    <label style="margin-bottom:10px; font-weight:600; font-size:0.75rem;">Programas y Alertas Especiales:</label>
+                    <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px;">
+                        <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="editProgFrío" ${prog.frio?'checked':''}> <span class="badge-prog badge-frio">Cámara de Frío</span></label>
+                        <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="editProgDac" ${prog.dac?'checked':''}> <span class="badge-prog badge-dac">Alto Costo (DAC)</span></label>
+                        <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="editProgLrs" ${prog.lrs?'checked':''}> <span class="badge-prog badge-lrs">Ley Ricarte Soto</span></label>
+                        <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="editProgPm" ${prog.pm?'checked':''}> <span class="badge-prog badge-pm">Programa Ministerial</span></label>
+                        <label style="display:flex; align-items:center; gap:10px; background:#fff; padding:10px 12px; border-radius:var(--radius); border:1px solid var(--border); cursor:pointer; font-size:0.75rem;"><input type="checkbox" id="editProgControlado" ${prog.controlado?'checked':''}> <span class="badge-prog badge-controlado">Fármaco Controlado</span></label>
                     </div>
                 </div>
 
@@ -1458,8 +1456,8 @@
                     <div><label>Anaquel / Rack / Full Space / Pallet</label><select id="nuevoAnaquel"><option value="">-- Seleccionar --</option><option value="Anaquel 1">Anaquel 1</option><option value="Rack">Rack</option><option value="Full Space">Full Space</option><option value="Pallet">Pallet</option></select></div>
                     <div class="full-width"><label>Posición</label><input id="nuevaPosicion" value="" placeholder="Ej: A1 (dejar en blanco para lectura QR)"></div>
                     
-                    <div class="full-width" style="background:#f3f4f6; padding:10px; border-radius:var(--radius); text-align:center; margin-top:6px;">
-                        <button class="btn btn-purple btn-xs" onclick="iniciarEscanerQR('agregarUbicacion')">Escanear QR de Ubicación</button>
+                    <div class="full-width" style="background:#f1f5f9; padding:12px; border-radius:var(--radius); text-align:center; margin-top:6px;">
+                        <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('agregarUbicacion')">Escanear QR de Ubicación</button>
                     </div>
                     <div id="qr-reader" class="full-width"></div>
                 </div>
@@ -1699,14 +1697,14 @@
             if(ubicsMap.size === 0) return alert('No hay ubicaciones válidas registradas.');
 
             let html = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                     <h3 style="font-size:0.85rem; font-weight:600;">Selecciona ubicaciones para impresión</h3>
                     <div>
                         <button class="btn btn-outline btn-xs" onclick="toggleSelectAllQR(true)">Marcar Todos</button>
                         <button class="btn btn-outline btn-xs" onclick="toggleSelectAllQR(false)">Desmarcar</button>
                     </div>
                 </div>
-                <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(160px,1fr)); gap:10px; max-height:50vh; overflow:auto; padding:4px;">
+                <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(170px,1fr)); gap:10px; max-height:50vh; overflow:auto; padding:4px;">
             `;
 
             ubicsMap.forEach((val) => {
@@ -1715,7 +1713,7 @@
                     <label style="border:1px solid var(--border); padding:10px; border-radius:var(--radius); background:white; display:flex; flex-direction:column; gap:4px; cursor:pointer; font-size:0.7rem;">
                         <div style="display:flex; align-items:center; justify-content:space-between;">
                             <span style="font-weight:600; color:var(--accent);">${val.tipo}</span>
-                            <input type="checkbox" class="qr-chk" value="${labelTxt}" checked style="width:14px; height:14px; cursor:pointer;">
+                            <input type="checkbox" class="qr-chk" value="${labelTxt}" checked style="width:15px; height:15px; cursor:pointer;">
                         </div>
                         <div style="color:var(--text-main);"><strong>Zona ${val.zona}</strong><br>${val.anaquel}<br>Pos. ${val.posicion}</div>
                     </label>
@@ -1736,9 +1734,9 @@
                     printHtml += `
                         <div style="border:1px solid #333; padding:14px; border-radius:6px; text-align:center; background:#fff; display:flex; flex-direction:column; align-items:center; gap:6px;">
                             <div style="font-weight:bold; font-size:8px; color:#333;">HOSPITAL SAN JUAN DE DIOS</div>
-                            <div style="font-size:11px; font-weight:700; color:#111827;">${textoQR}</div>
+                            <div style="font-size:11px; font-weight:700; color:#0f172a;">${textoQR}</div>
                             <div id="qrcode-${i}" style="margin:4px auto;"></div>
-                            <div style="font-size:7px; color:#666; font-weight:600;">Bodega Central Abastecimiento - Gestión Logística</div>
+                            <div style="font-size:7px; color:#475569; font-weight:600;">Bodega Central Abastecimiento - Gestión Logística</div>
                         </div>
                     `;
                 });
@@ -1784,7 +1782,7 @@
                     <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarChecksPermisos()"><option value="admin">Admin</option><option value="supervisor">Supervisor</option><option value="operario">Operario</option><option value="invitado">Invitado</option></select></div>
                     <div class="full-width">
                         <label>Permisos</label>
-                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f9fafb; padding:10px; border-radius:var(--radius); border:1px solid var(--border);"></div>
+                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border);"></div>
                     </div>
                 </div>
             `);
@@ -1825,7 +1823,7 @@
                     <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarChecksPermisos()"><option value="admin" ${u.perfil==='admin'?'selected':''}>Admin</option><option value="supervisor" ${u.perfil==='supervisor'?'selected':''}>Supervisor</option><option value="operario" ${u.perfil==='operario'?'selected':''}>Operario</option><option value="invitado" ${u.perfil==='invitado'?'selected':''}>Invitado</option></select></div>
                     <div class="full-width">
                         <label>Permisos</label>
-                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f9fafb; padding:10px; border-radius:var(--radius); border:1px solid var(--border);"></div>
+                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border);"></div>
                     </div>
                 </div>
             `);
@@ -1870,8 +1868,8 @@
             todasOpciones.forEach(opt => {
                 const isChecked = actualPerms.includes(opt) ? 'checked' : '';
                 container.innerHTML += `
-                    <label style="display:flex; align-items:center; gap:6px; font-size:0.75rem; cursor:pointer;">
-                        <input type="checkbox" class="perm-chk" value="${opt}" ${isChecked} style="width:14px; height:14px;">
+                    <label style="display:flex; align-items:center; gap:8px; font-size:0.75rem; cursor:pointer;">
+                        <input type="checkbox" class="perm-chk" value="${opt}" ${isChecked} style="width:15px; height:15px;">
                         <span>${opt.toUpperCase()}</span>
                     </label>
                 `;
@@ -1910,7 +1908,7 @@
                 <div class="form-grid">
                     <div class="full-width"><label>ID (Ej: Farmacos2)</label><input id="bId" placeholder="ID único"></div>
                     <div class="full-width"><label>Nombre</label><input id="bNombre" placeholder="Nombre de bodega"></div>
-                    <div><label>Color</label><input id="bColor" type="color" value="#1d4ed8" style="height:36px; padding:2px;"></div>
+                    <div><label>Color</label><input id="bColor" type="color" value="#0284c7" style="height:38px; padding:2px;"></div>
                 </div>
             `);
             modalCallback = () => {
@@ -1936,7 +1934,7 @@
             mostrarModal('Editar Bodega', `
                 <div class="form-grid">
                     <div class="full-width"><label>Nombre</label><input id="bNombre" value="${w.nombre}"></div>
-                    <div><label>Color</label><input id="bColor" type="color" value="${w.color || '#1d4ed8'}" style="height:36px; padding:2px;"></div>
+                    <div><label>Color</label><input id="bColor" type="color" value="${w.color || '#0284c7'}" style="height:38px; padding:2px;"></div>
                 </div>
             `);
             modalCallback = () => {
@@ -1999,7 +1997,7 @@
                 <tr>
                     <td>${m.fecha}</td>
                     <td><strong>${m.usuario}</strong></td>
-                    <td><span class="badge" style="background:#f3f4f6; color:#1f2937;">${m.tipo}</span></td>
+                    <td><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td>
                     <td>${m.codigo}</td>
                     <td style="white-space:normal; text-align:left;">${m.detalle}</td>
                 </tr>
