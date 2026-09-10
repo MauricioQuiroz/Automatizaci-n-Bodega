@@ -205,9 +205,9 @@
             <div class="divider"></div>
             <p>Ingresa tus credenciales de acceso.</p>
             <label>Usuario</label>
-            <input type="text" id="loginUser" placeholder="Nombre de usuario">
+            <input type="text" id="loginUser" placeholder="Nombre de usuario" onkeydown="handleLoginKeydown(event)">
             <label>Contraseña</label>
-            <input type="password" id="loginPass" placeholder="••••••••">
+            <input type="password" id="loginPass" placeholder="••••••••" onkeydown="handleLoginKeydown(event)">
             <div id="loginError" class="login-error">Credenciales incorrectas.</div>
             <button class="btn btn-primary" onclick="handleLogin()">Ingresar</button>
             <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 6px; align-items: center;">
@@ -339,7 +339,10 @@
 
             <!-- Herramientas de Exportación y Generación de Prompts para IA -->
             <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:16px;">
-                <h4 style="font-size:0.75rem; font-weight:600; margin-bottom:12px; color:var(--text-muted); text-transform:uppercase;">Herramientas de Exportación, Informes y Prompts para IA (Gemini / ChatGPT)</h4>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+                    <h4 style="font-size:0.75rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; margin:0;">Herramientas de Exportación, Informes y Prompts para IA (Gemini / ChatGPT)</h4>
+                    <button class="btn btn-primary btn-xs" onclick="abrirModalPromptCRUD()">+ Agregar Prompt</button>
+                </div>
                 <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 12px;">
                     <button class="btn btn-primary btn-sm" onclick="exportarReporteCriticos()">Reporte Ítems Críticos / Controlados</button>
                     <button class="btn btn-teal btn-sm" onclick="exportarReporteTrazabilidadERP()">Reporte Trazabilidad ERP (Lotes/Vencimientos)</button>
@@ -347,13 +350,8 @@
                     <button class="btn btn-orange btn-sm" onclick="exportarReporteProgramasCategorias()">Reporte Ítems por Programa y Categoría</button>
                     <button class="btn btn-success btn-sm" onclick="exportarReporteCalidadGs1Completo()">Reporte Calidad y Estado de Codificaciones GS1</button>
                 </div>
-                <div style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                    <div>
-                        <strong style="font-size:0.75rem; color:var(--text-main); display:block;">Prompt Ejecutivo para IA (Auditoría General y GS1):</strong>
-                        <span style="font-size:0.68rem; color:var(--text-muted);">Copia este prompt junto con tu archivo Excel exportado en ChatGPT o Gemini para generar un informe gerencial completo con gráficos, resumen ejecutivo y conclusiones.</span>
-                    </div>
-                    <button class="btn btn-primary btn-xs" onclick="copiarPromptIA()">Copiar Prompt para IA</button>
-                </div>
+                
+                <div id="listaPromptsDinamicosContainer" style="display:flex; flex-direction:column; gap:8px; margin-top:10px;"></div>
             </div>
 
             <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:10px; text-align: left;">Auditoría Detallada de Estado y Calidad de Codificaciones GS1</h3>
@@ -543,8 +541,13 @@
                 </div>
 
                 <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border);" id="configLocationsMasterSection">
-                    <label style="font-weight:600; color:var(--text-main); text-align: left; font-size:0.8rem;">Maestro de Ubicaciones QR (Excel)</label>
-                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:6px; text-align: left;">Carga un Excel con columna UBICACION (concatenada) o columnas ZONA, TIPO, POSICION.</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:8px;">
+                        <div>
+                            <label style="font-weight:600; color:var(--text-main); text-align: left; font-size:0.8rem;">Maestro de Ubicaciones QR (Excel)</label>
+                            <p style="font-size:0.68rem; color:var(--text-muted); margin-top:2px; text-align: left;">Carga un Excel con columna UBICACION (concatenada) o columnas ZONA, TIPO, POSICION.</p>
+                        </div>
+                        <button class="btn btn-danger btn-xs" onclick="restablecerUbicacionesMaestras()">Restablecer / Borrar Ubicaciones</button>
+                    </div>
                     <input type="file" id="locationsCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoUbicaciones(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.75rem;">
                     <div style="font-size:0.68rem; color:var(--success); margin-top:4px; font-weight:500; text-align: left;" id="locationsCatalogStatus">Ubicaciones maestras cargadas: 0</div>
                 </div>
@@ -619,10 +622,24 @@
             { id: 'unguentos', nombre: 'Unguentos-pomadas-cremas-geles-pastas', color: '#854d0e', rgb: '133, 77, 14' }
         ];
 
+        const DEFAULT_PROMPTS_IA = [
+            {
+                id: 'auditoria_general',
+                titulo: 'Auditoría General y GS1',
+                texto: 'Actúa como un Auditor Logístico Experto en Estándares GS1 y Gestión Hospitalaria para el Hospital San Juan de Dios. Con base en la carga del documento Excel exportado y los datos de inventario adjuntos, elabora un Informe Ejecutivo Completo y Gerencial que incluya: 1. Resumen Ejecutivo de la situación logística actual y eficiencia de captura GS1. 2. Análisis Estadístico y Métricas Medibles. 3. Auditoría de Calidad de Codificaciones GS1. 4. Conclusiones y Recomendaciones.'
+            },
+            {
+                id: 'control_criticos',
+                titulo: 'Informe de Ítems Críticos y Controlados',
+                texto: 'Analiza el inventario exportado filtrando específicamente los fármacos controlados, cadena de frío y medicamentos de alto costo. Evalúa su correcta ubicación por zonas, riesgos de quiebre de stock y pautas de seguridad hospitalaria.'
+            }
+        ];
+
         let appState = {
             users: [], warehouses: [], products: [], movements: [],
             layouts: {}, masterCatalog: [], locationsCatalog: [],
-            erpUnlocked: false, programasCatalog: DEFAULT_PROGRAMAS_CATALOG
+            erpUnlocked: false, programasCatalog: DEFAULT_PROGRAMAS_CATALOG,
+            promptsIa: DEFAULT_PROMPTS_IA
         };
 
         const DEFAULT_DATA = {
@@ -641,7 +658,7 @@
                 { id: 'Alimentos', nombre: 'Bodega de Alimentos', color: '#ea580c', rgb: '234, 88, 12' }
             ],
             products: [], movements: [], layouts: {}, masterCatalog: [], locationsCatalog: [],
-            erpUnlocked: false, programasCatalog: DEFAULT_PROGRAMAS_CATALOG
+            erpUnlocked: false, programasCatalog: DEFAULT_PROGRAMAS_CATALOG, promptsIa: DEFAULT_PROMPTS_IA
         };
 
         const PERFILES_CONFIG = {
@@ -706,7 +723,8 @@
                         masterCatalog: dataRemota.masterCatalog || [],
                         locationsCatalog: dataRemota.locationsCatalog || [],
                         erpUnlocked: dataRemota.erpUnlocked !== undefined ? dataRemota.erpUnlocked : false,
-                        programasCatalog: (dataRemota.programasCatalog && dataRemota.programasCatalog.length > 0) ? dataRemota.programasCatalog.map(cp => ({...cp, rgb: cp.rgb || hexToRgb(cp.color || '#0284c7')})) : DEFAULT_PROGRAMAS_CATALOG
+                        programasCatalog: (dataRemota.programasCatalog && dataRemota.programasCatalog.length > 0) ? dataRemota.programasCatalog.map(cp => ({...cp, rgb: cp.rgb || hexToRgb(cp.color || '#0284c7')})) : DEFAULT_PROGRAMAS_CATALOG,
+                        promptsIa: (dataRemota.promptsIa && dataRemota.promptsIa.length > 0) ? dataRemota.promptsIa : DEFAULT_PROMPTS_IA
                     };
                 } else {
                     dbFirestore.collection('wms_data').doc('main').set(DEFAULT_DATA);
@@ -894,6 +912,13 @@
             });
             verificarSesionGuardada();
         }, 50);
+
+        function handleLoginKeydown(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleLogin();
+            }
+        }
 
         function handleLogin() {
             const u = document.getElementById('loginUser').value.trim();
@@ -1120,6 +1145,8 @@
             if(el2) el2.textContent = totalProgramasCount;
             if(el3) el3.textContent = sinUbicacion;
 
+            renderListaPromptsReportes();
+
             // Renderizar tabla de auditoría GS1 avanzada en reportes
             const tbodyGs1 = document.getElementById('reporteAuditoriaGs1Body');
             if(tbodyGs1) {
@@ -1168,19 +1195,63 @@
             }
         }
 
-        function copiarPromptIA() {
-            const promptText = `Actúa como un Auditor Logístico Experto en Estándares GS1 y Gestión Hospitalaria para el Hospital San Juan de Dios. Con base en la carga del documento Excel exportado y los datos de inventario adjuntos, elabora un Informe Ejecutivo Completo y Gerencial que incluya:
-1. Resumen Ejecutivo de la situación logística actual y eficiencia de captura GS1.
-2. Análisis Estadístico y Métricas Medibles (Distribución de ítems por bodega, total de GTINs activos, inactivos y sin código).
-3. Auditoría de Calidad de Codificaciones GS1 (Evaluación de cumplimiento normativo, tipos de códigos como EAN-13, EAN-14, GS1-128, DataMatrix, validación de Identificadores de Aplicación AI 01, 17, 10, 21 y análisis de anomalías detectadas).
-4. Informe de Ítems por Programa Ministerial y Categoría (Controlados, Frío, Ricarte Soto, VIH, etc.).
-5. Conclusiones y Recomendaciones Operativas priorizadas para optimización del almacenamiento.`;
-            
-            navigator.clipboard.writeText(promptText).then(() => {
-                mostrarToast('Prompt para IA copiado al portapapeles con éxito.');
+        function renderListaPromptsReportes() {
+            const container = document.getElementById('listaPromptsDinamicosContainer');
+            if(!container) return;
+            const prompts = appState.promptsIa || DEFAULT_PROMPTS_IA;
+            const user = getCurrentUser();
+            const isAdmin = user && user.perfil === 'admin';
+
+            container.innerHTML = prompts.map(pr => `
+                <div style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <div style="flex:1; min-width:250px;">
+                        <strong style="font-size:0.75rem; color:var(--text-main); display:block;">Prompt: ${pr.titulo}</strong>
+                        <span style="font-size:0.68rem; color:var(--text-muted); display:block; margin-top:2px;">${pr.texto}</span>
+                    </div>
+                    <div style="display:flex; gap:6px; flex-shrink:0;">
+                        <button class="btn btn-primary btn-xs" onclick="copiarPromptTextoCustom('${encodeURIComponent(pr.texto)}')">Copiar Prompt</button>
+                        ${isAdmin ? `<button class="btn btn-danger btn-xs" onclick="eliminarPromptIA('${pr.id}')">Eliminar</button>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function copiarPromptTextoCustom(encodedText) {
+            const txt = decodeURIComponent(encodedText);
+            navigator.clipboard.writeText(txt).then(() => {
+                mostrarToast('Prompt copiado al portapapeles con éxito.');
             }).catch(err => {
                 alert('No se pudo copiar automáticamente: ' + err);
             });
+        }
+
+        function abrirModalPromptCRUD() {
+            mostrarModal('Agregar Nuevo Prompt para IA', `
+                <label>Título del Prompt / Tipo de Informe</label>
+                <input id="newPromptTitulo" placeholder="Ej: Auditoría de Cadena de Frío">
+                <label style="margin-top:6px;">Texto del Prompt</label>
+                <textarea id="newPromptTexto" rows="3" placeholder="Instrucciones detalladas para ChatGPT o Gemini..."></textarea>`, true);
+
+            modalCallback = () => {
+                const titulo = document.getElementById('newPromptTitulo').value.trim();
+                const texto = document.getElementById('newPromptTexto').value.trim();
+                if(!titulo || !texto) return alert('Por favor complete todos los campos.');
+                if(!appState.promptsIa) appState.promptsIa = [...DEFAULT_PROMPTS_IA];
+                const newId = 'prompt_' + Math.random().toString(36).substr(2, 9);
+                appState.promptsIa.push({ id: newId, titulo, texto });
+                guardarEstadoFirestore();
+                cerrarModal();
+                renderReportes();
+                mostrarToast('Prompt agregado con éxito.');
+            };
+        }
+
+        function eliminarPromptIA(id) {
+            if(!confirm('¿Estás seguro de eliminar este prompt?')) return;
+            appState.promptsIa = (appState.promptsIa || DEFAULT_PROMPTS_IA).filter(p => p.id !== id);
+            guardarEstadoFirestore();
+            renderReportes();
+            mostrarToast('Prompt eliminado.');
         }
 
         function exportarReporteCriticos() {
@@ -1314,6 +1385,14 @@
             reader.readAsArrayBuffer(file);
         }
 
+        function restablecerUbicacionesMaestras() {
+            if(!confirm('¿Estás seguro de restablecer / borrar todas las ubicaciones maestras actuales para cargar un archivo nuevo actualizado?')) return;
+            appState.locationsCatalog = [];
+            guardarEstadoFirestore();
+            renderConfig();
+            mostrarToast('Ubicaciones maestras restablecidas. Ya puedes cargar un archivo nuevo.');
+        }
+
         function cargarCatalogoUbicaciones(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1351,7 +1430,7 @@
                     guardarEstadoFirestore();
                     renderConfig();
                     document.getElementById('locationsCatalogFileInput').value = '';
-                    mostrarToast(`Maestro de ubicaciones cargado (${locs.length} registros).`);
+                    mostrarToast(`Maestro de ubicaciones actualizado (${locs.length} registros).`);
                 } catch(err) { alert('Error al leer el archivo de ubicaciones: ' + err.message); }
             };
             reader.readAsArrayBuffer(file);
@@ -1364,7 +1443,6 @@
             const raw = String(ubicacionStr).trim();
             let zona = 'SIN ASIGNACIÓN', anaquel = 'Anaquel 1', posicion = '';
             
-            // Ejemplo esperado: "Zona F - Anaquel 2 - Pos. A1" o "Zona G - Full Space 1 - Pos. A1"
             const parts = raw.split(/[-–—]/).map(p => p.trim());
             
             if (parts.length >= 1) {
@@ -1373,17 +1451,14 @@
             }
             
             if (parts.length >= 2) {
-                // El segundo segmento suele ser el anaquel / rack / full space tipo
                 anaquel = parts[1];
             }
             
             if (parts.length >= 3) {
-                // El tercer segmento suele ser la posición (ej: "Pos. A1" o "A1")
                 posicion = parts[2].replace(/pos\.?/i, '').trim().toUpperCase();
             }
 
             if (!posicion && parts.length === 2) {
-                // Si solo hay 2 partes (ej: Zona F - A1)
                 posicion = parts[1].replace(/pos\.?/i, '').trim().toUpperCase();
                 anaquel = 'Anaquel 1';
             }
@@ -2373,9 +2448,7 @@
             printHtml += `</div>`;
             
             const win = window.open('', '_blank');
-            win.document.write(`<html><head><title>Imprimir Etiquetas QR</title><style>@media print { .etiqueta-qr-print-card { page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 15px; } }</style><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script></head><body onload="window.print();">` + printHtml + `<script>` + Array.from(checkedLabels).forEach((chk, i) => {
-                // Generar código QR por cada item
-            }) || '' + Array.from(checkedLabels).map((chk, i) => `new QRCode(document.getElementById("qrcode-${i}"), { text: "${chk.value}", width: 85, height: 85 });`).join('') + `<\/script></body></html>`);
+            win.document.write(`<html><head><title>Imprimir Etiquetas QR</title><style>@media print { .etiqueta-qr-print-card { page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 15px; } }</style><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script></head><body onload="window.print();">` + printHtml + `<script>` + Array.from(checkedLabels).map((chk, i) => `new QRCode(document.getElementById("qrcode-${i}"), { text: "${chk.value}", width: 85, height: 85 });`).join('') + `<\/script></body></html>`);
             win.document.close();
             cerrarModal();
         }
