@@ -377,17 +377,20 @@
                         <option value="Exportación">Exportación</option>
                     </select>
 
-                    <!-- 4. Filtro Ítem / GTIN (Escritura, Catálogo Maestro y Cámara) -->
+                    <!-- 4. Filtro Ítem / GTIN (Escritura, Catálogo Maestro y Cámara con botón verde) -->
                     <div style="position: relative; width: 100%;">
                         <div style="display: flex; gap: 4px;">
                             <input type="text" id="filtroMovItem" placeholder="Ítem / GTIN o buscar..." style="flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.72rem; background: white;" oninput="filtrarCatalogoItemMovimiento(this.value); renderHistorialCompleto();">
-                            <button class="btn btn-teal btn-xs" onclick="iniciarEscanerBarraMovimiento()" title="Escanear código"><span style="font-size: 1rem;">📷</span></button>
+                            <button class="btn btn-success btn-xs" onclick="iniciarEscanerBarraMovimiento()">Escanear</button>
                         </div>
                         <div id="movMasterDropdownResults" class="master-dropdown-results" style="display: none;"></div>
                     </div>
 
                 </div>
             </div>
+            <!-- Contenedor del lector QR para movimientos -->
+            <div id="qr-reader-movimiento" style="width: 100%; max-width: 300px; margin: 8px auto; display: none;"></div>
+            
             <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:10px; text-align: left;">Historial completo de modificaciones</h3>
             <div class="table-wrap">
                 <div class="table-container">
@@ -1795,6 +1798,8 @@
             }
             const readerDiv = document.getElementById('qr-reader');
             if(readerDiv) readerDiv.style.display = 'none';
+            const readerMovDiv = document.getElementById('qr-reader-movimiento');
+            if(readerMovDiv) readerMovDiv.style.display = 'none';
         }
 
         function procesarTextoQR(texto, modo) {
@@ -2362,10 +2367,10 @@
         }
 
         function iniciarEscanerBarraMovimiento() {
-            const readerDiv = document.getElementById('qr-reader');
+            const readerDiv = document.getElementById('qr-reader-movimiento');
             if(readerDiv) readerDiv.style.display = 'block';
             if (html5QrCodeScanner) { try { html5QrCodeScanner.clear(); } catch(e) {} }
-            html5QrCodeScanner = new Html5Qrcode("qr-reader");
+            html5QrCodeScanner = new Html5Qrcode("qr-reader-movimiento");
             html5QrCodeScanner.start(
                 { facingMode: "environment" },
                 { fps: 10, qrbox: { width: 220, height: 100 } },
