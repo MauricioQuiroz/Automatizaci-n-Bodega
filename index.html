@@ -249,6 +249,7 @@
         <nav id="mainNav">
             <button class="active" data-tab="dashboard">Dashboard</button>
             <button data-tab="inventario" id="navInventario">Inventario <span class="badge-nav" id="inventoryBadge">0</span></button>
+            <button data-tab="reportes" id="navReportes">Reportes</button>
             <button data-tab="layout" id="navLayout">Layout</button>
             <button data-tab="movimientos" id="navMovimientos">Movimientos</button>
             <button data-tab="usuarios" id="navUsuarios">Usuarios</button>
@@ -273,7 +274,7 @@
                     <canvas id="chartBodegas" style="max-height: 220px;"></canvas>
                 </div>
                 <div class="chart-card">
-                    <h4>Flujo Reciente de Movimientos</h4>
+                    <h4>Estado y Calidad de Codificaciones GS1</h4>
                     <canvas id="chartMovimientos" style="max-height: 220px;"></canvas>
                 </div>
             </div>
@@ -322,6 +323,41 @@
                             </tr>
                         </thead>
                         <tbody id="inventarioUnificadoBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- REPORTES -->
+        <div id="tab-reportes" class="tab-content">
+            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:14px; text-align: left;">Módulo de Reportes y Auditoría Logística</h3>
+            <div class="card-grid">
+                <div class="card"><div class="number" id="repTotalCodificados">0</div><div class="label">GTINs Activos / Válidos</div></div>
+                <div class="card"><div class="number" id="repTotalProgramasCount">0</div><div class="label">Ítems con Programa Asignado</div></div>
+                <div class="card"><div class="number" id="repTotalSinUbicacion">0</div><div class="label">Pendientes de Ubicación</div></div>
+            </div>
+            <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:16px;">
+                <h4 style="font-size:0.75rem; font-weight:600; margin-bottom:12px; color:var(--text-muted); text-transform:uppercase;">Herramientas de Exportación y Reportes Especiales</h4>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <button class="btn btn-primary btn-sm" onclick="exportarReporteCriticos()">Reporte de Ítems Críticos / Controlados</button>
+                    <button class="btn btn-teal btn-sm" onclick="exportarReporteTrazabilidadERP()">Reporte Trazabilidad ERP (Lotes/Vencimientos)</button>
+                    <button class="btn btn-warning btn-sm" onclick="exportarReporteOcupacionZonas()">Reporte de Ocupación por Zonas</button>
+                </div>
+            </div>
+            <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:10px; text-align: left;">Resumen General del Inventario por Bodega</h3>
+            <div class="table-wrap">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Bodega</th>
+                                <th style="text-align:center;">Total Ítems</th>
+                                <th style="text-align:center;">GTINs Activos</th>
+                                <th style="text-align:center;">Eficiencia GS1</th>
+                                <th style="text-align:center;">Ubicaciones Asignadas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportesResumenBodegasBody"></tbody>
                     </table>
                 </div>
             </div>
@@ -745,7 +781,7 @@
                     const tabId = this.dataset.tab;
                     const user = getCurrentUser();
                     if (user && user.perfil === 'invitado') {
-                        if (tabId !== 'dashboard' && tabId !== 'inventario' && tabId !== 'layout') {
+                        if (tabId !== 'dashboard' && tabId !== 'inventario' && tabId !== 'layout' && tabId !== 'reportes') {
                             alert('Su perfil de invitado solo cuenta con permisos de visualización.'); return;
                         }
                     }
@@ -758,6 +794,7 @@
                     this.classList.add('active');
 
                     if (tabId === 'inventario') renderInventarioUnificado();
+                    if (tabId === 'reportes') renderReportes();
                     if (tabId === 'layout') cargarImagenLayout(currentWarehouse);
                     if (tabId === 'movimientos') { renderMovimientosFiltroUsuariosOptions(); renderHistorialCompleto(); }
                     if (tabId === 'usuarios') renderUsuarios();
@@ -819,6 +856,7 @@
 
             renderDashboard();
             renderInventarioUnificado();
+            renderReportes();
             renderMovimientosFiltroUsuariosOptions();
             renderHistorialCompleto();
             renderUsuarios();
@@ -937,26 +975,126 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
             });
 
-            const conteoTipos = {};
-            (appState.movements || []).forEach(m => {
-                conteoTipos[m.tipo] = (conteoTipos[m.tipo] || 0) + 1;
+            // Gráfico derecho actualizado: Codificaciones GS1 (Activos / Inactivos / Sin GTIN)
+            let countActivos = 0;
+            let countInactivos = 0;
+            let countSinGtin = 0;
+            const prodsList = getProducts();
+            prodsList.forEach(p => {
+                if(!p.gtins || p.gtins.length === 0) {
+                    countSinGtin++;
+                } else {
+                    p.gtins.forEach(g => {
+                        if(p.gtinEstados && p.gtinEstados[g] === 'inactivo') {
+                            countInactivos++;
+                        } else {
+                            countActivos++;
+                        }
+                    });
+                }
             });
-            const labelsTipos = Object.keys(conteoTipos).slice(-6);
-            const dataTipos = labelsTipos.map(l => conteoTipos[l]);
 
             if(chartMovimientosInstance) chartMovimientosInstance.destroy();
             chartMovimientosInstance = new Chart(ctxMovimientos, {
                 type: 'bar',
                 data: {
-                    labels: labelsTipos,
+                    labels: ['GTINs Activos', 'GTINs Inactivos', 'Ítems sin GTIN'],
                     datasets: [{
-                        label: 'Operaciones',
-                        data: dataTipos,
-                        backgroundColor: '#0284c7'
+                        label: 'Cantidad',
+                        data: [countActivos, countInactivos, countSinGtin],
+                        backgroundColor: ['#0d9488', '#d97706', '#e11d48']
                     }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
             });
+        }
+
+        function renderReportes() {
+            const prods = getProducts();
+            let totalCodificados = 0;
+            let totalProgramasCount = 0;
+            let sinUbicacion = 0;
+
+            prods.forEach(p => {
+                if(p.gtins && p.gtins.some(g => p.gtinEstados && p.gtinEstados[g] === 'activo')) totalCodificados++;
+                if(p.programas && Object.values(p.programas).some(v => v)) totalProgramasCount++;
+                if(!p.ubicaciones || p.ubicaciones.length === 0 || p.ubicaciones.some(u => !u.zona || u.zona.toUpperCase() === 'SIN ASIGNACIÓN')) sinUbicacion++;
+            });
+
+            const el1 = document.getElementById('repTotalCodificados');
+            const el2 = document.getElementById('repTotalProgramasCount');
+            const el3 = document.getElementById('repTotalSinUbicacion');
+            if(el1) el1.textContent = totalCodificados;
+            if(el2) el2.textContent = totalProgramasCount;
+            if(el3) el3.textContent = sinUbicacion;
+
+            const tbody = document.getElementById('reportesResumenBodegasBody');
+            if(tbody) {
+                tbody.innerHTML = appState.warehouses.map(w => {
+                    const itemsBodega = (appState.products || []).filter(p => p.bodega === w.id);
+                    const totalB = itemsBodega.length;
+                    let actB = 0;
+                    let ubicsB = new Set();
+                    itemsBodega.forEach(p => {
+                        if(p.gtins) p.gtins.forEach(g => { if(p.gtinEstados && p.gtinEstados[g] === 'activo') actB++; });
+                        if(p.ubicaciones) p.ubicaciones.forEach(u => { if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÓN') ubicsB.add(`${u.zona}-${u.anaquel}-${u.posicion}`); });
+                    });
+                    const efB = totalB > 0 ? Math.round((actB / totalB) * 100) : 0;
+                    return `
+                    <tr>
+                        <td><span class="badge-bodega" style="background:${w.color};">${w.nombre}</span></td>
+                        <td style="text-align:center;"><strong>${totalB}</strong></td>
+                        <td style="text-align:center;">${actB}</td>
+                        <td style="text-align:center;"><span class="badge" style="background:#f0fdf4; color:#15803d;">${efB}%</span></td>
+                        <td style="text-align:center;">${ubicsB.size}</td>
+                    </tr>`;
+                }).join('') || '<tr><td colspan="5" class="empty-state">Sin bodegas registradas</td></tr>';
+            }
+        }
+
+        function exportarReporteCriticos() {
+            const prods = getProducts().filter(p => {
+                const prog = p.programas || {};
+                return prog.controlado || prog.frio || prog.lrs || prog.vih;
+            });
+            if(prods.length === 0) return alert('No hay ítems críticos o controlados en la selección actual.');
+            const ws = XLSX.utils.json_to_sheet(prods.map(p => ({
+                'Código Interno': p.codigo, 'Glosa': p.glosa, 'Bodega': p.bodega, 'Jerarquía': p.tipo, 'Estado': p.estado
+            })));
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Criticos_Controlados');
+            XLSX.writeFile(wb, 'reporte_criticos_hsjd.xlsx');
+            mostrarToast('Reporte de críticos exportado con éxito.');
+        }
+
+        function exportarReporteTrazabilidadERP() {
+            const prods = getProducts();
+            const ws = XLSX.utils.json_to_sheet(prods.map(p => ({
+                'Código Interno': p.codigo, 'Glosa': p.glosa, 'Bodega': p.bodega, 'Lote': p.erpData?.lote || '', 'Vencimiento': p.erpData?.vencimiento || '', 'Serie': p.erpData?.serie || '', 'Factor Empaque': p.erpData?.factorEmpaque || 1
+            })));
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Trazabilidad_ERP');
+            XLSX.writeFile(wb, 'reporte_trazabilidad_erp.xlsx');
+            mostrarToast('Reporte ERP exportado con éxito.');
+        }
+
+        function exportarReporteOcupacionZonas() {
+            const prods = getProducts();
+            const zonaConteo = {};
+            prods.forEach(p => {
+                if(p.ubicaciones) {
+                    p.ubicaciones.forEach(u => {
+                        const z = u.zona || 'SIN ASIGNACIÓN';
+                        zonaConteo[z] = (zonaConteo[z] || 0) + 1;
+                    });
+                }
+            });
+            const dataExport = Object.keys(zonaConteo).map(z => ({ 'Zona': z, 'Total Ítems Asignados': zonaConteo[z] }));
+            const ws = XLSX.utils.json_to_sheet(dataExport);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Ocupacion_Zonas');
+            XLSX.writeFile(wb, 'reporte_ocupacion_zonas.xlsx');
+            mostrarToast('Reporte de zonas exportado con éxito.');
         }
 
         function cargarCatalogoMaestro(event) {
