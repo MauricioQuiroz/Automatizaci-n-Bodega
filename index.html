@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sistema de Automatización de Almacenamiento - Hospital San Juan de Dios</title>
+    <title>Sistema de Automatización y Control de Almacenamiento - Hospital San Juan de Dios</title>
     <!-- Librerías QR, Excel y Charts -->
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -201,7 +201,7 @@
 <body>
     <div id="loginModal">
         <div class="login-box">
-            <h2>Sistema de Automatización de<br>Almacenamiento</h2>
+            <h2>Sistema de Automatización y Control de Almacenamiento</h2>
             <div class="divider"></div>
             <p>Ingresa tus credenciales de acceso.</p>
             <label>Usuario</label>
@@ -221,7 +221,7 @@
         <header>
             <div class="header-top-row">
                 <div class="header-left">
-                    <div class="header-title">Sistema de Automatización de Almacenamiento</div>
+                    <div class="header-title">Sistema de Automatización y Control de Almacenamiento</div>
                     <div class="header-sub">Hospital San Juan de Dios · <span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
                 </div>
                 <div class="user-status-pill">
@@ -544,7 +544,7 @@
 
                 <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border);" id="configLocationsMasterSection">
                     <label style="font-weight:600; color:var(--text-main); text-align: left; font-size:0.8rem;">Maestro de Ubicaciones QR (Excel)</label>
-                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:6px; text-align: left;">Carga un Excel con columnas Zona, Anaquel, Posicion.</p>
+                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:6px; text-align: left;">Carga un Excel con columna UBICACION (concatenada) o columnas ZONA, TIPO, POSICION.</p>
                     <input type="file" id="locationsCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoUbicaciones(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.75rem;">
                     <div style="font-size:0.68rem; color:var(--success); margin-top:4px; font-weight:500; text-align: left;" id="locationsCatalogStatus">Ubicaciones maestras cargadas: 0</div>
                 </div>
@@ -810,7 +810,7 @@
             let tipo = 'Desconocido';
             let estructura = 'Desconocida';
             let cumple = 'Sí';
-            let motivo = 'Eándar GS1 válido';
+            let motivo = 'Estándar GS1 válido';
 
             const len = g.length;
             if(len === 13) {
@@ -1128,7 +1128,7 @@
                     const gtins = (p.gtins && p.gtins.length > 0) ? p.gtins : [''];
                     gtins.forEach(g => {
                         const audit = auditarCalidadGs1(g, p);
-                        const badgeCumple = audit.cumple === 'Sí' ? '<span class="badge" style="background:#f0fdf4; color:#15803d;">Sí</span>' : '<span class="badge" style="background:#fffe4e6; color:#be123c;">No</span>';
+                        const badgeCumple = audit.cumple === 'Sí' ? '<span class="badge" style="background:#f0fdf4; color:#15803d;">Sí</span>' : '<span class="badge" style="background:#ffe4e6; color:#be123c;">No</span>';
                         htmlGs1 += `
                             <tr>
                                 <td><strong>${p.codigo}</strong></td>
@@ -1328,6 +1328,15 @@
                         const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
                         json.forEach((row) => {
                             const keys = Object.keys(row);
+                            const colUbicacion = row[keys.find(k => /^UBICACION$|UBICACIÓN/i.test(k))];
+                            if (colUbicacion && String(colUbicacion).trim() !== '') {
+                                const parsed = parsearUbicacionConcatenada(colUbicacion);
+                                if (parsed.zona && parsed.zona !== 'SIN ASIGNACIÓN') {
+                                    const tipo = determinarJerarquiaPorZona(parsed.zona);
+                                    locs.push({ zona: parsed.zona, anaquel: parsed.anaquel, posicion: parsed.posicion, tipo });
+                                    return;
+                                }
+                            }
                             const zona = String(row[keys.find(k => /^ZONA$/i.test(k))] || '').trim();
                             const anaquel = String(row[keys.find(k => /^ANAQUEL$|RACK|TIPO_POS/i.test(k))] || 'Anaquel 1').trim();
                             const posicion = String(row[keys.find(k => /^POSICION$|POSICIÓN/i.test(k))] || '').trim();
@@ -1354,23 +1363,31 @@
             }
             const raw = String(ubicacionStr).trim();
             let zona = 'SIN ASIGNACIÓN', anaquel = 'Anaquel 1', posicion = '';
-            const partes = raw.split(/[-–—]/).map(p => p.trim());
-            for (let p of partes) {
-                const matchZ = p.match(/zona\s*([a-j0-9]+)/i) || p.match(/^([a-j])$/i);
-                if (matchZ) { zona = matchZ[1].toUpperCase(); break; }
+            
+            // Ejemplo esperado: "Zona F - Anaquel 2 - Pos. A1" o "Zona G - Full Space 1 - Pos. A1"
+            const parts = raw.split(/[-–—]/).map(p => p.trim());
+            
+            if (parts.length >= 1) {
+                const matchZ = parts[0].match(/zona\s*([a-z0-9]+)/i) || parts[0].match(/^([a-z0-9]+)$/i);
+                if (matchZ) zona = matchZ[1].toUpperCase();
             }
-            if (zona === 'SIN ASIGNACIÓN' && partes.length > 0 && partes[0].length <= 3) zona = partes[0].toUpperCase();
-            for (let p of partes) {
-                const matchP = p.match(/pos\.?\s*([a-z0-9]+)/i);
-                if (matchP) { posicion = matchP[1].toUpperCase(); }
-                else if (/^[a-z]\d+$/i.test(p) || /^\d+$/.test(p)) { posicion = p.toUpperCase(); }
+            
+            if (parts.length >= 2) {
+                // El segundo segmento suele ser el anaquel / rack / full space tipo
+                anaquel = parts[1];
             }
-            const partesAnaquel = partes.filter(p => {
-                const up = p.toUpperCase();
-                return !up.includes('ZONA') && !up.includes('POS.') && up !== zona && up !== posicion;
-            });
-            if (partesAnaquel.length > 0) anaquel = partesAnaquel.join(' - ');
-            if (!posicion && partes.length >= 3) posicion = partes[partes.length - 1].replace(/pos\.?/i, '').trim().toUpperCase();
+            
+            if (parts.length >= 3) {
+                // El tercer segmento suele ser la posición (ej: "Pos. A1" o "A1")
+                posicion = parts[2].replace(/pos\.?/i, '').trim().toUpperCase();
+            }
+
+            if (!posicion && parts.length === 2) {
+                // Si solo hay 2 partes (ej: Zona F - A1)
+                posicion = parts[1].replace(/pos\.?/i, '').trim().toUpperCase();
+                anaquel = 'Anaquel 1';
+            }
+
             return { zona, anaquel: anaquel || 'Anaquel 1', posicion: posicion || 'A1' };
         }
 
@@ -2155,11 +2172,11 @@
                 if(parsed.anaquel) anaqVal = parsed.anaquel;
                 if(parsed.posicion) posVal = parsed.posicion;
             } catch(e) {
-                const matchZona = texto.match(/zona\s*([a-j])/i) || texto.match(/z([a-j])/i);
+                const matchZona = texto.match(/zona\s*([a-j0-9]+)/i) || texto.match(/z([a-j0-9]+)/i);
                 if(matchZona) zonaVal = matchZona[1].toUpperCase();
-                const matchAnaq = texto.match(/(anaquel\s*\d+|rack|full\s*space|pallet)/i);
-                if(matchAnaq) anaqVal = matchAnaq[0];
-                const matchPos = texto.match(/pos[i|c][i|o]n\s*([a-z0-9]+)/i);
+                const matchAnaq = texto.match(/(anaquel\s*\d+|rack\s*[a-z0-9\s]*|full\s*space\s*\d*|pallet\s*[a-z0-9\s]*)/i);
+                if(matchAnaq) anaqVal = matchAnaq[0].trim();
+                const matchPos = texto.match(/pos\.?\s*([a-z0-9]+)/i);
                 if(matchPos) posVal = matchPos[1].toUpperCase();
             }
 
@@ -2318,10 +2335,11 @@
 
             grid.innerHTML = filtradas.map((val) => {
                 const labelTxt = `Zona ${val.zona} - ${val.anaquel} - Pos. ${val.posicion}`;
+                const tipoUnidad = val.tipo || determinarJerarquiaPorZona(val.zona);
                 return `
-                    <label style="border:1px solid var(--border); padding:8px; border-radius:var(--radius); background:white; display:flex; flex-direction:column; gap:4px; cursor:pointer; font-size:0.68rem;">
+                    <label style="border:1px solid var(--border); padding:8px; border-radius:var(--radius); background:white; display:flex; flex-direction:column; gap:4px; cursor:pointer; font-size:0.68rem;" data-zona="${val.zona}" data-anaquel="${val.anaquel}" data-posicion="${val.posicion}" data-tipo="${tipoUnidad}">
                         <div style="display:flex; align-items:center; justify-content:space-between;">
-                            <span style="font-weight:600; color:var(--accent);">${val.tipo || determinarJerarquiaPorZona(val.zona)}</span>
+                            <span style="font-weight:600; color:var(--accent);">${tipoUnidad}</span>
                             <input type="checkbox" class="qr-chk" value="${labelTxt}" checked style="width:14px; height:14px; cursor:pointer;">
                         </div>
                         <div style="color:var(--text-main);"><strong>Zona ${val.zona}</strong><br>${val.anaquel}<br>Pos. ${val.posicion}</div>
@@ -2333,22 +2351,31 @@
 
         function ejecutarImpresionQR() {
             detenerEscanerQR();
-            const chks = document.querySelectorAll('.qr-chk:checked');
-            if(chks.length === 0) return alert('Selecciona al menos una etiqueta.');
+            const checkedLabels = document.querySelectorAll('.qr-chk:checked');
+            if(checkedLabels.length === 0) return alert('Selecciona al menos una etiqueta.');
+            
             let printHtml = `<div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:15px; padding:20px; font-family:sans-serif;">`;
-            chks.forEach((chk, i) => {
+            
+            checkedLabels.forEach((chk, i) => {
+                const parentLabel = chk.closest('label');
+                const tipoUnidad = parentLabel ? parentLabel.getAttribute('data-tipo') : 'Unidad Comercial';
                 const textoQR = chk.value;
+                
                 printHtml += `
-                    <div class="etiqueta-qr-print-card" style="border:1px solid #333; padding:12px; border-radius:6px; text-align:center; background:#fff; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                    <div class="etiqueta-qr-print-card" style="border:1px solid #333; padding:12px; border-radius:6px; text-align:center; background:#fff; display:flex; flex-direction:column; align-items:center; gap:4px;">
                         <div style="font-weight:bold; font-size:8px; color:#333;">HOSPITAL SAN JUAN DE DIOS</div>
-                        <div style="font-size:10px; font-weight:700; color:#0f172a;">${textoQR}</div>
-                        <div id="qrcode-${i}" style="margin:4px auto;"></div>
-                        <div style="font-size:7px; color:#475569; font-weight:600;">Sistema de Automatización de Almacenamiento</div>
+                        <div style="font-size:7.5px; font-weight:600; color:#0284c7; text-transform:uppercase;">${tipoUnidad}</div>
+                        <div style="font-size:9.5px; font-weight:700; color:#0f172a;">${textoQR}</div>
+                        <div id="qrcode-${i}" style="margin:2px auto;"></div>
+                        <div style="font-size:6.5px; color:#475569; font-weight:600;">Sistema de Automatización y Control de Almacenamiento</div>
                     </div>`;
             });
             printHtml += `</div>`;
+            
             const win = window.open('', '_blank');
-            win.document.write(`<html><head><title>Imprimir Etiquetas QR</title><style>@media print { .etiqueta-qr-print-card { page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 15px; } }</style><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script></head><body onload="window.print();">` + printHtml + `<script>` + Array.from(chks).map((chk, i) => `new QRCode(document.getElementById("qrcode-${i}"), { text: "${chk.value}", width: 90, height: 90 });`).join('') + `<\/script></body></html>`);
+            win.document.write(`<html><head><title>Imprimir Etiquetas QR</title><style>@media print { .etiqueta-qr-print-card { page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 15px; } }</style><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script></head><body onload="window.print();">` + printHtml + `<script>` + Array.from(checkedLabels).forEach((chk, i) => {
+                // Generar código QR por cada item
+            }) || '' + Array.from(checkedLabels).map((chk, i) => `new QRCode(document.getElementById("qrcode-${i}"), { text: "${chk.value}", width: 85, height: 85 });`).join('') + `<\/script></body></html>`);
             win.document.close();
             cerrarModal();
         }
