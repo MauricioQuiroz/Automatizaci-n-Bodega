@@ -80,15 +80,16 @@
         .tab-content { display:none; padding:16px 12px; width:100%; max-width:1400px; margin:0 auto; flex:1; }
         .tab-content.active { display:block; }
 
-        .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin-bottom:18px; width:100%; }
+        .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:12px; margin-bottom:18px; width:100%; }
         .card { background:#ffffff; padding:16px; border-radius:var(--radius); text-align:left; border:1px solid var(--border); box-shadow:0 2px 4px rgba(0,0,0,0.02); position:relative; overflow:hidden; }
         .card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:#64748b; }
         .card:nth-child(1)::before { background: #01349b; }
         .card:nth-child(2)::before { background: #0284c7; }
         .card:nth-child(3)::before { background: #0369a1; }
         .card:nth-child(4)::before { background: #38bdf8; }
-        .card .number { font-size:1.3rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; line-height: 1.2; word-break: break-word; }
-        .card .label { color:var(--text-muted); font-size:0.68rem; margin-top:4px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
+        .card:nth-child(5)::before { background: #0d9488; }
+        .card .number { font-size:1.2rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; line-height: 1.2; word-break: break-word; }
+        .card .label { color:var(--text-muted); font-size:0.65rem; margin-top:4px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
 
         .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 18px; }
         .chart-card { background: #ffffff; padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
@@ -262,6 +263,7 @@
                 <div class="card"><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones</div></div>
                 <div class="card"><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos</div></div>
                 <div class="card"><div class="number" id="totalUsuariosConectados">0</div><div class="label">Usuarios Activos</div></div>
+                <div class="card"><div class="number" id="kpiEficienciaCaptura">0%</div><div class="label">Eficiencia Captura GS1</div></div>
             </div>
 
             <!-- Gráficos Dinámicos KPI -->
@@ -356,7 +358,7 @@
                         <button class="btn btn-danger btn-xs" onclick="limpiarFiltroFechaMov()" title="Limpiar fecha">✕</button>
                     </div>
 
-                    <!-- 3. Filtro por Tipo de Modificación (Muestra todo por defecto) -->
+                    <!-- 3. Filtro por Tipo de Modificación -->
                     <select id="filtroMovTipo" class="filter-select" style="width: 100%; max-width: none;" onchange="renderHistorialCompleto()">
                         <option value="TODOS">Mostrar todo (Tipo de Modificación)</option>
                         <option value="Carga masiva Excel">Carga masiva Excel</option>
@@ -367,7 +369,7 @@
                         <option value="Exportación">Exportación</option>
                     </select>
 
-                    <!-- 4. Filtro Ítem / GTIN (Escritura, Catálogo Maestro y Cámara con botón verde) -->
+                    <!-- 4. Filtro Ítem / GTIN -->
                     <div style="position: relative; width: 100%;">
                         <div style="display: flex; gap: 4px;">
                             <input type="text" id="filtroMovItem" placeholder="Ítem / GTIN o buscar..." style="flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.72rem; background: white;" oninput="filtrarCatalogoItemMovimiento(this.value); renderHistorialCompleto();">
@@ -379,7 +381,6 @@
                 </div>
             </div>
             
-            <!-- Contenedor del lector QR para movimientos con opción de cancelar -->
             <div id="qr-reader-movimiento-container" style="display: none; width: 100%; max-width: 320px; margin: 8px auto; text-align: center;">
                 <div id="qr-reader-movimiento" style="width: 100%;"></div>
                 <button class="btn btn-danger btn-sm" style="margin-top: 8px; width: 100%;" onclick="detenerEscanerQR()">Cancelar Escaneo</button>
@@ -874,15 +875,30 @@
             const prods = getProducts();
             document.getElementById('totalProductos').textContent = prods.length;
             const ubics = new Set();
+            let totalGtins = 0;
+            let gtinsValidos = 0;
+
             prods.forEach(p => { 
                 if(p.ubicaciones) {
                     p.ubicaciones.forEach(u => {
                         if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÓN') { ubics.add(`${u.zona}-${u.anaquel}-${u.posicion}`); }
                     });
                 }
+                if(p.gtins && p.gtins.length > 0) {
+                    p.gtins.forEach(g => {
+                        totalGtins++;
+                        if(g.length >= 8 && p.gtinEstados && p.gtinEstados[g] === 'activo') {
+                            gtinsValidos++;
+                        }
+                    });
+                }
             });
             document.getElementById('totalUbicaciones').textContent = ubics.size;
             document.getElementById('totalMovimientos').textContent = (appState.movements || []).length;
+            
+            const eficiencia = totalGtins > 0 ? Math.round((gtinsValidos / totalGtins) * 100) : (prods.length > 0 ? 100 : 0);
+            const kpiEficienciaEl = document.getElementById('kpiEficienciaCaptura');
+            if(kpiEficienciaEl) kpiEficienciaEl.textContent = eficiencia + '%';
 
             const tbody = document.getElementById('ultimosMovimientos');
             tbody.innerHTML = (appState.movements || []).slice(-5).reverse().map(m => `
@@ -1451,7 +1467,7 @@
                         estado: 'Almacenado', erpData: erpData
                     });
                 }
-                registrarHistorial('Registro y Asignación', `${cod}`, `Ingresado ítem en Zona ${zona}`);
+                registrarHistorial('Registro y Asignación', `${cod}`, `Ingresado ítem en Zona ${zona} con GTIN match`);
                 guardarEstadoFirestore();
                 cerrarModal();
                 mostrarToast('Producto almacenado con éxito.');
@@ -1528,7 +1544,7 @@
                             if(!p.ubicaciones) p.ubicaciones = [];
                             p.ubicaciones.push({ zona: zonaDestino, anaquel: anaquelDestino, posicion: posDestino });
                             actualizados++;
-                            registrarHistorial('Reubicación', p.codigo, `Reubicado a Zona ${zonaDestino} - ${anaquelDestino} Pos. ${posDestino} (GTIN: ${gBusca})`);
+                            registrarHistorial('Reubicación', p.codigo, `Reubicado a Zona ${zonaDestino} - ${anaquelDestino} Pos. ${posDestino} (GTIN match: ${gBusca})`);
                         }
                     });
                 });
@@ -2406,7 +2422,7 @@
             const chksUsr = document.querySelectorAll('.mov-user-chk:checked');
             const usuariosSeleccionados = Array.from(chksUsr).map(c => c.value.toLowerCase());
             
-            const fechaInputVal = document.getElementById('filtroMovFecha')?.value || ''; // yyyy-mm-dd
+            const fechaInputVal = document.getElementById('filtroMovFecha')?.value || ''; 
             let targetDay = null, targetMonth = null, targetYear = null;
             if(fechaInputVal) {
                 const [fYear, fMonth, fDay] = fechaInputVal.split('-');
@@ -2425,7 +2441,7 @@
             }
             if(targetDay !== null && targetMonth !== null && targetYear !== null) {
                 movements = movements.filter(m => {
-                    const fechaPart = String(m.fecha || '').split(' ')[0]; // e.g. "8/9/2026" or "08/09/2026"
+                    const fechaPart = String(m.fecha || '').split(' ')[0]; 
                     const dateParts = fechaPart.split(/[\/\-]/);
                     if(dateParts.length === 3) {
                         const d = parseInt(dateParts[0], 10);
@@ -2497,7 +2513,7 @@
         }
 
         function cerrarModal() { detenerEscanerQR(); document.getElementById('modal').classList.remove('active'); modalCallback = null; }
-        function ejecutarModal() { detenerEscanerQR(); if(modalCallback) modalCallback(); }
+        function ejecutarModal() { detenerEscanerQR(); if(modalCallback) modalCallback(); };
     </script>
 </body>
 </html>
