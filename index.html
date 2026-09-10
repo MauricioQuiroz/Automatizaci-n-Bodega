@@ -36,31 +36,22 @@
         #loginModal { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(6px); 
-            display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 0; overflow-y: auto; 
+            display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px; overflow-y: auto; 
         }
         #loginModal .login-box { 
-            background: var(--surface); padding: 0; border-radius: 0; width: 100%; max-width: 440px; 
+            background: var(--surface); padding: 32px 28px; border-radius: 20px; width: 100%; max-width: 400px; 
             box-shadow: 0 25px 50px rgba(0,0,0,0.25); text-align: center; position: relative; z-index: 2001; 
-            margin: auto; overflow: hidden; border: none; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; 
+            margin: auto; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; 
         }
-        #loginModal .login-box .hospital-logo img { 
-            width: 100%; max-width: 100%; height: auto; max-height: 140px; object-fit: contain; display: block; margin: 0 auto; background: #fff; 
-        }
-        .login-content-pad { padding: 20px 24px 32px 24px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
         .divider { width: 45px; height: 3px; background: var(--accent); margin: 12px auto 18px; border-radius: 3px; }
         #loginModal h2 { margin-bottom: 8px; font-size: 1.1rem; color: var(--primary); font-weight: 700; line-height: 1.3; }
         #loginModal p { color: var(--text-muted); margin-bottom: 18px; font-size: 0.8rem; }
         #loginModal label { display: block; font-weight: 600; margin: 0 0 6px; font-size: 0.78rem; text-align: left; color: var(--text-muted); }
         #loginModal input { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.9rem; background: #fff; margin-bottom: 12px; }
         #loginModal input:focus { outline: none; border-color: var(--accent); }
-        #loginModal .btn { width: 100%; margin-top: 6px; padding: 13px; font-size: 0.95rem; border-radius: 10px; display: flex; align-items: center; justify-content: center; text-align: center; background: var(--primary); color: #fff; border: none; font-weight: 600; cursor: pointer; }
+        #loginModal .btn { width: 100%; margin-top: 6px; padding: 13px; font-size: 0.95rem; border-radius: 10px; display: flex; align-items: center; justify-content: center; text-align: center; background: #002b80; color: #fff; border: none; font-weight: 600; cursor: pointer; }
         .login-error { color: var(--danger); font-size: 0.78rem; margin-top: 8px; display: none; }
         .forgot-link { display: inline-block; font-size: 0.78rem; color: var(--accent); cursor: pointer; text-decoration: none; font-weight: 600; }
-
-        @media (min-width: 768px) {
-            #loginModal { padding: 20px; }
-            #loginModal .login-box { border-radius: 22px; min-height: auto; max-height: 90vh; border: 1px solid var(--border); }
-        }
 
         header { background: #0f172a; color: #f8fafc; padding: 10px 16px; display: flex; flex-direction: column; gap: 8px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .header-top-row { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 8px; flex-wrap: wrap; }
@@ -189,7 +180,8 @@
         .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
         .form-grid .full-width { grid-column:1/-1; }
 
-        #qr-reader { width: 100%; max-width: 300px; margin: 8px auto; display: none; }
+        #qr-reader-container { width: 100%; max-width: 300px; margin: 8px auto; display: none; text-align: center; }
+        #qr-reader { width: 100%; }
         #qr-reader video { border-radius: var(--radius); width: 100% !important; }
 
         .layout-image-container { width:100%; margin-top:12px; background:#ffffff; border-radius:var(--radius); border:1px solid var(--border); padding:16px; text-align:center; min-height:220px; display:flex; align-items:center; justify-content:center; flex-direction:column; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
@@ -208,23 +200,18 @@
 <body>
     <div id="loginModal">
         <div class="login-box">
-            <div class="hospital-logo" style="padding: 16px 20px 0 20px; background: #fff;">
-                <img src="./banner.png" alt="Banner Hospital San Juan de Dios" style="width: 100%; max-height: 140px; object-fit: contain; border-radius: 10px;" onerror="this.src='./1000166962_2.png';">
-            </div>
-            <div class="login-content-pad">
-                <div class="divider"></div>
-                <h2>Sistema de Automatización de Almacenamiento</h2>
-                <p>Ingresa tus credenciales de acceso.</p>
-                <label>Usuario</label>
-                <input type="text" id="loginUser" placeholder="Nombre de usuario">
-                <label>Contraseña</label>
-                <input type="password" id="loginPass" placeholder="••••••••">
-                <div id="loginError" class="login-error">Credenciales incorrectas.</div>
-                <button class="btn btn-primary" onclick="handleLogin()">Ingresar</button>
-                <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 6px; align-items: center;">
-                    <span class="forgot-link" onclick="abrirModalRecuperarPass()">¿Olvidaste tu contraseña?</span>
-                    <span style="font-size: 0.68rem; color: var(--text-muted); font-weight: 500; font-style: italic;">"Diseñado por Mauricio Quiroz Ayala"</span>
-                </div>
+            <h2>Sistema de Automatización de<br>Almacenamiento</h2>
+            <div class="divider"></div>
+            <p>Ingresa tus credenciales de acceso.</p>
+            <label>Usuario</label>
+            <input type="text" id="loginUser" placeholder="Nombre de usuario">
+            <label>Contraseña</label>
+            <input type="password" id="loginPass" placeholder="••••••••">
+            <div id="loginError" class="login-error">Credenciales incorrectas.</div>
+            <button class="btn btn-primary" onclick="handleLogin()">Ingresar</button>
+            <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 6px; align-items: center;">
+                <span class="forgot-link" onclick="abrirModalRecuperarPass()">¿Olvidaste tu contraseña?</span>
+                <span style="font-size: 0.68rem; color: var(--text-muted); font-weight: 500; font-style: italic;">"Diseñado por Mauricio Quiroz Ayala"</span>
             </div>
         </div>
     </div>
@@ -249,10 +236,10 @@
                     </select>
                 </div>
                 <div class="header-controls-group">
-                    <button class="btn btn-success btn-sm" id="btnCargarArchivo" onclick="document.getElementById('fileInput').click()">Cargar</button>
+                    <button class="btn btn-success btn-sm" id="btnCargarArchivo" onclick="document.getElementById('fileInput').click()">Cargar archivo</button>
                     <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event)">
                     <button class="btn btn-warning btn-sm" id="btnExportarArchivo" onclick="exportarExcelCompleto()">Exportar</button>
-                    <button class="btn btn-teal btn-sm" id="btnQrUbicaciones" onclick="abrirModalQRUbicaciones()">QR Ubic.</button>
+                    <button class="btn btn-teal btn-sm" id="btnQrUbicaciones" onclick="abrirModalQRUbicaciones()">QR Ubicaciones</button>
                     <button class="btn btn-outline btn-sm" style="color: #ffffff; border-color: rgba(255,255,255,0.3);" onclick="logout()">Salir</button>
                 </div>
             </div>
@@ -1234,7 +1221,7 @@
                 return `
                 <tr>
                     <td style="text-align:left; padding-left:10px; white-space:nowrap;">
-                        ${!esInvitado ? `<input type="radio" class="prod-chk" name="invRadio" value="${p.id}" style="margin-right:4px;">` : ''}
+                        ${!esInvitado ? `<input type="checkbox" class="prod-chk" value="${p.id}" style="margin-right:4px;">` : ''}
                         <strong>${p.codigo}</strong>
                     </td>
                     <td style="white-space:nowrap;">${gtinsList}</td>
@@ -1256,15 +1243,19 @@
             }).join('') || `<tr><td colspan="${!esInvitado ? 9 : 8}" class="empty-state">No se encontraron productos registrados</td></tr>`;
         }
 
+        function toggleSeleccionarTodoInventario(master) {
+            document.querySelectorAll('.prod-chk').forEach(chk => chk.checked = master.checked);
+        }
+
         function eliminarSeleccionadosInventario() {
-            const chkChecked = document.querySelector('.prod-chk:checked');
-            if(!chkChecked) return alert('Selecciona al menos un producto.');
-            if(!confirm(`¿Eliminar el registro seleccionado?`)) return;
-            const idAEliminar = chkChecked.value;
-            appState.products = (appState.products || []).filter(p => p.id !== idAEliminar);
+            const chks = document.querySelectorAll('.prod-chk:checked');
+            if(chks.length === 0) return alert('Selecciona al menos un producto.');
+            if(!confirm(`¿Eliminar los ${chks.length} productos seleccionados?`)) return;
+            const idsAEliminar = Array.from(chks).map(c => c.value);
+            appState.products = (appState.products || []).filter(p => !idsAEliminar.includes(p.id));
             guardarEstadoFirestore();
-            registrarHistorial('Eliminación', idAEliminar, 'Eliminación de registro de inventario');
-            mostrarToast('Registro eliminado.');
+            registrarHistorial('Eliminación', 'Múltiples', `Eliminación masiva de ${idsAEliminar.length} registros`);
+            mostrarToast('Registros eliminados.');
         }
 
         function verHistorialArticulo(codigoInterno) {
@@ -1398,9 +1389,13 @@
                     <div class="full-width" style="background:#f1f5f9; padding:12px; border-radius:var(--radius); text-align:center; margin-top:4px; border:1px solid var(--border);">
                         <label style="font-weight:600; margin-bottom:4px; display:block; font-size:0.72rem; text-align: center;">Asignación de Ubicación por QR</label>
                         <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:8px; text-align: center;">Escanee el código QR de ubicación.</p>
-                        <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('almacenar')">Escanear QR de Ubicación</button>
+                        <button type="button" class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('almacenar')">Escanear QR de Ubicación</button>
                     </div>
-                    <div id="qr-reader" class="full-width"></div>
+                    
+                    <div id="qr-reader-container" class="full-width">
+                        <div id="qr-reader"></div>
+                        <button type="button" class="btn btn-danger btn-sm" style="margin-top: 8px; width: 100%;" onclick="detenerEscanerQR()">Cancelar Escaneo</button>
+                    </div>
                 </div>`, false);
 
             modalCallback = () => {
@@ -1501,14 +1496,18 @@
                 <div style="background:#f1f5f9; padding:12px; border-radius:var(--radius); border:1px solid var(--border); text-align:center; margin-bottom:8px;">
                     <label style="font-weight:600; margin-bottom:4px; display:block; font-size:0.72rem; text-align: center;">2. Asignar Nueva Ubicación por Código QR</label>
                     <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:8px; text-align: center;">Escanee la etiqueta QR de la nueva ubicación destino.</p>
-                    <button class="btn btn-teal btn-xs" style="margin: 0 auto; display: flex;" onclick="iniciarEscanerQR('reubicar')">Escanear QR de Nueva Ubicación</button>
+                    <button type="button" class="btn btn-teal btn-xs" style="margin: 0 auto; display: flex;" onclick="iniciarEscanerQR('reubicar')">Escanear QR de Nueva Ubicación</button>
                 </div>
 
                 <input type="hidden" id="reubZona" value="SIN ASIGNACIÓN">
                 <input type="hidden" id="reubAnaquel" value="Anaquel 1">
                 <input type="hidden" id="reubPosicion" value="">
                 <div id="reubDestinoPreview" style="font-size:0.72rem; color:var(--success); font-weight:600; text-align:center; margin-bottom:6px;">Nueva ubicación destino: Pendiente de escaneo QR</div>
-                <div id="qr-reader" class="full-width"></div>`, false);
+                
+                <div id="qr-reader-container" class="full-width">
+                    <div id="qr-reader"></div>
+                    <button type="button" class="btn btn-danger btn-sm" style="margin-top: 8px; width: 100%;" onclick="detenerEscanerQR()">Cancelar Escaneo</button>
+                </div>`, false);
 
             modalCallback = () => {
                 detenerEscanerQR();
@@ -1529,7 +1528,7 @@
                             if(!p.ubicaciones) p.ubicaciones = [];
                             p.ubicaciones.push({ zona: zonaDestino, anaquel: anaquelDestino, posicion: posDestino });
                             actualizados++;
-                            registrarHistorial('Reubicación', p.codigo, `Reubicado a Zona ${zonaDestino} - ${anaquelDestino} Pos. ${posinoDestino = posDestino} (GTIN: ${gBusca})`);
+                            registrarHistorial('Reubicación', p.codigo, `Reubicado a Zona ${zonaDestino} - ${anaquelDestino} Pos. ${posDestino} (GTIN: ${gBusca})`);
                         }
                     });
                 });
@@ -1540,7 +1539,7 @@
         }
 
         function iniciarEscanerBarraReubicacion() {
-            const readerDiv = document.getElementById('qr-reader');
+            const readerDiv = document.getElementById('qr-reader-container');
             if(readerDiv) readerDiv.style.display = 'block';
             if (html5QrCodeScanner) { try { html5QrCodeScanner.clear(); } catch(e) {} }
             html5QrCodeScanner = new Html5Qrcode("qr-reader");
@@ -1607,7 +1606,7 @@
             let listHtml = (p.ubicaciones || []).map((u, index) => `
                 <div style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; padding:6px 10px; border-radius:var(--radius); margin-bottom:4px; font-size:0.72rem;">
                     <span><strong>Zona ${u.zona}</strong> - ${u.anaquel} Pos. ${u.posicion}</span>
-                    <button class="btn btn-danger btn-xs" onclick="removerUbicacionDeProducto('${p.id}', ${index})">Quitar</button>
+                    <button type="button" class="btn btn-danger btn-xs" onclick="removerUbicacionDeProducto('${p.id}', ${index})">Quitar</button>
                 </div>`).join('') || '<p style="color:var(--text-muted); font-size:0.72rem; text-align: left;">Sin ubicaciones registradas.</p>';
 
             const currentGtins = p.gtins || [];
@@ -1703,9 +1702,13 @@
                     <div class="full-width" style="background:#f1f5f9; padding:10px; border-radius:var(--radius); text-align:center; margin-top:4px; border:1px solid var(--border);">
                         <label style="font-weight:600; margin-bottom:4px; display:block; font-size:0.72rem; text-align: center;">Asignación de Ubicación por QR</label>
                         <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:8px; text-align: center;">Escanee el código QR de ubicación.</p>
-                        <button class="btn btn-teal btn-xs" style="margin: 0 auto; display: flex;" onclick="iniciarEscanerQR('agregarUbicacion')">Escanear QR de Ubicación</button>
+                        <button type="button" class="btn btn-teal btn-xs" style="margin: 0 auto; display: flex;" onclick="iniciarEscanerQR('agregarUbicacion')">Escanear QR de Ubicación</button>
                     </div>
-                    <div id="qr-reader" class="full-width"></div>
+                    
+                    <div id="qr-reader-container" class="full-width">
+                        <div id="qr-reader"></div>
+                        <button type="button" class="btn btn-danger btn-sm" style="margin-top: 8px; width: 100%;" onclick="detenerEscanerQR()">Cancelar Escaneo</button>
+                    </div>
                 </div>`, false);
 
             verificarAlertasCheckboxesForm();
@@ -1766,8 +1769,8 @@
         }
 
         function iniciarEscanerQR(modo) {
-            const readerDiv = document.getElementById('qr-reader');
-            readerDiv.style.display = 'block';
+            const readerContainer = document.getElementById('qr-reader-container');
+            if(readerContainer) readerContainer.style.display = 'block';
             if (html5QrCodeScanner) { try { html5QrCodeScanner.clear(); } catch(e) {} }
             html5QrCodeScanner = new Html5Qrcode("qr-reader");
             html5QrCodeScanner.start(
@@ -1781,8 +1784,8 @@
         let campoGtinDestino = 1;
         function iniciarEscanerBarraGTIN(numCampo) {
             campoGtinDestino = numCampo;
-            const readerDiv = document.getElementById('qr-reader');
-            if(readerDiv) readerDiv.style.display = 'block';
+            const readerContainer = document.getElementById('qr-reader-container');
+            if(readerContainer) readerContainer.style.display = 'block';
             if (html5QrCodeScanner) { try { html5QrCodeScanner.clear(); } catch(e) {} }
             html5QrCodeScanner = new Html5Qrcode("qr-reader");
             html5QrCodeScanner.start(
@@ -1803,8 +1806,8 @@
             if (html5QrCodeScanner) {
                 html5QrCodeScanner.stop().then(() => { html5QrCodeScanner.clear(); html5QrCodeScanner = null; }).catch(err => { html5QrCodeScanner = null; });
             }
-            const readerDiv = document.getElementById('qr-reader');
-            if(readerDiv) readerDiv.style.display = 'none';
+            const readerContainer = document.getElementById('qr-reader-container');
+            if(readerContainer) readerContainer.style.display = 'none';
             const readerMovContainer = document.getElementById('qr-reader-movimiento-container');
             if(readerMovContainer) readerMovContainer.style.display = 'none';
         }
@@ -1933,8 +1936,8 @@
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                     <span style="font-size:0.72rem; color:var(--text-muted);" id="contadorUbicacionesQR">Mostrando ${baseList.length} ubicaciones</span>
                     <div>
-                        <button class="btn btn-outline btn-xs" onclick="toggleSelectAllQR(true)">Marcar Todos</button>
-                        <button class="btn btn-outline btn-xs" onclick="toggleSelectAllQR(false)">Desmarcar</button>
+                        <button type="button" class="btn btn-outline btn-xs" onclick="toggleSelectAllQR(true)">Marcar Todos</button>
+                        <button type="button" class="btn btn-outline btn-xs" onclick="toggleSelectAllQR(false)">Desmarcar</button>
                     </div>
                 </div>
                 <div id="contenedorGridQR" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:8px; max-height:45vh; overflow:auto; padding:2px;"></div>`;
@@ -2029,8 +2032,8 @@
                         <span class="badge-prog" style="background: ${dotColor}15; color: ${dotColor}; border: 1px solid ${dotColor}40; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cp.nombre}</span>
                     </div>
                     <div style="display:flex; gap:4px; flex-shrink:0;">
-                        <button class="btn btn-outline btn-xs" onclick="editarProgramaCRUD('${cp.id}')">Editar</button>
-                        <button class="btn btn-danger btn-xs" onclick="eliminarProgramaCRUD('${cp.id}')">Eliminar</button>
+                        <button type="button" class="btn btn-outline btn-xs" onclick="editarProgramaCRUD('${cp.id}')">Editar</button>
+                        <button type="button" class="btn btn-danger btn-xs" onclick="eliminarProgramaCRUD('${cp.id}')">Eliminar</button>
                     </div>
                 </div>`;
             }).join('');
@@ -2097,8 +2100,8 @@
                     <td>${u.permisos.join(', ')}</td>
                     <td style="text-align:center;">
                         <div class="acciones-cell">
-                            ${isAdmin ? `<button class="btn-action-primary" onclick="editarUsuarioModal(${u.id})">Editar</button>` : ''}
-                            ${isAdmin && u.id !== 1 ? `<button class="btn-action-danger" onclick="eliminarUsuario(${u.id})">Eliminar</button>` : ''}
+                            ${isAdmin ? `<button type="button" class="btn-action-primary" onclick="editarUsuarioModal(${u.id})">Editar</button>` : ''}
+                            ${isAdmin && u.id !== 1 ? `<button type="button" class="btn-action-danger" onclick="eliminarUsuario(${u.id})">Eliminar</button>` : ''}
                         </div>
                     </td>
                 </tr>`).join('');
@@ -2219,8 +2222,8 @@
                     ${isAdmin ? `
                     <td style="text-align:center;">
                         <div class="acciones-cell">
-                            <button class="btn-action-primary" onclick="editarBodegaModal('${w.id}')">Editar</button>
-                            <button class="btn-action-danger" onclick="eliminarBodega('${w.id}')">Eliminar</button>
+                            <button type="button" class="btn-action-primary" onclick="editarBodegaModal('${w.id}')">Editar</button>
+                            <button type="button" class="btn-action-danger" onclick="eliminarBodega('${w.id}')">Eliminar</button>
                         </div>
                     </td>` : ''}
                 </tr>`).join('');
@@ -2404,12 +2407,12 @@
             const usuariosSeleccionados = Array.from(chksUsr).map(c => c.value.toLowerCase());
             
             const fechaInputVal = document.getElementById('filtroMovFecha')?.value || ''; // yyyy-mm-dd
-            let fechaFiltroDDMMYY = '';
+            let targetDay = null, targetMonth = null, targetYear = null;
             if(fechaInputVal) {
-                const parts = fechaInputVal.split('-'); // [yyyy, mm, dd]
-                if(parts.length === 3) {
-                    fechaFiltroDDMMYY = `${parts[2]}-${parts[1]}-${parts[0].slice(-2)}`; // dd-mm-aa
-                }
+                const [fYear, fMonth, fDay] = fechaInputVal.split('-');
+                targetDay = parseInt(fDay, 10);
+                targetMonth = parseInt(fMonth, 10);
+                targetYear = parseInt(fYear, 10);
             }
 
             const tipoModSelect = document.getElementById('filtroMovTipo')?.value || 'TODOS';
@@ -2420,10 +2423,18 @@
             if(usuariosSeleccionados.length > 0) {
                 movements = movements.filter(m => usuariosSeleccionados.some(uName => String(m.usuario).toLowerCase().includes(uName)));
             }
-            if(fechaFiltroDDMMYY) {
+            if(targetDay !== null && targetMonth !== null && targetYear !== null) {
                 movements = movements.filter(m => {
-                    const fechaMovLimpia = String(m.fecha || '').split(' ')[0]; // Extrae solo la parte de fecha "DD-MM-AA"
-                    return fechaMovLimpia === fechaFiltroDDMMYY || String(m.fecha).includes(fechaFiltroDDMMYY);
+                    const fechaPart = String(m.fecha || '').split(' ')[0]; // e.g. "8/9/2026" or "08/09/2026"
+                    const dateParts = fechaPart.split(/[\/\-]/);
+                    if(dateParts.length === 3) {
+                        const d = parseInt(dateParts[0], 10);
+                        const mo = parseInt(dateParts[1], 10);
+                        const y = parseInt(dateParts[2], 10);
+                        const fullY = y < 100 ? 2000 + y : y;
+                        return d === targetDay && mo === targetMonth && fullY === targetYear;
+                    }
+                    return false;
                 });
             }
             if(tipoModSelect !== 'TODOS') {
