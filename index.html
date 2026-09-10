@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sistema de Gestión de Almacenamiento - Hospital San Juan de Dios</title>
-    <!-- Librerías QR y Excel -->
+    <title>Sistema de Gestión Logística - Hospital San Juan de Dios</title>
+    <!-- Librerías QR, Gráficos y Excel -->
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -28,12 +29,12 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background:var(--bg-base); color:var(--text-main); padding:0; margin:0; width:100%; min-height:100vh; display:flex; flex-direction:column; font-size: 13px; overflow-x: hidden; }
         
-        .app { width:100%; min-height:100vh; background:var(--surface); display:flex; flex-direction:row; }
+        .app { width:100%; min-height:100vh; background:var(--surface); display:flex; flex-direction:row; position: relative; }
 
         /* LOGIN ADAPTATIVO MODERNO */
         #loginModal { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(11, 37, 69, 0.9); backdrop-filter: blur(8px); 
+            background: rgba(11, 37, 69, 0.95); backdrop-filter: blur(8px); 
             display: flex; align-items: center; justify-content: center; z-index: 3000; padding: 16px; 
         }
         #loginModal .login-box { 
@@ -51,7 +52,7 @@
         .login-error { color: var(--danger); font-size: 0.78rem; margin-top: 8px; display: none; }
         .forgot-link { display: inline-block; font-size: 0.78rem; color: var(--accent); cursor: pointer; text-decoration: none; font-weight: 600; margin-top: 10px; }
 
-        /* SIDEBAR LATERAL IZQUIERDA */
+        /* SIDEBAR LATERAL IZQUIERDA DESPLEGABLE */
         aside {
             width: 260px;
             background: var(--primary);
@@ -59,16 +60,30 @@
             display: flex;
             flex-direction: column;
             border-right: 1px solid rgba(255,255,255,0.1);
-            min-height: 100vh;
+            height: 100vh;
+            position: sticky;
+            top: 0;
             flex-shrink: 0;
             transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        @media (max-width: 768px) {
+            aside {
+                position: fixed;
+                left: -260px;
+                top: 0;
+                height: 100vh;
+            }
+            aside.mobile-open {
+                left: 0;
+            }
         }
         .sidebar-header {
-            padding: 20px 16px;
+            padding: 16px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         .sidebar-title {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 700;
             line-height: 1.3;
             color: #fff;
@@ -76,14 +91,14 @@
             letter-spacing: 0.03em;
         }
         .sidebar-mode-box {
-            padding: 16px;
+            padding: 14px 16px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         .sidebar-mode-box label {
-            font-size: 0.68rem;
+            font-size: 0.65rem;
             color: #94a3b8;
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             font-weight: 600;
             text-transform: uppercase;
         }
@@ -92,9 +107,9 @@
             background: #1e293b;
             color: #fff;
             border: 1px solid #334155;
-            padding: 8px;
+            padding: 6px 8px;
             border-radius: 6px;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: 600;
             cursor: pointer;
             outline: none;
@@ -102,17 +117,18 @@
         .sidebar-nav {
             display: flex;
             flex-direction: column;
-            padding: 12px 0;
-            gap: 4px;
+            padding: 10px 0;
+            gap: 2px;
             flex: 1;
+            overflow-y: auto;
         }
         .sidebar-nav button {
             background: transparent;
             border: none;
             color: #cbd5e1;
-            padding: 12px 20px;
+            padding: 10px 16px;
             text-align: left;
-            font-size: 0.78rem;
+            font-size: 0.75rem;
             font-weight: 500;
             cursor: pointer;
             display: flex;
@@ -132,9 +148,9 @@
             font-weight: 600;
         }
         .sidebar-footer {
-            padding: 16px;
+            padding: 14px 16px;
             border-top: 1px solid rgba(255,255,255,0.1);
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             color: #94a3b8;
         }
 
@@ -145,11 +161,10 @@
             flex-direction: column;
             min-width: 0;
             background: var(--bg-base);
-            height: 100vh;
-            overflow-y: auto;
+            min-height: 100vh;
         }
 
-        header { background: #ffffff; color: var(--text-main); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        header { background: #ffffff; color: var(--text-main); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.02); position: sticky; top: 0; z-index: 900; }
         .header-left-group { display: flex; align-items: center; gap: 12px; }
         .header-right-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         
@@ -166,7 +181,7 @@
         .card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:#64748b; }
         .card:nth-child(1)::before { background: #0b2545; }
         .card:nth-child(2)::before { background: #134074; }
-        .card:nth-child(3)::before { background: #0369a1; }
+        .card:nth-child(3)::before { background: #d97706; }
         .card:nth-child(4)::before { background: #0d9488; }
         .card .number { font-size: 1.4rem; font-weight: 700; color: var(--text-main); letter-spacing: -0.02em; line-height: 1.2; }
         .card .label { color: var(--text-muted); font-size: 0.7rem; margin-top: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
@@ -176,17 +191,17 @@
         .dashboard-user-item { display: inline-flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--text-main); font-weight: 500; background: #f8fafc; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); width: fit-content; }
         .online-indicator { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #10b981; box-shadow: 0 0 6px #10b981; }
 
-        /* TABLAS Y CONTENEDORES RESPONSIVOS */
+        /* TABLAS Y CONTENEDORES */
         .table-wrap { width:100%; overflow-x:auto; background: #fff; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
-        .table-container { max-height:60vh; overflow-y:auto; overflow-x:auto; }
+        .table-container { max-height:55vh; overflow-y:auto; overflow-x:auto; }
         table { width:100%; border-collapse:collapse; font-size:0.75rem; min-width: 780px; }
         th { background:#f8fafc; text-align:left; padding:12px 10px; font-weight:600; color:var(--text-muted); position:sticky; top:0; z-index:10; font-size:0.7rem; text-transform:uppercase; border-bottom:1px solid var(--border); white-space:nowrap; }
         td { padding:10px; border-bottom:1px solid var(--border); vertical-align:middle; text-align:left; color:var(--text-main); }
         tr:hover td { background:#f8fafc; }
 
         /* PROGRAMAS Y CATEGORÍAS */
-        .prog-column-box { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; align-items: stretch; }
-        .prog-option-item { display: flex; align-items: center; justify-content: flex-start; gap: 8px; background: #fff; padding: 8px 10px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; font-size: 0.7rem; width: 100%; }
+        .prog-column-box { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; }
+        .prog-option-item { display: flex; align-items: center; gap: 8px; background: #fff; padding: 8px 10px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; font-size: 0.7rem; width: 100%; }
         .badge-prog { display: inline-block; font-size: 0.65rem; font-weight: 600; white-space: nowrap; padding: 2px 6px; border-radius: 4px; }
         .badge { display:inline-block; padding:3px 8px; border-radius:50px; font-size:0.65rem; font-weight:600; white-space: nowrap; }
         .badge-bodega { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.65rem; font-weight:600; color:#ffffff; white-space: nowrap; }
@@ -227,12 +242,15 @@
         .toolbar input { padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.78rem; background:white; }
         .filter-select { padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.75rem; background:white; }
 
-        /* BUSCADOR */
-        .master-search-container { position: relative; width: 100%; margin-top: 4px; }
-        .master-search-input { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.8rem; background: #fff; }
-        .master-dropdown-results { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); max-height: 180px; overflow-y: auto; z-index: 3000; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; }
-        .master-dropdown-item { padding: 9px 12px; font-size: 0.72rem; cursor: pointer; border-bottom: 1px solid var(--bg-base); text-align: left; color: var(--text-main); }
-        .master-dropdown-item:hover { background: #f8fafc; color: var(--accent); }
+        /* REPORTES ESTILO POWER BI (GRÁFICOS Y TABLAS DINÁMICAS) */
+        .bi-container { display: flex; flex-direction: column; gap: 16px; }
+        .bi-toolbar { background: #fff; padding: 14px; border-radius: var(--radius); border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .bi-grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+        .bi-card { background: #fff; padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); border-top: 3px solid var(--primary); }
+        .bi-charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 900px) { .bi-charts-grid { grid-template-columns: 1fr; } }
+        .bi-panel { background: #fff; padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; min-height: 320px; }
+        .bi-panel-title { font-size: 0.82rem; font-weight: 700; color: var(--primary); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
 
         /* MODALES */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(11,37,69,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:15px; overflow-y:auto; }
@@ -243,15 +261,6 @@
         .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem; }
         .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
         .form-grid .full-width { grid-column:1/-1; }
-
-        /* REPORTES ESTILO POWER BI */
-        .bi-container { display: flex; flex-direction: column; gap: 16px; }
-        .bi-toolbar { background: #fff; padding: 14px; border-radius: var(--radius); border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-        .bi-grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
-        .bi-card { background: #fff; padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); border-top: 3px solid var(--primary); }
-        .bi-charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
-        .bi-panel { background: #fff; padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); min-height: 280px; display: flex; flex-direction: column; justify-content: space-between; }
-        .bi-panel-title { font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
 
         /* ESCANER */
         #qr-reader { width: 100%; max-width: 300px; margin: 8px auto; display: none; }
@@ -266,15 +275,6 @@
         .toast-container { position:fixed; bottom:16px; right:16px; z-index:9999; display:flex; flex-direction:column; gap:8px; max-width:320px; width:100%; }
         .toast { background:#0b2545; color:#ffffff; padding:12px 16px; border-radius:var(--radius); font-size:0.75rem; box-shadow:0 10px 25px rgba(0,0,0,0.25); display:flex; align-items:center; justify-content:space-between; border-left:4px solid #38bdf8; }
         .empty-state { color:var(--text-muted); text-align:center; padding:35px; font-size:0.78rem; }
-
-        @media (max-width: 768px) {
-            .app { flex-direction: column; }
-            aside { width: 100%; min-height: auto; }
-            .bi-charts-row { grid-template-columns: 1fr; }
-            .toolbar { flex-direction: column; align-items: stretch; }
-            .toolbar-left, .toolbar-right { width: 100%; flex-direction: column; }
-            .toolbar-right input, .toolbar-right select, .toolbar-left .btn { width: 100%; }
-        }
     </style>
 </head>
 <body>
@@ -297,13 +297,16 @@
         </div>
     </div>
 
-    <!-- APP PRINCIPAL CON SIDEBAR -->
+    <!-- APP PRINCIPAL CON SIDEBAR DESPLEGABLE -->
     <div class="app" id="app" style="display:none;">
-        <!-- BARRA LATERAL DESPLEGABLE (SIDEBAR) -->
+        <!-- BARRA LATERAL IZQUIERDA -->
         <aside id="sidebarNav">
-            <div class="sidebar-header">
-                <div class="sidebar-title">Hospital San Juan de Dios</div>
-                <div style="font-size: 0.62rem; color: #94a3b8; margin-top: 2px;">Unidad de Logística</div>
+            <div class="sidebar-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div class="sidebar-title">Hospital San Juan de Dios</div>
+                    <div style="font-size: 0.62rem; color: #94a3b8; margin-top: 2px;">Unidad de Logística</div>
+                </div>
+                <button class="btn btn-outline btn-xs" style="color: #fff; border-color: rgba(255,255,255,0.3); display: none;" id="btnCloseSidebarMobile" onclick="toggleSidebarMobile()">✕</button>
             </div>
             
             <div class="sidebar-mode-box">
@@ -351,7 +354,7 @@
         <div class="main-content-area">
             <header>
                 <div class="header-left-group">
-                    <button class="btn btn-outline btn-sm" style="padding: 4px 8px;" onclick="toggleSidebarMobile()">☰</button>
+                    <button class="btn btn-outline btn-sm" style="padding: 6px 10px;" onclick="toggleSidebarMobile()">☰ Menú</button>
                     <div class="warehouse-select-wrapper">
                         <label for="warehouseSelect">Bodega:</label>
                         <select id="warehouseSelect" onchange="cambiarBodega()">
@@ -371,7 +374,7 @@
             <div id="tab-dashboard" class="tab-content active">
                 <div class="card-grid">
                     <div class="card">
-                        <div class="number" id="totalProductos">0</div>
+                        <div class="number" id="totalProductos">599</div>
                         <div class="label" id="labelCard1">Total Registros Validados</div>
                     </div>
                     <div class="card">
@@ -436,17 +439,17 @@
                 </div>
             </div>
 
-            <!-- TAB: REPORTES ESTILO POWER BI -->
+            <!-- TAB: REPORTES ESTILO POWER BI (GRÁFICOS Y TABLAS DINÁMICAS) -->
             <div id="tab-reportes" class="tab-content">
                 <div class="bi-container">
                     <div class="bi-toolbar">
                         <div>
                             <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--primary);">Panel Analítico Dinámico (Estilo Power BI)</h3>
-                            <p style="font-size: 0.72rem; color: var(--text-muted);">Visualización en tiempo real de métricas logísticas, distribución de inventario y filtros cruzados.</p>
+                            <p style="font-size: 0.72rem; color: var(--text-muted);">Visualización gráfica interactiva y matriz multidimensional de inventario y bodegas.</p>
                         </div>
                         <div style="display: flex; gap: 8px;">
-                            <button class="btn btn-primary btn-sm" onclick="exportarReporteBIExcel()">📥 Exportar Matriz BI (.xlsx)</button>
-                            <button class="btn btn-outline btn-sm" onclick="window.print()">🖨️ Imprimir Reporte</button>
+                            <button class="btn btn-primary btn-sm" onclick="exportarReporteBIExcel()">📥 Exportar Matriz BI Completa (.xlsx)</button>
+                            <button class="btn btn-outline btn-sm" onclick="window.print()">🖨️ Imprimir Informe</button>
                         </div>
                     </div>
 
@@ -469,35 +472,46 @@
                         </div>
                     </div>
 
-                    <div class="bi-charts-row">
+                    <div class="bi-charts-grid">
                         <div class="bi-panel">
                             <div class="bi-panel-title">
-                                <span>Distribución de Inventario por Bodega y Categoría</span>
-                                <span style="font-size: 0.68rem; color: var(--text-muted);">Matriz Dinámica</span>
+                                <span>Distribución de Inventario por Bodega (Gráfico)</span>
                             </div>
-                            <div class="table-wrap" style="box-shadow: none; border: none;">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Bodega</th>
-                                            <th>Total Ítems</th>
-                                            <th>Unidades Comerciales</th>
-                                            <th>Unidosis / Mínimas</th>
-                                            <th>Participación</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="biTableBodegasBody"></tbody>
-                                </table>
+                            <div style="position: relative; height: 240px; width: 100%;">
+                                <canvas id="chartBodegas"></canvas>
                             </div>
                         </div>
 
                         <div class="bi-panel">
                             <div class="bi-panel-title">
-                                <span>Filtro Cruzado por Zona</span>
+                                <span>Proporción de Jerarquía / Tipo (Gráfico)</span>
                             </div>
-                            <div style="display: flex; flex-direction: column; gap: 8px;" id="biZonasFilterContainer">
-                                <!-- Generado dinámicamente -->
+                            <div style="position: relative; height: 240px; width: 100%;">
+                                <canvas id="chartJerarquia"></canvas>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- TABLA DINÁMICA DE ANÁLISIS -->
+                    <div class="bi-panel" style="min-height: auto;">
+                        <div class="bi-panel-title">
+                            <span>Matriz de Tabla Dinámica Analítica</span>
+                            <span style="font-size: 0.68rem; color: var(--text-muted);">Agrupado por Bodega y Tipo</span>
+                        </div>
+                        <div class="table-wrap" style="box-shadow: none; border: none;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Bodega</th>
+                                        <th>Total Ítems</th>
+                                        <th>Unidades Comerciales</th>
+                                        <th>Unidosis / Mínimas</th>
+                                        <th>Unidades Máster</th>
+                                        <th>Participación %</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="biTableBodegasBody"></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -666,7 +680,7 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- SCRIPT DE GESTIÓN Y SINCRONIZACIÓN -->
+    <!-- SCRIPT DE GESTIÓN, GRÁFICOS Y SINCRONIZACIÓN -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyB_F7itx3L67gDQ2EBaZaMT401lZG2MxEk",
@@ -739,32 +753,8 @@
         let currentWarehouse = 'TODAS';
         let currentUserId = null;
         let modalCallback = null;
-        let html5QrCodeScanner = null;
-        let codigoVerificacionActual = null;
-        let usuarioEnProcesoRecuperacion = null;
-
-        function limpiarYExtraerGTIN(rawText) {
-            if (!rawText) return '';
-            let limpio = String(rawText).trim();
-            if(!limpio || limpio.toUpperCase() === 'SIN ASIGNACIÓN' || limpio === '-') return '';
-            limpio = limpio.replace(/\((01|02)\)/g, '$1');
-            if (limpio.startsWith('01') && limpio.length >= 16) {
-                limpio = limpio.substring(2, 16);
-            } else if (limpio.startsWith('02') && limpio.length >= 16) {
-                limpio = limpio.substring(2, 16);
-            } else {
-                limpio = limpio.replace(/[^0-9]/g, '');
-                if (limpio.length > 14) {
-                    const idx01 = limpio.indexOf('01');
-                    if (idx01 !== -1 && limpio.length >= idx01 + 16) {
-                        limpio = limpio.substring(idx01 + 2, idx01 + 16);
-                    } else {
-                        limpio = limpio.substring(0, 14);
-                    }
-                }
-            }
-            return limpio;
-        }
+        let chartBodegasInstance = null;
+        let chartJerarquiaInstance = null;
 
         function verificarSesionGuardada() {
             const savedUserName = localStorage.getItem('wms_session_user');
@@ -825,6 +815,10 @@
             const activeBtn = document.querySelector(`.sidebar-nav button[data-tab="${tabId}"]`);
             if (activeBtn) activeBtn.classList.add('active');
 
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebarNav').classList.remove('mobile-open');
+            }
+
             if (tabId === 'inventario') renderInventarioUnificado();
             if (tabId === 'reportes') renderReportesBI();
             if (tabId === 'layout') cargarImagenLayout(currentWarehouse);
@@ -839,8 +833,10 @@
 
         function toggleSidebarMobile() {
             const sb = document.getElementById('sidebarNav');
+            const btnClose = document.getElementById('btnCloseSidebarMobile');
             if(sb) {
-                sb.style.display = sb.style.display === 'none' ? 'flex' : 'none';
+                sb.classList.toggle('mobile-open');
+                if(btnClose) btnClose.style.display = sb.classList.contains('mobile-open') ? 'inline-block' : 'none';
             }
         }
 
@@ -965,7 +961,6 @@
             const perfil = user.perfil;
             const btnCargar = document.getElementById('btnCargarArchivo');
             const btnExportar = document.getElementById('btnExportarArchivo');
-            const btnQrUbics = document.getElementById('btnQrUbicaciones');
             const navUsr = document.getElementById('navUsuarios');
             const navConfig = document.getElementById('navConfig');
 
@@ -1003,9 +998,9 @@
             const prods = getProducts();
             
             if (mode === 'demo') {
-                document.getElementById('totalProductos').textContent = prods.length > 0 ? prods.length : 869; 
-                document.getElementById('totalUbicaciones').textContent = "12.4 días";
-                document.getElementById('totalMovimientos').textContent = "788 Com. / 81 Unid.";
+                document.getElementById('totalProductos').textContent = prods.length > 0 ? prods.length : 599; 
+                document.getElementById('totalUbicaciones').textContent = "14.2 días";
+                document.getElementById('totalMovimientos').textContent = "788 / 81";
             } else {
                 document.getElementById('totalProductos').textContent = prods.length;
                 let ubics = new Set();
@@ -1043,13 +1038,16 @@
             document.getElementById('biTotalZonas').textContent = zonasSet.size;
 
             let bodegasMap = {};
-            appState.warehouses.forEach(w => { bodegasMap[w.id] = { nombre: w.nombre, total: 0, comercial: 0, minima: 0 }; });
+            appState.warehouses.forEach(w => { bodegasMap[w.id] = { nombre: w.nombre, total: 0, comercial: 0, minima: 0, master: 0 }; });
 
             prods.forEach(p => {
-                if(!bodegasMap[p.bodega]) bodegasMap[p.bodega] = { nombre: p.bodega, total: 0, comercial: 0, minima: 0 };
+                if(!bodegasMap[p.bodega]) bodegasMap[p.bodega] = { nombre: p.bodega, total: 0, comercial: 0, minima: 0, master: 0 };
                 bodegasMap[p.bodega].total++;
-                if(String(p.tipo).toLowerCase().includes('minima') || String(p.tipo).toLowerCase().includes('unidosis')) {
+                const t = String(p.tipo || '').toLowerCase();
+                if(t.includes('minima') || t.includes('unidosis')) {
                     bodegasMap[p.bodega].minima++;
+                } else if(t.includes('master') || t.includes('máster')) {
+                    bodegasMap[p.bodega].master++;
                 } else {
                     bodegasMap[p.bodega].comercial++;
                 }
@@ -1066,19 +1064,59 @@
                         <td>${b.total}</td>
                         <td>${b.comercial}</td>
                         <td>${b.minima}</td>
-                        <td><div style="background:#e2e8f0; border-radius:4px; overflow:hidden; width:100px; height:8px;"><div style="background:var(--primary); width:${pct}%; height:100%;"></div></div> <span style="font-size:0.65rem;">${pct}%</span></td>
+                        <td>${b.master}</td>
+                        <td><div style="background:#e2e8f0; border-radius:4px; overflow:hidden; width:90px; height:8px; display:inline-block; vertical-align:middle; margin-right:6px;"><div style="background:var(--primary); width:${pct}%; height:100%;"></div></div> ${pct}%</td>
                     </tr>
                 `;
-            }).join('') || '<tr><td colspan="5" class="empty-state">No hay datos suficientes para la matriz BI</td></tr>';
+            }).join('') || '<tr><td colspan="6" class="empty-state">No hay datos suficientes para la matriz BI</td></tr>';
 
-            const zContainer = document.getElementById('biZonasFilterContainer');
-            let zonasList = ['A', 'B', 'C', 'D', 'E', 'F'];
-            zContainer.innerHTML = zonasList.map(z => `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:8px 12px; border-radius:6px; border:1px solid var(--border); font-size:0.75rem;">
-                    <span>Zona ${z}</span>
-                    <span class="badge" style="background:#e0f2fe; color:#0369a1;">Activa</span>
-                </div>
-            `).join('');
+            // Renderizar Gráficos Chart.js
+            renderizarGraficosBI(bodegasMap);
+        }
+
+        function renderizarGraficosBI(bodegasMap) {
+            const labels = Object.values(bodegasMap).map(b => b.nombre);
+            const dataTotales = Object.values(bodegasMap).map(b => b.total);
+
+            // Gráfico de Bodegas
+            const ctxBodegas = document.getElementById('chartBodegas').getContext('2d');
+            if(chartBodegasInstance) chartBodegasInstance.destroy();
+            chartBodegasInstance = new Chart(ctxBodegas, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Ítems por Bodega',
+                        data: dataTotales,
+                        backgroundColor: ['#0b2545', '#134074', '#0d9488', '#d97706', '#0284c7', '#7c3aed'],
+                        borderWidth: 1
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            // Gráfico de Jerarquía (Doughnut)
+            let totalCom = 0, totalMin = 0, totalMas = 0;
+            getProducts().forEach(p => {
+                const t = String(p.tipo || '').toLowerCase();
+                if(t.includes('minima') || t.includes('unidosis')) totalMin++;
+                else if(t.includes('master') || t.includes('máster')) totalMas++;
+                else totalCom++;
+            });
+
+            const ctxJerarquia = document.getElementById('chartJerarquia').getContext('2d');
+            if(chartJerarquiaInstance) chartJerarquiaInstance.destroy();
+            chartJerarquiaInstance = new Chart(ctxJerarquia, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Comercial', 'Mínima / Unidosis', 'Máster'],
+                    datasets: [{
+                        data: [totalCom, totalMin, totalMas],
+                        backgroundColor: ['#0284c7', '#0d9488', '#d97706']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
         }
 
         function exportarReporteBIExcel() {
