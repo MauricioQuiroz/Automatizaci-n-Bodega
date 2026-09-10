@@ -363,8 +363,11 @@
                         <div class="multi-select-content" id="multiSelectUsuarioOptions"></div>
                     </div>
 
-                    <!-- 2. Filtro por Fecha (Calendario con formato DD-MM-AA) -->
-                    <input type="date" id="filtroMovFecha" placeholder="DD-MM-AA" onchange="renderHistorialCompleto()" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.72rem; background: white;">
+                    <!-- 2. Filtro por Fecha (Calendario con formato DD-MM-AA y botón limpiar) -->
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <input type="date" id="filtroMovFecha" placeholder="DD-MM-AA" onchange="renderHistorialCompleto()" style="flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.72rem; background: white;">
+                        <button class="btn btn-danger btn-xs" onclick="limpiarFiltroFechaMov()" title="Limpiar fecha">✕</button>
+                    </div>
 
                     <!-- 3. Filtro por Tipo de Modificación (Muestra todo por defecto) -->
                     <select id="filtroMovTipo" class="filter-select" style="width: 100%; max-width: none;" onchange="renderHistorialCompleto()">
@@ -388,8 +391,12 @@
 
                 </div>
             </div>
-            <!-- Contenedor del lector QR para movimientos -->
-            <div id="qr-reader-movimiento" style="width: 100%; max-width: 300px; margin: 8px auto; display: none;"></div>
+            
+            <!-- Contenedor del lector QR para movimientos con opción de cancelar -->
+            <div id="qr-reader-movimiento-container" style="display: none; width: 100%; max-width: 320px; margin: 8px auto; text-align: center;">
+                <div id="qr-reader-movimiento" style="width: 100%;"></div>
+                <button class="btn btn-danger btn-sm" style="margin-top: 8px; width: 100%;" onclick="detenerEscanerQR()">Cancelar Escaneo</button>
+            </div>
             
             <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:10px; text-align: left;">Historial completo de modificaciones</h3>
             <div class="table-wrap">
@@ -1798,8 +1805,8 @@
             }
             const readerDiv = document.getElementById('qr-reader');
             if(readerDiv) readerDiv.style.display = 'none';
-            const readerMovDiv = document.getElementById('qr-reader-movimiento');
-            if(readerMovDiv) readerMovDiv.style.display = 'none';
+            const readerMovContainer = document.getElementById('qr-reader-movimiento-container');
+            if(readerMovContainer) readerMovContainer.style.display = 'none';
         }
 
         function procesarTextoQR(texto, modo) {
@@ -2367,8 +2374,8 @@
         }
 
         function iniciarEscanerBarraMovimiento() {
-            const readerDiv = document.getElementById('qr-reader-movimiento');
-            if(readerDiv) readerDiv.style.display = 'block';
+            const container = document.getElementById('qr-reader-movimiento-container');
+            if(container) container.style.display = 'block';
             if (html5QrCodeScanner) { try { html5QrCodeScanner.clear(); } catch(e) {} }
             html5QrCodeScanner = new Html5Qrcode("qr-reader-movimiento");
             html5QrCodeScanner.start(
@@ -2384,6 +2391,12 @@
                 },
                 (errorMessage) => {}
             ).catch(err => { alert("No se pudo encender la cámara: " + err); });
+        }
+
+        function limpiarFiltroFechaMov() {
+            const inputFecha = document.getElementById('filtroMovFecha');
+            if(inputFecha) inputFecha.value = '';
+            renderHistorialCompleto();
         }
 
         function renderHistorialCompleto() {
@@ -2408,7 +2421,10 @@
                 movements = movements.filter(m => usuariosSeleccionados.some(uName => String(m.usuario).toLowerCase().includes(uName)));
             }
             if(fechaFiltroDDMMYY) {
-                movements = movements.filter(m => String(m.fecha).includes(fechaFiltroDDMMYY));
+                movements = movements.filter(m => {
+                    const fechaMovLimpia = String(m.fecha || '').split(' ')[0]; // Extrae solo la parte de fecha "DD-MM-AA"
+                    return fechaMovLimpia === fechaFiltroDDMMYY || String(m.fecha).includes(fechaFiltroDDMMYY);
+                });
             }
             if(tipoModSelect !== 'TODOS') {
                 movements = movements.filter(m => String(m.tipo).toLowerCase() === tipoModSelect.toLowerCase());
