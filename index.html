@@ -341,7 +341,7 @@
             <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:16px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
                     <h4 style="font-size:0.75rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; margin:0;">Herramientas de Exportación, Informes y Prompts para IA (Gemini / ChatGPT)</h4>
-                    <button class="btn btn-primary btn-xs" onclick="abrirModalPromptCRUD()">+ Agregar Prompt</button>
+                    <button class="btn btn-primary btn-xs" id="btnAgregarPrompt" onclick="abrirModalPromptCRUD()">+ Agregar Prompt</button>
                 </div>
                 <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 12px;">
                     <button class="btn btn-primary btn-sm" onclick="exportarReporteCriticos()">Reporte Ítems Críticos / Controlados</button>
@@ -887,14 +887,29 @@
                     e.preventDefault();
                     const tabId = this.dataset.tab;
                     const user = getCurrentUser();
-                    if (user && user.perfil === 'invitado') {
-                        if (tabId !== 'dashboard' && tabId !== 'inventario' && tabId !== 'layout' && tabId !== 'reportes') {
-                            alert('Su perfil de invitado solo cuenta con permisos de visualización.'); return;
+                    
+                    // RESTRICCIONES DE VISTAS SEGÚN PERFIL
+                    if (user) {
+                        const perfil = user.perfil;
+                        if (perfil === 'invitado') {
+                            if (!['dashboard', 'inventario', 'layout', 'reportes'].includes(tabId)) {
+                                alert('Su perfil de invitado solo cuenta con permisos de visualización.'); return;
+                            }
+                        } else if (perfil === 'operario') {
+                            // El operario solo ve dashboard, inventario, layout, bodegas (sin reportes, sin movimientos, sin usuarios, sin config)
+                            if (!['dashboard', 'inventario', 'layout', 'bodegas'].includes(tabId)) {
+                                alert('Acceso restringido para el perfil de operario.'); return;
+                            }
+                        } else if (perfil === 'supervisor') {
+                            // El supervisor ve dashboard, inventario, reportes, layout, movimientos, bodegas (sin usuarios, sin config)
+                            if (!['dashboard', 'inventario', 'reportes', 'layout', 'movimientos', 'bodegas'].includes(tabId)) {
+                                alert('Acceso restringido para el perfil de supervisor.'); return;
+                            }
+                        } else if (perfil === 'admin') {
+                            // Admin ve todo
                         }
                     }
-                    if ((tabId === 'config' || tabId === 'usuarios') && (!user || user.perfil !== 'admin')) {
-                        alert('Acceso restringido exclusivamente al Administrador.'); return;
-                    }
+
                     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
                     document.getElementById('tab-' + tabId).classList.add('active');
@@ -985,30 +1000,78 @@
             const btnCargar = document.getElementById('btnCargarArchivo');
             const btnExportar = document.getElementById('btnExportarArchivo');
             const btnQrUbics = document.getElementById('btnQrUbicaciones');
-            const navUsr = document.getElementById('navUsuarios');
-            const navConfig = document.getElementById('navConfig');
+            
+            const navInventario = document.getElementById('navInventario');
+            const navReportes = document.getElementById('navReportes');
+            const navLayout = document.getElementById('navLayout');
             const navMovimientos = document.getElementById('navMovimientos');
+            const navUsuarios = document.getElementById('navUsuarios');
+            const navBodegas = document.getElementById('navBodegas');
+            const navConfig = document.getElementById('navConfig');
+            
             const toolbarAccionsInv = document.getElementById('toolbarAccionsInv');
             const thAccionsInvHead = document.getElementById('thAccionsInvHead');
 
-            if (btnCargar) btnCargar.style.display = (perfil === 'admin') ? 'inline-flex' : 'none';
-            if (btnExportar) btnExportar.style.display = (perfil === 'admin' || perfil === 'supervisor') ? 'inline-flex' : 'none';
-
-            if (perfil === 'invitado') {
-                if(btnQrUbics) btnQrUbics.style.display = 'none';
-                if(navUsr) navUsr.style.display = 'none';
-                if(navConfig) navConfig.style.display = 'none';
-                if(navMovimientos) navMovimientos.style.display = 'none';
-                if(toolbarAccionsInv) toolbarAccionsInv.style.display = 'none';
-                if(thAccionsInvHead) thAccionsInvHead.style.display = 'none';
-            } else if (perfil === 'operario' || perfil === 'supervisor') {
-                if(navUsr) navUsr.style.display = 'none';
-                if(navConfig) navConfig.style.display = 'none';
-            } else if (perfil === 'admin') {
-                if(navUsr) navUsr.style.display = 'inline-flex';
+            // Visibilidad de pestañas de navegación según perfiles conversados:
+            if (perfil === 'admin') {
+                if(navInventario) navInventario.style.display = 'inline-flex';
+                if(navReportes) navReportes.style.display = 'inline-flex';
+                if(navLayout) navLayout.style.display = 'inline-flex';
+                if(navMovimientos) navMovimientos.style.display = 'inline-flex';
+                if(navUsuarios) navUsuarios.style.display = 'inline-flex';
+                if(navBodegas) navBodegas.style.display = 'inline-flex';
                 if(navConfig) navConfig.style.display = 'inline-flex';
+
+                if(btnCargar) btnCargar.style.display = 'inline-flex';
+                if(btnExportar) btnExportar.style.display = 'inline-flex';
+                if(btnQrUbics) btnQrUbics.style.display = 'inline-flex';
                 if(toolbarAccionsInv) toolbarAccionsInv.style.display = 'flex';
                 if(thAccionsInvHead) thAccionsInvHead.style.display = 'table-cell';
+            } else if (perfil === 'supervisor') {
+                // Supervisor: Dashboard, Inventario, Reportes (sin prompt), Layout, Movimientos, Bodegas. Sin usuarios, sin config.
+                if(navInventario) navInventario.style.display = 'inline-flex';
+                if(navReportes) navReportes.style.display = 'inline-flex';
+                if(navLayout) navLayout.style.display = 'inline-flex';
+                if(navMovimientos) navMovimientos.style.display = 'inline-flex';
+                if(navUsuarios) navUsuarios.style.display = 'none';
+                if(navBodegas) navBodegas.style.display = 'inline-flex';
+                if(navConfig) navConfig.style.display = 'none';
+
+                if(btnCargar) btnCargar.style.display = 'none';
+                if(btnExportar) btnExportar.style.display = 'inline-flex';
+                if(btnQrUbics) btnQrUbics.style.display = 'inline-flex';
+                if(toolbarAccionsInv) toolbarAccionsInv.style.display = 'flex';
+                if(thAccionsInvHead) thAccionsInvHead.style.display = 'table-cell';
+            } else if (perfil === 'operario') {
+                // Operario: Dashboard, Inventario, Layout, Bodegas. Sin reportes, sin movimientos, sin usuarios, sin config.
+                if(navInventario) navInventario.style.display = 'inline-flex';
+                if(navReportes) navReportes.style.display = 'none';
+                if(navLayout) navLayout.style.display = 'inline-flex';
+                if(navMovimientos) navMovimientos.style.display = 'none';
+                if(navUsuarios) navUsuarios.style.display = 'none';
+                if(navBodegas) navBodegas.style.display = 'inline-flex';
+                if(navConfig) navConfig.style.display = 'none';
+
+                if(btnCargar) btnCargar.style.display = 'none';
+                if(btnExportar) btnExportar.style.display = 'none';
+                if(btnQrUbics) btnQrUbics.style.display = 'inline-flex';
+                if(toolbarAccionsInv) toolbarAccionsInv.style.display = 'flex';
+                if(thAccionsInvHead) thAccionsInvHead.style.display = 'table-cell';
+            } else if (perfil === 'invitado') {
+                // Invitado: Dashboard, Inventario, Reportes (solo lectura), Layout.
+                if(navInventario) navInventario.style.display = 'inline-flex';
+                if(navReportes) navReportes.style.display = 'inline-flex';
+                if(navLayout) navLayout.style.display = 'inline-flex';
+                if(navMovimientos) navMovimientos.style.display = 'none';
+                if(navUsuarios) navUsuarios.style.display = 'none';
+                if(navBodegas) navBodegas.style.display = 'none';
+                if(navConfig) navConfig.style.display = 'none';
+
+                if(btnCargar) btnCargar.style.display = 'none';
+                if(btnExportar) btnExportar.style.display = 'none';
+                if(btnQrUbics) btnQrUbics.style.display = 'none';
+                if(toolbarAccionsInv) toolbarAccionsInv.style.display = 'none';
+                if(thAccionsInvHead) thAccionsInvHead.style.display = 'none';
             }
         }
 
@@ -1197,11 +1260,22 @@
 
         function renderListaPromptsReportes() {
             const container = document.getElementById('listaPromptsDinamicosContainer');
+            const btnAgregar = document.getElementById('btnAgregarPrompt');
             if(!container) return;
-            const prompts = appState.promptsIa || DEFAULT_PROMPTS_IA;
+
             const user = getCurrentUser();
             const isAdmin = user && user.perfil === 'admin';
 
+            // Ocultar sección o botón de prompts para supervisor, operario e invitado
+            if (!isAdmin) {
+                container.innerHTML = '';
+                if(btnAgregar) btnAgregar.style.display = 'none';
+                return;
+            } else {
+                if(btnAgregar) btnAgregar.style.display = 'inline-flex';
+            }
+
+            const prompts = appState.promptsIa || DEFAULT_PROMPTS_IA;
             container.innerHTML = prompts.map(pr => `
                 <div style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
                     <div style="flex:1; min-width:250px;">
@@ -1210,7 +1284,7 @@
                     </div>
                     <div style="display:flex; gap:6px; flex-shrink:0;">
                         <button class="btn btn-primary btn-xs" onclick="copiarPromptTextoCustom('${encodeURIComponent(pr.texto)}')">Copiar Prompt</button>
-                        ${isAdmin ? `<button class="btn btn-danger btn-xs" onclick="eliminarPromptIA('${pr.id}')">Eliminar</button>` : ''}
+                        <button class="btn btn-danger btn-xs" onclick="eliminarPromptIA('${pr.id}')">Eliminar</button>
                     </div>
                 </div>
             `).join('');
