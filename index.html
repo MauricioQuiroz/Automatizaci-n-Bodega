@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sistema de AutomatizaciÃ³n de Almacenamiento - Hospital San Juan de Dios</title>
-    <!-- LibrerÃ­as QR y Excel -->
+    <title>Sistema de Automatización de Almacenamiento - Hospital San Juan de Dios</title>
+    <!-- Librerías QR y Excel -->
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.2/umd/index.min.js"></script>
@@ -32,7 +32,7 @@
         
         .app { width:100%; min-height:100vh; background:var(--surface); display:flex; flex-direction:column; }
 
-        /* LOGIN ADAPTATIVO A LOS BORDES */
+        /* LOGIN ADAPTATIVO A LOS BORDES (PANTALLA COMPLETA EN MÓVIL Y TARJETA FLUIDA) */
         #loginModal { 
             position: fixed; 
             top: 0; 
@@ -147,11 +147,7 @@
         .card .number { font-size:1.3rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; line-height: 1.2; word-break: break-word; }
         .card .label { color:var(--text-muted); font-size:0.68rem; margin-top:4px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
 
-        /* DASHBOARD USUARIOS ACTIVOS */
-        .dashboard-users-list { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; max-height: 75px; overflow-y: auto; }
-        .dashboard-user-item { display: inline-flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--text-main); font-weight: 500; background: #f8fafc; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); width: fit-content; }
-
-        /* TABLAS Y CONTENEDORES RESPONSIVOS */
+        /* TABLAS Y CONTENEDORES RESPONSIVOS OPTIMIZADOS PARA PDA / MÓVIL / TABLET / ESCRITORIO */
         .table-wrap { width:100%; overflow-x:auto; -webkit-overflow-scrolling: touch; }
         .table-container { max-height:62vh; overflow-y:auto; overflow-x:auto; background:transparent; width:100%; border: 1px solid var(--border); border-radius: var(--radius); }
         table { width:100%; border-collapse:collapse; font-size:0.72rem; min-width: 780px; }
@@ -168,7 +164,7 @@
             height: 15px;
         }
 
-        /* PROGRAMAS Y CATEGORÃAS */
+        /* PROGRAMAS Y CATEGORÍAS */
         .prog-column-box { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; align-items: stretch; }
         .prog-option-item { display: flex; align-items: center; justify-content: flex-start; gap: 8px; background: #fff; padding: 8px 10px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; font-size: 0.7rem; width: 100%; text-align: left; box-sizing: border-box; }
         .prog-option-item input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; margin: 0; flex-shrink: 0; align-self: center; }
@@ -232,7 +228,7 @@
         .master-dropdown-item { padding: 9px 12px; font-size: 0.72rem; cursor: pointer; border-bottom: 1px solid var(--bg-base); text-align: left; color: var(--text-main); line-height: 1.3; }
         .master-dropdown-item:hover { background: #f8fafc; color: var(--accent); }
 
-        /* MODALES ADAPTABLES */
+        /* MODALES ADAPTABLES A PANTALLAS TÁCTILES Y MÓVILES */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:10px; overflow-y:auto; }
         .modal.active { display:flex; }
         .modal-content { background:#ffffff; border-radius:12px; padding:18px; max-width:800px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.2); border:1px solid var(--border); text-align: left; margin:auto; }
@@ -266,7 +262,9 @@
             }
         }
 
-        /* MEDIA QUERIES */
+        /* MEDIA QUERIES ESPECÍFICAS PARA CADA DISPOSITIVO (Celular, PDA Zebra TC27, Tablet Zebra, Escritorio) */
+
+        /* 1. Celulares pequeños y PDAs Zebra TC27 (ancho <= 600px) */
         @media (max-width: 600px) {
             body { font-size: 11px; }
             .toolbar { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px; }
@@ -287,9 +285,15 @@
             .warehouse-select-wrapper select { width: 100%; }
         }
 
+        /* 2. Tablets Zebra y pantallas medianas (601px - 1024px) */
         @media (min-width: 601px) and (max-width: 1024px) {
             .card-grid { grid-template-columns: repeat(2, 1fr); }
             .modal-content { width: 90%; max-width: 720px; }
+        }
+
+        /* 3. Computador de escritorio (>= 1025px) */
+        @media (min-width: 1025px) {
+            .table-container { overflow-x: auto; }
         }
     </style>
 </head>
@@ -302,17 +306,17 @@
             </div>
             <div class="login-content-pad">
                 <div class="divider"></div>
-                <h2>Sistema de AutomatizaciÃ³n de Almacenamiento</h2>
+                <h2>Sistema de Automatización de Almacenamiento</h2>
                 <p>Ingresa tus credenciales de acceso.</p>
                 <label>Usuario</label>
                 <input type="text" id="loginUser" placeholder="Nombre de usuario">
-                <label>ContraseÃ±a</label>
-                <input type="password" id="loginPass" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢">
+                <label>Contraseña</label>
+                <input type="password" id="loginPass" placeholder="••••••••">
                 <div id="loginError" class="login-error">Credenciales incorrectas.</div>
                 <button class="btn btn-primary" onclick="handleLogin()">Ingresar</button>
                 <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 6px; align-items: center;">
-                    <span class="forgot-link" onclick="abrirModalRecuperarPass()">Â¿Olvidaste tu contraseÃ±a?</span>
-                    <span style="font-size: 0.68rem; color: var(--text-muted); font-weight: 500; font-style: italic;">"DiseÃ±ado por Mauricio Quiroz Ayala"</span>
+                    <span class="forgot-link" onclick="abrirModalRecuperarPass()">¿Olvidaste tu contraseña?</span>
+                    <span style="font-size: 0.68rem; color: var(--text-muted); font-weight: 500; font-style: italic;">"Diseñado por Mauricio Quiroz Ayala"</span>
                 </div>
             </div>
         </div>
@@ -323,8 +327,8 @@
         <header>
             <div class="header-top-row">
                 <div class="header-left">
-                    <div class="header-title">Sistema de AutomatizaciÃ³n de Almacenamiento</div>
-                    <div class="header-sub">Hospital San Juan de Dios Â· <span>"DiseÃ±ado por Mauricio Quiroz Ayala"</span></div>
+                    <div class="header-title">Sistema de Automatización de Almacenamiento</div>
+                    <div class="header-sub">Hospital San Juan de Dios · <span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
                 </div>
                 <div class="user-status-pill">
                     <span class="online-indicator"></span>
@@ -357,25 +361,21 @@
             <button data-tab="movimientos" id="navMovimientos">Movimientos</button>
             <button data-tab="usuarios" id="navUsuarios">Usuarios</button>
             <button data-tab="bodegas" id="navBodegas">Bodegas</button>
-            <button data-tab="config" id="navConfig">ConfiguraciÃ³n</button>
+            <button data-tab="config" id="navConfig">Configuración</button>
         </nav>
 
         <!-- DASHBOARD -->
         <div id="tab-dashboard" class="tab-content active">
             <div class="card-grid">
-                <div class="card"><div class="number" id="totalProductos">0</div><div class="label">Total Ãtems</div></div>
+                <div class="card"><div class="number" id="totalProductos">0</div><div class="label">Total Ítems</div></div>
                 <div class="card"><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones</div></div>
                 <div class="card"><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos</div></div>
-                <div class="card">
-                    <div class="number" id="totalUsuariosConectadosNum">0 Activos</div>
-                    <div class="label">Usuarios Conectados</div>
-                    <div class="dashboard-users-list" id="dashboardUsersListContainer"></div>
-                </div>
+                <div class="card"><div class="number" id="totalUsuariosConectados">0</div><div class="label">Usuarios Activos</div></div>
             </div>
-            <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:10px; color:var(--text-main); text-align: left;">Ãltimos movimientos registrados</h3>
+            <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:10px; color:var(--text-main); text-align: left;">Últimos movimientos registrados</h3>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Fecha y Hora</th><th>Usuario</th><th>Tipo</th><th style="width: 25%; white-space: nowrap;">Ãtem / GTIN</th><th>Detalle</th></tr></thead>
+                    <thead><tr><th>Fecha y Hora</th><th>Usuario</th><th>Tipo</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
                     <tbody id="ultimosMovimientos"></tbody>
                 </table>
             </div>
@@ -396,7 +396,7 @@
                     </button>
                 </div>
                 <div class="toolbar-right">
-                    <input type="text" id="searchInventarioUnificado" placeholder="Buscar cÃ³digo, glosa o GTIN..." oninput="renderInventarioUnificado()">
+                    <input type="text" id="searchInventarioUnificado" placeholder="Buscar código, glosa o GTIN..." oninput="renderInventarioUnificado()">
                     <select class="filter-select" id="filterZona" onchange="renderInventarioUnificado()">
                         <option value="TODAS">Todas las Zonas</option>
                         <option value="A">Zona A</option>
@@ -417,13 +417,13 @@
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 11%; text-align:left; padding-left:10px;"><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)"> CÃ³d. Int.</th>
+                                <th style="width: 11%; text-align:left; padding-left:10px;"><input type="checkbox" id="chkSelectAll" onclick="toggleSeleccionarTodoInventario(this)"> Cód. Int.</th>
                                 <th style="width: 13%;">GTIN/EAN</th>
                                 <th style="width: 18%;">Glosa</th>
                                 <th style="width: 9%;">Bodega</th>
-                                <th style="width: 16%; text-align:center;">Programas / CategorÃ­as</th>
-                                <th style="width: 11%; text-align:center;">JerarquÃ­a</th>
-                                <th style="width: 13%;">UbicaciÃ³n</th>
+                                <th style="width: 16%; text-align:center;">Programas / Categorías</th>
+                                <th style="width: 11%; text-align:center;">Jerarquía</th>
+                                <th style="width: 13%;">Ubicación</th>
                                 <th style="width: 9%; text-align:center;">Estado</th>
                                 <th id="thAccionsInvHead" style="width: 10%; text-align:center;">Acciones</th>
                             </tr>
@@ -440,49 +440,19 @@
             <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:10px; text-align: left;" id="layoutSubtitleContext">Vista activa: Todas las Bodegas</p>
             <div class="layout-image-container" id="layoutImageContainer">
                 <div id="layoutImageContent">
-                    <span class="no-image">No hay imagen de plano cargada para esta bodega.<br><small>Sube una imagen desde la secciÃ³n ConfiguraciÃ³n.</small></span>
+                    <span class="no-image">No hay imagen de plano cargada para esta bodega.<br><small>Sube una imagen desde la sección Configuración.</small></span>
                 </div>
             </div>
         </div>
 
         <!-- MOVIMIENTOS -->
         <div id="tab-movimientos" class="tab-content">
-            <div class="toolbar" style="margin-bottom: 12px;">
-                <div class="toolbar-left" style="width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px;">
-                    <div>
-                        <label style="font-size:0.65rem; color:var(--text-muted); margin-bottom:2px; display:block;">Filtrar Usuario</label>
-                        <input type="text" id="filtroMovUsuario" placeholder="Usuario..." oninput="renderHistorialCompleto()" style="width:100%; padding:6px 10px; font-size:0.72rem;">
-                    </div>
-                    <div>
-                        <label style="font-size:0.65rem; color:var(--text-muted); margin-bottom:2px; display:block;">Filtrar Fecha</label>
-                        <input type="text" id="filtroMovFecha" placeholder="DD/MM/AAAA..." oninput="renderHistorialCompleto()" style="width:100%; padding:6px 10px; font-size:0.72rem;">
-                    </div>
-                    <div>
-                        <label style="font-size:0.65rem; color:var(--text-muted); margin-bottom:2px; display:block;">Filtrar Ãtem</label>
-                        <input type="text" id="filtroMovItem" placeholder="CÃ³digo o glosa..." oninput="renderHistorialCompleto()" style="width:100%; padding:6px 10px; font-size:0.72rem;">
-                    </div>
-                    <div>
-                        <label style="font-size:0.65rem; color:var(--text-muted); margin-bottom:2px; display:block;">Filtrar GTIN</label>
-                        <input type="text" id="filtroMovGtin" placeholder="GTIN..." oninput="renderHistorialCompleto()" style="width:100%; padding:6px 10px; font-size:0.72rem;">
-                    </div>
-                </div>
-            </div>
             <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:10px; text-align: left;">Historial completo de modificaciones</h3>
             <div class="table-wrap">
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Fecha y Hora</th>
-                                <th>Usuario</th>
-                                <th>Tipo de ModificaciÃ³n</th>
-                                <th style="width: 25%; white-space: nowrap;">Ãtem / GTIN</th>
-                                <th>Detalle</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historialCompletoBody"></tbody>
-                    </table>
-                </div>
+                <table>
+                    <thead><tr><th>Fecha y Hora</th><th>Usuario</th><th>Tipo de Modificación</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
+                    <tbody id="historialCompletoBody"></tbody>
+                </table>
             </div>
         </div>
 
@@ -527,26 +497,26 @@
 
         <!-- CONFIG -->
         <div id="tab-config" class="tab-content">
-            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:14px; text-align: left;">ConfiguraciÃ³n del Sistema</h3>
+            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:14px; text-align: left;">Configuración del Sistema</h3>
             <div style="max-width:720px; display:flex; flex-direction:column; gap:14px; text-align: left;">
                 
-                <!-- GESTIÃN DINÃMICA DE PROGRAMAS Y CATEGORÃAS (CRUD) -->
+                <!-- GESTIÓN DINÁMICA DE PROGRAMAS Y CATEGORÍAS (CRUD) -->
                 <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--accent);">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
                         <div>
-                            <label style="font-weight:600; color:var(--text-main); font-size:0.8rem;">GestiÃ³n de Programas y CategorÃ­as Especiales</label>
-                            <p style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Crea, edita o elimina los programas y categorÃ­as disponibles.</p>
+                            <label style="font-weight:600; color:var(--text-main); font-size:0.8rem;">Gestión de Programas y Categorías Especiales</label>
+                            <p style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Crea, edita o elimina los programas y categorías disponibles.</p>
                         </div>
                         <button class="btn btn-primary btn-xs" onclick="abrirModalProgramaCRUD()">+ Nuevo Programa</button>
                     </div>
                     <div id="listaProgramasConfigContainer" style="display:flex; flex-direction:column; gap:6px; margin-top:8px; max-height:160px; overflow-y:auto; padding:2px;"></div>
                 </div>
 
-                <!-- INTEGRACIÃN ERP -->
+                <!-- INTEGRACIÓN ERP -->
                 <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--success);">
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                         <div>
-                            <label style="font-weight:600; color:var(--text-main); font-size:0.8rem;">MÃ³dulo de IntegraciÃ³n ERP (Trazabilidad Avanzada)</label>
+                            <label style="font-weight:600; color:var(--text-main); font-size:0.8rem;">Módulo de Integración ERP (Trazabilidad Avanzada)</label>
                             <p style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Habilita globalmente lotes, vencimientos, series y factores de empaque.</p>
                         </div>
                         <label style="position:relative; display:inline-block; width:44px; height:22px; cursor:pointer; margin:0;">
@@ -559,10 +529,10 @@
                 </div>
 
                 <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--accent);" id="configMasterCatalogSection">
-                    <label style="font-weight:600; color:var(--text-main); text-align: left; font-size:0.8rem;">CatÃ¡logo Maestro de Referencia (Administrador)</label>
-                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:6px; text-align: left;">Carga el Excel maestro con cÃ³digos, glosas, bodegas y columna UBICACION.</p>
+                    <label style="font-weight:600; color:var(--text-main); text-align: left; font-size:0.8rem;">Catálogo Maestro de Referencia (Administrador)</label>
+                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:6px; text-align: left;">Carga el Excel maestro con códigos, glosas, bodegas y columna UBICACION.</p>
                     <input type="file" id="masterCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoMaestro(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.75rem;">
-                    <div style="font-size:0.68rem; color:var(--success); margin-top:4px; font-weight:500; text-align: left;" id="masterCatalogStatus">Registros en catÃ¡logo maestro: 0</div>
+                    <div style="font-size:0.68rem; color:var(--success); margin-top:4px; font-weight:500; text-align: left;" id="masterCatalogStatus">Registros en catálogo maestro: 0</div>
                 </div>
 
                 <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border);" id="configLocationsMasterSection">
@@ -574,7 +544,7 @@
 
                 <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border);" id="configLayoutSection">
                     <label style="font-weight:600; color:var(--text-main); text-align: left; font-size:0.8rem;">Imagen del Plano (Layout Visual)</label>
-                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:6px; text-align: left;">Asocia un plano grÃ¡fico a una bodega especÃ­fica o de forma general.</p>
+                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:6px; text-align: left;">Asocia un plano gráfico a una bodega específica o de forma general.</p>
                     <div style="display:flex; gap:8px; margin-bottom:6px;">
                         <select id="configSubirBodegaSelect" style="flex:1; padding:8px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.75rem;">
                             <option value="GENERAL">General (Todas las bodegas)</option>
@@ -614,7 +584,7 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- SCRIPT DE SINCRONIZACIÃN Y GESTIÃN -->
+    <!-- SCRIPT DE SINCRONIZACIÓN Y GESTIÓN -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyB_F7itx3L67gDQ2EBaZaMT401lZG2MxEk",
@@ -633,7 +603,7 @@
 
         const DEFAULT_PROGRAMAS_CATALOG = [
             { id: 'controlado', nombre: 'Controlados', color: '#0d9488' },
-            { id: 'frio', nombre: 'CÃ¡mara de FrÃ­o', color: '#0284c7' },
+            { id: 'frio', nombre: 'Cámara de Frío', color: '#0284c7' },
             { id: 'pm', nombre: 'Programa Ministerial', color: '#7c3aed' },
             { id: 'lrs', nombre: 'Ley Ricarte Soto', color: '#d97706' },
             { id: 'vih', nombre: 'VIH', color: '#a21caf' },
@@ -641,8 +611,8 @@
             { id: 'inflamable', nombre: 'Inflamable', color: '#c2410c' },
             { id: 'comp', nombre: 'Comp - Comp rec', color: '#334155' },
             { id: 'inyectable', nombre: 'Inyectable', color: '#15803d' },
-            { id: 'magistral', nombre: 'PreparaciÃ³n magistral', color: '#115e59' },
-            { id: 'mezcla', nombre: 'Mezcla (oncolÃ³gico)', color: '#be185d' },
+            { id: 'magistral', nombre: 'Preparación magistral', color: '#115e59' },
+            { id: 'mezcla', nombre: 'Mezcla (oncológico)', color: '#be185d' },
             { id: 'unguentos', nombre: 'Unguentos-pomadas-cremas-geles-pastas', color: '#854d0e' }
         ];
 
@@ -666,10 +636,10 @@
                 { id: 4, nombre: 'Invitado', correo: 'invitado@hsjd.cl', perfil: 'invitado', password: '1234', permisos: ['lectura'] }
             ],
             warehouses: [
-                { id: 'Farmacos', nombre: 'Bodega de FÃ¡rmacos', color: '#0284c7' },
-                { id: 'Insumos', nombre: 'Bodega de Insumos ClÃ­nicos', color: '#0d9488' },
+                { id: 'Farmacos', nombre: 'Bodega de Fármacos', color: '#0284c7' },
+                { id: 'Insumos', nombre: 'Bodega de Insumos Clínicos', color: '#0d9488' },
                 { id: 'Economato', nombre: 'Bodega de Economato', color: '#d97706' },
-                { id: 'Controlados', nombre: 'Bodega de FÃ¡rmacos Controlados', color: '#0f766e' },
+                { id: 'Controlados', nombre: 'Bodega de Fármacos Controlados', color: '#0f766e' },
                 { id: 'Suturas', nombre: 'Bodega de Suturas', color: '#0284c7' },
                 { id: 'Alimentos', nombre: 'Bodega de Alimentos', color: '#ea580c' }
             ],
@@ -692,7 +662,7 @@
         function determinarJerarquiaPorZona(zonaStr) {
             const z = String(zonaStr || '').trim().toUpperCase();
             if(['A', 'B', 'C', 'D', 'E', 'I'].includes(z)) {
-                return 'Unidad MÃ¡ster';
+                return 'Unidad Máster';
             }
             return 'Unidad Comercial';
         }
@@ -749,34 +719,27 @@
                 verificarSesionGuardada();
                 renderAll();
             }, (error) => {
-                console.error("Error en sincronizaciÃ³n: ", error);
+                console.error("Error en sincronización: ", error);
             });
 
             dbFirestore.collection('wms_data').onSnapshot((snapshot) => {
-                let activosNombres = [];
+                let activos = 0;
                 const ahora = new Date().getTime();
                 snapshot.forEach(docSnap => {
                     if (docSnap.id.startsWith('presencia_')) {
                         const data = docSnap.data();
-                        if (data && data.ultimoAcceso && data.usuario) {
+                        if (data && data.ultimoAcceso) {
                             const timestampAcceso = data.ultimoAcceso.toDate().getTime();
                             if (ahora - timestampAcceso < 30000) {
-                                activosNombres.push(data.usuario);
+                                activos++;
                             }
                         }
                     }
                 });
-
-                const numElem = document.getElementById('totalUsuariosConectadosNum');
-                const listContainer = document.getElementById('dashboardUsersListContainer');
-                if (numElem && listContainer) {
-                    numElem.textContent = `${activosNombres.length} Activos`;
-                    listContainer.innerHTML = activosNombres.map(nombreUsr => `
-                        <div class="dashboard-user-item">
-                            <span class="online-indicator"></span>
-                            <span>${nombreUsr}</span>
-                        </div>
-                    `).join('') || '<span style="color:var(--text-muted); font-size:0.68rem; font-style:italic;">Sin usuarios activos</span>';
+                const elem = document.getElementById('totalUsuariosConectados');
+                if (elem) {
+                    const totalCreados = (appState.users || []).length;
+                    elem.textContent = `${activos} Activos / ${totalCreados} Creados`;
                 }
             });
         }
@@ -791,7 +754,7 @@
             appState.erpUnlocked = checkboxEl.checked;
             guardarEstadoFirestore();
             actualizarUIConfigErp();
-            mostrarToast(appState.erpUnlocked ? 'MÃ³dulo ERP desbloqueado para pruebas.' : 'MÃ³dulo ERP bloqueado.');
+            mostrarToast(appState.erpUnlocked ? 'Módulo ERP desbloqueado para pruebas.' : 'Módulo ERP bloqueado.');
         }
 
         function actualizarUIConfigErp() {
@@ -815,7 +778,7 @@
             }
         }
 
-        function registrarHistorial(tipoMod, codigoItem, detalle, bodegaAsociada = 'Farmacos') {
+        function registrarHistorial(tipoMod, codigoItem, detalle) {
             const usr = getCurrentUser();
             const ahora = new Date();
             const fechaStr = ahora.toLocaleDateString() + ' ' + ahora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -826,8 +789,7 @@
                 usuario: usr ? `${usr.nombre} (${usr.perfil})` : 'Sistema',
                 tipo: tipoMod,
                 codigo: codigoItem,
-                detalle: detalle,
-                bodega: bodegaAsociada
+                detalle: detalle
             });
             guardarEstadoFirestore();
         }
@@ -843,7 +805,7 @@
         function limpiarYExtraerGTIN(rawText) {
             if (!rawText) return '';
             let limpio = String(rawText).trim();
-            if(!limpio || limpio.toUpperCase() === 'SIN ASIGNACIÃN' || limpio === '-') return '';
+            if(!limpio || limpio.toUpperCase() === 'SIN ASIGNACIÓN' || limpio === '-') return '';
             limpio = limpio.replace(/\((01|02)\)/g, '$1');
 
             if (limpio.startsWith('01') && limpio.length >= 16) {
@@ -888,7 +850,7 @@
 
                     if (user && user.perfil === 'invitado') {
                         if (tabId !== 'dashboard' && tabId !== 'inventario' && tabId !== 'layout') {
-                            alert('Su perfil de invitado solo cuenta con permisos de visualizaciÃ³n.');
+                            alert('Su perfil de invitado solo cuenta con permisos de visualización.');
                             return;
                         }
                     }
@@ -950,57 +912,57 @@
             codigoVerificacionActual = null;
             usuarioEnProcesoRecuperacion = null;
 
-            mostrarModal('Restablecer ContraseÃ±a', `
-                <p style="font-size:0.72rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Ingresa tu usuario y correo electrÃ³nico institucional registrado para recibir el cÃ³digo de verificaciÃ³n.</p>
+            mostrarModal('Restablecer Contraseña', `
+                <p style="font-size:0.72rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Ingresa tu usuario y correo electrónico institucional registrado para recibir el código de verificación.</p>
                 <label>Nombre de Usuario</label>
                 <input id="recUser" placeholder="Usuario exacto">
-                <label style="margin-top:6px;">Correo ElectrÃ³nico</label>
+                <label style="margin-top:6px;">Correo Electrónico</label>
                 <input id="recEmail" type="email" placeholder="correo@hsjd.cl">
             `, true);
-            document.getElementById('modalActionBtn').textContent = 'Enviar CÃ³digo al Correo';
+            document.getElementById('modalActionBtn').textContent = 'Enviar Código al Correo';
             modalCallback = () => {
                 const uName = document.getElementById('recUser').value.trim();
                 const uEmail = document.getElementById('recEmail').value.trim();
                 if(!uName || !uEmail) return alert('Completa todos los campos');
 
                 const usr = appState.users.find(x => x.nombre.toLowerCase() === uName.toLowerCase());
-                if(!usr) return alert('No se encontrÃ³ un usuario con ese nombre.');
+                if(!usr) return alert('No se encontró un usuario con ese nombre.');
                 if(!usr.correo || usr.correo.toLowerCase() !== uEmail.toLowerCase()) {
-                    return alert('El correo electrÃ³nico no coincide con el registrado para este usuario.');
+                    return alert('El correo electrónico no coincide con el registrado para este usuario.');
                 }
 
                 usuarioEnProcesoRecuperacion = usr;
                 codigoVerificacionActual = Math.floor(100000 + Math.random() * 900000).toString();
 
-                mostrarToast(`CÃ³digo de verificaciÃ³n enviado formalmente a ${usr.correo}`);
+                mostrarToast(`Código de verificación enviado formalmente a ${usr.correo}`);
                 abrirModalValidacionCodigo();
             };
         }
 
         function abrirModalValidacionCodigo() {
-            mostrarModal('Validar CÃ³digo de RecuperaciÃ³n', `
-                <p style="font-size:0.72rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Ingresa el cÃ³digo de 6 dÃ­gitos enviado a tu correo institucional y establece tu nueva contraseÃ±a.</p>
-                <label>CÃ³digo de VerificaciÃ³n</label>
+            mostrarModal('Validar Código de Recuperación', `
+                <p style="font-size:0.72rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Ingresa el código de 6 dígitos enviado a tu correo institucional y establece tu nueva contraseña.</p>
+                <label>Código de Verificación</label>
                 <input id="valCodigo" placeholder="Ej: 123456" maxlength="6">
-                <label style="margin-top:6px;">Nueva ContraseÃ±a</label>
-                <input id="valNewPass" type="password" placeholder="Nueva contraseÃ±a">
+                <label style="margin-top:6px;">Nueva Contraseña</label>
+                <input id="valNewPass" type="password" placeholder="Nueva contraseña">
             `, true);
-            document.getElementById('modalActionBtn').textContent = 'Actualizar ContraseÃ±a';
+            document.getElementById('modalActionBtn').textContent = 'Actualizar Contraseña';
             modalCallback = () => {
                 const ingCode = document.getElementById('valCodigo').value.trim();
                 const nPass = document.getElementById('valNewPass').value.trim();
 
                 if(!ingCode || !nPass) return alert('Completa todos los campos.');
                 if(ingCode !== codigoVerificacionActual) {
-                    return alert('El cÃ³digo de verificaciÃ³n ingresado es incorrecto.');
+                    return alert('El código de verificación ingresado es incorrecto.');
                 }
-                if(!usuarioEnProcesoRecuperacion) return alert('SesiÃ³n de recuperaciÃ³n expirada.');
+                if(!usuarioEnProcesoRecuperacion) return alert('Sesión de recuperación expirada.');
 
                 usuarioEnProcesoRecuperacion.password = nPass;
                 guardarEstadoFirestore();
                 cerrarModal();
-                registrarHistorial('Cambio de ContraseÃ±a', usuarioEnProcesoRecuperacion.nombre, 'Restablecimiento validado por correo electrÃ³nico', 'General');
-                mostrarToast('ContraseÃ±a actualizada con Ã©xito.');
+                registrarHistorial('Cambio de Contraseña', usuarioEnProcesoRecuperacion.nombre, 'Restablecimiento validado por correo electrónico');
+                mostrarToast('Contraseña actualizada con éxito.');
             };
         }
 
@@ -1019,7 +981,7 @@
             const c = document.getElementById('toastContainer');
             const t = document.createElement('div');
             t.className = 'toast';
-            t.innerHTML = `<span>${msg}</span><button style="background:none; border:none; color:white; cursor:pointer;" onclick="this.parentElement.remove()">â</button>`;
+            t.innerHTML = `<span>${msg}</span><button style="background:none; border:none; color:white; cursor:pointer;" onclick="this.parentElement.remove()">✕</button>`;
             c.appendChild(t);
             setTimeout(() => t.remove(), 4000);
         }
@@ -1108,20 +1070,18 @@
             prods.forEach(p => { 
                 if(p.ubicaciones) {
                     p.ubicaciones.forEach(u => {
-                        if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÃN') {
+                        if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÓN') {
                             ubics.add(`${u.zona}-${u.anaquel}-${u.posicion}`);
                         }
                     });
                 }
             });
             document.getElementById('totalUbicaciones').textContent = ubics.size;
-            
-            const movsFiltrados = (currentWarehouse === 'TODAS') ? (appState.movements || []) : (appState.movements || []).filter(m => m.bodega === currentWarehouse);
-            document.getElementById('totalMovimientos').textContent = movsFiltrados.length;
+            document.getElementById('totalMovimientos').textContent = (appState.movements || []).length;
 
             const tbody = document.getElementById('ultimosMovimientos');
-            tbody.innerHTML = movsFiltrados.slice(-5).reverse().map(m => `
-                <tr><td style="white-space:nowrap;">${m.fecha}</td><td><strong>${m.usuario}</strong></td><td><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td><td style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;">${m.codigo}</td><td>${m.detalle}</td></tr>
+            tbody.innerHTML = (appState.movements || []).slice(-5).reverse().map(m => `
+                <tr><td style="white-space:nowrap;">${m.fecha}</td><td><strong>${m.usuario}</strong></td><td><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td><td>${m.codigo}</td><td>${m.detalle}</td></tr>
             `).join('') || '<tr><td colspan="5" class="empty-state">Sin movimientos recientes</td></tr>';
         }
 
@@ -1142,7 +1102,7 @@
                         json.forEach((row, idx) => {
                             const keys = Object.keys(row);
                             const codigo = String(row[keys.find(k => /COD|SKU|INTERNO|ID/i.test(k))] || `REF_${idx+1}`).trim();
-                            const glosa = String(row[keys.find(k => /GLOSA|NOMBRE|DESC/i.test(k))] || 'Sin descripciÃ³n').trim();
+                            const glosa = String(row[keys.find(k => /GLOSA|NOMBRE|DESC/i.test(k))] || 'Sin descripción').trim();
                             const bodegaRaw = row[keys.find(k => /^BODEGA$/i.test(k))] || 'Farmacos';
 
                             let bodega = 'Farmacos';
@@ -1162,9 +1122,9 @@
                     guardarEstadoFirestore();
                     renderConfig();
                     document.getElementById('masterCatalogFileInput').value = '';
-                    mostrarToast(`CatÃ¡logo maestro cargado (${catalog.length} referencias).`);
+                    mostrarToast(`Catálogo maestro cargado (${catalog.length} referencias).`);
                 } catch(err) {
-                    alert('Error al leer el archivo de catÃ¡logo: ' + err.message);
+                    alert('Error al leer el archivo de catálogo: ' + err.message);
                 }
             };
             reader.readAsArrayBuffer(file);
@@ -1188,7 +1148,7 @@
                             const keys = Object.keys(row);
                             const zona = String(row[keys.find(k => /^ZONA$/i.test(k))] || '').trim();
                             const anaquel = String(row[keys.find(k => /^ANAQUEL$|RACK|TIPO_POS/i.test(k))] || 'Anaquel 1').trim();
-                            const posicion = String(row[keys.find(k => /^POSICION$|POSICIÃN/i.test(k))] || '').trim();
+                            const posicion = String(row[keys.find(k => /^POSICION$|POSICIÓN/i.test(k))] || '').trim();
                             const tipoExplicit = String(row[keys.find(k => /^TIPO$|JERARQUIA/i.test(k))] || '').trim();
 
                             if (zona) {
@@ -1211,15 +1171,15 @@
         }
 
         function parsearUbicacionConcatenada(ubicacionStr) {
-            if (!ubicacionStr || String(ubicacionStr).trim() === '' || String(ubicacionStr).toUpperCase() === 'SIN ASIGNACIÃN') {
-                return { zona: 'SIN ASIGNACIÃN', anaquel: 'Anaquel 1', posicion: '' };
+            if (!ubicacionStr || String(ubicacionStr).trim() === '' || String(ubicacionStr).toUpperCase() === 'SIN ASIGNACIÓN') {
+                return { zona: 'SIN ASIGNACIÓN', anaquel: 'Anaquel 1', posicion: '' };
             }
             const raw = String(ubicacionStr).trim();
-            let zona = 'SIN ASIGNACIÃN';
+            let zona = 'SIN ASIGNACIÓN';
             let anaquel = 'Anaquel 1';
             let posicion = '';
 
-            const partes = raw.split(/[-ââ]/).map(p => p.trim());
+            const partes = raw.split(/[-–—]/).map(p => p.trim());
             
             for (let p of partes) {
                 const matchZ = p.match(/zona\s*([a-j0-9]+)/i) || p.match(/^([a-j])$/i);
@@ -1228,7 +1188,7 @@
                     break;
                 }
             }
-            if (zona === 'SIN ASIGNACIÃN' && partes.length > 0) {
+            if (zona === 'SIN ASIGNACIÓN' && partes.length > 0) {
                 if (partes[0].length <= 3) zona = partes[0].toUpperCase();
             }
 
@@ -1257,33 +1217,33 @@
         }
 
         function extraerUbicacionDesdeTextoHojaONombre(sheetName, row, keys) {
-            let zona = 'SIN ASIGNACIÃN';
+            let zona = 'SIN ASIGNACIÓN';
             let anaquel = 'Anaquel 1';
             let posicion = 'A1';
 
-            const colUbicacionConcatenada = row[keys.find(k => /^UBICACION$|UBICACIÃN/i.test(k))];
+            const colUbicacionConcatenada = row[keys.find(k => /^UBICACION$|UBICACIÓN/i.test(k))];
             if (colUbicacionConcatenada && String(colUbicacionConcatenada).trim() !== '') {
                 const parsed = parsearUbicacionConcatenada(colUbicacionConcatenada);
-                if (parsed.zona && parsed.zona !== 'SIN ASIGNACIÃN') {
+                if (parsed.zona && parsed.zona !== 'SIN ASIGNACIÓN') {
                     return parsed;
                 }
             }
 
             const keyZona = keys.find(k => /^ZONA$|ZONA_/i.test(k));
             const keyTipoPos = keys.find(k => /^TIPO$|TIPO_/i.test(k) || /RACK|ALTURA|ANAQUEL|FULL\s*SPACE|PALLET/i.test(k));
-            const keyPosicion = keys.find(k => /^POSICION$|POSICIÃN/i.test(k));
+            const keyPosicion = keys.find(k => /^POSICION$|POSICIÓN/i.test(k));
 
             const zonaRaw = keyZona ? row[keyZona] : '';
             const tipoPosRaw = keyTipoPos ? String(row[keyTipoPos]).trim() : '';
             const posicionRaw = keyPosicion ? String(row[keyPosicion]).trim() : '';
 
-            if (zonaRaw && String(zonaRaw).trim() !== '' && String(zonaRaw).toUpperCase() !== 'SIN ASIGNACIÃN') {
+            if (zonaRaw && String(zonaRaw).trim() !== '' && String(zonaRaw).toUpperCase() !== 'SIN ASIGNACIÓN') {
                 zona = String(zonaRaw).replace(/zona/gi, '').trim().toUpperCase();
                 if(tipoPosRaw) anaquel = tipoPosRaw;
                 if(posicionRaw) posicion = posicionRaw;
             }
 
-            if (zona === 'SIN ASIGNACIÃN' && sheetName) {
+            if (zona === 'SIN ASIGNACIÓN' && sheetName) {
                 const sName = sheetName.toUpperCase();
                 const matchZonaHoja = sName.match(/ZONA\s*([A-Z0-9]+)/);
                 if (matchZonaHoja) zona = matchZonaHoja[1];
@@ -1312,7 +1272,7 @@
                         json.forEach((row, idx) => {
                             const keys = Object.keys(row);
                             const codigo = String(row[keys.find(k => /COD|SKU|INTERNO|ID/i.test(k))] || `ITEM_${idx+1}`).trim();
-                            const glosa = String(row[keys.find(k => /GLOSA|NOMBRE|DESC/i.test(k))] || 'Sin descripciÃ³n').trim();
+                            const glosa = String(row[keys.find(k => /GLOSA|NOMBRE|DESC/i.test(k))] || 'Sin descripción').trim();
                             
                             const gtin1Raw = row[keys.find(k => /GTIN\s*1|EAN\s*1|BARRA\s*1|^GTIN$/i.test(k))] || '';
                             const gtin2Raw = row[keys.find(k => /GTIN\s*2|EAN\s*2|BARRA\s*2|DATAMATRIX/i.test(k))] || '';
@@ -1338,7 +1298,7 @@
                                 let matched = false;
                                 if (catRawExcel.includes(pNameLower) || catRawExcel.includes(pIdLower)) {
                                     matched = true;
-                                } else if (pIdLower === 'frio' && (catText.includes('frio') || catText.includes('frÃ­o') || catText.includes('refrigerad'))) {
+                                } else if (pIdLower === 'frio' && (catText.includes('frio') || catText.includes('frío') || catText.includes('refrigerad'))) {
                                     matched = true;
                                 } else if (pIdLower === 'controlado' && (catText.includes('controlad') || catText.includes('estupefacient'))) {
                                     matched = true;
@@ -1358,7 +1318,7 @@
                                     matched = true;
                                 } else if (pIdLower === 'magistral' && (catText.includes('magistral') || catText.includes('preparacion'))) {
                                     matched = true;
-                                } else if (pIdLower === 'mezcla' && (catText.includes('mezcla') || catText.includes('oncolÃ³gico') || catText.includes('oncologico'))) {
+                                } else if (pIdLower === 'mezcla' && (catText.includes('mezcla') || catText.includes('oncológico') || catText.includes('oncologico'))) {
                                     matched = true;
                                 } else if (pIdLower === 'unguentos' && (catText.includes('unguento') || catText.includes('crema') || catText.includes('gel') || catText.includes('pasta') || catText.includes('pomada'))) {
                                     matched = true;
@@ -1372,7 +1332,7 @@
                             const posicion = ubicacionInfo.posicion;
 
                             const tipoRaw = String(row[keys.find(k => /TIPO|JERARQUIA|ALMACENAMIENTO/i.test(k))] || '').trim();
-                            let tipo = tipoRaw ? ( /master|caja/i.test(tipoRaw) ? 'Unidad MÃ¡ster' : (/minima|unidosis/i.test(tipoRaw) ? 'Unidad MÃ­nima / Unidosis' : 'Unidad Comercial') ) : determinarJerarquiaPorZona(zona);
+                            let tipo = tipoRaw ? ( /master|caja/i.test(tipoRaw) ? 'Unidad Máster' : (/minima|unidosis/i.test(tipoRaw) ? 'Unidad Mínima / Unidosis' : 'Unidad Comercial') ) : determinarJerarquiaPorZona(zona);
 
                             const bodegaRaw = row[keys.find(k => /^BODEGA$/i.test(k))];
                             let bodega = currentWarehouse === 'TODAS' ? 'Farmacos' : currentWarehouse;
@@ -1425,7 +1385,7 @@
 
                     guardarEstadoFirestore();
                     document.getElementById('fileInput').value = '';
-                    registrarHistorial('Carga masiva Excel', 'MÃºltiples Ã­tems', `Procesados ${count} registros.`, currentWarehouse === 'TODAS' ? 'General' : currentWarehouse);
+                    registrarHistorial('Carga masiva Excel', 'Múltiples ítems', `Procesados ${count} registros.`);
                     mostrarToast(`Archivo cargado: ${count} registros procesados.`);
                 } catch(err) {
                     alert('Error al leer el archivo Excel: ' + err.message);
@@ -1455,8 +1415,8 @@
             const tbody = document.getElementById('inventarioUnificadoBody');
             tbody.innerHTML = prods.map(p => {
                 const ubicsHtml = (p.ubicaciones || []).map(u => {
-                    if(!u.zona || u.zona.toUpperCase() === 'SIN ASIGNACIÃN') {
-                        return `<div class="ubicacion-row-item"><span style="color:var(--text-muted); font-weight:500;">SIN ASIGNACIÃN</span></div>`;
+                    if(!u.zona || u.zona.toUpperCase() === 'SIN ASIGNACIÓN') {
+                        return `<div class="ubicacion-row-item"><span style="color:var(--text-muted); font-weight:500;">SIN ASIGNACIÓN</span></div>`;
                     }
                     return `
                         <div class="ubicacion-row-item">
@@ -1465,7 +1425,7 @@
                             <span class="pos-tag">Pos. ${u.posicion}</span>
                         </div>
                     `;
-                }).join('') || '<span style="color:var(--text-muted);">SIN ASIGNACIÃN</span>';
+                }).join('') || '<span style="color:var(--text-muted);">SIN ASIGNACIÓN</span>';
 
                 if(!p.gtinEstados) p.gtinEstados = {};
                 const gtinsList = (p.gtins && p.gtins.length > 0) ? p.gtins.map(g => `<span class="gtin-tag">${g}</span>`).join(' ') : '<span style="color:var(--text-muted); font-style:italic;">Sin GTIN</span>';
@@ -1484,15 +1444,16 @@
                 });
 
                 if(activeCount === 0) {
-                    progHtml += `<span style="color:var(--text-muted); font-size:0.62rem;">EstÃ¡ndar</span>`;
+                    progHtml += `<span style="color:var(--text-muted); font-size:0.62rem;">Estándar</span>`;
                 }
                 progHtml += `</div>`;
 
                 const tipoVal = p.tipo || 'Unidad Comercial';
                 let tipoClase = 'type-comercial';
-                if(tipoVal.toLowerCase().includes('mÃ¡ster') || tipoVal.toLowerCase().includes('master')) tipoClase = 'type-master';
-                else if(tipoVal.toLowerCase().includes('mÃ­nima') || tipoVal.toLowerCase().includes('minima') || tipoVal.toLowerCase().includes('unidosis')) tipoClase = 'type-minima';
+                if(tipoVal.toLowerCase().includes('máster') || tipoVal.toLowerCase().includes('master')) tipoClase = 'type-master';
+                else if(tipoVal.toLowerCase().includes('mínima') || tipoVal.toLowerCase().includes('minima') || tipoVal.toLowerCase().includes('unidosis')) tipoClase = 'type-minima';
 
+                // Obtener color dinámico para la bodega
                 const whObj = (appState.warehouses || []).find(w => w.id === p.bodega);
                 const bodegaColor = whObj ? whObj.color : '#0284c7';
 
@@ -1537,12 +1498,12 @@
         function eliminarSeleccionadosInventario() {
             const chksChecked = document.querySelectorAll('.prod-chk:checked');
             if(chksChecked.length === 0) return alert('Selecciona al menos un producto.');
-            if(!confirm(`Â¿Eliminar ${chksChecked.length} registros seleccionados?`)) return;
+            if(!confirm(`¿Eliminar ${chksChecked.length} registros seleccionados?`)) return;
 
             const idsAEliminar = Array.from(chksChecked).map(c => c.value);
             appState.products = (appState.products || []).filter(p => !idsAEliminar.includes(p.id));
             guardarEstadoFirestore();
-            registrarHistorial('EliminaciÃ³n Masiva', `${chksChecked.length} Ã­tems`, 'EliminaciÃ³n masiva de inventario', currentWarehouse === 'TODAS' ? 'General' : currentWarehouse);
+            registrarHistorial('Eliminación Masiva', `${chksChecked.length} ítems`, 'Eliminación masiva de inventario');
             mostrarToast(`${idsAEliminar.length} registros eliminados.`);
         }
 
@@ -1550,14 +1511,14 @@
             const movimientosArticulo = (appState.movements || []).filter(m => String(m.codigo).toLowerCase() === String(codigoInterno).toLowerCase() || (m.detalle && m.detalle.toLowerCase().includes(String(codigoInterno).toLowerCase())));
 
             let html = `
-                <p style="font-size:0.72rem; margin-bottom:8px; color:var(--text-muted); text-align: left;">Historial de modificaciones para el cÃ³digo interno: <strong>${codigoInterno}</strong></p>
+                <p style="font-size:0.72rem; margin-bottom:8px; color:var(--text-muted); text-align: left;">Historial de modificaciones para el código interno: <strong>${codigoInterno}</strong></p>
                 <div class="table-container" style="max-height:50vh;">
                     <table style="width:100%; font-size:0.65rem; min-width: 450px;">
                         <thead>
                             <tr style="background:#f8fafc; position:sticky; top:0;">
                                 <th style="padding:6px;">Fecha y Hora</th>
                                 <th style="padding:6px;">Usuario</th>
-                                <th style="padding:6px;">AcciÃ³n</th>
+                                <th style="padding:6px;">Acción</th>
                                 <th style="padding:6px;">Detalle</th>
                             </tr>
                         </thead>
@@ -1576,20 +1537,20 @@
                     `;
                 });
             } else {
-                html += `<tr><td colspan="4" class="empty-state">No hay registros especÃ­ficos.</td></tr>`;
+                html += `<tr><td colspan="4" class="empty-state">No hay registros específicos.</td></tr>`;
             }
 
             html += `</tbody></table></div>`;
-            mostrarModal('Historial Detallado por ArtÃ­culo', html, true);
+            mostrarModal('Historial Detallado por Artículo', html, true);
             document.getElementById('modalActionBtn').style.display = 'none';
         }
 
         function eliminarProducto(id) {
-            if(!confirm('Â¿EstÃ¡s seguro de eliminar este registro?')) return;
+            if(!confirm('¿Estás seguro de eliminar este registro?')) return;
             const p = appState.products.find(x => x.id === id);
             appState.products = appState.products.filter(item => item.id !== id);
             guardarEstadoFirestore();
-            if(p) registrarHistorial('EliminaciÃ³n', p.codigo, 'Registro eliminado', p.bodega || 'General');
+            if(p) registrarHistorial('Eliminación', p.codigo, 'Registro eliminado');
             mostrarToast('Registro eliminado');
         }
 
@@ -1608,20 +1569,20 @@
             const txt = glosaText.toUpperCase();
             let alertas = [];
             
-            if(txt.includes('CONTROLADO') || txt.includes('ESTUPEFACIENTE')) alertas.push('â ï¸ Controlados');
-            if(txt.includes('FRIO') || txt.includes('FRÃO') || txt.includes('REFRIGERADO')) alertas.push('âï¸ CÃ¡mara de FrÃ­o');
-            if(txt.includes('MINISTERIAL') || txt.includes('PROG MIN')) alertas.push('ð Programa Ministerial');
-            if(txt.includes('RICARTE') || txt.includes('LRS')) alertas.push('ð·ï¸ Ley Ricarte Soto');
-            if(txt.includes('VIH')) alertas.push('ð¬ VIH');
+            if(txt.includes('CONTROLADO') || txt.includes('ESTUPEFACIENTE')) alertas.push('⚠️ Controlados');
+            if(txt.includes('FRIO') || txt.includes('FRÍO') || txt.includes('REFRIGERADO')) alertas.push('❄️ Cámara de Frío');
+            if(txt.includes('MINISTERIAL') || txt.includes('PROG MIN')) alertas.push('📋 Programa Ministerial');
+            if(txt.includes('RICARTE') || txt.includes('LRS')) alertas.push('🏷️ Ley Ricarte Soto');
+            if(txt.includes('VIH')) alertas.push('🔬 VIH');
 
-            const esFrio = txt.includes('FRIO') || txt.includes('FRÃO') || txt.includes('REFRIGERADO');
-            if(esFrio && (txt.includes('RICARTE') || txt.includes('LRS'))) alertas.push('â¡ CombinaciÃ³n: CÃ¡mara de FrÃ­o + Ley Ricarte Soto');
-            if(esFrio && (txt.includes('MINISTERIAL') || txt.includes('PROG MIN'))) alertas.push('â¡ CombinaciÃ³n: CÃ¡mara de FrÃ­o + Programa Ministerial');
-            if(esFrio && (txt.includes('MEZCLA') || txt.includes('ONCOLÃGICO') || txt.includes('ONCOLOGICO'))) alertas.push('â¡ CombinaciÃ³n: CÃ¡mara de FrÃ­o + Mezcla (oncolÃ³gico)');
+            const esFrio = txt.includes('FRIO') || txt.includes('FRÍO') || txt.includes('REFRIGERADO');
+            if(esFrio && (txt.includes('RICARTE') || txt.includes('LRS'))) alertas.push('⚡ Combinación: Cámara de Frío + Ley Ricarte Soto');
+            if(esFrio && (txt.includes('MINISTERIAL') || txt.includes('PROG MIN'))) alertas.push('⚡ Combinación: Cámara de Frío + Programa Ministerial');
+            if(esFrio && (txt.includes('MEZCLA') || txt.includes('ONCOLÓGICO') || txt.includes('ONCOLOGICO'))) alertas.push('⚡ Combinación: Cámara de Frío + Mezcla (oncológico)');
 
             if(alertas.length > 0) {
                 alertaBox.style.display = 'block';
-                alertaBox.innerHTML = `<strong>â ï¸ Alerta de Sistema / Programas Especiales detectados:</strong><br>` + alertas.join('<br>');
+                alertaBox.innerHTML = `<strong>⚠️ Alerta de Sistema / Programas Especiales detectados:</strong><br>` + alertas.join('<br>');
             } else {
                 alertaBox.style.display = 'none';
             }
@@ -1647,21 +1608,21 @@
 
             mostrarModal('Crear Nuevo Registro y Almacenamiento', `
                 <div style="margin-bottom:12px; background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); text-align: left;">
-                    <label style="font-weight:600; text-align: left;">Buscar en CatÃ¡logo Maestro:</label>
+                    <label style="font-weight:600; text-align: left;">Buscar en Catálogo Maestro:</label>
                     <div class="master-search-container">
-                        <input type="text" id="masterSearchInput" class="master-search-input" placeholder="Escribe cÃ³digo o nombre..." oninput="filtrarCatalogoMaestroDropdown(this.value)" autocomplete="off">
+                        <input type="text" id="masterSearchInput" class="master-search-input" placeholder="Escribe código o nombre..." oninput="filtrarCatalogoMaestroDropdown(this.value)" autocomplete="off">
                         <div id="masterDropdownResults" class="master-dropdown-results"></div>
                     </div>
                 </div>
                 
                 <div class="form-grid" style="text-align: left;">
-                    <div class="full-width"><label>CÃ³digo Interno</label><input id="mCod" placeholder="Ej: 01-001"></div>
+                    <div class="full-width"><label>Código Interno</label><input id="mCod" placeholder="Ej: 01-001"></div>
                     
                     <div>
-                        <label>GTIN/EAN (CÃ³digo 1 - Opcional)</label>
+                        <label>GTIN/EAN (Código 1 - Opcional)</label>
                         <div style="display:flex; gap:6px; margin-bottom:4px;">
                             <input id="mGtin1" placeholder="Opcional" oninput="this.value=limpiarYExtraerGTIN(this.value)">
-                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin1')">â</button>
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin1')">✕</button>
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
                             <button type="button" class="btn btn-success btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(1)">Escanear 1</button>
@@ -1673,10 +1634,10 @@
                     </div>
 
                     <div>
-                        <label>GTIN/EAN (CÃ³digo 2 Opcional)</label>
+                        <label>GTIN/EAN (Código 2 Opcional)</label>
                         <div style="display:flex; gap:6px; margin-bottom:4px;">
                             <input id="mGtin2" placeholder="DataMatrix / Secundario" oninput="this.value=limpiarYExtraerGTIN(this.value)">
-                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin2')">â</button>
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin2')">✕</button>
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
                             <button type="button" class="btn btn-orange btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(2)">Escanear 2</button>
@@ -1687,14 +1648,14 @@
                         </div>
                     </div>
 
-                    <div class="full-width"><label>Glosa / DescripciÃ³n</label><input id="mGlosa" placeholder="Nombre del insumo o fÃ¡rmaco" onblur="verificarAlertaEscaneoManual(this.value)"></div>
+                    <div class="full-width"><label>Glosa / Descripción</label><input id="mGlosa" placeholder="Nombre del insumo o fármaco" onblur="verificarAlertaEscaneoManual(this.value)"></div>
                     <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fef3c7; border:1px solid #fde68a; padding:8px; border-radius:var(--radius); font-size:0.72rem; color:#b45309; text-align: left;"></div>
 
-                    <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">FÃ¡rmacos</option><option value="Insumos">Insumos</option><option value="Economato">Economato</option><option value="Controlados">FÃ¡rmacos Controlados</option><option value="Suturas">Suturas</option><option value="Alimentos">Alimentos</option></select></div>
-                    <div><label>JerarquÃ­a / Tipo</label><select id="mTipo"><option value="Unidad Comercial">Unidad Comercial</option><option value="Unidad MÃ¡ster">Unidad MÃ¡ster</option><option value="Unidad MÃ­nima / Unidosis">Unidad MÃ­nima / Unidosis</option></select></div>
+                    <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">Fármacos</option><option value="Insumos">Insumos</option><option value="Economato">Economato</option><option value="Controlados">Fármacos Controlados</option><option value="Suturas">Suturas</option><option value="Alimentos">Alimentos</option></select></div>
+                    <div><label>Jerarquía / Tipo</label><select id="mTipo"><option value="Unidad Comercial">Unidad Comercial</option><option value="Unidad Máster">Unidad Máster</option><option value="Unidad Mínima / Unidosis">Unidad Mínima / Unidosis</option></select></div>
                     
                     <div class="full-width" style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); text-align: left;">
-                        <label style="margin-bottom:8px; font-weight:600; color:var(--text-main); font-size:0.72rem; text-align: left;">Programas y CategorÃ­as Especiales (2 Columnas):</label>
+                        <label style="margin-bottom:8px; font-weight:600; color:var(--text-main); font-size:0.72rem; text-align: left;">Programas y Categorías Especiales (2 Columnas):</label>
                         <div class="prog-column-box">
                             ${progCheckboxesHtml}
                         </div>
@@ -1706,21 +1667,21 @@
                             <span style="font-size:0.62rem; background:${erpActive ? '#0284c7' : '#e2e8f0'}; color:${erpActive ? '#fff' : '#475569'}; padding:2px 6px; border-radius:4px; font-weight:600;">${erpActive ? 'Activo' : 'Bloqueado'}</span>
                         </div>
                         <div class="form-grid">
-                            <div><label>NÂ° de Lote (IA 10)</label><input type="text" id="mErpLote" placeholder="Ej: LOTE2026-9" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                            <div><label>N° de Lote (IA 10)</label><input type="text" id="mErpLote" placeholder="Ej: LOTE2026-9" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
                             <div><label>Fecha Vencimiento (IA 17)</label><input type="date" id="mErpVenc" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
-                            <div><label>NÂ° de Serie (IA 21)</label><input type="text" id="mErpSerie" placeholder="Ej: SN987654" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                            <div><label>N° de Serie (IA 21)</label><input type="text" id="mErpSerie" placeholder="Ej: SN987654" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
                             <div><label>Factor Empaque / Cantidad</label><input type="number" id="mErpFactor" placeholder="Ej: 10" value="1" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
                         </div>
                     </div>
 
-                    <input type="hidden" id="mZona" value="SIN ASIGNACIÃN">
+                    <input type="hidden" id="mZona" value="SIN ASIGNACIÓN">
                     <input type="hidden" id="mAnaquel" value="Anaquel 1">
                     <input type="hidden" id="mPosicion" value="">
 
                     <div class="full-width" style="background:#f1f5f9; padding:12px; border-radius:var(--radius); text-align:center; margin-top:4px; border:1px solid var(--border);">
-                        <label style="font-weight:600; margin-bottom:4px; display:block; font-size:0.72rem; text-align: center;">AsignaciÃ³n de UbicaciÃ³n por QR</label>
-                        <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:8px; text-align: center;">Escanee el cÃ³digo QR de ubicaciÃ³n.</p>
-                        <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('almacenar')">Escanear QR de UbicaciÃ³n</button>
+                        <label style="font-weight:600; margin-bottom:4px; display:block; font-size:0.72rem; text-align: center;">Asignación de Ubicación por QR</label>
+                        <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:8px; text-align: center;">Escanee el código QR de ubicación.</p>
+                        <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('almacenar')">Escanear QR de Ubicación</button>
                     </div>
                     <div id="qr-reader" class="full-width"></div>
                 </div>
@@ -1753,7 +1714,7 @@
                 const anaquel = document.getElementById('mAnaquel').value.trim();
                 const posicion = document.getElementById('mPosicion').value.trim();
 
-                if(!cod) return alert('El CÃ³digo Interno es obligatorio.');
+                if(!cod) return alert('El Código Interno es obligatorio.');
 
                 const gtins = [];
                 let gtinEstados = {};
@@ -1781,10 +1742,10 @@
                         id: newId, codigo: cod, gtins: gtins, gtinEstados: gtinEstados, glosa: glosa || cod, bodega: bodega, programas: programas, tipo: tipo, ubicaciones: [{ zona, anaquel, posicion }], estado: 'Almacenado', erpData: erpData
                     });
                 }
-                registrarHistorial('Registro y AsignaciÃ³n', `${cod}`, `Ingresado Ã­tem en Zona ${zona}`, bodega);
+                registrarHistorial('Registro y Asignación', `${cod}`, `Ingresado ítem en Zona ${zona}`);
                 guardarEstadoFirestore();
                 cerrarModal();
-                mostrarToast('Producto almacenado con Ã©xito.');
+                mostrarToast('Producto almacenado con éxito.');
             };
         }
 
@@ -1800,42 +1761,42 @@
             if(!alertaBox) return;
 
             let alertas = [];
-            if(chkControlado && chkControlado.checked) alertas.push('â ï¸ Alerta: Programa Controlados activo.');
+            if(chkControlado && chkControlado.checked) alertas.push('⚠️ Alerta: Programa Controlados activo.');
             if(chkFrio && chkFrio.checked) {
-                if(chkLrs && chkLrs.checked) alertas.push('â¡ CombinaciÃ³n Especial: CÃ¡mara de FrÃ­o + Ley Ricarte Soto');
-                if(chkPm && chkPm.checked) alertas.push('â¡ CombinaciÃ³n Especial: CÃ¡mara de FrÃ­o + Programa Ministerial');
-                if(chkMezcla && chkMezcla.checked) alertas.push('â¡ CombinaciÃ³n Especial: CÃ¡mara de FrÃ­o + Mezcla (oncolÃ³gico)');
+                if(chkLrs && chkLrs.checked) alertas.push('⚡ Combinación Especial: Cámara de Frío + Ley Ricarte Soto');
+                if(chkPm && chkPm.checked) alertas.push('⚡ Combinación Especial: Cámara de Frío + Programa Ministerial');
+                if(chkMezcla && chkMezcla.checked) alertas.push('⚡ Combinación Especial: Cámara de Frío + Mezcla (oncológico)');
             }
-            if(chkVih && chkVih.checked) alertas.push('ð¬ Alerta: CategorÃ­a VIH activa.');
+            if(chkVih && chkVih.checked) alertas.push('🔬 Alerta: Categoría VIH activa.');
 
             if(alertas.length > 0) {
                 alertaBox.style.display = 'block';
-                alertaBox.innerHTML = `<strong>â ï¸ Alerta de Sistema / Programas Especiales:</strong><br>` + alertas.join('<br>');
+                alertaBox.innerHTML = `<strong>⚠️ Alerta de Sistema / Programas Especiales:</strong><br>` + alertas.join('<br>');
             } else {
                 alertaBox.style.display = 'none';
             }
         }
 
         function abrirModalReubicacion() {
-            mostrarModal('Reubicar ArtÃ­culo(s)', `
+            mostrarModal('Reubicar Artículo(s)', `
                 <div style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:10px; text-align: left;">
                     <label style="font-weight:600; font-size:0.72rem; margin-bottom:4px;">1. Ingrese o escanee GTIN(s) a reubicar:</label>
                     <textarea id="reubGtinsInput" rows="2" placeholder="Ej: 7800012345678" style="width:100%; padding:8px; font-size:0.78rem; border:1px solid var(--border); border-radius:var(--radius);"></textarea>
                     <div style="display:flex; gap:8px; margin-top:6px;">
-                        <button type="button" class="btn btn-success btn-xs" onclick="iniciarEscanerBarraReubicacion()">Escanear GTIN con CÃ¡mara</button>
+                        <button type="button" class="btn btn-success btn-xs" onclick="iniciarEscanerBarraReubicacion()">Escanear GTIN con Cámara</button>
                     </div>
                 </div>
 
                 <div style="background:#f1f5f9; padding:12px; border-radius:var(--radius); border:1px solid var(--border); text-align:center; margin-bottom:8px;">
-                    <label style="font-weight:600; margin-bottom:4px; display:block; font-size:0.72rem; text-align: center;">2. Asignar Nueva UbicaciÃ³n por CÃ³digo QR</label>
-                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:8px; text-align: center;">Escanee la etiqueta QR de la nueva ubicaciÃ³n destino.</p>
-                    <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('reubicar')">Escanear QR de Nueva UbicaciÃ³n</button>
+                    <label style="font-weight:600; margin-bottom:4px; display:block; font-size:0.72rem; text-align: center;">2. Asignar Nueva Ubicación por Código QR</label>
+                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:8px; text-align: center;">Escanee la etiqueta QR de la nueva ubicación destino.</p>
+                    <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('reubicar')">Escanear QR de Nueva Ubicación</button>
                 </div>
 
-                <input type="hidden" id="reubZona" value="SIN ASIGNACIÃN">
+                <input type="hidden" id="reubZona" value="SIN ASIGNACIÓN">
                 <input type="hidden" id="reubAnaquel" value="Anaquel 1">
                 <input type="hidden" id="reubPosicion" value="">
-                <div id="reubDestinoPreview" style="font-size:0.72rem; color:var(--success); font-weight:600; text-align:center; margin-bottom:6px;">Nueva ubicaciÃ³n destino: Pendiente de escaneo QR</div>
+                <div id="reubDestinoPreview" style="font-size:0.72rem; color:var(--success); font-weight:600; text-align:center; margin-bottom:6px;">Nueva ubicación destino: Pendiente de escaneo QR</div>
                 <div id="qr-reader" class="full-width"></div>
             `, false);
 
@@ -1846,11 +1807,11 @@
                 const anaquelDestino = document.getElementById('reubAnaquel').value.trim();
                 const posDestino = document.getElementById('reubPosicion').value.trim();
 
-                if(!textGtins) return alert('Debe ingresar o escanear al menos un cÃ³digo GTIN.');
-                if(!zonaDestino || zonaDestino === 'SIN ASIGNACIÃN') return alert('Debe escanear el cÃ³digo QR de la nueva ubicaciÃ³n.');
+                if(!textGtins) return alert('Debe ingresar o escanear al menos un código GTIN.');
+                if(!zonaDestino || zonaDestino === 'SIN ASIGNACIÓN') return alert('Debe escanear el código QR de la nueva ubicación.');
 
                 const listaGtins = textGtins.split(/[\n,]+/).map(g => limpiarYExtraerGTIN(g)).filter(g => g.length > 0);
-                if(listaGtins.length === 0) return alert('No se reconocieron GTINs vÃ¡lidos.');
+                if(listaGtins.length === 0) return alert('No se reconocieron GTINs válidos.');
 
                 let actualizados = 0;
                 listaGtins.forEach(gBusca => {
@@ -1859,14 +1820,14 @@
                             if(!p.ubicaciones) p.ubicaciones = [];
                             p.ubicaciones.push({ zona: zonaDestino, anaquel: anaquelDestino, posicion: posDestino });
                             actualizados++;
-                            registrarHistorial('ReubicaciÃ³n', p.codigo, `Reubicado a Zona ${zonaDestino} - ${anaquelDestino} Pos. ${posDestino} (GTIN: ${gBusca})`, p.bodega || 'General');
+                            registrarHistorial('Reubicación', p.codigo, `Reubicado a Zona ${zonaDestino} - ${anaquelDestino} Pos. ${posDestino} (GTIN: ${gBusca})`);
                         }
                     });
                 });
 
                 guardarEstadoFirestore();
                 cerrarModal();
-                mostrarToast(`ReubicaciÃ³n completada: ${actualizados} Ã­tem(s) actualizados.`);
+                mostrarToast(`Reubicación completada: ${actualizados} ítem(s) actualizados.`);
             };
         }
 
@@ -1894,7 +1855,7 @@
                 },
                 (errorMessage) => {}
             ).catch(err => {
-                alert("No se pudo encender la cÃ¡mara: " + err);
+                alert("No se pudo encender la cámara: " + err);
             });
         }
 
@@ -1983,13 +1944,13 @@
 
             const erpData = p.erpData || { lote: '', vencimiento: '', serie: '', factorEmpaque: 1 };
 
-            mostrarModal('GestiÃ³n de ArtÃ­culo', `
+            mostrarModal('Gestión de Artículo', `
                 <p style="font-size:0.72rem; margin-bottom:8px; line-height:1.3; text-align: left;">
                     <strong>${p.glosa}</strong><br>
-                    <span style="color:var(--text-muted); font-size:0.68rem; display:block; margin-top:2px;">CÃ³digo Interno: ${p.codigo}</span>
+                    <span style="color:var(--text-muted); font-size:0.68rem; display:block; margin-top:2px;">Código Interno: ${p.codigo}</span>
                 </p>
                 <div style="margin-bottom:8px; text-align: left;">
-                    <label>CÃ³digos GS1 - GTIN/EAN:</label>
+                    <label>Códigos GS1 - GTIN/EAN:</label>
                     <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:3px;">
                         ${currentGtins.map(g => {
                             const est = p.gtinEstados[g] || 'activo';
@@ -2003,7 +1964,7 @@
                         <label>GTIN/EAN 1</label>
                         <div style="display:flex; gap:6px; margin-bottom:4px;">
                             <input id="editGtin1" value="${currentGtins[0] || ''}" oninput="this.value=limpiarYExtraerGTIN(this.value)">
-                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('editGtin1')">â</button>
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('editGtin1')">✕</button>
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
                             <button type="button" class="btn btn-success btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(1)">Escanear 1</button>
@@ -2017,7 +1978,7 @@
                         <label>GTIN/EAN 2</label>
                         <div style="display:flex; gap:6px; margin-bottom:4px;">
                             <input id="editGtin2" value="${currentGtins[1] || ''}" oninput="this.value=limpiarYExtraerGTIN(this.value)">
-                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('editGtin2')">â</button>
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('editGtin2')">✕</button>
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
                             <button type="button" class="btn btn-orange btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(2)">Escanear 2</button>
@@ -2029,11 +1990,11 @@
                     </div>
                 </div>
 
-                <label style="text-align: left;">JerarquÃ­a / Tipo</label>
+                <label style="text-align: left;">Jerarquía / Tipo</label>
                 <select id="editTipo" style="margin-bottom:8px;">
                     <option value="Unidad Comercial" ${p.tipo==='Unidad Comercial'?'selected':''}>Unidad Comercial</option>
-                    <option value="Unidad MÃ¡ster" ${p.tipo==='Unidad MÃ¡ster'?'selected':''}>Unidad MÃ¡ster</option>
-                    <option value="Unidad MÃ­nima / Unidosis" ${p.tipo==='Unidad MÃ­nima / Unidosis'?'selected':''}>Unidad MÃ­nima / Unidosis</option>
+                    <option value="Unidad Máster" ${p.tipo==='Unidad Máster'?'selected':''}>Unidad Máster</option>
+                    <option value="Unidad Mínima / Unidosis" ${p.tipo==='Unidad Mínima / Unidosis'?'selected':''}>Unidad Mínima / Unidosis</option>
                 </select>
 
                 <div style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:10px; text-align: left;">
@@ -2050,9 +2011,9 @@
                         <span style="font-size:0.62rem; background:${erpActive ? '#0284c7' : '#e2e8f0'}; color:${erpActive ? '#fff' : '#475569'}; padding:2px 6px; border-radius:4px; font-weight:600;">${erpActive ? 'Activo' : 'Bloqueado'}</span>
                     </div>
                     <div class="form-grid">
-                        <div><label>NÂ° de Lote (IA 10)</label><input type="text" id="editErpLote" value="${erpData.lote || ''}" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                        <div><label>N° de Lote (IA 10)</label><input type="text" id="editErpLote" value="${erpData.lote || ''}" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
                         <div><label>Fecha Vencimiento (IA 17)</label><input type="date" id="editErpVenc" value="${erpData.vencimiento || ''}" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
-                        <div><label>NÂ° de Serie (IA 21)</label><input type="text" id="editErpSerie" value="${erpData.serie || ''}" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                        <div><label>N° de Serie (IA 21)</label><input type="text" id="editErpSerie" value="${erpData.serie || ''}" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
                         <div><label>Factor Empaque / Cantidad</label><input type="number" id="editErpFactor" value="${erpData.factorEmpaque || 1}" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
                     </div>
                 </div>
@@ -2062,17 +2023,17 @@
                     ${listHtml}
                 </div>
                 <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
-                <h4 style="font-size:0.75rem; font-weight:600; margin-bottom:6px; text-align: left;">Agregar Nueva UbicaciÃ³n</h4>
+                <h4 style="font-size:0.75rem; font-weight:600; margin-bottom:6px; text-align: left;">Agregar Nueva Ubicación</h4>
                 
-                <input type="hidden" id="nuevaZona" value="SIN ASIGNACIÃN">
+                <input type="hidden" id="nuevaZona" value="SIN ASIGNACIÓN">
                 <input type="hidden" id="nuevoAnaquel" value="Anaquel 1">
                 <input type="hidden" id="nuevaPosicion" value="">
 
                 <div class="form-grid" style="text-align: left;">
                     <div class="full-width" style="background:#f1f5f9; padding:10px; border-radius:var(--radius); text-align:center; margin-top:4px; border:1px solid var(--border);">
-                        <label style="font-weight:600; margin-bottom:4px; display:block; font-size:0.72rem; text-align: center;">AsignaciÃ³n de UbicaciÃ³n por QR</label>
-                        <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:8px; text-align: center;">Escanee el cÃ³digo QR de ubicaciÃ³n.</p>
-                        <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('agregarUbicacion')">Escanear QR de UbicaciÃ³n</button>
+                        <label style="font-weight:600; margin-bottom:4px; display:block; font-size:0.72rem; text-align: center;">Asignación de Ubicación por QR</label>
+                        <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:8px; text-align: center;">Escanee el código QR de ubicación.</p>
+                        <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('agregarUbicacion')">Escanear QR de Ubicación</button>
                     </div>
                     <div id="qr-reader" class="full-width"></div>
                 </div>
@@ -2089,7 +2050,7 @@
                 const est2 = document.getElementById('editEstado2').value;
                 const zona = document.getElementById('nuevaZona').value;
                 const anaquel = document.getElementById('nuevoAnaquel').value.trim();
-                const posicion = document.getElementById('nuevaPosicion').value.trim();
+                const posicion = document.getElementById('nuevoPosicion').value.trim();
                 const nuevoTipo = document.getElementById('editTipo').value;
 
                 p.erpData = {
@@ -2116,16 +2077,16 @@
                 p.tipo = nuevoTipo;
 
                 let detalleMod = `Actualizados datos | Tipo [${nuevoTipo}]`;
-                if(zona && zona !== 'SIN ASIGNACIÃN') {
+                if(zona && zona !== 'SIN ASIGNACIÓN') {
                     if(!p.ubicaciones) p.ubicaciones = [];
                     p.ubicaciones.push({ zona, anaquel, posicion });
-                    detalleMod += ` | AÃ±adida Zona ${zona}, ${anaquel}, Pos. ${posicion}`;
+                    detalleMod += ` | Añadida Zona ${zona}, ${anaquel}, Pos. ${posicion}`;
                 }
 
-                registrarHistorial('ActualizaciÃ³n', `${p.codigo}`, detalleMod, p.bodega || 'General');
+                registrarHistorial('Actualización', `${p.codigo}`, detalleMod);
                 guardarEstadoFirestore();
                 gestionarUbicacionesModal(p.id); 
-                mostrarToast('Datos actualizados con Ã©xito.');
+                mostrarToast('Datos actualizados con éxito.');
             };
         }
 
@@ -2134,9 +2095,9 @@
             if(p && p.ubicaciones) {
                 const removida = p.ubicaciones.splice(index, 1)[0];
                 guardarEstadoFirestore();
-                registrarHistorial('Retiro de UbicaciÃ³n', `${p.codigo}`, `Removida Zona ${removida.zona}`, p.bodega || 'General');
+                registrarHistorial('Retiro de Ubicación', `${p.codigo}`, `Removida Zona ${removida.zona}`);
                 gestionarUbicacionesModal(prodId);
-                mostrarToast('UbicaciÃ³n eliminada.');
+                mostrarToast('Ubicación eliminada.');
             }
         }
 
@@ -2158,7 +2119,7 @@
                 },
                 (errorMessage) => {}
             ).catch(err => {
-                alert("No se pudo encender la cÃ¡mara: " + err);
+                alert("No se pudo encender la cámara: " + err);
             });
         }
 
@@ -2185,7 +2146,7 @@
                 },
                 (errorMessage) => {}
             ).catch(err => {
-                alert("No se pudo encender la cÃ¡mara: " + err);
+                alert("No se pudo encender la cámara: " + err);
             });
         }
 
@@ -2234,8 +2195,8 @@
                 if(selZona) selZona.value = zonaVal;
                 if(selAnaq) selAnaq.value = anaqVal;
                 if(inputPos) inputPos.value = posVal;
-                if(preview) preview.textContent = `Nueva ubicaciÃ³n destino: Zona ${zonaVal} - ${anaqVal} Pos. ${posVal}`;
-                mostrarToast(`QR UbicaciÃ³n leÃ­do: Zona ${zonaVal}, ${anaqVal}, Pos. ${posVal}`);
+                if(preview) preview.textContent = `Nueva ubicación destino: Zona ${zonaVal} - ${anaqVal} Pos. ${posVal}`;
+                mostrarToast(`QR Ubicación leído: Zona ${zonaVal}, ${anaqVal}, Pos. ${posVal}`);
                 return;
             }
 
@@ -2252,7 +2213,7 @@
             if(inputPos) inputPos.value = posVal;
             if(tipoVal && selTipo) selTipo.value = tipoVal;
 
-            mostrarToast(`QR leÃ­do: Zona ${zonaVal}, ${anaqVal}, Pos. ${posVal}`);
+            mostrarToast(`QR leído: Zona ${zonaVal}, ${anaqVal}, Pos. ${posVal}`);
 
             if(modo === 'agregarUbicacion' && typeof modalCallback === 'function') {
                 setTimeout(() => {
@@ -2320,9 +2281,11 @@
             if (imgData) {
                 container.innerHTML = `<img src="${imgData}" alt="Layout">`;
             } else {
-                container.innerHTML = `<span class="no-image">No hay imagen de plano cargada para ${nombreBodegaActiva}.<br><small>Sube una imagen desde la secciÃ³n ConfiguraciÃ³n.</small></span>`;
+                container.innerHTML = `<span class="no-image">No hay imagen de plano cargada para ${nombreBodegaActiva}.<br><small>Sube una imagen desde la sección Configuración.</small></span>`;
             }
         }
+
+        let locationsFiltradasCache = [];
 
         function abrirModalQRUbicaciones() {
             let baseList = [];
@@ -2333,7 +2296,7 @@
                 (appState.products || []).forEach(p => {
                     if(p.ubicaciones) {
                         p.ubicaciones.forEach(u => {
-                            if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÃN') {
+                            if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÓN') {
                                 const anaqStr = u.anaquel || 'Anaquel 1';
                                 const key = `${p.tipo || 'Unidad Comercial'}|${u.zona}|${anaqStr}|${u.posicion}`;
                                 ubicsMap.set(key, { tipo: p.tipo || 'Unidad Comercial', zona: u.zona, anaquel: anaqStr, posicion: u.posicion });
@@ -2346,13 +2309,15 @@
 
             if(baseList.length === 0) return alert('No hay ubicaciones registradas ni cargadas en el maestro.');
 
+            locationsFiltradasCache = baseList;
+
             let html = `
                 <div style="margin-bottom:10px; background:#f8fafc; padding:10px; border-radius:var(--radius); border:1px solid var(--border);">
                     <label style="font-weight:600; margin-bottom:4px;">Filtrar Ubicaciones:</label>
                     <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px;">
                         <input id="filtroZona" placeholder="Zona (Ej: A)" oninput="renderizarListaFiltroQR()" style="padding:6px; font-size:0.72rem;">
                         <input id="filtroAnaquel" placeholder="Anaquel" oninput="renderizarListaFiltroQR()" style="padding:6px; font-size:0.72rem;">
-                        <input id="filtroPosicion" placeholder="PosiciÃ³n" oninput="renderizarListaFiltroQR()" style="padding:6px; font-size:0.72rem;">
+                        <input id="filtroPosicion" placeholder="Posición" oninput="renderizarListaFiltroQR()" style="padding:6px; font-size:0.72rem;">
                     </div>
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -2366,7 +2331,7 @@
                 </div>
             `;
 
-            mostrarModal('SelecciÃ³n de Etiquetas QR de UbicaciÃ³n', html, false);
+            mostrarModal('Selección de Etiquetas QR de Ubicación', html, false);
             document.getElementById('modalActionBtn').textContent = 'Imprimir Seleccionados';
             document.getElementById('modalActionBtn').onclick = ejecutarImpresionQR;
 
@@ -2386,7 +2351,7 @@
                 (appState.products || []).forEach(p => {
                     if(p.ubicaciones) {
                         p.ubicaciones.forEach(u => {
-                            if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÃN') {
+                            if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÓN') {
                                 const anaqStr = u.anaquel || 'Anaquel 1';
                                 const key = `${p.tipo || 'Unidad Comercial'}|${u.zona}|${anaqStr}|${u.posicion}`;
                                 ubicsMap.set(key, { tipo: p.tipo || 'Unidad Comercial', zona: u.zona, anaquel: anaqStr, posicion: u.posicion });
@@ -2440,7 +2405,7 @@
                         <div style="font-weight:bold; font-size:8px; color:#333;">HOSPITAL SAN JUAN DE DIOS</div>
                         <div style="font-size:10px; font-weight:700; color:#0f172a;">${textoQR}</div>
                         <div id="qrcode-${i}" style="margin:4px auto;"></div>
-                        <div style="font-size:7px; color:#475569; font-weight:600;">Sistema de AutomatizaciÃ³n de Almacenamiento</div>
+                        <div style="font-size:7px; color:#475569; font-weight:600;">Sistema de Automatización de Almacenamiento</div>
                     </div>
                 `;
             });
@@ -2465,6 +2430,7 @@
                     <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
                         <span style="display:inline-block; width:10px; height:10px; background:${dotColor}; border-radius:50%; flex-shrink:0;"></span>
                         <span class="badge-prog" style="${customStyle} white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cp.nombre}</span>
+                        <span style="color:var(--text-muted); font-size:0.62rem; white-space:nowrap;">(${cp.id})</span>
                     </div>
                     <div style="display:flex; gap:4px; flex-shrink:0;">
                         <button class="btn btn-outline btn-xs" onclick="editarProgramaCRUD('${cp.id}')">Editar</button>
@@ -2488,12 +2454,12 @@
                 }
             }
 
-            mostrarModal(esEdicion ? 'Editar Programa / CategorÃ­a' : 'Nuevo Programa / CategorÃ­a', `
-                <label>Identificador Ãnico (ID sin espacios)</label>
+            mostrarModal(esEdicion ? 'Editar Programa / Categoría' : 'Nuevo Programa / Categoría', `
+                <label>Identificador Único (ID sin espacios)</label>
                 <input id="crudProgId" value="${progObj.id}" ${esEdicion ? 'readonly style="background:#f1f5f9;"' : ''} placeholder="Ej: oncologia">
                 <label style="margin-top:6px;">Nombre Visible</label>
-                <input id="crudProgNombre" value="${progObj.nombre}" placeholder="Ej: OncologÃ­a">
-                <label style="margin-top:6px;">Color del Programa / CategorÃ­a</label>
+                <input id="crudProgNombre" value="${progObj.nombre}" placeholder="Ej: Oncología">
+                <label style="margin-top:6px;">Color del Programa / Categoría</label>
                 <div style="display:flex; gap:8px; align-items:center;">
                     <input id="crudProgColor" type="color" value="${progObj.color || '#0284c7'}" style="width:100%; height:38px; padding:2px; cursor:pointer; border:1px solid var(--border); border-radius:var(--radius); background:#fff;">
                 </div>
@@ -2522,7 +2488,7 @@
                 cerrarModal();
                 renderConfig();
                 renderInventarioUnificado();
-                mostrarToast('Programa / CategorÃ­a guardada con Ã©xito.');
+                mostrarToast('Programa / Categoría guardada con éxito.');
             };
         }
 
@@ -2531,7 +2497,7 @@
         }
 
         function eliminarProgramaCRUD(id) {
-            if(!confirm(`Â¿EstÃ¡s seguro de eliminar el programa/categorÃ­a "${id}"?`)) return;
+            if(!confirm(`¿Estás seguro de eliminar el programa/categoría "${id}"?`)) return;
             appState.programasCatalog = (appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG).filter(x => x.id !== id);
             guardarEstadoFirestore();
             renderConfig();
@@ -2564,8 +2530,8 @@
             mostrarModal('Nuevo Usuario', `
                 <div class="form-grid">
                     <div class="full-width"><label>Nombre</label><input id="uNombre" placeholder="Nombre de usuario"></div>
-                    <div class="full-width"><label>Correo ElectrÃ³nico (para recuperaciÃ³n)</label><input id="uCorreo" type="email" placeholder="correo@hsjd.cl"></div>
-                    <div class="full-width"><label>ContraseÃ±a</label><input id="uPass" type="password" placeholder="ContraseÃ±a"></div>
+                    <div class="full-width"><label>Correo Electrónico (para recuperación)</label><input id="uCorreo" type="email" placeholder="correo@hsjd.cl"></div>
+                    <div class="full-width"><label>Contraseña</label><input id="uPass" type="password" placeholder="Contraseña"></div>
                     <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarChecksPermisos()"><option value="admin">Admin</option><option value="supervisor">Supervisor</option><option value="operario">Operario</option><option value="invitado">Invitado</option></select></div>
                     <div class="full-width">
                         <label>Permisos</label>
@@ -2592,9 +2558,9 @@
                 const newId = appState.users.length > 0 ? Math.max(...appState.users.map(x=>x.id))+1 : 1;
                 appState.users.push({ id: newId, nombre, correo, password: pass, perfil, permisos });
                 guardarEstadoFirestore();
-                registrarHistorial('CreaciÃ³n de Usuario', nombre, `Creado perfil ${perfil}`, 'General');
+                registrarHistorial('Creación de Usuario', nombre, `Creado perfil ${perfil}`);
                 cerrarModal();
-                mostrarToast('Usuario creado con Ã©xito.');
+                mostrarToast('Usuario creado con éxito.');
             };
         }
 
@@ -2605,8 +2571,8 @@
             mostrarModal('Editar Usuario', `
                 <div class="form-grid">
                     <div class="full-width"><label>Nombre</label><input id="uNombre" value="${u.nombre}"></div>
-                    <div class="full-width"><label>Correo ElectrÃ³nico</label><input id="uCorreo" type="email" value="${u.correo || ''}"></div>
-                    <div class="full-width"><label>Nueva ContraseÃ±a (dejar en blanco para mantener)</label><input id="uPass" type="password" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"></div>
+                    <div class="full-width"><label>Correo Electrónico</label><input id="uCorreo" type="email" value="${u.correo || ''}"></div>
+                    <div class="full-width"><label>Nueva Contraseña (dejar en blanco para mantener)</label><input id="uPass" type="password" placeholder="••••••••"></div>
                     <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarChecksPermisos()"><option value="admin" ${u.perfil==='admin'?'selected':''}>Admin</option><option value="supervisor" ${u.perfil==='supervisor'?'selected':''}>Supervisor</option><option value="operario" ${u.perfil==='operario'?'selected':''}>Operario</option><option value="invitado" ${u.perfil==='invitado'?'selected':''}>Invitado</option></select></div>
                     <div class="full-width">
                         <label>Permisos</label>
@@ -2633,10 +2599,10 @@
                 u.perfil = perfil;
                 u.permisos = permisos;
 
-                registrarHistorial('EdiciÃ³n de Usuario', nombre, `Actualizado a perfil ${perfil}`, 'General');
+                registrarHistorial('Edición de Usuario', nombre, `Actualizado a perfil ${perfil}`);
                 guardarEstadoFirestore();
                 cerrarModal();
-                mostrarToast('Usuario actualizado con Ã©xito.');
+                mostrarToast('Usuario actualizado con éxito.');
             };
         }
 
@@ -2664,11 +2630,11 @@
         }
 
         function eliminarUsuario(id) {
-            if(!confirm('Â¿EstÃ¡s seguro de eliminar este usuario?')) return;
+            if(!confirm('¿Estás seguro de eliminar este usuario?')) return;
             const u = appState.users.find(x => x.id === id);
             appState.users = appState.users.filter(usr => usr.id !== id);
             guardarEstadoFirestore();
-            if(u) registrarHistorial('EliminaciÃ³n de Usuario', u.nombre, 'Usuario eliminado', 'General');
+            if(u) registrarHistorial('Eliminación de Usuario', u.nombre, 'Usuario eliminado');
             mostrarToast('Usuario eliminado.');
         }
 
@@ -2701,7 +2667,7 @@
         function mostrarModalBodega() {
             mostrarModal('Nueva Bodega', `
                 <div class="form-grid">
-                    <div class="full-width"><label>ID (Ej: Farmacos2)</label><input id="bId" placeholder="ID Ãºnico"></div>
+                    <div class="full-width"><label>ID (Ej: Farmacos2)</label><input id="bId" placeholder="ID único"></div>
                     <div class="full-width"><label>Nombre</label><input id="bNombre" placeholder="Nombre de bodega"></div>
                     <div><label>Color</label><input id="bColor" type="color" value="#0284c7" style="height:36px; padding:2px; cursor:pointer; width:100%;"></div>
                 </div>
@@ -2716,10 +2682,10 @@
                 if(appState.warehouses.some(w => w.id === id)) return alert('Ya existe una bodega con ese ID.');
                 appState.warehouses.push({ id, nombre, color });
                 guardarEstadoFirestore();
-                registrarHistorial('CreaciÃ³n de Bodega', id, `Creada bodega ${nombre}`, 'General');
+                registrarHistorial('Creación de Bodega', id, `Creada bodega ${nombre}`);
                 cerrarModal();
                 renderAll();
-                mostrarToast('Bodega creada con Ã©xito.');
+                mostrarToast('Bodega creada con éxito.');
             };
         }
 
@@ -2736,12 +2702,12 @@
             modalCallback = () => {
                 const nombre = document.getElementById('bNombre').value.trim();
                 const color = document.getElementById('bColor').value;
-                if(!nombre) return alert('El nombre no puede estar vacÃ­o.');
+                if(!nombre) return alert('El nombre no puede estar vacío.');
 
                 w.nombre = nombre;
                 w.color = color;
                 guardarEstadoFirestore();
-                registrarHistorial('EdiciÃ³n de Bodega', w.id, `Actualizada bodega ${nombre}`, 'General');
+                registrarHistorial('Edición de Bodega', w.id, `Actualizada bodega ${nombre}`);
                 cerrarModal();
                 renderAll();
                 mostrarToast('Bodega actualizada.');
@@ -2749,11 +2715,11 @@
         }
 
         function eliminarBodega(id) {
-            if(!confirm('Â¿Eliminar bodega?')) return;
+            if(!confirm('¿Eliminar bodega?')) return;
             appState.warehouses = appState.warehouses.filter(w => w.id !== id);
             guardarEstadoFirestore();
             renderAll();
-            registrarHistorial('EliminaciÃ³n de Bodega', id, 'Bodega eliminada', 'General');
+            registrarHistorial('Eliminación de Bodega', id, 'Bodega eliminada');
         }
 
         function renderConfig() {
@@ -2772,7 +2738,7 @@
             const statusMaster = document.getElementById('masterCatalogStatus');
             if(statusMaster) {
                 const count = (appState.masterCatalog || []).length;
-                statusMaster.textContent = `Registros en catÃ¡logo maestro: ${count}`;
+                statusMaster.textContent = `Registros en catálogo maestro: ${count}`;
             }
 
             const statusLocs = document.getElementById('locationsCatalogStatus');
@@ -2789,50 +2755,38 @@
             const wh = (appState.warehouses || []).find(w => w.id === selBodega);
             const nombreBodega = wh ? wh.nombre : selBodega;
 
-            if(!confirm(`Â¿Eliminar todo el inventario de la bodega "${nombreBodega}"?`)) return;
+            if(!confirm(`¿Eliminar todo el inventario de la bodega "${nombreBodega}"?`)) return;
 
             appState.products = (appState.products || []).filter(p => p.bodega !== selBodega);
             guardarEstadoFirestore();
-            registrarHistorial('Reinicio', selBodega, `Inventario de ${nombreBodega} reiniciado`, selBodega);
+            registrarHistorial('Reinicio', selBodega, `Inventario de ${nombreBodega} reiniciado`);
             mostrarToast(`Inventario de ${nombreBodega} reiniciado.`);
         }
 
         function renderHistorialCompleto() {
-            const fUsr = (document.getElementById('filtroMovUsuario')?.value || '').trim().toLowerCase();
-            const fFec = (document.getElementById('filtroMovFecha')?.value || '').trim().toLowerCase();
-            const fIte = (document.getElementById('filtroMovItem')?.value || '').trim().toLowerCase();
-            const fGti = (document.getElementById('filtroMovGtin')?.value || '').trim().toLowerCase();
-
-            let movs = (currentWarehouse === 'TODAS') ? (appState.movements || []) : (appState.movements || []).filter(m => m.bodega === currentWarehouse || m.bodega === 'General');
-
-            if (fUsr) movs = movs.filter(m => String(m.usuario).toLowerCase().includes(fUsr));
-            if (fFec) movs = movs.filter(m => String(m.fecha).toLowerCase().includes(fFec));
-            if (fIte) movs = movs.filter(m => String(m.codigo).toLowerCase().includes(fIte) || String(m.detalle).toLowerCase().includes(fIte));
-            if (fGti) movs = movs.filter(m => String(m.codigo).toLowerCase().includes(fGti) || String(m.detalle).toLowerCase().includes(fGti));
-
             const tbody = document.getElementById('historialCompletoBody');
-            tbody.innerHTML = movs.slice().reverse().map(m => `
+            tbody.innerHTML = (appState.movements || []).slice().reverse().map(m => `
                 <tr>
                     <td style="white-space:nowrap;">${m.fecha}</td>
                     <td><strong>${m.usuario}</strong></td>
                     <td><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td>
-                    <td style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px;">${m.codigo}</td>
+                    <td>${m.codigo}</td>
                     <td style="white-space:normal; text-align:left;">${m.detalle}</td>
                 </tr>
-            `).join('') || '<tr><td colspan="5" class="empty-state">Sin historial registrado con los filtros aplicados</td></tr>';
+            `).join('') || '<tr><td colspan="5" class="empty-state">Sin historial registrado</td></tr>';
         }
 
         function exportarExcelCompleto() {
             const prods = getProducts();
             if(prods.length === 0) return alert('No hay productos para exportar.');
             const ws = XLSX.utils.json_to_sheet(prods.map(p => ({
-                'ID Registro': p.id, 'CÃ³digo Interno': p.codigo, 'GTIN/EAN 1': (p.gtins && p.gtins[0]) || '', 'GTIN/EAN 2': (p.gtins && p.gtins[1]) || '', 'Glosa': p.glosa, 'Bodega': p.bodega, 'JerarquÃ­a': p.tipo || 'Unidad Comercial', 'Lote': p.erpData?.lote || '', 'Vencimiento': p.erpData?.vencimiento || '', 'Serie': p.erpData?.serie || '', 'Factor Empaque': p.erpData?.factorEmpaque || 1, 'Ubicaciones': JSON.stringify(p.ubicaciones || []), 'Estado': p.estado
+                'ID Registro': p.id, 'Código Interno': p.codigo, 'GTIN/EAN 1': (p.gtins && p.gtins[0]) || '', 'GTIN/EAN 2': (p.gtins && p.gtins[1]) || '', 'Glosa': p.glosa, 'Bodega': p.bodega, 'Jerarquía': p.tipo || 'Unidad Comercial', 'Lote': p.erpData?.lote || '', 'Vencimiento': p.erpData?.vencimiento || '', 'Serie': p.erpData?.serie || '', 'Factor Empaque': p.erpData?.factorEmpaque || 1, 'Ubicaciones': JSON.stringify(p.ubicaciones || []), 'Estado': p.estado
             })));
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
-            XLSX.writeFile(wb, `inventario_${currentWarehouse.toLowerCase()}.xlsx`);
-            registrarHistorial('ExportaciÃ³n', 'Inventario Completo', `Exportados registros a Excel (${currentWarehouse})`, currentWarehouse === 'TODAS' ? 'General' : currentWarehouse);
-            mostrarToast('Archivo Excel exportado con Ã©xito.');
+            XLSX.writeFile(wb, 'inventario_bodega.xlsx');
+            registrarHistorial('Exportación', 'Inventario Completo', 'Exportados registros a Excel');
+            mostrarToast('Archivo Excel exportado con éxito.');
         }
 
         function exportarDatos() {
@@ -2844,7 +2798,7 @@
         }
 
         function resetDataGeneral() {
-            if(confirm('â ï¸ Â¿Reiniciar TODO EL SISTEMA? Se perderÃ¡n todos los datos actuales.')) {
+            if(confirm('⚠️ ¿Reiniciar TODO EL SISTEMA? Se perderán todos los datos actuales.')) {
                 appState = DEFAULT_DATA;
                 guardarEstadoFirestore();
                 location.reload();
