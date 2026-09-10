@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sistema de Automatización de Almacenamiento - Hospital San Juan de Dios</title>
-    <!-- Librerías QR y Excel -->
+    <!-- Librerías QR, Excel y Charts -->
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.2/umd/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.1/umd/index.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -33,55 +34,19 @@
         .app { width:100%; min-height:100vh; background:var(--surface); display:flex; flex-direction:column; }
 
         #loginModal { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(15, 23, 42, 0.85); 
-            backdrop-filter: blur(6px); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            z-index: 2000; 
-            padding: 0; 
-            overflow-y: auto; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(6px); 
+            display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 0; overflow-y: auto; 
         }
         #loginModal .login-box { 
-            background: var(--surface); 
-            padding: 0; 
-            border-radius: 0; 
-            width: 100%; 
-            max-width: 440px; 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.25); 
-            text-align: center; 
-            position: relative; 
-            z-index: 2001; 
-            margin: auto; 
-            overflow: hidden; 
-            border: none; 
-            min-height: 100vh; 
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            background: var(--surface); padding: 0; border-radius: 0; width: 100%; max-width: 440px; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25); text-align: center; position: relative; z-index: 2001; 
+            margin: auto; overflow: hidden; border: none; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; 
         }
         #loginModal .login-box .hospital-logo img { 
-            width: 100%; 
-            max-width: 100%;
-            height: auto;
-            max-height: 140px; 
-            object-fit: contain; 
-            display: block; 
-            margin: 0 auto; 
-            background: #fff; 
+            width: 100%; max-width: 100%; height: auto; max-height: 140px; object-fit: contain; display: block; margin: 0 auto; background: #fff; 
         }
-        .login-content-pad { 
-            padding: 20px 24px 32px 24px; 
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+        .login-content-pad { padding: 20px 24px 32px 24px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
         .divider { width: 45px; height: 3px; background: var(--accent); margin: 12px auto 18px; border-radius: 3px; }
         #loginModal h2 { margin-bottom: 8px; font-size: 1.1rem; color: var(--primary); font-weight: 700; line-height: 1.3; }
         #loginModal p { color: var(--text-muted); margin-bottom: 18px; font-size: 0.8rem; }
@@ -115,15 +80,6 @@
         .warehouse-select-wrapper select { background: transparent; border: none; color: #f8fafc; font-weight: 500; font-size: 0.68rem; padding: 4px 2px; cursor: pointer; outline: none; }
         .warehouse-select-wrapper select option { background: #1e293b; color: #f8fafc; }
 
-        header .user-info .btn { background:#334155; color:#ffffff; border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-weight:500; font-size:0.65rem; display:inline-flex; align-items:center; gap:4px; min-height:26px; transition: background 0.2s; }
-        header .user-info .btn:hover { background: #475569; }
-        header .user-info .btn-success { background:#0d9488; }
-        header .user-info .btn-success:hover { background:#0f766e; }
-        header .user-info .btn-warning { background:#d97706; }
-        header .user-info .btn-warning:hover { background:#b45309; }
-        header .user-info .btn-teal { background:#7c3aed; }
-        header .user-info .btn-teal:hover { background:#6d28d9; }
-
         nav { display:flex; background:#ffffff; border-bottom:1px solid var(--border); overflow-x:auto; -webkit-overflow-scrolling:touch; padding:0 12px; width: 100%; }
         nav button { background:transparent; border:none; padding:10px 14px; font-weight:500; font-size:0.72rem; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; flex:0 0 auto; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; min-height:38px; }
         nav button:hover { color:var(--text-main); }
@@ -143,6 +99,10 @@
         .card .number { font-size:1.3rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; line-height: 1.2; word-break: break-word; }
         .card .label { color:var(--text-muted); font-size:0.68rem; margin-top:4px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
 
+        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 18px; }
+        .chart-card { background: #ffffff; padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .chart-card h4 { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; }
+
         .table-wrap { width:100%; overflow-x:auto; -webkit-overflow-scrolling: touch; }
         .table-container { max-height:62vh; overflow-y:auto; overflow-x:auto; background:transparent; width:100%; border: 1px solid var(--border); border-radius: var(--radius); }
         table { width:100%; border-collapse:collapse; font-size:0.72rem; min-width: 780px; }
@@ -151,12 +111,7 @@
         tr:hover td { background:#f8fafc; }
 
         td input[type="checkbox"], th input[type="checkbox"] {
-            vertical-align: middle;
-            position: relative;
-            top: -1px;
-            cursor: pointer;
-            width: 15px;
-            height: 15px;
+            vertical-align: middle; position: relative; top: -1px; cursor: pointer; width: 15px; height: 15px;
         }
 
         .prog-column-box { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; align-items: stretch; }
@@ -221,7 +176,6 @@
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:10px; overflow-y:auto; }
         .modal.active { display:flex; }
         .modal-content { background:#ffffff; border-radius:12px; padding:18px; max-width:800px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.2); border:1px solid var(--border); text-align: left; margin:auto; }
-        
         .modal-content.modal-compact { max-width: 480px !important; }
 
         .modal-content label { display:block; margin:8px 0 3px; font-weight:500; font-size:0.72rem; color:var(--text-muted); text-align: left; }
@@ -241,40 +195,7 @@
         .empty-state { color:var(--text-muted); text-align:center; padding:30px; font-size:0.75rem; font-weight:400; }
 
         @media print {
-            .etiqueta-qr-print-card {
-                page-break-inside: avoid !important;
-                break-inside: avoid !important;
-                margin-bottom: 15px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            body { font-size: 11px; }
-            .toolbar { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px; }
-            .toolbar-left, .toolbar-right { width: 100%; flex-direction: column; gap: 6px; }
-            .toolbar-right input, .toolbar-right select, .toolbar-left .btn { width: 100%; max-width: none; }
-            .card-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-            .card { padding: 12px; }
-            .card .number { font-size: 1.1rem; }
-            .modal-content { padding: 12px; width: 100%; max-height: 94vh; margin: 4px; }
-            .form-grid { grid-template-columns: 1fr; }
-            .prog-column-box { grid-template-columns: 1fr; }
-            nav button { padding: 8px 10px; font-size: 0.68rem; min-height: 36px; }
-            header { padding: 8px 10px; }
-            .header-top-row { flex-direction: column; align-items: flex-start; gap: 4px; }
-            .header-actions-row { flex-direction: column; align-items: stretch; gap: 6px; }
-            .header-controls-group { width: 100%; justify-content: space-between; }
-            .warehouse-select-wrapper { flex: 1; }
-            .warehouse-select-wrapper select { width: 100%; }
-        }
-
-        @media (min-width: 601px) and (max-width: 1024px) {
-            .card-grid { grid-template-columns: repeat(2, 1fr); }
-            .modal-content { width: 90%; max-width: 720px; }
-        }
-
-        @media (min-width: 1025px) {
-            .table-container { overflow-x: auto; }
+            .etiqueta-qr-print-card { page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 15px; }
         }
     </style>
 </head>
@@ -322,9 +243,7 @@
                     </select>
                 </div>
                 <div class="header-controls-group">
-                    <button class="btn btn-success btn-sm" id="btnCargarArchivo" onclick="document.getElementById('fileInput').click()">
-                        Cargar
-                    </button>
+                    <button class="btn btn-success btn-sm" id="btnCargarArchivo" onclick="document.getElementById('fileInput').click()">Cargar</button>
                     <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event)">
                     <button class="btn btn-warning btn-sm" id="btnExportarArchivo" onclick="exportarExcelCompleto()">Exportar</button>
                     <button class="btn btn-teal btn-sm" id="btnQrUbicaciones" onclick="abrirModalQRUbicaciones()">QR Ubic.</button>
@@ -343,6 +262,7 @@
             <button data-tab="config" id="navConfig">Configuración</button>
         </nav>
 
+        <!-- DASHBOARD CON KPI Y GRÁFICOS DINÁMICOS -->
         <div id="tab-dashboard" class="tab-content active">
             <div class="card-grid">
                 <div class="card"><div class="number" id="totalProductos">0</div><div class="label">Total Ítems</div></div>
@@ -350,6 +270,19 @@
                 <div class="card"><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos</div></div>
                 <div class="card"><div class="number" id="totalUsuariosConectados">0</div><div class="label">Usuarios Activos</div></div>
             </div>
+
+            <!-- Gráficos Dinámicos KPI -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h4>Distribución de Ítems por Bodega</h4>
+                    <canvas id="chartBodegas" style="max-height: 220px;"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h4>Flujo Reciente de Movimientos</h4>
+                    <canvas id="chartMovimientos" style="max-height: 220px;"></canvas>
+                </div>
+            </div>
+
             <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:10px; color:var(--text-main); text-align: left;">Últimos movimientos registrados</h3>
             <div class="table-wrap">
                 <table>
@@ -359,33 +292,21 @@
             </div>
         </div>
 
+        <!-- INVENTARIO -->
         <div id="tab-inventario" class="tab-content">
             <div class="toolbar">
                 <div class="toolbar-left" id="toolbarAccionsInv">
-                    <button class="btn btn-orange btn-sm" id="btnRecepcionAlmacenar" onclick="abrirModalAlmacenamiento()">
-                        Nuevo Registro y Almacenamiento
-                    </button>
-                    <button class="btn btn-teal btn-sm" id="btnReubicarArticulos" onclick="abrirModalReubicacion()">
-                        Reubicar
-                    </button>
-                    <button class="btn btn-danger btn-sm" id="btnEliminarSeleccionados" onclick="eliminarSeleccionadosInventario()">
-                        Eliminar
-                    </button>
+                    <button class="btn btn-orange btn-sm" id="btnRecepcionAlmacenar" onclick="abrirModalAlmacenamiento()">Nuevo Registro y Almacenamiento</button>
+                    <button class="btn btn-teal btn-sm" id="btnReubicarArticulos" onclick="abrirModalReubicacion()">Reubicar</button>
+                    <button class="btn btn-danger btn-sm" id="btnEliminarSeleccionados" onclick="eliminarSeleccionadosInventario()">Eliminar</button>
                 </div>
                 <div class="toolbar-right">
-                    <input type="text" id="searchInventarioUnificado" placeholder="Buscar código, glosa o GTIN..." style="width: 260px;" oninput="renderInventarioUnificado()">
+                    <input type="text" id="searchInventarioUnificado" placeholder="Buscar código, glosa o GTIN..." style="width: 280px;" oninput="renderInventarioUnificado()">
                     <select class="filter-select" id="filterZona" onchange="renderInventarioUnificado()">
                         <option value="TODAS">Todas las Zonas</option>
-                        <option value="A">Zona A</option>
-                        <option value="B">Zona B</option>
-                        <option value="C">Zona C</option>
-                        <option value="D">Zona D</option>
-                        <option value="E">Zona E</option>
-                        <option value="F">Zona F</option>
-                        <option value="G">Zona G</option>
-                        <option value="H">Zona H</option>
-                        <option value="I">Zona I</option>
-                        <option value="J">Zona J</option>
+                        <option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option>
+                        <option value="D">Zona D</option><option value="E">Zona E</option><option value="F">Zona F</option>
+                        <option value="G">Zona G</option><option value="H">Zona H</option><option value="I">Zona I</option><option value="J">Zona J</option>
                     </select>
                 </div>
             </div>
@@ -411,6 +332,7 @@
             </div>
         </div>
 
+        <!-- LAYOUT -->
         <div id="tab-layout" class="tab-content">
             <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:4px; text-align: left;" id="layoutTitleHeading">Plano de la Bodega (Visual)</h3>
             <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:10px; text-align: left;" id="layoutSubtitleContext">Vista activa: Todas las Bodegas</p>
@@ -421,6 +343,7 @@
             </div>
         </div>
 
+        <!-- MOVIMIENTOS CON FILTROS AVANZADOS -->
         <div id="tab-movimientos" class="tab-content">
             <div class="toolbar" style="margin-bottom: 12px;">
                 <div class="toolbar-left" style="width: 100%; display: flex; gap: 8px; flex-wrap: wrap;">
@@ -441,6 +364,7 @@
             </div>
         </div>
 
+        <!-- USUARIOS -->
         <div id="tab-usuarios" class="tab-content">
             <div style="margin-bottom:12px; text-align: left;" id="divBtnNuevoUsr">
                 <button class="btn btn-primary btn-sm" onclick="mostrarModalUsuario()">Nuevo Usuario</button>
@@ -464,6 +388,7 @@
             </div>
         </div>
 
+        <!-- BODEGAS -->
         <div id="tab-bodegas" class="tab-content">
             <div style="margin-bottom:12px; text-align: left;" id="divBtnNuevaBodega">
                 <button class="btn btn-primary btn-sm" onclick="mostrarModalBodega()">Nueva Bodega</button>
@@ -478,6 +403,7 @@
             </div>
         </div>
 
+        <!-- CONFIGURACIÓN (TÍTULO ACTUALIZADO) -->
         <div id="tab-config" class="tab-content">
             <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:14px; text-align: left;">Configuración del Sistema</h3>
             <div style="max-width:720px; display:flex; flex-direction:column; gap:14px; text-align: left;">
@@ -574,9 +500,7 @@
             measurementId: "G-GZDZLVV9N1"
         };
 
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const dbFirestore = firebase.firestore();
 
         const DEFAULT_PROGRAMAS_CATALOG = [
@@ -595,15 +519,9 @@
         ];
 
         let appState = {
-            users: [],
-            warehouses: [],
-            products: [],
-            movements: [],
-            layouts: {},
-            masterCatalog: [],
-            locationsCatalog: [],
-            erpUnlocked: false,
-            programasCatalog: DEFAULT_PROGRAMAS_CATALOG
+            users: [], warehouses: [], products: [], movements: [],
+            layouts: {}, masterCatalog: [], locationsCatalog: [],
+            erpUnlocked: false, programasCatalog: DEFAULT_PROGRAMAS_CATALOG
         };
 
         const DEFAULT_DATA = {
@@ -621,13 +539,8 @@
                 { id: 'Suturas', nombre: 'Bodega de Suturas', color: '#0284c7' },
                 { id: 'Alimentos', nombre: 'Bodega de Alimentos', color: '#ea580c' }
             ],
-            products: [],
-            movements: [],
-            layouts: {},
-            masterCatalog: [],
-            locationsCatalog: [],
-            erpUnlocked: false,
-            programasCatalog: DEFAULT_PROGRAMAS_CATALOG
+            products: [], movements: [], layouts: {}, masterCatalog: [], locationsCatalog: [],
+            erpUnlocked: false, programasCatalog: DEFAULT_PROGRAMAS_CATALOG
         };
 
         const PERFILES_CONFIG = {
@@ -639,9 +552,7 @@
 
         function determinarJerarquiaPorZona(zonaStr) {
             const z = String(zonaStr || '').trim().toUpperCase();
-            if(['A', 'B', 'C', 'D', 'E', 'I'].includes(z)) {
-                return 'Unidad Máster';
-            }
+            if(['A', 'B', 'C', 'D', 'E', 'I'].includes(z)) { return 'Unidad Máster'; }
             return 'Unidad Comercial';
         }
 
@@ -650,8 +561,7 @@
                 const usr = getCurrentUser();
                 if (usr) {
                     dbFirestore.collection('wms_data').doc('presencia_' + usr.nombre.toLowerCase()).set({
-                        usuario: usr.nombre,
-                        ultimoAcceso: firebase.firestore.FieldValue.serverTimestamp()
+                        usuario: usr.nombre, ultimoAcceso: firebase.firestore.FieldValue.serverTimestamp()
                     }).catch(err => console.error("Error actualizando latido:", err));
                 }
             }, 10000);
@@ -665,9 +575,7 @@
                     if (dataRemota.users && dataRemota.users.length > 0) {
                         const remotosMap = new Map(dataRemota.users.map(u => [u.nombre.toLowerCase(), u]));
                         DEFAULT_DATA.users.forEach(defUsr => {
-                            if (!remotosMap.has(defUsr.nombre.toLowerCase())) {
-                                remotosMap.set(defUsr.nombre.toLowerCase(), defUsr);
-                            }
+                            if (!remotosMap.has(defUsr.nombre.toLowerCase())) { remotosMap.set(defUsr.nombre.toLowerCase(), defUsr); }
                         });
                         usuariosFinales = Array.from(remotosMap.values());
                     }
@@ -696,9 +604,7 @@
                 }
                 verificarSesionGuardada();
                 renderAll();
-            }, (error) => {
-                console.error("Error en sincronización: ", error);
-            });
+            }, (error) => { console.error("Error en sincronización: ", error); });
 
             dbFirestore.collection('wms_data').onSnapshot((snapshot) => {
                 let activos = 0;
@@ -707,25 +613,19 @@
                     if (docSnap.id.startsWith('presencia_')) {
                         const data = docSnap.data();
                         if (data && data.ultimoAcceso) {
-                            const timestampAcceso = data.ultimoAcceso.toDate().getTime();
-                            if (ahora - timestampAcceso < 30000) {
-                                activos++;
-                            }
+                            if (ahora - data.ultimoAcceso.toDate().getTime() < 30000) { activos++; }
                         }
                     }
                 });
                 const elem = document.getElementById('totalUsuariosConectados');
                 if (elem) {
-                    const totalCreados = (appState.users || []).length;
-                    elem.textContent = `${activos} Activos / ${totalCreados} Creados`;
+                    elem.textContent = `${activos} Activos / ${(appState.users || []).length} Creados`;
                 }
             });
         }
 
         function guardarEstadoFirestore() {
-            dbFirestore.collection('wms_data').doc('main').set(appState).catch((error) => {
-                console.error("Error al guardar: ", error);
-            });
+            dbFirestore.collection('wms_data').doc('main').set(appState).catch((error) => { console.error("Error al guardar: ", error); });
         }
 
         function toggleErpGlobal(checkboxEl) {
@@ -741,7 +641,6 @@
             const circle = document.getElementById('erpSliderCircle');
             const statusText = document.getElementById('erpStatusText');
             if(!chk) return;
-
             chk.checked = appState.erpUnlocked;
             if(appState.erpUnlocked) {
                 bg.style.backgroundColor = '#0284c7';
@@ -760,15 +659,8 @@
             const usr = getCurrentUser();
             const ahora = new Date();
             const fechaStr = ahora.toLocaleDateString() + ' ' + ahora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            
             if(!appState.movements) appState.movements = [];
-            appState.movements.push({
-                fecha: fechaStr,
-                usuario: usr ? `${usr.nombre} (${usr.perfil})` : 'Sistema',
-                tipo: tipoMod,
-                codigo: codigoItem,
-                detalle: detalle
-            });
+            appState.movements.push({ fecha: fechaStr, usuario: usr ? `${usr.nombre} (${usr.perfil})` : 'Sistema', tipo: tipoMod, codigo: codigoItem, detalle: detalle });
             guardarEstadoFirestore();
         }
 
@@ -776,16 +668,14 @@
         let currentUserId = null;
         let modalCallback = null;
         let html5QrCodeScanner = null;
-
-        let codigoVerificacionActual = null;
-        let usuarioEnProcesoRecuperacion = null;
+        let chartBodegasInstance = null;
+        let chartMovimientosInstance = null;
 
         function limpiarYExtraerGTIN(rawText) {
             if (!rawText) return '';
             let limpio = String(rawText).trim();
             if(!limpio || limpio.toUpperCase() === 'SIN ASIGNACIÓN' || limpio === '-') return '';
             limpio = limpio.replace(/\((01|02)\)/g, '$1');
-
             if (limpio.startsWith('01') && limpio.length >= 16) {
                 limpio = limpio.substring(2, 16);
             } else if (limpio.startsWith('02') && limpio.length >= 16) {
@@ -794,11 +684,8 @@
                 limpio = limpio.replace(/[^0-9]/g, '');
                 if (limpio.length > 14) {
                     const idx01 = limpio.indexOf('01');
-                    if (idx01 !== -1 && limpio.length >= idx01 + 16) {
-                        limpio = limpio.substring(idx01 + 2, idx01 + 16);
-                    } else {
-                        limpio = limpio.substring(0, 14);
-                    }
+                    if (idx01 !== -1 && limpio.length >= idx01 + 16) { limpio = limpio.substring(idx01 + 2, idx01 + 16); }
+                    else { limpio = limpio.substring(0, 14); }
                 }
             }
             return limpio;
@@ -819,32 +706,22 @@
 
         setTimeout(() => {
             inicializarListenersTiempoReal();
-
             document.querySelectorAll('nav button').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
                     const tabId = this.dataset.tab;
                     const user = getCurrentUser();
-
                     if (user && user.perfil === 'invitado') {
                         if (tabId !== 'dashboard' && tabId !== 'inventario' && tabId !== 'layout') {
-                            alert('Su perfil de invitado solo cuenta con permisos de visualización.');
-                            return;
+                            alert('Su perfil de invitado solo cuenta con permisos de visualización.'); return;
                         }
                     }
-                    
-                    if (tabId === 'config' || tabId === 'usuarios') {
-                        if (!user || user.perfil !== 'admin') {
-                            alert('Acceso restringido exclusivamente al Administrador.');
-                            return;
-                        }
+                    if ((tabId === 'config' || tabId === 'usuarios') && (!user || user.perfil !== 'admin')) {
+                        alert('Acceso restringido exclusivamente al Administrador.'); return;
                     }
-
                     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-                    
-                    const target = document.getElementById('tab-' + tabId);
-                    if (target) target.classList.add('active');
+                    document.getElementById('tab-' + tabId).classList.add('active');
                     this.classList.add('active');
 
                     if (tabId === 'inventario') renderInventarioUnificado();
@@ -852,13 +729,10 @@
                     if (tabId === 'movimientos') renderHistorialCompleto();
                     if (tabId === 'usuarios') renderUsuarios();
                     if (tabId === 'bodegas') renderBodegas();
-                    if (tabId === 'config') {
-                        renderConfig();
-                        actualizarUIConfigErp();
-                    }
+                    if (tabId === 'config') { renderConfig(); actualizarUIConfigErp(); }
+                    if (tabId === 'dashboard') { setTimeout(renderDashboardCharts, 50); }
                 });
             });
-
             verificarSesionGuardada();
         }, 50);
 
@@ -866,82 +740,19 @@
             const u = document.getElementById('loginUser').value.trim();
             const p = document.getElementById('loginPass').value.trim();
             const user = appState.users.find(x => x.nombre.toLowerCase() === u.toLowerCase() && x.password === p);
-            
             if (user) {
                 currentUserId = user.id;
                 localStorage.setItem('wms_session_user', user.nombre);
                 document.getElementById('loginModal').style.display = 'none';
                 document.getElementById('app').style.display = 'flex';
-                
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                 document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
                 document.getElementById('tab-dashboard').classList.add('active');
                 document.querySelector('nav button[data-tab="dashboard"]').classList.add('active');
-
                 iniciarLatidoPresencia();
                 renderAll();
                 mostrarToast('Bienvenido, ' + user.nombre + ' (' + user.perfil + ')');
-            } else {
-                document.getElementById('loginError').style.display = 'block';
-            }
-        }
-
-        function abrirModalRecuperarPass() {
-            codigoVerificacionActual = null;
-            usuarioEnProcesoRecuperacion = null;
-
-            mostrarModal('Restablecer Contraseña', `
-                <p style="font-size:0.72rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Ingresa tu usuario y correo electrónico institucional registrado para recibir el código de verificación.</p>
-                <label>Nombre de Usuario</label>
-                <input id="recUser" placeholder="Usuario exacto">
-                <label style="margin-top:6px;">Correo Electrónico</label>
-                <input id="recEmail" type="email" placeholder="correo@hsjd.cl">
-            `, true);
-            document.getElementById('modalActionBtn').textContent = 'Enviar Código al Correo';
-            modalCallback = () => {
-                const uName = document.getElementById('recUser').value.trim();
-                const uEmail = document.getElementById('recEmail').value.trim();
-                if(!uName || !uEmail) return alert('Completa todos los campos');
-
-                const usr = appState.users.find(x => x.nombre.toLowerCase() === uName.toLowerCase());
-                if(!usr) return alert('No se encontró un usuario con ese nombre.');
-                if(!usr.correo || usr.correo.toLowerCase() !== uEmail.toLowerCase()) {
-                    return alert('El correo electrónico no coincide con el registrado para este usuario.');
-                }
-
-                usuarioEnProcesoRecuperacion = usr;
-                codigoVerificacionActual = Math.floor(100000 + Math.random() * 900000).toString();
-
-                mostrarToast(`Código de verificación enviado formalmente a ${usr.correo}`);
-                abrirModalValidacionCodigo();
-            };
-        }
-
-        function abrirModalValidacionCodigo() {
-            mostrarModal('Validar Código de Recuperación', `
-                <p style="font-size:0.72rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Ingresa el código de 6 dígitos enviado a tu correo institucional y establece tu nueva contraseña.</p>
-                <label>Código de Verificación</label>
-                <input id="valCodigo" placeholder="Ej: 123456" maxlength="6">
-                <label style="margin-top:6px;">Nueva Contraseña</label>
-                <input id="valNewPass" type="password" placeholder="Nueva contraseña">
-            `, true);
-            document.getElementById('modalActionBtn').textContent = 'Actualizar Contraseña';
-            modalCallback = () => {
-                const ingCode = document.getElementById('valCodigo').value.trim();
-                const nPass = document.getElementById('valNewPass').value.trim();
-
-                if(!ingCode || !nPass) return alert('Completa todos los campos.');
-                if(ingCode !== codigoVerificacionActual) {
-                    return alert('El código de verificación ingresado es incorrecto.');
-                }
-                if(!usuarioEnProcesoRecuperacion) return alert('Sesión de recuperación expirada.');
-
-                usuarioEnProcesoRecuperacion.password = nPass;
-                guardarEstadoFirestore();
-                cerrarModal();
-                registrarHistorial('Cambio de Contraseña', usuarioEnProcesoRecuperacion.nombre, 'Restablecimiento validado por correo electrónico');
-                mostrarToast('Contraseña actualizada con éxito.');
-            };
+            } else { document.getElementById('loginError').style.display = 'block'; }
         }
 
         function logout() {
@@ -951,9 +762,7 @@
             document.getElementById('loginModal').style.display = 'flex';
         }
 
-        function getCurrentUser() {
-            return appState.users.find(u => u.id === currentUserId) || null;
-        }
+        function getCurrentUser() { return appState.users.find(u => u.id === currentUserId) || null; }
 
         function mostrarToast(msg) {
             const c = document.getElementById('toastContainer');
@@ -970,12 +779,9 @@
                 document.getElementById('currentUserDisplay').textContent = user.nombre + ' (' + user.perfil + ')';
                 aplicarPermisosUI(user);
             }
-
             const sel = document.getElementById('warehouseSelect');
             sel.innerHTML = '<option value="TODAS">Todas las Bodegas</option>';
-            appState.warehouses.forEach(w => {
-                sel.innerHTML += `<option value="${w.id}">${w.nombre}</option>`;
-            });
+            appState.warehouses.forEach(w => { sel.innerHTML += `<option value="${w.id}">${w.nombre}</option>`; });
             sel.value = currentWarehouse;
 
             renderDashboard();
@@ -985,7 +791,6 @@
             renderBodegas();
             renderConfig();
             actualizarUIConfigErp();
-            
             document.getElementById('inventoryBadge').textContent = getProducts().length;
         }
 
@@ -996,17 +801,12 @@
             const btnQrUbics = document.getElementById('btnQrUbicaciones');
             const navUsr = document.getElementById('navUsuarios');
             const navConfig = document.getElementById('navConfig');
-            const navLayout = document.getElementById('navLayout');
             const navMovimientos = document.getElementById('navMovimientos');
             const toolbarAccionsInv = document.getElementById('toolbarAccionsInv');
             const thAccionsInvHead = document.getElementById('thAccionsInvHead');
 
-            if (btnCargar) {
-                btnCargar.style.display = (perfil === 'admin') ? 'inline-flex' : 'none';
-            }
-            if (btnExportar) {
-                btnExportar.style.display = (perfil === 'admin' || perfil === 'supervisor') ? 'inline-flex' : 'none';
-            }
+            if (btnCargar) btnCargar.style.display = (perfil === 'admin') ? 'inline-flex' : 'none';
+            if (btnExportar) btnExportar.style.display = (perfil === 'admin' || perfil === 'supervisor') ? 'inline-flex' : 'none';
 
             if (perfil === 'invitado') {
                 if(btnQrUbics) btnQrUbics.style.display = 'none';
@@ -1015,10 +815,7 @@
                 if(navMovimientos) navMovimientos.style.display = 'none';
                 if(toolbarAccionsInv) toolbarAccionsInv.style.display = 'none';
                 if(thAccionsInvHead) thAccionsInvHead.style.display = 'none';
-            } else if (perfil === 'operario') {
-                if(navUsr) navUsr.style.display = 'none';
-                if(navConfig) navConfig.style.display = 'none';
-            } else if (perfil === 'supervisor') {
+            } else if (perfil === 'operario' || perfil === 'supervisor') {
                 if(navUsr) navUsr.style.display = 'none';
                 if(navConfig) navConfig.style.display = 'none';
             } else if (perfil === 'admin') {
@@ -1043,14 +840,11 @@
         function renderDashboard() {
             const prods = getProducts();
             document.getElementById('totalProductos').textContent = prods.length;
-            
             const ubics = new Set();
             prods.forEach(p => { 
                 if(p.ubicaciones) {
                     p.ubicaciones.forEach(u => {
-                        if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÓN') {
-                            ubics.add(`${u.zona}-${u.anaquel}-${u.posicion}`);
-                        }
+                        if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÓN') { ubics.add(`${u.zona}-${u.anaquel}-${u.posicion}`); }
                     });
                 }
             });
@@ -1061,19 +855,72 @@
             tbody.innerHTML = (appState.movements || []).slice(-5).reverse().map(m => `
                 <tr><td style="white-space:nowrap;">${m.fecha}</td><td><strong>${m.usuario}</strong></td><td><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td><td>${m.codigo}</td><td>${m.detalle}</td></tr>
             `).join('') || '<tr><td colspan="5" class="empty-state">Sin movimientos recientes</td></tr>';
+
+            setTimeout(renderDashboardCharts, 100);
+        }
+
+        function renderDashboardCharts() {
+            const ctxBodegas = document.getElementById('chartBodegas');
+            const ctxMovimientos = document.getElementById('chartMovimientos');
+            if(!ctxBodegas || !ctxMovimientos) return;
+
+            // Datos para el gráfico de bodegas
+            const conteoBodegas = {};
+            appState.warehouses.forEach(w => { conteoBodegas[w.nombre] = 0; });
+            (appState.products || []).forEach(p => {
+                const whObj = appState.warehouses.find(w => w.id === p.bodega);
+                const nombreB = whObj ? whObj.nombre : p.bodega;
+                conteoBodegas[nombreB] = (conteoBodegas[nombreB] || 0) + 1;
+            });
+
+            const labelsBodegas = Object.keys(conteoBodegas);
+            const dataBodegas = Object.values(conteoBodegas);
+
+            if(chartBodegasInstance) chartBodegasInstance.destroy();
+            chartBodegasInstance = new Chart(ctxBodegas, {
+                type: 'doughnut',
+                data: {
+                    labels: labelsBodegas,
+                    datasets: [{
+                        data: dataBodegas,
+                        backgroundColor: ['#0284c7', '#0d9488', '#d97706', '#0f766e', '#7c3aed', '#ea580c']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
+            });
+
+            // Datos para el gráfico de movimientos por tipo
+            const conteoTipos = {};
+            (appState.movements || []).forEach(m => {
+                conteoTipos[m.tipo] = (conteoTipos[m.tipo] || 0) + 1;
+            });
+            const labelsTipos = Object.keys(conteoTipos).slice(-6);
+            const dataTipos = labelsTipos.map(l => conteoTipos[l]);
+
+            if(chartMovimientosInstance) chartMovimientosInstance.destroy();
+            chartMovimientosInstance = new Chart(ctxMovimientos, {
+                type: 'bar',
+                data: {
+                    labels: labelsTipos,
+                    datasets: [{
+                        label: 'Operaciones',
+                        data: dataTipos,
+                        backgroundColor: '#0284c7'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+            });
         }
 
         function cargarCatalogoMaestro(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
                     let catalog = [];
-
                     workbook.SheetNames.forEach(name => {
                         const sheet = workbook.Sheets[name];
                         const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
@@ -1082,7 +929,6 @@
                             const codigo = String(row[keys.find(k => /COD|SKU|INTERNO|ID/i.test(k))] || `REF_${idx+1}`).trim();
                             const glosa = String(row[keys.find(k => /GLOSA|NOMBRE|DESC/i.test(k))] || 'Sin descripción').trim();
                             const bodegaRaw = row[keys.find(k => /^BODEGA$/i.test(k))] || 'Farmacos';
-
                             let bodega = 'Farmacos';
                             const bTxt = String(bodegaRaw).toLowerCase();
                             if(bTxt.includes('insumo')) bodega = 'Insumos';
@@ -1090,20 +936,15 @@
                             else if(bTxt.includes('controlad')) bodega = 'Controlados';
                             else if(bTxt.includes('sutura')) bodega = 'Suturas';
                             else if(bTxt.includes('aliment')) bodega = 'Alimentos';
-                            else if(bTxt.includes('farmac')) bodega = 'Farmacos';
-
                             catalog.push({ codigo, glosa, bodega });
                         });
                     });
-
                     appState.masterCatalog = catalog;
                     guardarEstadoFirestore();
                     renderConfig();
                     document.getElementById('masterCatalogFileInput').value = '';
                     mostrarToast(`Catálogo maestro cargado (${catalog.length} referencias).`);
-                } catch(err) {
-                    alert('Error al leer el archivo de catálogo: ' + err.message);
-                }
+                } catch(err) { alert('Error al leer el archivo de catálogo: ' + err.message); }
             };
             reader.readAsArrayBuffer(file);
         }
@@ -1111,14 +952,12 @@
         function cargarCatalogoUbicaciones(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
                     let locs = [];
-
                     workbook.SheetNames.forEach(name => {
                         const sheet = workbook.Sheets[name];
                         const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
@@ -1128,22 +967,18 @@
                             const anaquel = String(row[keys.find(k => /^ANAQUEL$|RACK|TIPO_POS/i.test(k))] || 'Anaquel 1').trim();
                             const posicion = String(row[keys.find(k => /^POSICION$|POSICIÓN/i.test(k))] || '').trim();
                             const tipoExplicit = String(row[keys.find(k => /^TIPO$|JERARQUIA/i.test(k))] || '').trim();
-
                             if (zona) {
                                 const tipo = tipoExplicit || determinarJerarquiaPorZona(zona);
                                 locs.push({ zona, anaquel, posicion: posicion || 'A1', tipo });
                             }
                         });
                     });
-
                     appState.locationsCatalog = locs;
                     guardarEstadoFirestore();
                     renderConfig();
                     document.getElementById('locationsCatalogFileInput').value = '';
                     mostrarToast(`Maestro de ubicaciones cargado (${locs.length} registros).`);
-                } catch(err) {
-                    alert('Error al leer el archivo de ubicaciones: ' + err.message);
-                }
+                } catch(err) { alert('Error al leer el archivo de ubicaciones: ' + err.message); }
             };
             reader.readAsArrayBuffer(file);
         }
@@ -1153,162 +988,105 @@
                 return { zona: 'SIN ASIGNACIÓN', anaquel: 'Anaquel 1', posicion: '' };
             }
             const raw = String(ubicacionStr).trim();
-            let zona = 'SIN ASIGNACIÓN';
-            let anaquel = 'Anaquel 1';
-            let posicion = '';
-
+            let zona = 'SIN ASIGNACIÓN', anaquel = 'Anaquel 1', posicion = '';
             const partes = raw.split(/[-–—]/).map(p => p.trim());
-            
             for (let p of partes) {
                 const matchZ = p.match(/zona\s*([a-j0-9]+)/i) || p.match(/^([a-j])$/i);
-                if (matchZ) {
-                    zona = matchZ[1].toUpperCase();
-                    break;
-                }
+                if (matchZ) { zona = matchZ[1].toUpperCase(); break; }
             }
-            if (zona === 'SIN ASIGNACIÓN' && partes.length > 0) {
-                if (partes[0].length <= 3) zona = partes[0].toUpperCase();
-            }
-
+            if (zona === 'SIN ASIGNACIÓN' && partes.length > 0 && partes[0].length <= 3) zona = partes[0].toUpperCase();
             for (let p of partes) {
                 const matchP = p.match(/pos\.?\s*([a-z0-9]+)/i);
-                if (matchP) {
-                    posicion = matchP[1].toUpperCase();
-                } else if (/^[a-z]\d+$/i.test(p) || /^\d+$/.test(p)) {
-                    posicion = p.toUpperCase();
-                }
+                if (matchP) { posicion = matchP[1].toUpperCase(); }
+                else if (/^[a-z]\d+$/i.test(p) || /^\d+$/.test(p)) { posicion = p.toUpperCase(); }
             }
-
             const partesAnaquel = partes.filter(p => {
                 const up = p.toUpperCase();
                 return !up.includes('ZONA') && !up.includes('POS.') && up !== zona && up !== posicion;
             });
-            if (partesAnaquel.length > 0) {
-                anaquel = partesAnaquel.join(' - ');
-            }
-
-            if (!posicion && partes.length >= 3) {
-                posicion = partes[partes.length - 1].replace(/pos\.?/i, '').trim().toUpperCase();
-            }
-
+            if (partesAnaquel.length > 0) anaquel = partesAnaquel.join(' - ');
+            if (!posicion && partes.length >= 3) posicion = partes[partes.length - 1].replace(/pos\.?/i, '').trim().toUpperCase();
             return { zona, anaquel: anaquel || 'Anaquel 1', posicion: posicion || 'A1' };
         }
 
         function extraerUbicacionDesdeTextoHojaONombre(sheetName, row, keys) {
-            let zona = 'SIN ASIGNACIÓN';
-            let anaquel = 'Anaquel 1';
-            let posicion = 'A1';
-
+            let zona = 'SIN ASIGNACIÓN', anaquel = 'Anaquel 1', posicion = 'A1';
             const colUbicacionConcatenada = row[keys.find(k => /^UBICACION$|UBICACIÓN/i.test(k))];
             if (colUbicacionConcatenada && String(colUbicacionConcatenada).trim() !== '') {
                 const parsed = parsearUbicacionConcatenada(colUbicacionConcatenada);
-                if (parsed.zona && parsed.zona !== 'SIN ASIGNACIÓN') {
-                    return parsed;
-                }
+                if (parsed.zona && parsed.zona !== 'SIN ASIGNACIÓN') return parsed;
             }
-
             const keyZona = keys.find(k => /^ZONA$|ZONA_/i.test(k));
             const keyTipoPos = keys.find(k => /^TIPO$|TIPO_/i.test(k) || /RACK|ALTURA|ANAQUEL|FULL\s*SPACE|PALLET/i.test(k));
             const keyPosicion = keys.find(k => /^POSICION$|POSICIÓN/i.test(k));
-
             const zonaRaw = keyZona ? row[keyZona] : '';
             const tipoPosRaw = keyTipoPos ? String(row[keyTipoPos]).trim() : '';
             const posicionRaw = keyPosicion ? String(row[keyPosicion]).trim() : '';
-
             if (zonaRaw && String(zonaRaw).trim() !== '' && String(zonaRaw).toUpperCase() !== 'SIN ASIGNACIÓN') {
                 zona = String(zonaRaw).replace(/zona/gi, '').trim().toUpperCase();
                 if(tipoPosRaw) anaquel = tipoPosRaw;
                 if(posicionRaw) posicion = posicionRaw;
             }
-
             if (zona === 'SIN ASIGNACIÓN' && sheetName) {
                 const sName = sheetName.toUpperCase();
                 const matchZonaHoja = sName.match(/ZONA\s*([A-Z0-9]+)/);
                 if (matchZonaHoja) zona = matchZonaHoja[1];
             }
-
             return { zona, anaquel, posicion };
         }
 
         function cargarExcel(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
                     let count = 0;
-
                     if(!appState.products) appState.products = [];
-
                     workbook.SheetNames.forEach(sheetName => {
                         const sheet = workbook.Sheets[sheetName];
                         const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-                        
                         json.forEach((row, idx) => {
                             const keys = Object.keys(row);
                             const codigo = String(row[keys.find(k => /COD|SKU|INTERNO|ID/i.test(k))] || `ITEM_${idx+1}`).trim();
                             const glosa = String(row[keys.find(k => /GLOSA|NOMBRE|DESC/i.test(k))] || 'Sin descripción').trim();
-                            
                             const gtin1Raw = row[keys.find(k => /GTIN\s*1|EAN\s*1|BARRA\s*1|^GTIN$/i.test(k))] || '';
                             const gtin2Raw = row[keys.find(k => /GTIN\s*2|EAN\s*2|BARRA\s*2|DATAMATRIX/i.test(k))] || '';
-
                             const gtins = [];
                             const limpio1 = limpiarYExtraerGTIN(String(gtin1Raw));
                             if(limpio1) gtins.push(limpio1);
-                            
                             const limpio2 = limpiarYExtraerGTIN(String(gtin2Raw));
                             if(limpio2) gtins.push(limpio2);
-
                             let gtinEstados = {};
                             gtins.forEach(g => { gtinEstados[g] = 'activo'; });
 
                             const catRawExcel = String(row[keys.find(k => /CATEGORIA|PROGRAMA|TIPO_PROGRAMA|NORMATIVA/i.test(k))] || '').toLowerCase();
                             const catText = catRawExcel + ' ' + glosa.toLowerCase() + ' ' + sheetName.toLowerCase();
-
                             let programas = {};
                             (appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG).forEach(prog => {
                                 const pNameLower = prog.nombre.toLowerCase();
                                 const pIdLower = prog.id.toLowerCase();
-                                
                                 let matched = false;
-                                if (catRawExcel.includes(pNameLower) || catRawExcel.includes(pIdLower)) {
-                                    matched = true;
-                                } else if (pIdLower === 'frio' && (catText.includes('frio') || catText.includes('frío') || catText.includes('refrigerad'))) {
-                                    matched = true;
-                                } else if (pIdLower === 'controlado' && (catText.includes('controlad') || catText.includes('estupefacient'))) {
-                                    matched = true;
-                                } else if (pIdLower === 'pm' && (catText.includes('ministerial') || catText.includes(' prog min'))) {
-                                    matched = true;
-                                } else if (pIdLower === 'lrs' && (catText.includes('ricarte') || catText.includes('lrs'))) {
-                                    matched = true;
-                                } else if (pIdLower === 'vih' && catText.includes('vih')) {
-                                    matched = true;
-                                } else if (pIdLower === 'sueros' && catText.includes('suero')) {
-                                    matched = true;
-                                } else if (pIdLower === 'inflamable' && catText.includes('inflamable')) {
-                                    matched = true;
-                                } else if (pIdLower === 'comp' && (catText.includes('comp') || catText.includes('comprimido'))) {
-                                    matched = true;
-                                } else if (pIdLower === 'inyectable' && catText.includes('inyectable')) {
-                                    matched = true;
-                                } else if (pIdLower === 'magistral' && (catText.includes('magistral') || catText.includes('preparacion'))) {
-                                    matched = true;
-                                } else if (pIdLower === 'mezcla' && (catText.includes('mezcla') || catText.includes('oncológico') || catText.includes('oncologico'))) {
-                                    matched = true;
-                                } else if (pIdLower === 'unguentos' && (catText.includes('unguento') || catText.includes('crema') || catText.includes('gel') || catText.includes('pasta') || catText.includes('pomada'))) {
-                                    matched = true;
-                                }
+                                if (catRawExcel.includes(pNameLower) || catRawExcel.includes(pIdLower)) { matched = true; }
+                                else if (pIdLower === 'frio' && (catText.includes('frio') || catText.includes('frío') || catText.includes('refrigerad'))) { matched = true; }
+                                else if (pIdLower === 'controlado' && (catText.includes('controlad') || catText.includes('estupefacient'))) { matched = true; }
+                                else if (pIdLower === 'pm' && (catText.includes('ministerial') || catText.includes(' prog min'))) { matched = true; }
+                                else if (pIdLower === 'lrs' && (catText.includes('ricarte') || catText.includes('lrs'))) { matched = true; }
+                                else if (pIdLower === 'vih' && catText.includes('vih')) { matched = true; }
+                                else if (pIdLower === 'sueros' && catText.includes('suero')) { matched = true; }
+                                else if (pIdLower === 'inflamable' && catText.includes('inflamable')) { matched = true; }
+                                else if (pIdLower === 'comp' && (catText.includes('comp') || catText.includes('comprimido'))) { matched = true; }
+                                else if (pIdLower === 'inyectable' && catText.includes('inyectable')) { matched = true; }
+                                else if (pIdLower === 'magistral' && (catText.includes('magistral') || catText.includes('preparacion'))) { matched = true; }
+                                else if (pIdLower === 'mezcla' && (catText.includes('mezcla') || catText.includes('oncológico') || catText.includes('oncologico'))) { matched = true; }
+                                else if (pIdLower === 'unguentos' && (catText.includes('unguento') || catText.includes('crema') || catText.includes('gel') || catText.includes('pasta') || catText.includes('pomada'))) { matched = true; }
                                 programas[prog.id] = matched;
                             });
 
                             const ubicacionInfo = extraerUbicacionDesdeTextoHojaONombre(sheetName, row, keys);
-                            const zona = ubicacionInfo.zona;
-                            const anaquel = ubicacionInfo.anaquel;
-                            const posicion = ubicacionInfo.posicion;
-
+                            const zona = ubicacionInfo.zona, anaquel = ubicacionInfo.anaquel, posicion = ubicacionInfo.posicion;
                             const tipoRaw = String(row[keys.find(k => /TIPO|JERARQUIA|ALMACENAMIENTO/i.test(k))] || '').trim();
                             let tipo = tipoRaw ? ( /master|caja/i.test(tipoRaw) ? 'Unidad Máster' : (/minima|unidosis/i.test(tipoRaw) ? 'Unidad Mínima / Unidosis' : 'Unidad Comercial') ) : determinarJerarquiaPorZona(zona);
 
@@ -1330,9 +1108,7 @@
                             });
 
                             if (existing) {
-                                existing.codigo = codigo;
-                                existing.glosa = glosa;
-                                existing.tipo = tipo;
+                                existing.codigo = codigo; existing.glosa = glosa; existing.tipo = tipo;
                                 existing.programas = { ...existing.programas, ...programas };
                                 if(!existing.gtinEstados) existing.gtinEstados = {};
                                 gtins.forEach(g => { 
@@ -1344,30 +1120,19 @@
                             } else {
                                 const newId = '_' + Math.random().toString(36).substr(2, 9);
                                 appState.products.push({
-                                    id: newId,
-                                    codigo: codigo,
-                                    gtins: gtins,
-                                    gtinEstados: gtinEstados,
-                                    glosa: glosa,
-                                    bodega: bodega,
-                                    programas: programas,
-                                    tipo: tipo,
-                                    ubicaciones: [{ zona, anaquel, posicion }],
-                                    estado: 'Almacenado',
-                                    erpData: { lote: '', vencimiento: '', serie: '', factorEmpaque: 1 }
+                                    id: newId, codigo: codigo, gtins: gtins, gtinEstados: gtinEstados, glosa: glosa,
+                                    bodega: bodega, programas: programas, tipo: tipo, ubicaciones: [{ zona, anaquel, posicion }],
+                                    estado: 'Almacenado', erpData: { lote: '', vencimiento: '', serie: '', factorEmpaque: 1 }
                                 });
                             }
                             count++;
                         });
                     });
-
                     guardarEstadoFirestore();
                     document.getElementById('fileInput').value = '';
                     registrarHistorial('Carga masiva Excel', 'Múltiples ítems', `Procesados ${count} registros.`);
                     mostrarToast(`Archivo cargado: ${count} registros procesados.`);
-                } catch(err) {
-                    alert('Error al leer el archivo Excel: ' + err.message);
-                }
+                } catch(err) { alert('Error al leer el archivo Excel: ' + err.message); }
             };
             reader.readAsArrayBuffer(file);
         }
@@ -1387,7 +1152,6 @@
             const user = getCurrentUser();
             const esInvitado = user && user.perfil === 'invitado';
             const puedeEliminar = user && (user.perfil === 'admin' || user.perfil === 'supervisor');
-
             const catalogoProg = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
 
             const tbody = document.getElementById('inventarioUnificadoBody');
@@ -1396,13 +1160,7 @@
                     if(!u.zona || u.zona.toUpperCase() === 'SIN ASIGNACIÓN') {
                         return `<div class="ubicacion-row-item"><span style="color:var(--text-muted); font-weight:500;">SIN ASIGNACIÓN</span></div>`;
                     }
-                    return `
-                        <div class="ubicacion-row-item">
-                            <span class="zone-tag">Zona ${u.zona}</span> 
-                            <span>${u.anaquel}</span> 
-                            <span class="pos-tag">Pos. ${u.posicion}</span>
-                        </div>
-                    `;
+                    return `<div class="ubicacion-row-item"><span class="zone-tag">Zona ${u.zona}</span> <span>${u.anaquel}</span> <span class="pos-tag">Pos. ${u.posicion}</span></div>`;
                 }).join('') || '<span style="color:var(--text-muted);">SIN ASIGNACIÓN</span>';
 
                 if(!p.gtinEstados) p.gtinEstados = {};
@@ -1411,19 +1169,14 @@
                 const prog = p.programas || {};
                 let progHtml = '<div class="prog-badges-box">';
                 let activeCount = 0;
-
                 catalogoProg.forEach(cp => {
                     if (prog[cp.id]) {
                         const badgeColor = cp.color || '#0284c7';
-                        const customStyle = `background: ${badgeColor}15; color: ${badgeColor}; border: 1px solid ${badgeColor}40;`;
-                        progHtml += `<span class="badge-prog" style="${customStyle}">${cp.nombre}</span>`;
+                        progHtml += `<span class="badge-prog" style="background: ${badgeColor}15; color: ${badgeColor}; border: 1px solid ${badgeColor}40;">${cp.nombre}</span>`;
                         activeCount++;
                     }
                 });
-
-                if(activeCount === 0) {
-                    progHtml += `<span style="color:var(--text-muted); font-size:0.62rem;">Estándar</span>`;
-                }
+                if(activeCount === 0) { progHtml += `<span style="color:var(--text-muted); font-size:0.62rem;">Estándar</span>`; }
                 progHtml += `</div>`;
 
                 const tipoVal = p.tipo || 'Unidad Comercial';
@@ -1455,14 +1208,12 @@
                             ${puedeEliminar ? `<button class="btn-action-danger" onclick="eliminarProducto('${p.id}')">Eliminar</button>` : ''}
                         </div>
                     </td>` : ''}
-                </tr>
-            `;
+                </tr>`;
             }).join('') || `<tr><td colspan="${!esInvitado ? 9 : 8}" class="empty-state">No se encontraron productos registrados</td></tr>`;
         }
 
         function toggleSeleccionarTodoInventario(masterChk) {
-            const chks = document.querySelectorAll('.prod-chk');
-            chks.forEach(c => c.checked = masterChk.checked);
+            document.querySelectorAll('.prod-chk').forEach(c => c.checked = masterChk.checked);
         }
 
         function actualizarEstadoCheckTodo() {
@@ -1476,7 +1227,6 @@
             const chksChecked = document.querySelectorAll('.prod-chk:checked');
             if(chksChecked.length === 0) return alert('Selecciona al menos un producto.');
             if(!confirm(`¿Eliminar ${chksChecked.length} registros seleccionados?`)) return;
-
             const idsAEliminar = Array.from(chksChecked).map(c => c.value);
             appState.products = (appState.products || []).filter(p => !idsAEliminar.includes(p.id));
             guardarEstadoFirestore();
@@ -1486,37 +1236,21 @@
 
         function verHistorialArticulo(codigoInterno) {
             const movimientosArticulo = (appState.movements || []).filter(m => String(m.codigo).toLowerCase() === String(codigoInterno).toLowerCase() || (m.detalle && m.detalle.toLowerCase().includes(String(codigoInterno).toLowerCase())));
-
             let html = `
                 <p style="font-size:0.72rem; margin-bottom:8px; color:var(--text-muted); text-align: left;">Historial de modificaciones para el código interno: <strong>${codigoInterno}</strong></p>
                 <div class="table-container" style="max-height:50vh;">
                     <table style="width:100%; font-size:0.65rem; min-width: 450px;">
                         <thead>
                             <tr style="background:#f8fafc; position:sticky; top:0;">
-                                <th style="padding:6px;">Fecha y Hora</th>
-                                <th style="padding:6px;">Usuario</th>
-                                <th style="padding:6px;">Acción</th>
-                                <th style="padding:6px;">Detalle</th>
+                                <th style="padding:6px;">Fecha y Hora</th><th style="padding:6px;">Usuario</th><th style="padding:6px;">Acción</th><th style="padding:6px;">Detalle</th>
                             </tr>
                         </thead>
-                        <tbody>
-            `;
-
+                        <tbody>`;
             if (movimientosArticulo.length > 0) {
                 movimientosArticulo.slice().reverse().forEach(m => {
-                    html += `
-                        <tr>
-                            <td style="padding:6px; white-space:nowrap;">${m.fecha}</td>
-                            <td style="padding:6px;"><strong>${m.usuario}</strong></td>
-                            <td style="padding:6px;"><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td>
-                            <td style="padding:6px; text-align:left; white-space:normal;">${m.detalle}</td>
-                        </tr>
-                    `;
+                    html += `<tr><td style="padding:6px; white-space:nowrap;">${m.fecha}</td><td style="padding:6px;"><strong>${m.usuario}</strong></td><td style="padding:6px;"><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td><td style="padding:6px; text-align:left; white-space:normal;">${m.detalle}</td></tr>`;
                 });
-            } else {
-                html += `<tr><td colspan="4" class="empty-state">No hay registros específicos.</td></tr>`;
-            }
-
+            } else { html += `<tr><td colspan="4" class="empty-state">No hay registros específicos.</td></tr>`; }
             html += `</tbody></table></div>`;
             mostrarModal('Historial Detallado por Artículo', html, true);
             document.getElementById('modalActionBtn').style.display = 'none';
@@ -1533,11 +1267,7 @@
 
         function limpiarCampoInput(idInput) {
             const el = document.getElementById(idInput);
-            if(el) {
-                el.value = '';
-                el.focus();
-                mostrarToast('Campo borrado.');
-            }
+            if(el) { el.value = ''; el.focus(); mostrarToast('Campo borrado.'); }
         }
 
         function verificarAlertaEscaneoManual(glosaText) {
@@ -1545,24 +1275,15 @@
             if(!alertaBox) return;
             const txt = glosaText.toUpperCase();
             let alertas = [];
-            
             if(txt.includes('CONTROLADO') || txt.includes('ESTUPEFACIENTE')) alertas.push('⚠️ Controlados');
             if(txt.includes('FRIO') || txt.includes('FRÍO') || txt.includes('REFRIGERADO')) alertas.push('❄️ Cámara de Frío');
             if(txt.includes('MINISTERIAL') || txt.includes('PROG MIN')) alertas.push('📋 Programa Ministerial');
             if(txt.includes('RICARTE') || txt.includes('LRS')) alertas.push('🏷️ Ley Ricarte Soto');
             if(txt.includes('VIH')) alertas.push('🔬 VIH');
-
-            const esFrio = txt.includes('FRIO') || txt.includes('FRÍO') || txt.includes('REFRIGERADO');
-            if(esFrio && (txt.includes('RICARTE') || txt.includes('LRS'))) alertas.push('⚡ Combinación: Cámara de Frío + Ley Ricarte Soto');
-            if(esFrio && (txt.includes('MINISTERIAL') || txt.includes('PROG MIN'))) alertas.push('⚡ Combinación: Cámara de Frío + Programa Ministerial');
-            if(esFrio && (txt.includes('MEZCLA') || txt.includes('ONCOLÓGICO') || txt.includes('ONCOLOGICO'))) alertas.push('⚡ Combinación: Cámara de Frío + Mezcla (oncológico)');
-
             if(alertas.length > 0) {
                 alertaBox.style.display = 'block';
-                alertaBox.innerHTML = `<strong>⚠️ Alerta de Sistema / Programas Especiales detectados:</strong><br>` + alertas.join('<br>');
-            } else {
-                alertaBox.style.display = 'none';
-            }
+                alertaBox.innerHTML = `<strong>⚠️ Alerta de Sistema / Programas detectados:</strong><br>` + alertas.join('<br>');
+            } else { alertaBox.style.display = 'none'; }
         }
 
         function abrirModalAlmacenamiento() {
@@ -1570,17 +1291,15 @@
             const erpOpacity = erpActive ? '1' : '0.65';
             const erpDisabledAttr = erpActive ? '' : 'disabled';
             const erpBgStyle = erpActive ? '#ffffff' : '#f1f5f9';
-
             const catalogoProg = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
+
             let progCheckboxesHtml = catalogoProg.map(cp => {
                 const badgeColor = cp.color || '#0284c7';
-                const customStyle = `background: ${badgeColor}15; color: ${badgeColor}; border: 1px solid ${badgeColor}40;`;
                 return `
                 <label class="prog-option-item">
                     <input type="checkbox" id="mProg_${cp.id}" onchange="verificarAlertasCheckboxesForm()"> 
-                    <span class="badge-prog" style="${customStyle}">${cp.nombre}</span>
-                </label>
-            `;
+                    <span class="badge-prog" style="background: ${badgeColor}15; color: ${badgeColor}; border: 1px solid ${badgeColor}40;">${cp.nombre}</span>
+                </label>`;
             }).join('');
 
             mostrarModal('Crear Nuevo Registro y Almacenamiento', `
@@ -1594,7 +1313,6 @@
                 
                 <div class="form-grid" style="text-align: left;">
                     <div class="full-width"><label>Código Interno</label><input id="mCod" placeholder="Ej: 01-001"></div>
-                    
                     <div>
                         <label>GTIN/EAN (Código 1 - Opcional)</label>
                         <div style="display:flex; gap:6px; margin-bottom:4px;">
@@ -1603,13 +1321,9 @@
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
                             <button type="button" class="btn btn-success btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(1)">Escanear 1</button>
-                            <select id="mEstado1" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.68rem;">
-                                <option value="activo">Activo</option>
-                                <option value="inactivo">Inactivo</option>
-                            </select>
+                            <select id="mEstado1" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.68rem;"><option value="activo">Activo</option><option value="inactivo">Inactivo</option></select>
                         </div>
                     </div>
-
                     <div>
                         <label>GTIN/EAN (Código 2 Opcional)</label>
                         <div style="display:flex; gap:6px; margin-bottom:4px;">
@@ -1618,24 +1332,17 @@
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
                             <button type="button" class="btn btn-orange btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(2)">Escanear 2</button>
-                            <select id="mEstado2" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.68rem;">
-                                <option value="activo">Activo</option>
-                                <option value="inactivo">Inactivo</option>
-                            </select>
+                            <select id="mEstado2" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.68rem;"><option value="activo">Activo</option><option value="inactivo">Inactivo</option></select>
                         </div>
                     </div>
-
                     <div class="full-width"><label>Glosa / Descripción</label><input id="mGlosa" placeholder="Nombre del insumo o fármaco" onblur="verificarAlertaEscaneoManual(this.value)"></div>
                     <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fef3c7; border:1px solid #fde68a; padding:8px; border-radius:var(--radius); font-size:0.72rem; color:#b45309; text-align: left;"></div>
-
                     <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">Fármacos</option><option value="Insumos">Insumos</option><option value="Economato">Economato</option><option value="Controlados">Fármacos Controlados</option><option value="Suturas">Suturas</option><option value="Alimentos">Alimentos</option></select></div>
                     <div><label>Jerarquía / Tipo</label><select id="mTipo"><option value="Unidad Comercial">Unidad Comercial</option><option value="Unidad Máster">Unidad Máster</option><option value="Unidad Mínima / Unidosis">Unidad Mínima / Unidosis</option></select></div>
                     
                     <div class="full-width" style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); text-align: left;">
                         <label style="margin-bottom:8px; font-weight:600; color:var(--text-main); font-size:0.72rem; text-align: left;">Programas y Categorías (2 Columnas):</label>
-                        <div class="prog-column-box">
-                            ${progCheckboxesHtml}
-                        </div>
+                        <div class="prog-column-box">${progCheckboxesHtml}</div>
                     </div>
 
                     <div class="full-width" style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); opacity:${erpOpacity};">
@@ -1661,8 +1368,8 @@
                         <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('almacenar')">Escanear QR de Ubicación</button>
                     </div>
                     <div id="qr-reader" class="full-width"></div>
-                </div>
-            `, false);
+                </div>`, false);
+
             modalCallback = () => {
                 detenerEscanerQR();
                 const cod = document.getElementById('mCod').value.trim();
@@ -1690,7 +1397,6 @@
                 const zona = document.getElementById('mZona').value;
                 const anaquel = document.getElementById('mAnaquel').value.trim();
                 const posicion = document.getElementById('mPosicion').value.trim();
-
                 if(!cod) return alert('El Código Interno es obligatorio.');
 
                 const gtins = [];
@@ -1700,12 +1406,8 @@
 
                 if(!appState.products) appState.products = [];
                 const existing = appState.products.find(p => p.codigo.toLowerCase() === cod.toLowerCase());
-                
                 if (existing) {
-                    existing.glosa = glosa || existing.glosa;
-                    existing.tipo = tipo;
-                    existing.programas = programas;
-                    existing.erpData = erpData;
+                    existing.glosa = glosa || existing.glosa; existing.tipo = tipo; existing.programas = programas; existing.erpData = erpData;
                     if(!existing.gtinEstados) existing.gtinEstados = {};
                     gtins.forEach(g => { 
                         if(!existing.gtins.includes(g)) existing.gtins.push(g);
@@ -1716,7 +1418,9 @@
                 } else {
                     const newId = '_' + Math.random().toString(36).substr(2, 9);
                     appState.products.push({
-                        id: newId, codigo: cod, gtins: gtins, gtinEstados: gtinEstados, glosa: glosa || cod, bodega: bodega, programas: programas, tipo: tipo, ubicaciones: [{ zona, anaquel, posicion }], estado: 'Almacenado', erpData: erpData
+                        id: newId, codigo: cod, gtins: gtins, gtinEstados: gtinEstados, glosa: glosa || cod,
+                        bodega: bodega, programas: programas, tipo: tipo, ubicaciones: [{ zona, anaquel, posicion }],
+                        estado: 'Almacenado', erpData: erpData
                     });
                 }
                 registrarHistorial('Registro y Asignación', `${cod}`, `Ingresado ítem en Zona ${zona}`);
@@ -1733,7 +1437,6 @@
             const chkMezcla = document.getElementById('mProg_mezcla') || document.getElementById('editProg_mezcla');
             const chkControlado = document.getElementById('mProg_controlado') || document.getElementById('editProg_controlado');
             const chkVih = document.getElementById('mProg_vih') || document.getElementById('editProg_vih');
-
             const alertaBox = document.getElementById('alertaEscaneoBox');
             if(!alertaBox) return;
 
@@ -1748,10 +1451,8 @@
 
             if(alertas.length > 0) {
                 alertaBox.style.display = 'block';
-                alertaBox.innerHTML = `<strong>⚠️ Alerta de Sistema / Programas Especiales:</strong><br>` + alertas.join('<br>');
-            } else {
-                alertaBox.style.display = 'none';
-            }
+                alertaBox.innerHTML = `<strong>⚠️ Alerta de Sistema / Programas:</strong><br>` + alertas.join('<br>');
+            } else { alertaBox.style.display = 'none'; }
         }
 
         function abrirModalReubicacion() {
@@ -1774,8 +1475,7 @@
                 <input type="hidden" id="reubAnaquel" value="Anaquel 1">
                 <input type="hidden" id="reubPosicion" value="">
                 <div id="reubDestinoPreview" style="font-size:0.72rem; color:var(--success); font-weight:600; text-align:center; margin-bottom:6px;">Nueva ubicación destino: Pendiente de escaneo QR</div>
-                <div id="qr-reader" class="full-width"></div>
-            `, false);
+                <div id="qr-reader" class="full-width"></div>`, false);
 
             modalCallback = () => {
                 detenerEscanerQR();
@@ -1783,7 +1483,6 @@
                 const zonaDestino = document.getElementById('reubZona').value;
                 const anaquelDestino = document.getElementById('reubAnaquel').value.trim();
                 const posDestino = document.getElementById('reubPosicion').value.trim();
-
                 if(!textGtins) return alert('Debe ingresar o escanear al menos un código GTIN.');
                 if(!zonaDestino || zonaDestino === 'SIN ASIGNACIÓN') return alert('Debe escanear el código QR de la nueva ubicación.');
 
@@ -1801,7 +1500,6 @@
                         }
                     });
                 });
-
                 guardarEstadoFirestore();
                 cerrarModal();
                 mostrarToast(`Reubicación completada: ${actualizados} ítem(s) actualizados.`);
@@ -1811,11 +1509,7 @@
         function iniciarEscanerBarraReubicacion() {
             const readerDiv = document.getElementById('qr-reader');
             if(readerDiv) readerDiv.style.display = 'block';
-
-            if (html5QrCodeScanner) {
-                try { html5QrCodeScanner.clear(); } catch(e) {}
-            }
-
+            if (html5QrCodeScanner) { try { html5QrCodeScanner.clear(); } catch(e) {} }
             html5QrCodeScanner = new Html5Qrcode("qr-reader");
             html5QrCodeScanner.start(
                 { facingMode: "environment" },
@@ -1831,40 +1525,26 @@
                     detenerEscanerQR();
                 },
                 (errorMessage) => {}
-            ).catch(err => {
-                alert("No se pudo encender la cámara: " + err);
-            });
+            ).catch(err => { alert("No se pudo encender la cámara: " + err); });
         }
 
         function filtrarCatalogoMaestroDropdown(query) {
             const dropdown = document.getElementById('masterDropdownResults');
             if(!dropdown) return;
-
             const q = String(query || '').trim().toLowerCase();
-            if(!q || q.length < 1) {
-                dropdown.style.display = 'none';
-                dropdown.innerHTML = '';
-                return;
-            }
-
+            if(!q || q.length < 1) { dropdown.style.display = 'none'; dropdown.innerHTML = ''; return; }
             const catalog = appState.masterCatalog || [];
-            const filtrados = catalog.filter(item => 
-                String(item.codigo).toLowerCase().includes(q) || 
-                String(item.glosa).toLowerCase().includes(q)
-            ).slice(0, 15);
-
+            const filtrados = catalog.filter(item => String(item.codigo).toLowerCase().includes(q) || String(item.glosa).toLowerCase().includes(q)).slice(0, 15);
             if(filtrados.length === 0) {
                 dropdown.style.display = 'block';
                 dropdown.innerHTML = `<div style="padding:8px 12px; color:var(--text-muted); font-size:0.72rem;">No se encontraron coincidencias</div>`;
                 return;
             }
-
             dropdown.style.display = 'block';
             dropdown.innerHTML = filtrados.map((item) => `
                 <div class="master-dropdown-item" onclick="seleccionarItemMaestroPorFiltro('${item.codigo.replace(/'/g, "\\'")}', '${item.glosa.replace(/'/g, "\\'")}', '${item.bodega}')">
                     <strong>[${item.codigo}]</strong> ${item.glosa} <span style="color:var(--text-muted); font-size:0.62rem; display:block; margin-top:2px;">(Bodega: ${item.bodega})</span>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
 
         function seleccionarItemMaestroPorFiltro(codigo, glosa, bodega) {
@@ -1872,10 +1552,8 @@
             document.getElementById('mGlosa').value = glosa;
             document.getElementById('mBodega').value = bodega;
             document.getElementById('masterSearchInput').value = `[${codigo}] ${glosa}`;
-            
             const dropdown = document.getElementById('masterDropdownResults');
             if(dropdown) dropdown.style.display = 'none';
-
             verificarAlertaEscaneoManual(glosa);
             mostrarToast(`Seleccionado: ${glosa}`);
         }
@@ -1888,7 +1566,6 @@
         function gestionarUbicacionesModal(id) {
             const p = appState.products.find(x => x.id === id);
             if(!p) return;
-
             const erpActive = appState.erpUnlocked;
             const erpOpacity = erpActive ? '1' : '0.65';
             const erpDisabledAttr = erpActive ? '' : 'disabled';
@@ -1898,8 +1575,7 @@
                 <div style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; padding:6px 10px; border-radius:var(--radius); margin-bottom:4px; font-size:0.72rem;">
                     <span><strong>Zona ${u.zona}</strong> - ${u.anaquel} Pos. ${u.posicion}</span>
                     <button class="btn btn-danger btn-xs" onclick="removerUbicacionDeProducto('${p.id}', ${index})">Quitar</button>
-                </div>
-            `).join('') || '<p style="color:var(--text-muted); font-size:0.72rem; text-align: left;">Sin ubicaciones registradas.</p>';
+                </div>`).join('') || '<p style="color:var(--text-muted); font-size:0.72rem; text-align: left;">Sin ubicaciones registradas.</p>';
 
             const currentGtins = p.gtins || [];
             if(!p.gtinEstados) p.gtinEstados = {};
@@ -1907,16 +1583,13 @@
             
             const prog = p.programas || {};
             const catalogoProg = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
-
             let editProgHtml = catalogoProg.map(cp => {
                 const badgeColor = cp.color || '#0284c7';
-                const customStyle = `background: ${badgeColor}15; color: ${badgeColor}; border: 1px solid ${badgeColor}40;`;
                 return `
                 <label class="prog-option-item">
                     <input type="checkbox" id="editProg_${cp.id}" ${prog[cp.id] ? 'checked' : ''} onchange="verificarAlertasCheckboxesForm()"> 
-                    <span class="badge-prog" style="${customStyle}">${cp.nombre}</span>
-                </label>
-            `;
+                    <span class="badge-prog" style="background: ${badgeColor}15; color: ${badgeColor}; border: 1px solid ${badgeColor}40;">${cp.nombre}</span>
+                </label>`;
             }).join('');
 
             const erpData = p.erpData || { lote: '', vencimiento: '', serie: '', factorEmpaque: 1 };
@@ -1929,10 +1602,7 @@
                 <div style="margin-bottom:8px; text-align: left;">
                     <label>Códigos GS1 - GTIN/EAN:</label>
                     <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:3px;">
-                        ${currentGtins.map(g => {
-                            const est = p.gtinEstados[g] || 'activo';
-                            return `<span class="gtin-tag">${est === 'inactivo' ? '[Inactivo]' : '[Activo]'} ${g}</span>`;
-                        }).join('') || '<span style="color:var(--text-muted); font-style:italic;">Sin GTIN registrado</span>'}
+                        ${currentGtins.map(g => `<span class="gtin-tag">${(p.gtinEstados[g]||'activo')==='inactivo'?'[Inactivo]':'[Activo]'} ${g}</span>`).join('') || '<span style="color:var(--text-muted); font-style:italic;">Sin GTIN registrado</span>'}
                     </div>
                 </div>
 
@@ -1945,10 +1615,7 @@
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
                             <button type="button" class="btn btn-success btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(1)">Escanear 1</button>
-                            <select id="editEstado1" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.68rem;">
-                                <option value="activo" ${(p.gtinEstados[currentGtins[0]]||'activo')==='activo'?'selected':''}>Activo</option>
-                                <option value="inactivo" ${(p.gtinEstados[currentGtins[0]])==='inactivo'?'selected':''}>Inactivo</option>
-                            </select>
+                            <select id="editEstado1" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.68rem;"><option value="activo" ${(p.gtinEstados[currentGtins[0]]||'activo')==='activo'?'selected':''}>Activo</option><option value="inactivo" ${(p.gtinEstados[currentGtins[0]])==='inactivo'?'selected':''}>Inactivo</option></select>
                         </div>
                     </div>
                     <div>
@@ -1959,10 +1626,7 @@
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
                             <button type="button" class="btn btn-orange btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(2)">Escanear 2</button>
-                            <select id="editEstado2" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.68rem;">
-                                <option value="activo" ${(p.gtinEstados[currentGtins[1]]||'activo')==='activo'?'selected':''}>Activo</option>
-                                <option value="inactivo" ${(p.gtinEstados[currentGtins[1]])==='inactivo'?'selected':''}>Inactivo</option>
-                            </select>
+                            <select id="editEstado2" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.68rem;"><option value="activo" ${(p.gtinEstados[currentGtins[1]]||'activo')==='activo'?'selected':''}>Activo</option><option value="inactivo" ${(p.gtinEstados[currentGtins[1]])==='inactivo'?'selected':''}>Inactivo</option></select>
                         </div>
                     </div>
                 </div>
@@ -1975,11 +1639,9 @@
                 </select>
 
                 <div style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:10px; text-align: left;">
-                    <label style="margin-bottom:8px; font-weight:600; font-size:0.72rem; text-align: left;">Programas y Alertas Especiales (2 Columnas):</label>
+                    <label style="margin-bottom:8px; font-weight:600; font-size:0.72rem; text-align: left;">Programas y Alertas (2 Columnas):</label>
                     <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fef3c7; border:1px solid #fde68a; padding:8px; border-radius:var(--radius); font-size:0.72rem; color:#b45309; margin-bottom:6px;"></div>
-                    <div class="prog-column-box">
-                        ${editProgHtml}
-                    </div>
+                    <div class="prog-column-box">${editProgHtml}</div>
                 </div>
 
                 <div style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:10px; opacity:${erpOpacity};">
@@ -1996,9 +1658,7 @@
                 </div>
 
                 <label style="text-align: left;">Ubicaciones Actuales:</label>
-                <div style="max-height:100px; overflow-y:auto; border:1px solid var(--border); padding:6px; border-radius:var(--radius); margin-bottom:10px; text-align: left;">
-                    ${listHtml}
-                </div>
+                <div style="max-height:100px; overflow-y:auto; border:1px solid var(--border); padding:6px; border-radius:var(--radius); margin-bottom:10px; text-align: left;">${listHtml}</div>
                 <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
                 <h4 style="font-size:0.75rem; font-weight:600; margin-bottom:6px; text-align: left;">Agregar Nueva Ubicación</h4>
                 
@@ -2013,11 +1673,9 @@
                         <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('agregarUbicacion')">Escanear QR de Ubicación</button>
                     </div>
                     <div id="qr-reader" class="full-width"></div>
-                </div>
-            `, false);
+                </div>`, false);
 
             verificarAlertasCheckboxesForm();
-
             document.getElementById('modalActionBtn').textContent = 'Actualizar y Guardar';
             document.getElementById('modalActionBtn').onclick = () => {
                 detenerEscanerQR();
@@ -2048,10 +1706,7 @@
                 let gtinEstados = {};
                 if(g1) { newGtins.push(g1); gtinEstados[g1] = est1; }
                 if(g2) { newGtins.push(g2); gtinEstados[g2] = est2; }
-
-                p.gtins = newGtins;
-                p.gtinEstados = gtinEstados;
-                p.tipo = nuevoTipo;
+                p.gtins = newGtins; p.gtinEstados = gtinEstados; p.tipo = nuevoTipo;
 
                 let detalleMod = `Actualizados datos | Tipo [${nuevoTipo}]`;
                 if(zona && zona !== 'SIN ASIGNACIÓN') {
@@ -2059,7 +1714,6 @@
                     p.ubicaciones.push({ zona, anaquel, posicion });
                     detalleMod += ` | Añadida Zona ${zona}, ${anaquel}, Pos. ${posicion}`;
                 }
-
                 registrarHistorial('Actualización', `${p.codigo}`, detalleMod);
                 guardarEstadoFirestore();
                 gestionarUbicacionesModal(p.id); 
@@ -2081,23 +1735,14 @@
         function iniciarEscanerQR(modo) {
             const readerDiv = document.getElementById('qr-reader');
             readerDiv.style.display = 'block';
-
-            if (html5QrCodeScanner) {
-                try { html5QrCodeScanner.clear(); } catch(e) {}
-            }
-
+            if (html5QrCodeScanner) { try { html5QrCodeScanner.clear(); } catch(e) {} }
             html5QrCodeScanner = new Html5Qrcode("qr-reader");
             html5QrCodeScanner.start(
                 { facingMode: "environment" },
                 { fps: 10, qrbox: { width: 200, height: 110 } },
-                (decodedText) => {
-                    procesarTextoQR(decodedText, modo);
-                    detenerEscanerQR();
-                },
+                (decodedText) => { procesarTextoQR(decodedText, modo); detenerEscanerQR(); },
                 (errorMessage) => {}
-            ).catch(err => {
-                alert("No se pudo encender la cámara: " + err);
-            });
+            ).catch(err => { alert("No se pudo encender la cámara: " + err); });
         }
 
         let campoGtinDestino = 1;
@@ -2105,11 +1750,7 @@
             campoGtinDestino = numCampo;
             const readerDiv = document.getElementById('qr-reader');
             if(readerDiv) readerDiv.style.display = 'block';
-
-            if (html5QrCodeScanner) {
-                try { html5QrCodeScanner.clear(); } catch(e) {}
-            }
-
+            if (html5QrCodeScanner) { try { html5QrCodeScanner.clear(); } catch(e) {} }
             html5QrCodeScanner = new Html5Qrcode("qr-reader");
             html5QrCodeScanner.start(
                 { facingMode: "environment" },
@@ -2122,30 +1763,19 @@
                     detenerEscanerQR();
                 },
                 (errorMessage) => {}
-            ).catch(err => {
-                alert("No se pudo encender la cámara: " + err);
-            });
+            ).catch(err => { alert("No se pudo encender la cámara: " + err); });
         }
 
         function detenerEscanerQR() {
             if (html5QrCodeScanner) {
-                html5QrCodeScanner.stop().then(() => {
-                    html5QrCodeScanner.clear();
-                    html5QrCodeScanner = null;
-                }).catch(err => {
-                    html5QrCodeScanner = null;
-                });
+                html5QrCodeScanner.stop().then(() => { html5QrCodeScanner.clear(); html5QrCodeScanner = null; }).catch(err => { html5QrCodeScanner = null; });
             }
             const readerDiv = document.getElementById('qr-reader');
             if(readerDiv) readerDiv.style.display = 'none';
         }
 
         function procesarTextoQR(texto, modo) {
-            let zonaVal = 'A';
-            let anaqVal = 'Anaquel 1';
-            let posVal = '1';
-            let tipoVal = '';
-
+            let zonaVal = 'A', anaqVal = 'Anaquel 1', posVal = '1', tipoVal = '';
             try {
                 const parsed = JSON.parse(texto);
                 if(parsed.zona) zonaVal = parsed.zona;
@@ -2155,10 +1785,8 @@
             } catch(e) {
                 const matchZona = texto.match(/zona\s*([a-j])/i) || texto.match(/z([a-j])/i);
                 if(matchZona) zonaVal = matchZona[1].toUpperCase();
-
                 const matchAnaq = texto.match(/(anaquel\s*\d+|rack|full\s*space|pallet)/i);
                 if(matchAnaq) anaqVal = matchAnaq[0];
-
                 const matchPos = texto.match(/pos[i|c][i|o]n\s*([a-z0-9]+)/i);
                 if(matchPos) posVal = matchPos[1].toUpperCase();
             }
@@ -2168,7 +1796,6 @@
                 const selAnaq = document.getElementById('reubAnaquel');
                 const inputPos = document.getElementById('reubPosicion');
                 const preview = document.getElementById('reubDestinoPreview');
-
                 if(selZona) selZona.value = zonaVal;
                 if(selAnaq) selAnaq.value = anaqVal;
                 if(inputPos) inputPos.value = posVal;
@@ -2182,22 +1809,14 @@
             const inputPos = document.getElementById('mPosicion') || document.getElementById('nuevoPosicion');
             const selTipo = document.getElementById('mTipo') || document.getElementById('editTipo');
 
-            if(selZona) {
-                selZona.value = zonaVal;
-                actualizarJerarquiaPorZonaForm(zonaVal);
-            }
+            if(selZona) { selZona.value = zonaVal; actualizarJerarquiaPorZonaForm(zonaVal); }
             if(selAnaq) selAnaq.value = anaqVal;
             if(inputPos) inputPos.value = posVal;
             if(tipoVal && selTipo) selTipo.value = tipoVal;
-
             mostrarToast(`QR leído: Zona ${zonaVal}, ${anaqVal}, Pos. ${posVal}`);
 
             if(modo === 'agregarUbicacion' && typeof modalCallback === 'function') {
-                setTimeout(() => {
-                    if(document.getElementById('modalActionBtn')) {
-                        document.getElementById('modalActionBtn').click();
-                    }
-                }, 300);
+                setTimeout(() => { if(document.getElementById('modalActionBtn')) { document.getElementById('modalActionBtn').click(); } }, 300);
             }
         }
 
@@ -2205,7 +1824,6 @@
             const file = event.target.files[0];
             if (!file) return;
             const targetBodega = document.getElementById('configSubirBodegaSelect').value;
-            
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
@@ -2213,27 +1831,15 @@
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
-                    
-                    let width = img.width;
-                    let height = img.height;
+                    let width = img.width, height = img.height;
                     const maxDim = 1000;
-                    if (width > height && width > maxDim) {
-                        height *= maxDim / width;
-                        width = maxDim;
-                    } else if (height > maxDim) {
-                        width *= maxDim / height;
-                        height = maxDim;
-                    }
-                    
-                    canvas.width = width;
-                    canvas.height = height;
+                    if (width > height && width > maxDim) { height *= maxDim / width; width = maxDim; }
+                    else if (height > maxDim) { width *= maxDim / height; height = maxDim; }
+                    canvas.width = width; canvas.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
-                    
                     const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
-
                     if(!appState.layouts) appState.layouts = {};
                     appState.layouts[targetBodega] = compressedDataUrl;
-                    
                     guardarEstadoFirestore();
                     cargarImagenLayout(currentWarehouse);
                     mostrarToast(`Imagen de plano optimizada (${targetBodega}).`);
@@ -2246,7 +1852,6 @@
             const container = document.getElementById('layoutImageContent');
             const headingTitle = document.getElementById('layoutTitleHeading');
             const subtitleContext = document.getElementById('layoutSubtitleContext');
-            
             const whObj = appState.warehouses.find(w => w.id === bodegaId);
             const nombreBodegaActiva = bodegaId === 'TODAS' ? 'Todas las Bodegas' : (whObj ? whObj.nombre : bodegaId);
 
@@ -2254,16 +1859,11 @@
             if(subtitleContext) subtitleContext.textContent = `Vista activa: ${nombreBodegaActiva}`;
 
             const imgData = (appState.layouts && appState.layouts[bodegaId]) ? appState.layouts[bodegaId] : (appState.layouts && appState.layouts['GENERAL'] ? appState.layouts['GENERAL'] : null);
-
-            if (imgData) {
-                container.innerHTML = `<img src="${imgData}" alt="Layout">`;
-            } else {
-                container.innerHTML = `<span class="no-image">No hay imagen de plano cargada para ${nombreBodegaActiva}.<br><small>Sube una imagen desde la sección Configuración.</small></span>`;
-            }
+            if (imgData) { container.innerHTML = `<img src="${imgData}" alt="Layout">`; }
+            else { container.innerHTML = `<span class="no-image">No hay imagen de plano cargada para ${nombreBodegaActiva}.<br><small>Sube una imagen desde la sección Configuración.</small></span>`; }
         }
 
         let locationsFiltradasCache = [];
-
         function abrirModalQRUbicaciones() {
             let baseList = [];
             if (appState.locationsCatalog && appState.locationsCatalog.length > 0) {
@@ -2283,9 +1883,7 @@
                 });
                 baseList = Array.from(ubicsMap.values());
             }
-
             if(baseList.length === 0) return alert('No hay ubicaciones registradas ni cargadas en el maestro.');
-
             locationsFiltradasCache = baseList;
 
             let html = `
@@ -2304,14 +1902,11 @@
                         <button class="btn btn-outline btn-xs" onclick="toggleSelectAllQR(false)">Desmarcar</button>
                     </div>
                 </div>
-                <div id="contenedorGridQR" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:8px; max-height:45vh; overflow:auto; padding:2px;">
-                </div>
-            `;
+                <div id="contenedorGridQR" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:8px; max-height:45vh; overflow:auto; padding:2px;"></div>`;
 
             mostrarModal('Selección de Etiquetas QR de Ubicación', html, false);
             document.getElementById('modalActionBtn').textContent = 'Imprimir Seleccionados';
             document.getElementById('modalActionBtn').onclick = ejecutarImpresionQR;
-
             renderizarListaFiltroQR();
         }
 
@@ -2320,10 +1915,8 @@
             const fAnaquel = (document.getElementById('filtroAnaquel')?.value || '').trim().toLowerCase();
             const fPos = (document.getElementById('filtroPosicion')?.value || '').trim().toLowerCase();
 
-            let baseList = [];
-            if (appState.locationsCatalog && appState.locationsCatalog.length > 0) {
-                baseList = appState.locationsCatalog;
-            } else {
+            let baseList = (appState.locationsCatalog && appState.locationsCatalog.length > 0) ? appState.locationsCatalog : [];
+            if(baseList.length === 0) {
                 const ubicsMap = new Map();
                 (appState.products || []).forEach(p => {
                     if(p.ubicaciones) {
@@ -2360,20 +1953,16 @@
                             <input type="checkbox" class="qr-chk" value="${labelTxt}" checked style="width:14px; height:14px; cursor:pointer;">
                         </div>
                         <div style="color:var(--text-main);"><strong>Zona ${val.zona}</strong><br>${val.anaquel}<br>Pos. ${val.posicion}</div>
-                    </label>
-                `;
+                    </label>`;
             }).join('') || '<div style="grid-column:1/-1; text-align:center; padding:16px; color:var(--text-muted);">No se encontraron ubicaciones con esos filtros.</div>';
         }
 
-        function toggleSelectAllQR(status) {
-            document.querySelectorAll('.qr-chk').forEach(c => c.checked = status);
-        }
+        function toggleSelectAllQR(status) { document.querySelectorAll('.qr-chk').forEach(c => c.checked = status); }
 
         function ejecutarImpresionQR() {
             detenerEscanerQR();
             const chks = document.querySelectorAll('.qr-chk:checked');
             if(chks.length === 0) return alert('Selecciona al menos una etiqueta.');
-            
             let printHtml = `<div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:15px; padding:20px; font-family:sans-serif;">`;
             chks.forEach((chk, i) => {
                 const textoQR = chk.value;
@@ -2383,11 +1972,9 @@
                         <div style="font-size:10px; font-weight:700; color:#0f172a;">${textoQR}</div>
                         <div id="qrcode-${i}" style="margin:4px auto;"></div>
                         <div style="font-size:7px; color:#475569; font-weight:600;">Sistema de Automatización de Almacenamiento</div>
-                    </div>
-                `;
+                    </div>`;
             });
             printHtml += `</div>`;
-
             const win = window.open('', '_blank');
             win.document.write(`<html><head><title>Imprimir Etiquetas QR</title><style>@media print { .etiqueta-qr-print-card { page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 15px; } }</style><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script></head><body onload="window.print();">` + printHtml + `<script>` + Array.from(chks).map((chk, i) => `new QRCode(document.getElementById("qrcode-${i}"), { text: "${chk.value}", width: 90, height: 90 });`).join('') + `<\/script></body></html>`);
             win.document.close();
@@ -2397,23 +1984,20 @@
         function renderListaProgramasConfig() {
             const container = document.getElementById('listaProgramasConfigContainer');
             if(!container) return;
-
             const catalogo = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
             container.innerHTML = catalogo.map(cp => {
                 const dotColor = cp.color || '#0284c7';
-                const customStyle = `background: ${dotColor}15; color: ${dotColor}; border: 1px solid ${dotColor}40;`;
                 return `
                 <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:6px 10px; border-radius:var(--radius); border:1px solid var(--border); font-size:0.72rem; gap:6px;">
                     <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
                         <span style="display:inline-block; width:10px; height:10px; background:${dotColor}; border-radius:50%; flex-shrink:0;"></span>
-                        <span class="badge-prog" style="${customStyle} white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cp.nombre}</span>
+                        <span class="badge-prog" style="background: ${dotColor}15; color: ${dotColor}; border: 1px solid ${dotColor}40; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cp.nombre}</span>
                     </div>
                     <div style="display:flex; gap:4px; flex-shrink:0;">
                         <button class="btn btn-outline btn-xs" onclick="editarProgramaCRUD('${cp.id}')">Editar</button>
                         <button class="btn btn-danger btn-xs" onclick="eliminarProgramaCRUD('${cp.id}')">Eliminar</button>
                     </div>
-                </div>
-            `;
+                </div>`;
             }).join('');
         }
 
@@ -2421,15 +2005,10 @@
             const catalogo = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
             let progObj = { id: '', nombre: '', color: '#0284c7' };
             let esEdicion = false;
-
             if(idEditar) {
                 const found = catalogo.find(x => x.id === idEditar);
-                if(found) {
-                    progObj = { ...found };
-                    esEdicion = true;
-                }
+                if(found) { progObj = { ...found }; esEdicion = true; }
             }
-
             mostrarModal(esEdicion ? 'Editar Programa / Categoría' : 'Nuevo Programa / Categoría', `
                 <label>Identificador Único (ID sin espacios)</label>
                 <input id="crudProgId" value="${progObj.id}" ${esEdicion ? 'readonly style="background:#f1f5f9;"' : ''} placeholder="Ej: oncologia">
@@ -2438,28 +2017,21 @@
                 <label style="margin-top:6px;">Color del Programa / Categoría</label>
                 <div style="display:flex; gap:8px; align-items:center;">
                     <input id="crudProgColor" type="color" value="${progObj.color || '#0284c7'}" style="width:100%; height:38px; padding:2px; cursor:pointer; border:1px solid var(--border); border-radius:var(--radius); background:#fff;">
-                </div>
-            `, true);
+                </div>`, true);
 
             modalCallback = () => {
                 const idVal = document.getElementById('crudProgId').value.trim().toLowerCase().replace(/\s+/g, '_');
                 const nombreVal = document.getElementById('crudProgNombre').value.trim();
                 const colorVal = document.getElementById('crudProgColor').value;
-
                 if(!idVal || !nombreVal) return alert('Completa todos los campos.');
-
                 if(!appState.programasCatalog) appState.programasCatalog = [...DEFAULT_PROGRAMAS_CATALOG];
-
                 if(esEdicion) {
                     const idx = appState.programasCatalog.findIndex(x => x.id === idEditar);
-                    if(idx !== -1) {
-                        appState.programasCatalog[idx] = { id: idVal, nombre: nombreVal, color: colorVal };
-                    }
+                    if(idx !== -1) appState.programasCatalog[idx] = { id: idVal, nombre: nombreVal, color: colorVal };
                 } else {
                     if(appState.programasCatalog.some(x => x.id === idVal)) return alert('Ya existe un programa con ese ID.');
                     appState.programasCatalog.push({ id: idVal, nombre: nombreVal, color: colorVal });
                 }
-
                 guardarEstadoFirestore();
                 cerrarModal();
                 renderConfig();
@@ -2468,10 +2040,7 @@
             };
         }
 
-        function editarProgramaCRUD(id) {
-            abrirModalProgramaCRUD(id);
-        }
-
+        function editarProgramaCRUD(id) { abrirModalProgramaCRUD(id); }
         function eliminarProgramaCRUD(id) {
             if(!confirm(`¿Estás seguro de eliminar el programa/categoría "${id}"?`)) return;
             appState.programasCatalog = (appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG).filter(x => x.id !== id);
@@ -2484,7 +2053,6 @@
             const tbody = document.getElementById('usuariosBody');
             const user = getCurrentUser();
             const isAdmin = user && user.perfil === 'admin';
-
             tbody.innerHTML = (appState.users || []).map(u => `
                 <tr>
                     <td>${u.id}</td>
@@ -2498,8 +2066,7 @@
                             ${isAdmin && u.id !== 1 ? `<button class="btn-action-danger" onclick="eliminarUsuario(${u.id})">Eliminar</button>` : ''}
                         </div>
                     </td>
-                </tr>
-            `).join('');
+                </tr>`).join('');
         }
 
         function mostrarModalUsuario() {
@@ -2513,24 +2080,19 @@
                         <label>Permisos</label>
                         <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f8fafc; padding:10px; border-radius:var(--radius); border:1px solid var(--border);"></div>
                     </div>
-                </div>
-            `, true);
+                </div>`, true);
             actualizarChecksPermisos();
             modalCallback = () => {
                 const nombre = document.getElementById('uNombre').value.trim();
                 const correo = document.getElementById('uCorreo').value.trim();
                 const pass = document.getElementById('uPass').value.trim();
                 const perfil = document.getElementById('uPerfil').value;
-                
                 const permisos = [];
                 document.querySelectorAll('.perm-chk:checked').forEach(chk => permisos.push(chk.value));
-
                 if(!nombre || !pass || !correo) return alert('Completa todos los campos.');
                 if(permisos.length === 0) return alert('Selecciona al menos un permiso.');
-
                 if(!appState.users) appState.users = [];
                 if(appState.users.some(x => x.nombre.toLowerCase() === nombre.toLowerCase())) return alert('Ya existe un usuario con ese nombre.');
-
                 const newId = appState.users.length > 0 ? Math.max(...appState.users.map(x=>x.id))+1 : 1;
                 appState.users.push({ id: newId, nombre, correo, password: pass, perfil, permisos });
                 guardarEstadoFirestore();
@@ -2543,7 +2105,6 @@
         function editarUsuarioModal(id) {
             const u = appState.users.find(x => x.id === id);
             if(!u) return;
-
             mostrarModal('Editar Usuario', `
                 <div class="form-grid">
                     <div class="full-width"><label>Nombre</label><input id="uNombre" value="${u.nombre}"></div>
@@ -2554,27 +2115,20 @@
                         <label>Permisos</label>
                         <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f8fafc; padding:10px; border-radius:var(--radius); border:1px solid var(--border);"></div>
                     </div>
-                </div>
-            `, true);
+                </div>`, true);
             actualizarChecksPermisos(u.permisos);
             modalCallback = () => {
                 const nombre = document.getElementById('uNombre').value.trim();
                 const correo = document.getElementById('uCorreo').value.trim();
                 const pass = document.getElementById('uPass').value.trim();
                 const perfil = document.getElementById('uPerfil').value;
-                
                 const permisos = [];
                 document.querySelectorAll('.perm-chk:checked').forEach(chk => permisos.push(chk.value));
-
                 if(!nombre || !correo) return alert('Completa los campos obligatorios.');
                 if(permisos.length === 0) return alert('Selecciona al menos un permiso.');
-
-                u.nombre = nombre;
-                u.correo = correo;
+                u.nombre = nombre; u.correo = correo;
                 if(pass) u.password = pass;
-                u.perfil = perfil;
-                u.permisos = permisos;
-
+                u.perfil = perfil; u.permisos = permisos;
                 registrarHistorial('Edición de Usuario', nombre, `Actualizado a perfil ${perfil}`);
                 guardarEstadoFirestore();
                 cerrarModal();
@@ -2586,22 +2140,18 @@
             const perfilSel = document.getElementById('uPerfil');
             const container = document.getElementById('permisosCheckContainer');
             if(!perfilSel || !container) return;
-
             const perfil = perfilSel.value;
             const sugeridos = PERFILES_CONFIG[perfil] || ['lectura'];
             const actualPerms = userPerms || sugeridos;
-
             const todasOpciones = ['lectura', 'escritura', 'administracion', 'carga', 'descarga'];
             container.innerHTML = '';
-
             todasOpciones.forEach(opt => {
                 const isChecked = actualPerms.includes(opt) ? 'checked' : '';
                 container.innerHTML += `
                     <label style="display:flex; align-items:center; gap:6px; font-size:0.72rem; cursor:pointer;">
                         <input type="checkbox" class="perm-chk" value="${opt}" ${isChecked} style="width:14px; height:14px;">
                         <span>${opt.toUpperCase()}</span>
-                    </label>
-                `;
+                    </label>`;
             });
         }
 
@@ -2620,7 +2170,6 @@
             const isAdmin = user && user.perfil === 'admin';
             const btnNuevoBodega = document.getElementById('divBtnNuevaBodega');
             const thBodegasAccions = document.getElementById('thBodegasAccionsHead');
-
             if(btnNuevoBodega) btnNuevoBodega.style.display = isAdmin ? 'block' : 'none';
             if(thBodegasAccions) thBodegasAccions.style.display = isAdmin ? 'table-cell' : 'none';
 
@@ -2636,8 +2185,7 @@
                             <button class="btn-action-danger" onclick="eliminarBodega('${w.id}')">Eliminar</button>
                         </div>
                     </td>` : ''}
-                </tr>
-            `).join('');
+                </tr>`).join('');
         }
 
         function mostrarModalBodega() {
@@ -2646,14 +2194,12 @@
                     <div class="full-width"><label>ID (Ej: Farmacos2)</label><input id="bId" placeholder="ID único"></div>
                     <div class="full-width"><label>Nombre</label><input id="bNombre" placeholder="Nombre de bodega"></div>
                     <div><label>Color</label><input id="bColor" type="color" value="#0284c7" style="height:36px; padding:2px; cursor:pointer; width:100%;"></div>
-                </div>
-            `, true);
+                </div>`, true);
             modalCallback = () => {
                 const id = document.getElementById('bId').value.trim();
                 const nombre = document.getElementById('bNombre').value.trim();
                 const color = document.getElementById('bColor').value;
                 if(!id || !nombre) return alert('Completa los campos.');
-
                 if(!appState.warehouses) appState.warehouses = [];
                 if(appState.warehouses.some(w => w.id === id)) return alert('Ya existe una bodega con ese ID.');
                 appState.warehouses.push({ id, nombre, color });
@@ -2668,20 +2214,16 @@
         function editarBodegaModal(id) {
             const w = appState.warehouses.find(x => x.id === id);
             if(!w) return;
-
             mostrarModal('Editar Bodega', `
                 <div class="form-grid">
                     <div class="full-width"><label>Nombre</label><input id="bNombre" value="${w.nombre}"></div>
                     <div><label>Color</label><input id="bColor" type="color" value="${w.color || '#0284c7'}" style="height:36px; padding:2px; cursor:pointer; width:100%;"></div>
-                </div>
-            `, true);
+                </div>`, true);
             modalCallback = () => {
                 const nombre = document.getElementById('bNombre').value.trim();
                 const color = document.getElementById('bColor').value;
                 if(!nombre) return alert('El nombre no puede estar vacío.');
-
-                w.nombre = nombre;
-                w.color = color;
+                w.nombre = nombre; w.color = color;
                 guardarEstadoFirestore();
                 registrarHistorial('Edición de Bodega', w.id, `Actualizada bodega ${nombre}`);
                 cerrarModal();
@@ -2701,27 +2243,17 @@
         function renderConfig() {
             const selSubir = document.getElementById('configSubirBodegaSelect');
             selSubir.innerHTML = '<option value="GENERAL">General (Todas las bodegas)</option>';
-            (appState.warehouses || []).forEach(w => {
-                selSubir.innerHTML += `<option value="${w.id}">${w.nombre}</option>`;
-            });
+            (appState.warehouses || []).forEach(w => { selSubir.innerHTML += `<option value="${w.id}">${w.nombre}</option>`; });
 
             const selReset = document.getElementById('configResetBodegaSelect');
             selReset.innerHTML = '';
-            (appState.warehouses || []).forEach(w => {
-                selReset.innerHTML += `<option value="${w.id}">${w.nombre}</option>`;
-            });
+            (appState.warehouses || []).forEach(w => { selReset.innerHTML += `<option value="${w.id}">${w.nombre}</option>`; });
 
             const statusMaster = document.getElementById('masterCatalogStatus');
-            if(statusMaster) {
-                const count = (appState.masterCatalog || []).length;
-                statusMaster.textContent = `Registros en catálogo maestro: ${count}`;
-            }
+            if(statusMaster) statusMaster.textContent = `Registros en catálogo maestro: ${(appState.masterCatalog || []).length}`;
 
             const statusLocs = document.getElementById('locationsCatalogStatus');
-            if(statusLocs) {
-                const countLocs = (appState.locationsCatalog || []).length;
-                statusLocs.textContent = `Ubicaciones maestras cargadas: ${countLocs}`;
-            }
+            if(statusLocs) statusLocs.textContent = `Ubicaciones maestras cargadas: ${(appState.locationsCatalog || []).length}`;
 
             renderListaProgramasConfig();
         }
@@ -2730,9 +2262,7 @@
             const selBodega = document.getElementById('configResetBodegaSelect').value;
             const wh = (appState.warehouses || []).find(w => w.id === selBodega);
             const nombreBodega = wh ? wh.nombre : selBodega;
-
             if(!confirm(`¿Eliminar todo el inventario de la bodega "${nombreBodega}"?`)) return;
-
             appState.products = (appState.products || []).filter(p => p.bodega !== selBodega);
             guardarEstadoFirestore();
             registrarHistorial('Reinicio', selBodega, `Inventario de ${nombreBodega} reiniciado`);
@@ -2746,7 +2276,6 @@
             const fItem = (document.getElementById('filtroMovItem')?.value || '').toLowerCase();
 
             let movements = appState.movements || [];
-
             if(fUsuario) movements = movements.filter(m => String(m.usuario).toLowerCase().includes(fUsuario));
             if(fFecha) movements = movements.filter(m => String(m.fecha).toLowerCase().includes(fFecha));
             if(fTipo) movements = movements.filter(m => String(m.tipo).toLowerCase().includes(fTipo));
@@ -2760,8 +2289,7 @@
                     <td><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td>
                     <td>${m.codigo}</td>
                     <td style="white-space:normal; text-align:left;">${m.detalle}</td>
-                </tr>
-            `).join('') || '<tr><td colspan="5" class="empty-state">Sin historial registrado con estos filtros</td></tr>';
+                </tr>`).join('') || '<tr><td colspan="5" class="empty-state">Sin historial registrado con estos filtros</td></tr>';
         }
 
         function exportarExcelCompleto() {
@@ -2796,33 +2324,17 @@
         function mostrarModal(titulo, html, isCompact = false) {
             document.getElementById('modalTitle').textContent = titulo;
             document.getElementById('modalBody').innerHTML = html;
-            
             const wrapper = document.getElementById('modalContentWrapper');
-            if(isCompact) {
-                wrapper.classList.add('modal-compact');
-            } else {
-                wrapper.classList.remove('modal-compact');
-            }
-
+            if(isCompact) wrapper.classList.add('modal-compact');
+            else wrapper.classList.remove('modal-compact');
             document.getElementById('modal').classList.add('active');
             document.getElementById('modalActionBtn').style.display = 'inline-flex';
             document.getElementById('modalActionBtn').textContent = 'Guardar';
-            document.getElementById('modalActionBtn').onclick = () => { 
-                detenerEscanerQR();
-                if(modalCallback) modalCallback(); 
-            };
+            document.getElementById('modalActionBtn').onclick = () => { detenerEscanerQR(); if(modalCallback) modalCallback(); };
         }
 
-        function cerrarModal() {
-            detenerEscanerQR();
-            document.getElementById('modal').classList.remove('active');
-            modalCallback = null;
-        }
-
-        function ejecutarModal() {
-            detenerEscanerQR();
-            if(modalCallback) modalCallback();
-        }
+        function cerrarModal() { detenerEscanerQR(); document.getElementById('modal').classList.remove('active'); modalCallback = null; }
+        function ejecutarModal() { detenerEscanerQR(); if(modalCallback) modalCallback(); }
     </script>
 </body>
 </html>
