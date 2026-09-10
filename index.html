@@ -120,7 +120,7 @@
         .badge-supervisor { background:#fef3c7; color:#b45309; }
         .badge-operario { background:#e0f2fe; color:#0369a1; }
         .badge-invitado { background:#f1f5f9; color:#475569; }
-        .badge-bodega { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.6rem; font-weight:600; color:#ffffff; white-space: nowrap; }
+        .badge-bodega { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.6rem; font-weight:600; color:#ffffff; white-space: nowrap; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
         
         .ubicacion-compacta-box { display:flex; flex-direction:column; gap:3px; align-items:flex-start; justify-content:center; width: 100%; }
         .ubicacion-row-item { display:inline-flex; align-items:center; gap:4px; font-size:0.62rem; background:#f8fafc; padding:2px 6px; border-radius:4px; border:1px solid var(--border); color:var(--text-main); font-weight:500; white-space:nowrap; }
@@ -328,23 +328,55 @@
             </div>
         </div>
 
-        <!-- REPORTES -->
+        <!-- REPORTES CON AUDITORÍA GS1 Y PROMPTS PARA IA -->
         <div id="tab-reportes" class="tab-content">
-            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:14px; text-align: left;">Módulo de Reportes y Auditoría Logística</h3>
+            <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:14px; text-align: left;">Módulo de Reportes y Auditoría Logística GS1</h3>
             <div class="card-grid">
                 <div class="card"><div class="number" id="repTotalCodificados">0</div><div class="label">GTINs Activos / Válidos</div></div>
                 <div class="card"><div class="number" id="repTotalProgramasCount">0</div><div class="label">Ítems con Programa Asignado</div></div>
                 <div class="card"><div class="number" id="repTotalSinUbicacion">0</div><div class="label">Pendientes de Ubicación</div></div>
             </div>
+
+            <!-- Herramientas de Exportación y Generación de Prompts para IA -->
             <div style="background:#ffffff; padding:18px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:16px;">
-                <h4 style="font-size:0.75rem; font-weight:600; margin-bottom:12px; color:var(--text-muted); text-transform:uppercase;">Herramientas de Exportación y Reportes Especiales</h4>
-                <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <button class="btn btn-primary btn-sm" onclick="exportarReporteCriticos()">Reporte de Ítems Críticos / Controlados</button>
+                <h4 style="font-size:0.75rem; font-weight:600; margin-bottom:12px; color:var(--text-muted); text-transform:uppercase;">Herramientas de Exportación, Informes y Prompts para IA (Gemini / ChatGPT)</h4>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 12px;">
+                    <button class="btn btn-primary btn-sm" onclick="exportarReporteCriticos()">Reporte Ítems Críticos / Controlados</button>
                     <button class="btn btn-teal btn-sm" onclick="exportarReporteTrazabilidadERP()">Reporte Trazabilidad ERP (Lotes/Vencimientos)</button>
-                    <button class="btn btn-warning btn-sm" onclick="exportarReporteOcupacionZonas()">Reporte de Ocupación por Zonas</button>
+                    <button class="btn btn-warning btn-sm" onclick="exportarReporteOcupacionZonas()">Reporte Ocupación por Zonas</button>
+                    <button class="btn btn-orange btn-sm" onclick="exportarReporteProgramasCategorias()">Reporte Ítems por Programa y Categoría</button>
+                    <button class="btn btn-success btn-sm" onclick="exportarReporteCalidadGs1Completo()">Reporte Calidad y Estado de Codificaciones GS1</button>
+                </div>
+                <div style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <div>
+                        <strong style="font-size:0.75rem; color:var(--text-main); display:block;">Prompt Ejecutivo para IA (Auditoría General y GS1):</strong>
+                        <span style="font-size:0.68rem; color:var(--text-muted);">Copia este prompt junto con tu archivo Excel exportado en ChatGPT o Gemini para generar un informe gerencial completo con gráficos, resumen ejecutivo y conclusiones.</span>
+                    </div>
+                    <button class="btn btn-primary btn-xs" onclick="copiarPromptIA()">Copiar Prompt para IA</button>
                 </div>
             </div>
-            <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:10px; text-align: left;">Resumen General del Inventario por Bodega</h3>
+
+            <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:10px; text-align: left;">Auditoría Detallada de Estado y Calidad de Codificaciones GS1</h3>
+            <div class="table-wrap">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">Cód. Int.</th>
+                                <th style="width: 14%;">GTIN / Código</th>
+                                <th style="width: 18%;">Glosa</th>
+                                <th style="width: 10%;">Tipo de Código</th>
+                                <th style="width: 12%;">Estructura / IA</th>
+                                <th style="width: 10%; text-align:center;">Cumple Estándar</th>
+                                <th style="width: 16%;">Motivo / Problema Detectado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reporteAuditoriaGs1Body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <h3 style="font-size:0.8rem; font-weight:600; margin: 18px 0 10px; text-align: left;">Resumen General del Inventario por Bodega</h3>
             <div class="table-wrap">
                 <div class="table-container">
                     <table>
@@ -465,7 +497,7 @@
             <div class="table-wrap">
                 <div class="table-container">
                     <table>
-                        <thead><tr><th style="width: 25%;">ID</th><th style="width: 45%;">Nombre</th><th style="width: 15%;">Color</th><th id="thBodegasAccionsHead" style="width: 15%; text-align:center;">Acciones</th></tr></thead>
+                        <thead><tr><th style="width: 20%;">ID</th><th style="width: 35%;">Nombre</th><th style="width: 15%;">Color (HEX/RGB)</th><th style="width: 15%;">Muestra</th><th id="thBodegasAccionsHead" style="width: 15%; text-align:center;">Acciones</th></tr></thead>
                         <tbody id="bodegasBody"></tbody>
                     </table>
                 </div>
@@ -573,18 +605,18 @@
         const dbFirestore = firebase.firestore();
 
         const DEFAULT_PROGRAMAS_CATALOG = [
-            { id: 'controlado', nombre: 'Controlados', color: '#0d9488' },
-            { id: 'frio', nombre: 'Cámara de Frío', color: '#0284c7' },
-            { id: 'pm', nombre: 'Programa Ministerial', color: '#7c3aed' },
-            { id: 'lrs', nombre: 'Ley Ricarte Soto', color: '#d97706' },
-            { id: 'vih', nombre: 'VIH', color: '#a21caf' },
-            { id: 'sueros', nombre: 'Sueros', color: '#0369a1' },
-            { id: 'inflamable', nombre: 'Inflamable', color: '#c2410c' },
-            { id: 'comp', nombre: 'Comp - Comp rec', color: '#334155' },
-            { id: 'inyectable', nombre: 'Inyectable', color: '#15803d' },
-            { id: 'magistral', nombre: 'Preparación magistral', color: '#115e59' },
-            { id: 'mezcla', nombre: 'Mezcla (oncológico)', color: '#be185d' },
-            { id: 'unguentos', nombre: 'Unguentos-pomadas-cremas-geles-pastas', color: '#854d0e' }
+            { id: 'controlado', nombre: 'Controlados', color: '#0d9488', rgb: '13, 148, 136' },
+            { id: 'frio', nombre: 'Cámara de Frío', color: '#0284c7', rgb: '2, 132, 199' },
+            { id: 'pm', nombre: 'Programa Ministerial', color: '#7c3aed', rgb: '124, 58, 237' },
+            { id: 'lrs', nombre: 'Ley Ricarte Soto', color: '#d97706', rgb: '217, 119, 6' },
+            { id: 'vih', nombre: 'VIH', color: '#a21caf', rgb: '162, 28, 175' },
+            { id: 'sueros', nombre: 'Sueros', color: '#0369a1', rgb: '3, 105, 161' },
+            { id: 'inflamable', nombre: 'Inflamable', color: '#c2410c', rgb: '194, 65, 12' },
+            { id: 'comp', nombre: 'Comp - Comp rec', color: '#334155', rgb: '51, 65, 85' },
+            { id: 'inyectable', nombre: 'Inyectable', color: '#15803d', rgb: '21, 128, 61' },
+            { id: 'magistral', nombre: 'Preparación magistral', color: '#115e59', rgb: '17, 94, 89' },
+            { id: 'mezcla', nombre: 'Mezcla (oncológico)', color: '#be185d', rgb: '190, 24, 93' },
+            { id: 'unguentos', nombre: 'Unguentos-pomadas-cremas-geles-pastas', color: '#854d0e', rgb: '133, 77, 14' }
         ];
 
         let appState = {
@@ -601,12 +633,12 @@
                 { id: 4, nombre: 'Invitado', correo: 'invitado@hsjd.cl', perfil: 'invitado', password: '1234', permisos: ['lectura'] }
             ],
             warehouses: [
-                { id: 'Farmacos', nombre: 'Bodega de Fármacos', color: '#0284c7' },
-                { id: 'Insumos', nombre: 'Bodega de Insumos Clínicos', color: '#0d9488' },
-                { id: 'Economato', nombre: 'Bodega de Economato', color: '#d97706' },
-                { id: 'Controlados', nombre: 'Bodega de Fármacos Controlados', color: '#0f766e' },
-                { id: 'Suturas', nombre: 'Bodega de Suturas', color: '#0284c7' },
-                { id: 'Alimentos', nombre: 'Bodega de Alimentos', color: '#ea580c' }
+                { id: 'Farmacos', nombre: 'Bodega de Fármacos', color: '#0284c7', rgb: '2, 132, 199' },
+                { id: 'Insumos', nombre: 'Bodega de Insumos Clínicos', color: '#0d9488', rgb: '13, 148, 136' },
+                { id: 'Economato', nombre: 'Bodega de Economato', color: '#d97706', rgb: '217, 119, 6' },
+                { id: 'Controlados', nombre: 'Bodega de Fármacos Controlados', color: '#0f766e', rgb: '15, 118, 110' },
+                { id: 'Suturas', nombre: 'Bodega de Suturas', color: '#0284c7', rgb: '2, 132, 199' },
+                { id: 'Alimentos', nombre: 'Bodega de Alimentos', color: '#ea580c', rgb: '234, 88, 12' }
             ],
             products: [], movements: [], layouts: {}, masterCatalog: [], locationsCatalog: [],
             erpUnlocked: false, programasCatalog: DEFAULT_PROGRAMAS_CATALOG
@@ -618,6 +650,15 @@
             operario: ['lectura', 'escritura'],
             invitado: ['lectura']
         };
+
+        function hexToRgb(hex) {
+            let cleaned = hex.replace('#', '');
+            if (cleaned.length === 3) {
+                cleaned = cleaned.split('').map(c => c + c).join('');
+            }
+            const num = parseInt(cleaned, 16);
+            return `${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}`;
+        }
 
         function determinarJerarquiaPorZona(zonaStr) {
             const z = String(zonaStr || '').trim().toUpperCase();
@@ -651,7 +692,7 @@
 
                     appState = {
                         users: usuariosFinales,
-                        warehouses: (dataRemota.warehouses && dataRemota.warehouses.length > 0) ? dataRemota.warehouses : DEFAULT_DATA.warehouses,
+                        warehouses: (dataRemota.warehouses && dataRemota.warehouses.length > 0) ? dataRemota.warehouses.map(w => ({...w, rgb: w.rgb || hexToRgb(w.color || '#0284c7')})) : DEFAULT_DATA.warehouses,
                         products: (dataRemota.products || []).map(p => {
                             if(!p.gtins) p.gtins = [];
                             if(!p.gtinEstados) p.gtinEstados = {};
@@ -665,7 +706,7 @@
                         masterCatalog: dataRemota.masterCatalog || [],
                         locationsCatalog: dataRemota.locationsCatalog || [],
                         erpUnlocked: dataRemota.erpUnlocked !== undefined ? dataRemota.erpUnlocked : false,
-                        programasCatalog: (dataRemota.programasCatalog && dataRemota.programasCatalog.length > 0) ? dataRemota.programasCatalog : DEFAULT_PROGRAMAS_CATALOG
+                        programasCatalog: (dataRemota.programasCatalog && dataRemota.programasCatalog.length > 0) ? dataRemota.programasCatalog.map(cp => ({...cp, rgb: cp.rgb || hexToRgb(cp.color || '#0284c7')})) : DEFAULT_PROGRAMAS_CATALOG
                     };
                 } else {
                     dbFirestore.collection('wms_data').doc('main').set(DEFAULT_DATA);
@@ -744,7 +785,7 @@
             if (!rawText) return '';
             let limpio = String(rawText).trim();
             if(!limpio || limpio.toUpperCase() === 'SIN ASIGNACIÓN' || limpio === '-') return '';
-            limpio = limpio.replace(/\((01|02)\)/g, '$1');
+            limpio = limpio.replace(/\((01|02|10|17|21)\)/g, '$1');
             if (limpio.startsWith('01') && limpio.length >= 16) {
                 limpio = limpio.substring(2, 16);
             } else if (limpio.startsWith('02') && limpio.length >= 16) {
@@ -758,6 +799,54 @@
                 }
             }
             return limpio;
+        }
+
+        function auditarCalidadGs1(gtinStr, p) {
+            const g = String(gtinStr || '').trim();
+            if(!g || g.toUpperCase() === 'SIN ASIGNACIÓN') {
+                return { tipo: 'N/A', estructura: 'Sin GTIN', cumple: 'No', motivo: 'Ausencia de código GTIN en el registro' };
+            }
+            
+            let tipo = 'Desconocido';
+            let estructura = 'Desconocida';
+            let cumple = 'Sí';
+            let motivo = 'Eándar GS1 válido';
+
+            const len = g.length;
+            if(len === 13) {
+                tipo = 'EAN-13';
+                estructura = 'GTIN-13 (ID 01)';
+                if(!/^\d{13}$/.test(g)) { cumple = 'No'; motivo = 'EAN-13 contiene caracteres no numéricos o longitud inválida'; }
+            } else if(len === 14) {
+                tipo = 'EAN-14 / ITF-14';
+                estructura = 'GTIN-14 (ID 01)';
+                if(!/^\d{14}$/.test(g)) { cumple = 'No'; motivo = 'EAN-14 contiene caracteres no numéricos'; }
+            } else if(len >= 20 && (g.includes('01') || g.includes('10') || g.includes('17'))) {
+                tipo = 'DataMatrix / GS1-128';
+                if(g.includes('01') && g.includes('17') && g.includes('10') && g.includes('21')) {
+                    estructura = 'ID 01, 17, 10, 21';
+                } else if(g.includes('01') && g.includes('17') && g.includes('10')) {
+                    estructura = 'ID 01, 17, 10';
+                } else if(g.includes('02') && g.includes('17') && g.includes('10') && g.includes('21')) {
+                    estructura = 'ID 02, 17, 10, 21';
+                } else if(g.includes('02') && g.includes('17') && g.includes('10')) {
+                    estructura = 'ID 02, 17, 10';
+                } else {
+                    estructura = 'GS1 Compuesto / Desconocido';
+                }
+                if(p && p.erpData && (!p.erpData.lote || !p.erpData.vencimiento)) {
+                    cumple = 'No';
+                    motivo = 'Faltan datos ERP obligatorios (Lote/Vencimiento) para IA 10 o 17';
+                }
+            } else {
+                tipo = 'Otro / Código de Barra';
+                estructura = `Longitud ${len}`;
+                if(len < 8 || len > 14) {
+                    cumple = 'No';
+                    motivo = 'Longitud de código fuera del estándar GS1 (8 a 14 dígitos)';
+                }
+            }
+            return { tipo, estructura, cumple, motivo };
         }
 
         function verificarSesionGuardada() {
@@ -961,6 +1050,10 @@
 
             const labelsBodegas = Object.keys(conteoBodegas);
             const dataBodegas = Object.values(conteoBodegas);
+            const backgroundColorsBodegas = labelsBodegas.map(nombreB => {
+                const whObj = appState.warehouses.find(w => w.nombre === nombreB || w.id === nombreB);
+                return whObj ? whObj.color : '#0284c7';
+            });
 
             if(chartBodegasInstance) chartBodegasInstance.destroy();
             chartBodegasInstance = new Chart(ctxBodegas, {
@@ -969,13 +1062,12 @@
                     labels: labelsBodegas,
                     datasets: [{
                         data: dataBodegas,
-                        backgroundColor: ['#0284c7', '#0d9488', '#d97706', '#0f766e', '#7c3aed', '#ea580c']
+                        backgroundColor: backgroundColorsBodegas
                     }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
             });
 
-            // Gráfico derecho actualizado: Codificaciones GS1 (Activos / Inactivos / Sin GTIN)
             let countActivos = 0;
             let countInactivos = 0;
             let countSinGtin = 0;
@@ -1028,6 +1120,30 @@
             if(el2) el2.textContent = totalProgramasCount;
             if(el3) el3.textContent = sinUbicacion;
 
+            // Renderizar tabla de auditoría GS1 avanzada en reportes
+            const tbodyGs1 = document.getElementById('reporteAuditoriaGs1Body');
+            if(tbodyGs1) {
+                let htmlGs1 = '';
+                prods.forEach(p => {
+                    const gtins = (p.gtins && p.gtins.length > 0) ? p.gtins : [''];
+                    gtins.forEach(g => {
+                        const audit = auditarCalidadGs1(g, p);
+                        const badgeCumple = audit.cumple === 'Sí' ? '<span class="badge" style="background:#f0fdf4; color:#15803d;">Sí</span>' : '<span class="badge" style="background:#fffe4e6; color:#be123c;">No</span>';
+                        htmlGs1 += `
+                            <tr>
+                                <td><strong>${p.codigo}</strong></td>
+                                <td><span class="gtin-tag">${g || 'Sin GTIN'}</span></td>
+                                <td>${p.glosa}</td>
+                                <td>${audit.tipo}</td>
+                                <td style="font-family:monospace; font-size:0.65rem;">${audit.estructura}</td>
+                                <td style="text-align:center;">${badgeCumple}</td>
+                                <td style="font-size:0.68rem; color:var(--text-muted);">${audit.motivo}</td>
+                            </tr>`;
+                    });
+                });
+                tbodyGs1.innerHTML = htmlGs1 || '<tr><td colspan="7" class="empty-state">Sin registros para auditar</td></tr>';
+            }
+
             const tbody = document.getElementById('reportesResumenBodegasBody');
             if(tbody) {
                 tbody.innerHTML = appState.warehouses.map(w => {
@@ -1050,6 +1166,21 @@
                     </tr>`;
                 }).join('') || '<tr><td colspan="5" class="empty-state">Sin bodegas registradas</td></tr>';
             }
+        }
+
+        function copiarPromptIA() {
+            const promptText = `Actúa como un Auditor Logístico Experto en Estándares GS1 y Gestión Hospitalaria para el Hospital San Juan de Dios. Con base en la carga del documento Excel exportado y los datos de inventario adjuntos, elabora un Informe Ejecutivo Completo y Gerencial que incluya:
+1. Resumen Ejecutivo de la situación logística actual y eficiencia de captura GS1.
+2. Análisis Estadístico y Métricas Medibles (Distribución de ítems por bodega, total de GTINs activos, inactivos y sin código).
+3. Auditoría de Calidad de Codificaciones GS1 (Evaluación de cumplimiento normativo, tipos de códigos como EAN-13, EAN-14, GS1-128, DataMatrix, validación de Identificadores de Aplicación AI 01, 17, 10, 21 y análisis de anomalías detectadas).
+4. Informe de Ítems por Programa Ministerial y Categoría (Controlados, Frío, Ricarte Soto, VIH, etc.).
+5. Conclusiones y Recomendaciones Operativas priorizadas para optimización del almacenamiento.`;
+            
+            navigator.clipboard.writeText(promptText).then(() => {
+                mostrarToast('Prompt para IA copiado al portapapeles con éxito.');
+            }).catch(err => {
+                alert('No se pudo copiar automáticamente: ' + err);
+            });
         }
 
         function exportarReporteCriticos() {
@@ -1095,6 +1226,55 @@
             XLSX.utils.book_append_sheet(wb, ws, 'Ocupacion_Zonas');
             XLSX.writeFile(wb, 'reporte_ocupacion_zonas.xlsx');
             mostrarToast('Reporte de zonas exportado con éxito.');
+        }
+
+        function exportarReporteProgramasCategorias() {
+            const prods = getProducts();
+            const catalogoProg = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
+            const dataExport = prods.map(p => {
+                let programasActivos = [];
+                catalogoProg.forEach(cp => {
+                    if(p.programas && p.programas[cp.id]) programasActivos.push(cp.nombre);
+                });
+                return {
+                    'Código Interno': p.codigo,
+                    'Glosa': p.glosa,
+                    'Bodega': p.bodega,
+                    'Programas / Categorías Asignadas': programasActivos.length > 0 ? programasActivos.join(', ') : 'Estándar',
+                    'Estado': p.estado || 'Almacenado'
+                };
+            });
+            const ws = XLSX.utils.json_to_sheet(dataExport);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Programas_Categorias');
+            XLSX.writeFile(wb, 'reporte_items_por_programa.xlsx');
+            mostrarToast('Reporte por programa y categoría exportado con éxito.');
+        }
+
+        function exportarReporteCalidadGs1Completo() {
+            const prods = getProducts();
+            let dataExport = [];
+            prods.forEach(p => {
+                const gtins = (p.gtins && p.gtins.length > 0) ? p.gtins : [''];
+                gtins.forEach(g => {
+                    const audit = auditarCalidadGs1(g, p);
+                    dataExport.push({
+                        'Código Interno': p.codigo,
+                        'GTIN / Código': g || 'Sin GTIN',
+                        'Glosa': p.glosa,
+                        'Bodega': p.bodega,
+                        'Tipo de Código': audit.tipo,
+                        'Estructura / IA': audit.estructura,
+                        'Cumple Estándar GS1': audit.cumple,
+                        'Motivo / Problema Detectado': audit.motivo
+                    });
+                });
+            });
+            const ws = XLSX.utils.json_to_sheet(dataExport);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Calidad_GS1');
+            XLSX.writeFile(wb, 'reporte_calidad_gs1_auditoria.xlsx');
+            mostrarToast('Reporte de calidad GS1 exportado con éxito.');
         }
 
         function cargarCatalogoMaestro(event) {
@@ -2183,7 +2363,7 @@
                 <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:6px 10px; border-radius:var(--radius); border:1px solid var(--border); font-size:0.72rem; gap:6px;">
                     <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
                         <span style="display:inline-block; width:10px; height:10px; background:${dotColor}; border-radius:50%; flex-shrink:0;"></span>
-                        <span class="badge-prog" style="background: ${dotColor}15; color: ${dotColor}; border: 1px solid ${dotColor}40; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cp.nombre}</span>
+                        <span class="badge-prog" style="background: ${dotColor}15; color: ${dotColor}; border: 1px solid ${dotColor}40; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cp.nombre} (RGB: ${cp.rgb || '2, 132, 199'})</span>
                     </div>
                     <div style="display:flex; gap:4px; flex-shrink:0;">
                         <button type="button" class="btn btn-outline btn-xs" onclick="editarProgramaCRUD('${cp.id}')">Editar</button>
@@ -2195,7 +2375,7 @@
 
         function abrirModalProgramaCRUD(idEditar = null) {
             const catalogo = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
-            let progObj = { id: '', nombre: '', color: '#0284c7' };
+            let progObj = { id: '', nombre: '', color: '#0284c7', rgb: '2, 132, 199' };
             let esEdicion = false;
             if(idEditar) {
                 const found = catalogo.find(x => x.id === idEditar);
@@ -2206,23 +2386,25 @@
                 <input id="crudProgId" value="${progObj.id}" ${esEdicion ? 'readonly style="background:#f1f5f9;"' : ''} placeholder="Ej: oncologia">
                 <label style="margin-top:6px;">Nombre Visible</label>
                 <input id="crudProgNombre" value="${progObj.nombre}" placeholder="Ej: Oncología">
-                <label style="margin-top:6px;">Color del Programa / Categoría</label>
+                <label style="margin-top:6px;">Color del Programa / Categoría (Selector HEX / RGB)</label>
                 <div style="display:flex; gap:8px; align-items:center;">
-                    <input id="crudProgColor" type="color" value="${progObj.color || '#0284c7'}" style="width:100%; height:38px; padding:2px; cursor:pointer; border:1px solid var(--border); border-radius:var(--radius); background:#fff;">
+                    <input id="crudProgColor" type="color" value="${progObj.color || '#0284c7'}" oninput="document.getElementById('crudProgRgb').value = hexToRgb(this.value)" style="width:70px; height:38px; padding:2px; cursor:pointer; border:1px solid var(--border); border-radius:var(--radius); background:#fff;">
+                    <input id="crudProgRgb" value="${progObj.rgb || '2, 132, 199'}" placeholder="Ej: 2, 132, 199" style="flex:1;">
                 </div>`, true);
 
             modalCallback = () => {
                 const idVal = document.getElementById('crudProgId').value.trim().toLowerCase().replace(/\s+/g, '_');
                 const nombreVal = document.getElementById('crudProgNombre').value.trim();
                 const colorVal = document.getElementById('crudProgColor').value;
+                const rgbVal = document.getElementById('crudProgRgb').value.trim() || hexToRgb(colorVal);
                 if(!idVal || !nombreVal) return alert('Completa todos los campos.');
                 if(!appState.programasCatalog) appState.programasCatalog = [...DEFAULT_PROGRAMAS_CATALOG];
                 if(esEdicion) {
                     const idx = appState.programasCatalog.findIndex(x => x.id === idEditar);
-                    if(idx !== -1) appState.programasCatalog[idx] = { id: idVal, nombre: nombreVal, color: colorVal };
+                    if(idx !== -1) appState.programasCatalog[idx] = { id: idVal, nombre: nombreVal, color: colorVal, rgb: rgbVal };
                 } else {
                     if(appState.programasCatalog.some(x => x.id === idVal)) return alert('Ya existe un programa con ese ID.');
-                    appState.programasCatalog.push({ id: idVal, nombre: nombreVal, color: colorVal });
+                    appState.programasCatalog.push({ id: idVal, nombre: nombreVal, color: colorVal, rgb: rgbVal });
                 }
                 guardarEstadoFirestore();
                 cerrarModal();
@@ -2372,7 +2554,8 @@
                 <tr>
                     <td><strong>${w.id}</strong></td>
                     <td>${w.nombre}</td>
-                    <td><span style="display:inline-block; width:14px; height:14px; background:${w.color}; border-radius:4px; border:1px solid rgba(0,0,0,0.1);"></span></td>
+                    <td style="font-size:0.65rem; font-family:monospace;">HEX: ${w.color}<br>RGB: ${w.rgb || hexToRgb(w.color)}</td>
+                    <td><span class="badge-bodega" style="background:${w.color};">Muestra Bodega</span></td>
                     ${isAdmin ? `
                     <td style="text-align:center;">
                         <div class="acciones-cell">
@@ -2388,16 +2571,23 @@
                 <div class="form-grid">
                     <div class="full-width"><label>ID (Ej: Farmacos2)</label><input id="bId" placeholder="ID único"></div>
                     <div class="full-width"><label>Nombre</label><input id="bNombre" placeholder="Nombre de bodega"></div>
-                    <div><label>Color</label><input id="bColor" type="color" value="#0284c7" style="height:36px; padding:2px; cursor:pointer; width:100%;"></div>
+                    <div>
+                        <label>Color (HEX / RGB)</label>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <input id="bColor" type="color" value="#0284c7" oninput="document.getElementById('bRgb').value = hexToRgb(this.value)" style="width:70px; height:36px; padding:2px; cursor:pointer;">
+                            <input id="bRgb" value="2, 132, 199" placeholder="RGB Ej: 2, 132, 199" style="flex:1;">
+                        </div>
+                    </div>
                 </div>`, true);
             modalCallback = () => {
                 const id = document.getElementById('bId').value.trim();
                 const nombre = document.getElementById('bNombre').value.trim();
                 const color = document.getElementById('bColor').value;
+                const rgb = document.getElementById('bRgb').value.trim() || hexToRgb(color);
                 if(!id || !nombre) return alert('Completa los campos.');
                 if(!appState.warehouses) appState.warehouses = [];
                 if(appState.warehouses.some(w => w.id === id)) return alert('Ya existe una bodega con ese ID.');
-                appState.warehouses.push({ id, nombre, color });
+                appState.warehouses.push({ id, nombre, color, rgb });
                 guardarEstadoFirestore();
                 registrarHistorial('Creación de Bodega', id, `Creada bodega ${nombre}`);
                 cerrarModal();
@@ -2412,13 +2602,20 @@
             mostrarModal('Editar Bodega', `
                 <div class="form-grid">
                     <div class="full-width"><label>Nombre</label><input id="bNombre" value="${w.nombre}"></div>
-                    <div><label>Color</label><input id="bColor" type="color" value="${w.color || '#0284c7'}" style="height:36px; padding:2px; cursor:pointer; width:100%;"></div>
+                    <div>
+                        <label>Color (HEX / RGB)</label>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <input id="bColor" type="color" value="${w.color || '#0284c7'}" oninput="document.getElementById('bRgb').value = hexToRgb(this.value)" style="width:70px; height:36px; padding:2px; cursor:pointer;">
+                            <input id="bRgb" value="${w.rgb || hexToRgb(w.color || '#0284c7')}" placeholder="RGB Ej: 2, 132, 199" style="flex:1;">
+                        </div>
+                    </div>
                 </div>`, true);
             modalCallback = () => {
                 const nombre = document.getElementById('bNombre').value.trim();
                 const color = document.getElementById('bColor').value;
+                const rgb = document.getElementById('bRgb').value.trim() || hexToRgb(color);
                 if(!nombre) return alert('El nombre no puede estar vacío.');
-                w.nombre = nombre; w.color = color;
+                w.nombre = nombre; w.color = color; w.rgb = rgb;
                 guardarEstadoFirestore();
                 registrarHistorial('Edición de Bodega', w.id, `Actualizada bodega ${nombre}`);
                 cerrarModal();
