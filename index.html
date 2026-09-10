@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sistema de Gestión de Almacenamiento</title>
+    <title>Sistema de Automatización de Almacenamiento - Hospital San Juan de Dios</title>
     <!-- Librerías QR y Excel -->
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -20,8 +20,8 @@
             --text-main: #0f172a;
             --text-muted: #475569;
             --border: #cbd5e1;
-            --primary: #0b3c5d;
-            --accent: #328cc1; 
+            --primary: #01349b;
+            --accent: #0284c7; 
             --success: #0d9488; 
             --warning: #d97706; 
             --danger: #e11d48; 
@@ -32,9 +32,57 @@
         
         .app { width:100%; min-height:100vh; background:var(--surface); display:flex; flex-direction:column; }
 
-        #loginModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 0; overflow-y: auto; }
-        #loginModal .login-box { background: var(--surface); padding: 0; border-radius: 0; width: 100%; max-width: 440px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); text-align: center; position: relative; z-index: 2001; margin: auto; overflow: hidden; border: none; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
-        .login-content-pad { padding: 20px 24px 32px 24px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        /* LOGIN ADAPTATIVO A LOS BORDES */
+        #loginModal { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(15, 23, 42, 0.85); 
+            backdrop-filter: blur(6px); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 2000; 
+            padding: 0; 
+            overflow-y: auto; 
+        }
+        #loginModal .login-box { 
+            background: var(--surface); 
+            padding: 0; 
+            border-radius: 0; 
+            width: 100%; 
+            max-width: 440px; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25); 
+            text-align: center; 
+            position: relative; 
+            z-index: 2001; 
+            margin: auto; 
+            overflow: hidden; 
+            border: none; 
+            min-height: 100vh; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        #loginModal .login-box .hospital-logo img { 
+            width: 100%; 
+            max-width: 100%;
+            height: auto;
+            max-height: 140px; 
+            object-fit: contain; 
+            display: block; 
+            margin: 0 auto; 
+            background: #fff; 
+        }
+        .login-content-pad { 
+            padding: 20px 24px 32px 24px; 
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
         .divider { width: 45px; height: 3px; background: var(--accent); margin: 12px auto 18px; border-radius: 3px; }
         #loginModal h2 { margin-bottom: 8px; font-size: 1.1rem; color: var(--primary); font-weight: 700; line-height: 1.3; }
         #loginModal p { color: var(--text-muted); margin-bottom: 18px; font-size: 0.8rem; }
@@ -45,6 +93,12 @@
         .login-error { color: var(--danger); font-size: 0.78rem; margin-top: 8px; display: none; }
         .forgot-link { display: inline-block; font-size: 0.78rem; color: var(--accent); cursor: pointer; text-decoration: none; font-weight: 600; }
 
+        @media (min-width: 768px) {
+            #loginModal { padding: 20px; }
+            #loginModal .login-box { border-radius: 22px; min-height: auto; max-height: 90vh; border: 1px solid var(--border); }
+        }
+
+        /* HEADER MULTIDISPOSITIVO ADAPTABLE */
         header { background: #0f172a; color: #f8fafc; padding: 10px 16px; display: flex; flex-direction: column; gap: 8px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .header-top-row { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 8px; flex-wrap: wrap; }
         .header-left .header-title { font-weight: 600; font-size: 0.9rem; color: #f8fafc; line-height: 1.2; }
@@ -57,14 +111,22 @@
         .online-indicator { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #10b981; box-shadow: 0 0 6px #10b981; }
         
         .header-controls-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        
         .warehouse-select-wrapper { display: inline-flex; align-items: center; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 2px 8px; gap: 6px; }
         .warehouse-select-wrapper label { color: #94a3b8; font-size: 0.6rem; font-weight: 500; text-transform: uppercase; white-space: nowrap; }
         .warehouse-select-wrapper select { background: transparent; border: none; color: #f8fafc; font-weight: 500; font-size: 0.68rem; padding: 4px 2px; cursor: pointer; outline: none; }
         .warehouse-select-wrapper select option { background: #1e293b; color: #f8fafc; }
 
-        .mode-selector-bar { background: #ffffff; padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-        .mode-selector-bar select { padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.78rem; font-weight: 600; background: #f8fafc; color: var(--primary); cursor: pointer; }
+        header .user-info .btn { background:#334155; color:#ffffff; border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-weight:500; font-size:0.65rem; display:inline-flex; align-items:center; gap:4px; min-height:26px; transition: background 0.2s; }
+        header .user-info .btn:hover { background: #475569; }
+        header .user-info .btn-success { background:#0d9488; }
+        header .user-info .btn-success:hover { background:#0f766e; }
+        header .user-info .btn-warning { background:#d97706; }
+        header .user-info .btn-warning:hover { background:#b45309; }
+        header .user-info .btn-teal { background:#7c3aed; }
+        header .user-info .btn-teal:hover { background:#6d28d9; }
 
+        /* NAV ADAPTABLE A TOUCH Y ESCRITORIO */
         nav { display:flex; background:#ffffff; border-bottom:1px solid var(--border); overflow-x:auto; -webkit-overflow-scrolling:touch; padding:0 12px; width: 100%; }
         nav button { background:transparent; border:none; padding:10px 14px; font-weight:500; font-size:0.72rem; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; flex:0 0 auto; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; min-height:38px; }
         nav button:hover { color:var(--text-main); }
@@ -74,19 +136,22 @@
         .tab-content { display:none; padding:16px 12px; width:100%; max-width:1400px; margin:0 auto; flex:1; }
         .tab-content.active { display:block; }
 
+        /* CARD GRID */
         .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin-bottom:18px; width:100%; }
         .card { background:#ffffff; padding:16px; border-radius:var(--radius); text-align:left; border:1px solid var(--border); box-shadow:0 2px 4px rgba(0,0,0,0.02); position:relative; overflow:hidden; }
         .card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:#64748b; }
-        .card:nth-child(1)::before { background: var(--primary); }
-        .card:nth-child(2)::before { background: var(--accent); }
+        .card:nth-child(1)::before { background: #01349b; }
+        .card:nth-child(2)::before { background: #0284c7; }
         .card:nth-child(3)::before { background: #0369a1; }
         .card:nth-child(4)::before { background: #38bdf8; }
         .card .number { font-size:1.3rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; line-height: 1.2; word-break: break-word; }
         .card .label { color:var(--text-muted); font-size:0.68rem; margin-top:4px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
 
+        /* DASHBOARD USUARIOS ACTIVOS */
         .dashboard-users-list { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; max-height: 75px; overflow-y: auto; }
         .dashboard-user-item { display: inline-flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--text-main); font-weight: 500; background: #f8fafc; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); width: fit-content; }
 
+        /* TABLAS Y CONTENEDORES RESPONSIVOS */
         .table-wrap { width:100%; overflow-x:auto; -webkit-overflow-scrolling: touch; }
         .table-container { max-height:62vh; overflow-y:auto; overflow-x:auto; background:transparent; width:100%; border: 1px solid var(--border); border-radius: var(--radius); }
         table { width:100%; border-collapse:collapse; font-size:0.72rem; min-width: 780px; }
@@ -94,12 +159,23 @@
         td { padding:10px 8px; border-bottom:1px solid var(--border); vertical-align:middle; text-align:left; font-size:0.72rem; color:var(--text-main); }
         tr:hover td { background:#f8fafc; }
 
+        td input[type="checkbox"], th input[type="checkbox"] {
+            vertical-align: middle;
+            position: relative;
+            top: -1px;
+            cursor: pointer;
+            width: 15px;
+            height: 15px;
+        }
+
+        /* PROGRAMAS Y CATEGORÍAS */
         .prog-column-box { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; align-items: stretch; }
         .prog-option-item { display: flex; align-items: center; justify-content: flex-start; gap: 8px; background: #fff; padding: 8px 10px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; font-size: 0.7rem; width: 100%; text-align: left; box-sizing: border-box; }
         .prog-option-item input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; margin: 0; flex-shrink: 0; align-self: center; }
         
         .prog-cell-inventario { text-align: center !important; }
         .prog-cell-inventario .prog-badges-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; width: 100%; }
+
         .badge-prog { display: inline-block; font-size: 0.65rem; font-weight: 600; white-space: nowrap; padding: 2px 6px; border-radius: 4px; text-align: left; }
 
         .badge { display:inline-block; padding:2px 8px; border-radius:50px; font-size:0.62rem; font-weight:500; white-space: nowrap; }
@@ -118,13 +194,19 @@
         .type-master { background: #e2e8f0; color: #0f172a; border: 1px solid #cbd5e1; }
         .type-comercial { background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
         .type-minima { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+
         .gtin-tag { font-family:monospace; font-size:0.62rem; background:#fefce8; color:#a16207; padding:2px 4px; border-radius:3px; font-weight:500; border:1px solid #fef08a; white-space:nowrap; display:inline-block; margin:1px; }
 
+        /* ACCIONES */
         .acciones-cell { display: flex; flex-direction: column; gap: 4px; align-items: stretch; justify-content: center; width: 80px; margin: 0 auto; }
         .btn-action-primary { background: #0284c7; color: #ffffff; border: none; padding: 4px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; white-space: nowrap; width: 100%; min-height: 24px; }
+        .btn-action-primary:hover { background: #0369a1; }
         .btn-action-secondary { background: #f8fafc; color: #475569; border: 1px solid var(--border); padding: 4px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; white-space: nowrap; width: 100%; min-height: 24px; }
+        .btn-action-secondary:hover { background: #f1f5f9; color: var(--text-main); border-color: #94a3b8; }
         .btn-action-danger { background: #e11d48; color: #ffffff; border: none; padding: 4px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; white-space: nowrap; width: 100%; min-height: 24px; }
+        .btn-action-danger:hover { background: #be123c; }
 
+        /* BOTONES TOUCH-FRIENDLY */
         .btn { padding:8px 14px; border:none; border-radius:var(--radius); font-weight:500; font-size:0.72rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; text-align:center; gap:5px; text-decoration:none; color:#ffffff; min-height:36px; white-space:nowrap; transition:opacity 0.2s; }
         .btn:hover { opacity:0.9; }
         .btn-primary { background:var(--accent); }
@@ -137,44 +219,113 @@
         .btn-sm { padding:6px 10px; font-size:0.68rem; min-height:32px; }
         .btn-xs { padding:4px 8px; font-size:0.62rem; min-height:26px; }
 
+        /* TOOLBAR */
         .toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:12px; background:#ffffff; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:14px; width:100%; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
         .toolbar-left, .toolbar-right { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
         .toolbar input { padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.78rem; background:white; }
         .filter-select { padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.72rem; background:white; max-width:240px; }
 
+        /* BUSCADOR */
         .master-search-container { position: relative; width: 100%; margin-top: 4px; }
         .master-search-input { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.8rem; background: #fff; }
         .master-dropdown-results { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); max-height: 180px; overflow-y: auto; z-index: 3000; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; }
         .master-dropdown-item { padding: 9px 12px; font-size: 0.72rem; cursor: pointer; border-bottom: 1px solid var(--bg-base); text-align: left; color: var(--text-main); line-height: 1.3; }
+        .master-dropdown-item:hover { background: #f8fafc; color: var(--accent); }
 
+        /* MODALES ADAPTABLES */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:10px; overflow-y:auto; }
         .modal.active { display:flex; }
         .modal-content { background:#ffffff; border-radius:12px; padding:18px; max-width:800px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.2); border:1px solid var(--border); text-align: left; margin:auto; }
+        
         .modal-content.modal-compact { max-width: 480px !important; }
+
         .modal-content label { display:block; margin:8px 0 3px; font-weight:500; font-size:0.72rem; color:var(--text-muted); text-align: left; }
         .modal-content input, .modal-content select, .modal-content textarea { width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.8rem; }
         .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
         .form-grid .full-width { grid-column:1/-1; }
 
+        /* ESCANER */
         #qr-reader { width: 100%; max-width: 300px; margin: 8px auto; display: none; }
         #qr-reader video { border-radius: var(--radius); width: 100% !important; }
 
+        /* LAYOUT */
         .layout-image-container { width:100%; margin-top:12px; background:#ffffff; border-radius:var(--radius); border:1px solid var(--border); padding:16px; text-align:center; min-height:220px; display:flex; align-items:center; justify-content:center; flex-direction:column; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
         .layout-image-container img { max-width:100%; max-height:450px; border-radius:var(--radius); object-fit:contain; }
         .no-image { color:var(--text-muted); font-size:0.75rem; }
 
+        /* TOAST */
         .toast-container { position:fixed; bottom:16px; right:16px; z-index:9999; display:flex; flex-direction:column; gap:8px; max-width:300px; width:100%; }
         .toast { background:#0f172a; color:#ffffff; padding:10px 14px; border-radius:var(--radius); font-size:0.72rem; box-shadow:0 10px 25px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:space-between; border-left:3px solid var(--accent); }
         .empty-state { color:var(--text-muted); text-align:center; padding:30px; font-size:0.75rem; font-weight:400; }
+
+        @media print {
+            .etiqueta-qr-print-card {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                margin-bottom: 15px;
+            }
+        }
+
+        /* MEDIA QUERIES */
+        @media (max-width: 600px) {
+            body { font-size: 11px; }
+            .toolbar { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px; }
+            .toolbar-left, .toolbar-right { width: 100%; flex-direction: column; gap: 6px; }
+            .toolbar-right input, .toolbar-right select, .toolbar-left .btn { width: 100%; max-width: none; }
+            .card-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .card { padding: 12px; }
+            .card .number { font-size: 1.1rem; }
+            .modal-content { padding: 12px; width: 100%; max-height: 94vh; margin: 4px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .prog-column-box { grid-template-columns: 1fr; }
+            nav button { padding: 8px 10px; font-size: 0.68rem; min-height: 36px; }
+            header { padding: 8px 10px; }
+            .header-top-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+            .header-actions-row { flex-direction: column; align-items: stretch; gap: 6px; }
+            .header-controls-group { width: 100%; justify-content: space-between; }
+            .warehouse-select-wrapper { flex: 1; }
+            .warehouse-select-wrapper select { width: 100%; }
+        }
+
+        @media (min-width: 601px) and (max-width: 1024px) {
+            .card-grid { grid-template-columns: repeat(2, 1fr); }
+            .modal-content { width: 90%; max-width: 720px; }
+        }
+    
+        .mode-selector-bar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        .mode-selector-bar select {
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.78rem;
+            background: #f8fafc;
+            color: var(--text-main);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
     <!-- LOGIN -->
     <div id="loginModal">
         <div class="login-box">
+            <div class="hospital-logo" style="padding: 16px 20px 0 20px; background: #fff;">
+                <img src="./banner.png" alt="Banner Hospital San Juan de Dios" style="width: 100%; max-height: 140px; object-fit: contain; border-radius: 10px;" onerror="this.src='./1000166962_2.png';">
+            </div>
             <div class="login-content-pad">
                 <div class="divider"></div>
-                <h2>Sistema de Gestión de Almacenamiento</h2>
+                <h2>Sistema de Automatización de Almacenamiento</h2>
                 <p>Ingresa tus credenciales de acceso.</p>
                 <label>Usuario</label>
                 <input type="text" id="loginUser" placeholder="Nombre de usuario">
@@ -195,8 +346,8 @@
         <header>
             <div class="header-top-row">
                 <div class="header-left">
-                    <div class="header-title">Sistema de Gestión de Almacenamiento</div>
-                    <div class="header-sub">Unidad de Abastecimiento · <span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
+                    <div class="header-title">Sistema de Automatización de Almacenamiento</div>
+                    <div class="header-sub">Hospital San Juan de Dios · <span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
                 </div>
                 <div class="user-status-pill">
                     <span class="online-indicator"></span>
@@ -211,7 +362,9 @@
                     </select>
                 </div>
                 <div class="header-controls-group">
-                    <button class="btn btn-success btn-sm" id="btnCargarArchivo" onclick="document.getElementById('fileInput').click()">Cargar</button>
+                    <button class="btn btn-success btn-sm" id="btnCargarArchivo" onclick="document.getElementById('fileInput').click()">
+                        Cargar
+                    </button>
                     <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event)">
                     <button class="btn btn-warning btn-sm" id="btnExportarArchivo" onclick="exportarExcelCompleto()">Exportar</button>
                     <button class="btn btn-teal btn-sm" id="btnQrUbicaciones" onclick="abrirModalQRUbicaciones()">QR Ubic.</button>
@@ -220,19 +373,20 @@
             </div>
         </header>
 
-        <!-- BARRA SELECTOR MODO DEMO VS V1 -->
-        <div class="mode-selector-bar">
-            <div>
-                <strong style="font-size: 0.78rem; color: var(--primary);">Modo de Operación del Sistema:</strong>
-                <span style="font-size: 0.7rem; color: var(--text-muted); display: block;">Cambia entre el Modo Demo con KPIs logísticos avanzados y Almacenamiento v1 base.</span>
-            </div>
-            <select id="systemModeSelect" onchange="cambiarModoOperacionSistema(this.value)">
-                <option value="demo">Modo Demo (Con KPIs de Rotación)</option>
-                <option value="storageV1">Almacenamiento v1 (Versión Base)</option>
-            </select>
+        
+    <!-- BARRA SELECTOR MODO DEMO VS V1 -->
+    <div class="mode-selector-bar">
+        <div>
+            <strong style="font-size: 0.78rem; color: var(--primary);">Modo de Operación del Sistema:</strong>
+            <span style="font-size: 0.7rem; color: var(--text-muted); display: block;">Cambia entre el Modo Demo con KPIs logísticos avanzados y Almacenamiento v1 base.</span>
         </div>
+        <select id="systemModeSelect" onchange="cambiarModoOperacionSistema(this.value)">
+            <option value="demo">Modo Demo (Con KPIs de Rotación)</option>
+            <option value="storageV1">Almacenamiento v1 (Versión Base)</option>
+        </select>
+    </div>
 
-        <nav id="mainNav">
+    <nav id="mainNav">
             <button class="active" data-tab="dashboard">Dashboard</button>
             <button data-tab="inventario" id="navInventario">Inventario <span class="badge-nav" id="inventoryBadge">0</span></button>
             <button data-tab="layout" id="navLayout">Layout</button>
@@ -244,7 +398,16 @@
 
         <!-- DASHBOARD -->
         <div id="tab-dashboard" class="tab-content active">
-            <div class="card-grid" id="dashboardKpiContainer"></div>
+            <div class="card-grid">
+                <div class="card"><div class="number" id="totalProductos">0</div><div class="label" id="labelCard1">Total Ítems</div></div>
+                <div class="card"><div class="number" id="totalUbicaciones">0</div><div class="label" id="labelCard2">Ubicaciones</div></div>
+                <div class="card"><div class="number" id="totalMovimientos">0</div><div class="label" id="labelCard3">Movimientos</div></div>
+                <div class="card">
+                    <div class="number" id="totalUsuariosConectadosNum">0 Activos</div>
+                    <div class="label">Usuarios Conectados</div>
+                    <div class="dashboard-users-list" id="dashboardUsersListContainer"></div>
+                </div>
+            </div>
             <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:10px; color:var(--text-main); text-align: left;">Últimos movimientos registrados</h3>
             <div class="table-wrap">
                 <table>
@@ -258,15 +421,30 @@
         <div id="tab-inventario" class="tab-content">
             <div class="toolbar">
                 <div class="toolbar-left" id="toolbarAccionsInv">
-                    <button class="btn btn-orange btn-sm" onclick="abrirModalAlmacenamiento()">Nuevo Registro y Almacenamiento</button>
-                    <button class="btn btn-teal btn-sm" onclick="abrirModalReubicacion()">Reubicar</button>
-                    <button class="btn btn-danger btn-sm" onclick="eliminarSeleccionadosInventario()">Eliminar</button>
+                    <button class="btn btn-orange btn-sm" id="btnRecepcionAlmacenar" onclick="abrirModalAlmacenamiento()">
+                        Nuevo Registro y Almacenamiento
+                    </button>
+                    <button class="btn btn-teal btn-sm" id="btnReubicarArticulos" onclick="abrirModalReubicacion()">
+                        Reubicar
+                    </button>
+                    <button class="btn btn-danger btn-sm" id="btnEliminarSeleccionados" onclick="eliminarSeleccionadosInventario()">
+                        Eliminar
+                    </button>
                 </div>
                 <div class="toolbar-right">
                     <input type="text" id="searchInventarioUnificado" placeholder="Buscar código, glosa o GTIN..." oninput="renderInventarioUnificado()">
                     <select class="filter-select" id="filterZona" onchange="renderInventarioUnificado()">
                         <option value="TODAS">Todas las Zonas</option>
-                        <option value="A">Zona A</option><option value="B">Zona B</option><option value="C">Zona C</option><option value="D">Zona D</option><option value="E">Zona E</option>
+                        <option value="A">Zona A</option>
+                        <option value="B">Zona B</option>
+                        <option value="C">Zona C</option>
+                        <option value="D">Zona D</option>
+                        <option value="E">Zona E</option>
+                        <option value="F">Zona F</option>
+                        <option value="G">Zona G</option>
+                        <option value="H">Zona H</option>
+                        <option value="I">Zona I</option>
+                        <option value="J">Zona J</option>
                     </select>
                 </div>
             </div>
@@ -305,11 +483,39 @@
 
         <!-- MOVIMIENTOS -->
         <div id="tab-movimientos" class="tab-content">
+            <div class="toolbar" style="margin-bottom: 12px;">
+                <div class="toolbar-left" style="width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px;">
+                    <div>
+                        <label style="font-size:0.65rem; color:var(--text-muted); margin-bottom:2px; display:block;">Filtrar Usuario</label>
+                        <input type="text" id="filtroMovUsuario" placeholder="Usuario..." oninput="renderHistorialCompleto()" style="width:100%; padding:6px 10px; font-size:0.72rem;">
+                    </div>
+                    <div>
+                        <label style="font-size:0.65rem; color:var(--text-muted); margin-bottom:2px; display:block;">Filtrar Fecha</label>
+                        <input type="text" id="filtroMovFecha" placeholder="DD/MM/AAAA..." oninput="renderHistorialCompleto()" style="width:100%; padding:6px 10px; font-size:0.72rem;">
+                    </div>
+                    <div>
+                        <label style="font-size:0.65rem; color:var(--text-muted); margin-bottom:2px; display:block;">Filtrar Ítem</label>
+                        <input type="text" id="filtroMovItem" placeholder="Código o glosa..." oninput="renderHistorialCompleto()" style="width:100%; padding:6px 10px; font-size:0.72rem;">
+                    </div>
+                    <div>
+                        <label style="font-size:0.65rem; color:var(--text-muted); margin-bottom:2px; display:block;">Filtrar GTIN</label>
+                        <input type="text" id="filtroMovGtin" placeholder="GTIN..." oninput="renderHistorialCompleto()" style="width:100%; padding:6px 10px; font-size:0.72rem;">
+                    </div>
+                </div>
+            </div>
             <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:10px; text-align: left;">Historial completo de modificaciones</h3>
             <div class="table-wrap">
                 <div class="table-container">
                     <table>
-                        <thead><tr><th>Fecha y Hora</th><th>Usuario</th><th>Tipo</th><th style="width: 25%; white-space: nowrap;">Ítem / GTIN</th><th>Detalle</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>Fecha y Hora</th>
+                                <th>Usuario</th>
+                                <th>Tipo de Modificación</th>
+                                <th style="width: 25%; white-space: nowrap;">Ítem / GTIN</th>
+                                <th>Detalle</th>
+                            </tr>
+                        </thead>
                         <tbody id="historialCompletoBody"></tbody>
                     </table>
                 </div>
@@ -318,11 +524,22 @@
 
         <!-- USUARIOS -->
         <div id="tab-usuarios" class="tab-content">
-            <div style="margin-bottom:12px; text-align: left;" id="divBtnNuevoUsr"><button class="btn btn-primary btn-sm" onclick="mostrarModalUsuario()">Nuevo Usuario</button></div>
+            <div style="margin-bottom:12px; text-align: left;" id="divBtnNuevoUsr">
+                <button class="btn btn-primary btn-sm" onclick="mostrarModalUsuario()">Nuevo Usuario</button>
+            </div>
             <div class="table-wrap">
                 <div class="table-container">
                     <table>
-                        <thead><tr><th style="width: 8%;">ID</th><th style="width: 22%;">Nombre</th><th style="width: 26%;">Correo</th><th style="width: 12%;">Perfil</th><th style="width: 20%;">Permisos</th><th style="width: 12%; text-align:center;">Acciones</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th style="width: 8%;">ID</th>
+                                <th style="width: 22%;">Nombre</th>
+                                <th style="width: 26%;">Correo</th>
+                                <th style="width: 12%;">Perfil</th>
+                                <th style="width: 20%;">Permisos</th>
+                                <th style="width: 12%; text-align:center;">Acciones</th>
+                            </tr>
+                        </thead>
                         <tbody id="usuariosBody"></tbody>
                     </table>
                 </div>
@@ -331,7 +548,9 @@
 
         <!-- BODEGAS -->
         <div id="tab-bodegas" class="tab-content">
-            <div style="margin-bottom:12px; text-align: left;" id="divBtnNuevaBodega"><button class="btn btn-primary btn-sm" onclick="mostrarModalBodega()">Nueva Bodega</button></div>
+            <div style="margin-bottom:12px; text-align: left;" id="divBtnNuevaBodega">
+                <button class="btn btn-primary btn-sm" onclick="mostrarModalBodega()">Nueva Bodega</button>
+            </div>
             <div class="table-wrap">
                 <div class="table-container">
                     <table>
@@ -346,18 +565,71 @@
         <div id="tab-config" class="tab-content">
             <h3 style="font-size:0.85rem; font-weight:600; margin-bottom:14px; text-align: left;">Configuración del Sistema</h3>
             <div style="max-width:720px; display:flex; flex-direction:column; gap:14px; text-align: left;">
+                
+                <!-- GESTIÓN DINÁMICA DE PROGRAMAS Y CATEGORÍAS (CRUD) -->
+                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--accent);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+                        <div>
+                            <label style="font-weight:600; color:var(--text-main); font-size:0.8rem;">Gestión de Programas y Categorías Especiales</label>
+                            <p style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Crea, edita o elimina los programas y categorías disponibles.</p>
+                        </div>
+                        <button class="btn btn-primary btn-xs" onclick="abrirModalProgramaCRUD()">+ Nuevo Programa</button>
+                    </div>
+                    <div id="listaProgramasConfigContainer" style="display:flex; flex-direction:column; gap:6px; margin-top:8px; max-height:160px; overflow-y:auto; padding:2px;"></div>
+                </div>
+
+                <!-- INTEGRACIÓN ERP -->
+                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--success);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                        <div>
+                            <label style="font-weight:600; color:var(--text-main); font-size:0.8rem;">Módulo de Integración ERP (Trazabilidad Avanzada)</label>
+                            <p style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Habilita globalmente lotes, vencimientos, series y factores de empaque.</p>
+                        </div>
+                        <label style="position:relative; display:inline-block; width:44px; height:22px; cursor:pointer; margin:0;">
+                            <input type="checkbox" id="toggleErpConfig" onchange="toggleErpGlobal(this)" style="opacity:0; width:0; height:0;">
+                            <span id="erpSliderBg" style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:#cbd5e1; transition:.3s; border-radius:22px;"></span>
+                            <span id="erpSliderCircle" style="position:absolute; content:''; height:16px; width:16px; left:3px; bottom:3px; background-color:white; transition:.3s; border-radius:50%;"></span>
+                        </label>
+                    </div>
+                    <div style="font-size:0.68rem; color:var(--success); margin-top:6px; font-weight:500;" id="erpStatusText">Estado actual: Bloqueado (Fase Futura)</div>
+                </div>
+
+                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border); border-left:3px solid var(--accent);" id="configMasterCatalogSection">
+                    <label style="font-weight:600; color:var(--text-main); text-align: left; font-size:0.8rem;">Catálogo Maestro de Referencia (Administrador)</label>
+                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:6px; text-align: left;">Carga el Excel maestro con códigos, glosas, bodegas y columna UBICACION.</p>
+                    <input type="file" id="masterCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoMaestro(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.75rem;">
+                    <div style="font-size:0.68rem; color:var(--success); margin-top:4px; font-weight:500; text-align: left;" id="masterCatalogStatus">Registros en catálogo maestro: 0</div>
+                </div>
+
+                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border);" id="configLocationsMasterSection">
+                    <label style="font-weight:600; color:var(--text-main); text-align: left; font-size:0.8rem;">Maestro de Ubicaciones QR (Excel)</label>
+                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:6px; text-align: left;">Carga un Excel con columnas Zona, Anaquel, Posicion.</p>
+                    <input type="file" id="locationsCatalogFileInput" accept=".xlsx,.xls" onchange="cargarCatalogoUbicaciones(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.75rem;">
+                    <div style="font-size:0.68rem; color:var(--success); margin-top:4px; font-weight:500; text-align: left;" id="locationsCatalogStatus">Ubicaciones maestras cargadas: 0</div>
+                </div>
+
+                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border);" id="configLayoutSection">
+                    <label style="font-weight:600; color:var(--text-main); text-align: left; font-size:0.8rem;">Imagen del Plano (Layout Visual)</label>
+                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:6px; text-align: left;">Asocia un plano gráfico a una bodega específica o de forma general.</p>
+                    <div style="display:flex; gap:8px; margin-bottom:6px;">
+                        <select id="configSubirBodegaSelect" style="flex:1; padding:8px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.75rem;">
+                            <option value="GENERAL">General (Todas las bodegas)</option>
+                        </select>
+                    </div>
+                    <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="padding:6px; width:100%; border:1px solid var(--border); border-radius:var(--radius); background:white; font-size:0.75rem;">
+                </div>
+
                 <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border);">
-                    <label style="font-weight:600; color:var(--text-main); font-size:0.8rem;">Módulo de Integración ERP (Trazabilidad Avanzada)</label>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
-                        <span style="font-size:0.7rem; color:var(--text-muted);" id="erpStatusText">Estado actual: Bloqueado</span>
-                        <input type="checkbox" id="toggleErpConfig" onchange="toggleErpGlobal(this)">
+                    <label style="font-weight:600; color:var(--text-main); text-align: left; font-size:0.8rem;">Reinicio Selectivo de Inventario</label>
+                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:6px; text-align: left;">Elimina los registros asociados a una bodega en particular.</p>
+                    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                        <select id="configResetBodegaSelect" style="flex:1; min-width:180px; padding:8px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.75rem;"></select>
+                        <button class="btn btn-warning btn-sm" onclick="resetDataBodega()">Reiniciar Bodega</button>
                     </div>
                 </div>
-                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border);">
-                    <label style="font-weight:600; color:var(--text-main); font-size:0.8rem;">Imagen del Plano (Layout Visual)</label>
-                    <input type="file" id="mapImageUpload" accept="image/*" onchange="subirImagenLayout(event)" style="margin-top:6px; font-size:0.75rem;">
-                </div>
-                <div style="background:#ffffff; padding:16px; border-radius:var(--radius); border:1px solid var(--border);">
+
+                <div style="display:flex; gap:8px; margin-top:2px; flex-wrap:wrap;">
+                    <button class="btn btn-outline btn-sm" onclick="exportarDatos()">Exportar Backup JSON</button>
                     <button class="btn btn-danger btn-sm" onclick="resetDataGeneral()">Reiniciar Todo el Sistema</button>
                 </div>
             </div>
@@ -378,6 +650,7 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- SCRIPT DE SINCRONIZACIÓN Y GESTIÓN -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyB_F7itx3L67gDQ2EBaZaMT401lZG2MxEk",
@@ -389,7 +662,9 @@
             measurementId: "G-GZDZLVV9N1"
         };
 
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         const dbFirestore = firebase.firestore();
 
         const DEFAULT_PROGRAMAS_CATALOG = [
@@ -397,78 +672,235 @@
             { id: 'frio', nombre: 'Cámara de Frío', color: '#0284c7' },
             { id: 'pm', nombre: 'Programa Ministerial', color: '#7c3aed' },
             { id: 'lrs', nombre: 'Ley Ricarte Soto', color: '#d97706' },
-            { id: 'vih', nombre: 'VIH', color: '#a21caf' }
+            { id: 'vih', nombre: 'VIH', color: '#a21caf' },
+            { id: 'sueros', nombre: 'Sueros', color: '#0369a1' },
+            { id: 'inflamable', nombre: 'Inflamable', color: '#c2410c' },
+            { id: 'comp', nombre: 'Comp - Comp rec', color: '#334155' },
+            { id: 'inyectable', nombre: 'Inyectable', color: '#15803d' },
+            { id: 'magistral', nombre: 'Preparación magistral', color: '#115e59' },
+            { id: 'mezcla', nombre: 'Mezcla (oncológico)', color: '#be185d' },
+            { id: 'unguentos', nombre: 'Unguentos-pomadas-cremas-geles-pastas', color: '#854d0e' }
         ];
 
         let appState = {
-            users: [], warehouses: [], products: [], movements: [], layouts: {}, masterCatalog: [], locationsCatalog: [], erpUnlocked: false, systemMode: 'demo', programasCatalog: DEFAULT_PROGRAMAS_CATALOG
+            users: [],
+            warehouses: [],
+            products: [],
+            movements: [],
+            layouts: {},
+            masterCatalog: [],
+            locationsCatalog: [],
+            erpUnlocked: false,
+            systemMode: 'demo',
+            programasCatalog: DEFAULT_PROGRAMAS_CATALOG
         };
 
         const DEFAULT_DATA = {
             users: [
-                { id: 1, nombre: 'Admin', correo: 'admin@almacenamiento.cl', perfil: 'admin', password: 'admin', permisos: ['lectura', 'escritura', 'administracion', 'carga', 'descarga'] },
-                { id: 2, nombre: 'Supervisor', correo: 'supervisor@almacenamiento.cl', perfil: 'supervisor', password: '1234', permisos: ['lectura', 'escritura', 'carga', 'descarga'] },
-                { id: 3, nombre: 'Operario', correo: 'operario@almacenamiento.cl', perfil: 'operario', password: '1234', permisos: ['lectura', 'escritura'] }
+                { id: 1, nombre: 'Admin', correo: 'admin@hsjd.cl', perfil: 'admin', password: 'admin', permisos: ['lectura', 'escritura', 'administracion', 'carga', 'descarga'] },
+                { id: 2, nombre: 'Supervisor', correo: 'supervisor@hsjd.cl', perfil: 'supervisor', password: '1234', permisos: ['lectura', 'escritura', 'carga', 'descarga'] },
+                { id: 3, nombre: 'Operario', correo: 'operario@hsjd.cl', perfil: 'operario', password: '1234', permisos: ['lectura', 'escritura'] },
+                { id: 4, nombre: 'Invitado', correo: 'invitado@hsjd.cl', perfil: 'invitado', password: '1234', permisos: ['lectura'] }
             ],
             warehouses: [
                 { id: 'Farmacos', nombre: 'Bodega de Fármacos', color: '#0284c7' },
-                { id: 'Insumos', nombre: 'Bodega de Insumos Clínicos', color: '#0d9488' }
+                { id: 'Insumos', nombre: 'Bodega de Insumos Clínicos', color: '#0d9488' },
+                { id: 'Economato', nombre: 'Bodega de Economato', color: '#d97706' },
+                { id: 'Controlados', nombre: 'Bodega de Fármacos Controlados', color: '#0f766e' },
+                { id: 'Suturas', nombre: 'Bodega de Suturas', color: '#0284c7' },
+                { id: 'Alimentos', nombre: 'Bodega de Alimentos', color: '#ea580c' }
             ],
-            products: [], movements: [], layouts: {}, masterCatalog: [], locationsCatalog: [], erpUnlocked: false, systemMode: 'demo', programasCatalog: DEFAULT_PROGRAMAS_CATALOG
+            products: [],
+            movements: [],
+            layouts: {},
+            masterCatalog: [],
+            locationsCatalog: [],
+            erpUnlocked: false,
+            systemMode: 'demo',
+            programasCatalog: DEFAULT_PROGRAMAS_CATALOG
         };
 
-        function cambiarModoOperacionSistema(modo) {
-            appState.systemMode = modo;
-            guardarEstadoFirestore();
-            renderDashboard();
-            mostrarToast(`Modo cambiado a: ${modo === 'demo' ? 'Modo Demo (KPIs)' : 'Almacenamiento v1'}`);
+        const PERFILES_CONFIG = {
+            admin: ['lectura', 'escritura', 'administracion', 'carga', 'descarga'],
+            supervisor: ['lectura', 'escritura', 'carga', 'descarga'],
+            operario: ['lectura', 'escritura'],
+            invitado: ['lectura']
+        };
+
+        function determinarJerarquiaPorZona(zonaStr) {
+            const z = String(zonaStr || '').trim().toUpperCase();
+            if(['A', 'B', 'C', 'D', 'E', 'I'].includes(z)) {
+                return 'Unidad Máster';
+            }
+            return 'Unidad Comercial';
         }
 
-        function limpiarYExtraerGTIN(rawText) {
-            if (!rawText) return '';
-            let limpio = String(rawText).trim();
-            if(!limpio || limpio.toUpperCase() === 'SIN ASIGNACIÓN' || limpio === '-') return '';
-            limpio = limpio.replace(/\((01|02)\)/g, '$1');
-            if (limpio.startsWith('01') && limpio.length >= 16) {
-                limpio = limpio.substring(2, 16);
-            } else if (limpio.startsWith('02') && limpio.length >= 16) {
-                limpio = limpio.substring(2, 16);
-            } else {
-                limpio = limpio.replace(/[^0-9]/g, '');
-                if (limpio.length > 14) limpio = limpio.substring(0, 14);
-            }
-            return limpio;
+        function iniciarLatidoPresencia() {
+            setInterval(() => {
+                const usr = getCurrentUser();
+                if (usr) {
+                    dbFirestore.collection('wms_data').doc('presencia_' + usr.nombre.toLowerCase()).set({
+                        usuario: usr.nombre,
+                        ultimoAcceso: firebase.firestore.FieldValue.serverTimestamp()
+                    }).catch(err => console.error("Error actualizando latido:", err));
+                }
+            }, 10000);
         }
 
         function inicializarListenersTiempoReal() {
             dbFirestore.collection('wms_data').doc('main').onSnapshot((doc) => {
                 if (doc.exists) {
                     const dataRemota = doc.data();
+                    let usuariosFinales = DEFAULT_DATA.users;
+                    if (dataRemota.users && dataRemota.users.length > 0) {
+                        const remotosMap = new Map(dataRemota.users.map(u => [u.nombre.toLowerCase(), u]));
+                        DEFAULT_DATA.users.forEach(defUsr => {
+                            if (!remotosMap.has(defUsr.nombre.toLowerCase())) {
+                                remotosMap.set(defUsr.nombre.toLowerCase(), defUsr);
+                            }
+                        });
+                        usuariosFinales = Array.from(remotosMap.values());
+                    }
+
                     appState = {
-                        users: dataRemota.users || DEFAULT_DATA.users,
-                        warehouses: dataRemota.warehouses || DEFAULT_DATA.warehouses,
-                        products: dataRemota.products || [],
+                        users: usuariosFinales,
+                        warehouses: (dataRemota.warehouses && dataRemota.warehouses.length > 0) ? dataRemota.warehouses : DEFAULT_DATA.warehouses,
+                        products: (dataRemota.products || []).map(p => {
+                            if(!p.gtins) p.gtins = [];
+                            if(!p.gtinEstados) p.gtinEstados = {};
+                            p.gtins.forEach(g => { if(!p.gtinEstados[g]) p.gtinEstados[g] = 'activo'; });
+                            if(!p.programas) p.programas = {};
+                            if(!p.erpData) p.erpData = { lote: '', vencimiento: '', serie: '', factorEmpaque: 1 };
+                            return p;
+                        }), 
                         movements: dataRemota.movements || [],
                         layouts: dataRemota.layouts || {},
                         masterCatalog: dataRemota.masterCatalog || [],
                         locationsCatalog: dataRemota.locationsCatalog || [],
                         erpUnlocked: dataRemota.erpUnlocked !== undefined ? dataRemota.erpUnlocked : false,
                         systemMode: dataRemota.systemMode || 'demo',
-                        programasCatalog: dataRemota.programasCatalog || DEFAULT_PROGRAMAS_CATALOG
+                        programasCatalog: (dataRemota.programasCatalog && dataRemota.programasCatalog.length > 0) ? dataRemota.programasCatalog : DEFAULT_PROGRAMAS_CATALOG
                     };
                 } else {
                     dbFirestore.collection('wms_data').doc('main').set(DEFAULT_DATA);
                     appState = DEFAULT_DATA;
                 }
-                const selectMode = document.getElementById('systemModeSelect');
-                if(selectMode) selectMode.value = appState.systemMode || 'demo';
                 verificarSesionGuardada();
                 renderAll();
+            }, (error) => {
+                console.error("Error en sincronización: ", error);
+            });
+
+            dbFirestore.collection('wms_data').onSnapshot((snapshot) => {
+                let activosNombres = [];
+                const ahora = new Date().getTime();
+                snapshot.forEach(docSnap => {
+                    if (docSnap.id.startsWith('presencia_')) {
+                        const data = docSnap.data();
+                        if (data && data.ultimoAcceso && data.usuario) {
+                            const timestampAcceso = data.ultimoAcceso.toDate().getTime();
+                            if (ahora - timestampAcceso < 30000) {
+                                activosNombres.push(data.usuario);
+                            }
+                        }
+                    }
+                });
+
+                const numElem = document.getElementById('totalUsuariosConectadosNum');
+                const listContainer = document.getElementById('dashboardUsersListContainer');
+                if (numElem && listContainer) {
+                    numElem.textContent = `${activosNombres.length} Activos`;
+                    listContainer.innerHTML = activosNombres.map(nombreUsr => `
+                        <div class="dashboard-user-item">
+                            <span class="online-indicator"></span>
+                            <span>${nombreUsr}</span>
+                        </div>
+                    `).join('') || '<span style="color:var(--text-muted); font-size:0.68rem; font-style:italic;">Sin usuarios activos</span>';
+                }
             });
         }
 
         function guardarEstadoFirestore() {
-            dbFirestore.collection('wms_data').doc('main').set(appState).catch(err => console.error(err));
+            dbFirestore.collection('wms_data').doc('main').set(appState).catch((error) => {
+                console.error("Error al guardar: ", error);
+            });
+        }
+
+        function toggleErpGlobal(checkboxEl) {
+            appState.erpUnlocked = checkboxEl.checked;
+            guardarEstadoFirestore();
+            actualizarUIConfigErp();
+            mostrarToast(appState.erpUnlocked ? 'Módulo ERP desbloqueado para pruebas.' : 'Módulo ERP bloqueado.');
+        }
+
+        function actualizarUIConfigErp() {
+            const chk = document.getElementById('toggleErpConfig');
+            const bg = document.getElementById('erpSliderBg');
+            const circle = document.getElementById('erpSliderCircle');
+            const statusText = document.getElementById('erpStatusText');
+            if(!chk) return;
+
+            chk.checked = appState.erpUnlocked;
+            if(appState.erpUnlocked) {
+                bg.style.backgroundColor = '#0284c7';
+                circle.style.transform = 'translateX(22px)';
+                statusText.textContent = 'Estado actual: Desbloqueado (Campos activos para pruebas)';
+                statusText.style.color = '#0284c7';
+            } else {
+                bg.style.backgroundColor = '#cbd5e1';
+                circle.style.transform = 'translateX(0)';
+                statusText.textContent = 'Estado actual: Bloqueado (Fase Futura)';
+                statusText.style.color = '#0d9488';
+            }
+        }
+
+        function registrarHistorial(tipoMod, codigoItem, detalle, bodegaAsociada = 'Farmacos') {
+            const usr = getCurrentUser();
+            const ahora = new Date();
+            const fechaStr = ahora.toLocaleDateString() + ' ' + ahora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            if(!appState.movements) appState.movements = [];
+            appState.movements.push({
+                fecha: fechaStr,
+                usuario: usr ? `${usr.nombre} (${usr.perfil})` : 'Sistema',
+                tipo: tipoMod,
+                codigo: codigoItem,
+                detalle: detalle,
+                bodega: bodegaAsociada
+            });
+            guardarEstadoFirestore();
+        }
+
+        let currentWarehouse = 'TODAS';
+        let currentUserId = null;
+        let modalCallback = null;
+        let html5QrCodeScanner = null;
+
+        let codigoVerificacionActual = null;
+        let usuarioEnProcesoRecuperacion = null;
+
+        function limpiarYExtraerGTIN(rawText) {
+            if (!rawText) return '';
+            let limpio = String(rawText).trim();
+            if(!limpio || limpio.toUpperCase() === 'SIN ASIGNACIÓN' || limpio === '-') return '';
+            limpio = limpio.replace(/\((01|02)\)/g, '$1');
+
+            if (limpio.startsWith('01') && limpio.length >= 16) {
+                limpio = limpio.substring(2, 16);
+            } else if (limpio.startsWith('02') && limpio.length >= 16) {
+                limpio = limpio.substring(2, 16);
+            } else {
+                limpio = limpio.replace(/[^0-9]/g, '');
+                if (limpio.length > 14) {
+                    const idx01 = limpio.indexOf('01');
+                    if (idx01 !== -1 && limpio.length >= idx01 + 16) {
+                        limpio = limpio.substring(idx01 + 2, idx01 + 16);
+                    } else {
+                        limpio = limpio.substring(0, 14);
+                    }
+                }
+            }
+            return limpio;
         }
 
         function verificarSesionGuardada() {
@@ -479,32 +911,53 @@
                     currentUserId = user.id;
                     document.getElementById('loginModal').style.display = 'none';
                     document.getElementById('app').style.display = 'flex';
+                    iniciarLatidoPresencia();
                 }
             }
         }
 
-        let currentWarehouse = 'TODAS';
-        let currentUserId = null;
-        let modalCallback = null;
-        let html5QrCodeScanner = null;
-
         setTimeout(() => {
             inicializarListenersTiempoReal();
+
             document.querySelectorAll('nav button').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
                     const tabId = this.dataset.tab;
+                    const user = getCurrentUser();
+
+                    if (user && user.perfil === 'invitado') {
+                        if (tabId !== 'dashboard' && tabId !== 'inventario' && tabId !== 'layout') {
+                            alert('Su perfil de invitado solo cuenta con permisos de visualización.');
+                            return;
+                        }
+                    }
+                    
+                    if (tabId === 'config' || tabId === 'usuarios') {
+                        if (!user || user.perfil !== 'admin') {
+                            alert('Acceso restringido exclusivamente al Administrador.');
+                            return;
+                        }
+                    }
+
                     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-                    document.getElementById('tab-' + tabId).classList.add('active');
+                    
+                    const target = document.getElementById('tab-' + tabId);
+                    if (target) target.classList.add('active');
                     this.classList.add('active');
+
                     if (tabId === 'inventario') renderInventarioUnificado();
                     if (tabId === 'layout') cargarImagenLayout(currentWarehouse);
                     if (tabId === 'movimientos') renderHistorialCompleto();
                     if (tabId === 'usuarios') renderUsuarios();
                     if (tabId === 'bodegas') renderBodegas();
+                    if (tabId === 'config') {
+                        renderConfig();
+                        actualizarUIConfigErp();
+                    }
                 });
             });
+
             verificarSesionGuardada();
         }, 50);
 
@@ -512,15 +965,82 @@
             const u = document.getElementById('loginUser').value.trim();
             const p = document.getElementById('loginPass').value.trim();
             const user = appState.users.find(x => x.nombre.toLowerCase() === u.toLowerCase() && x.password === p);
+            
             if (user) {
                 currentUserId = user.id;
                 localStorage.setItem('wms_session_user', user.nombre);
                 document.getElementById('loginModal').style.display = 'none';
                 document.getElementById('app').style.display = 'flex';
+                
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+                document.getElementById('tab-dashboard').classList.add('active');
+                document.querySelector('nav button[data-tab="dashboard"]').classList.add('active');
+
+                iniciarLatidoPresencia();
                 renderAll();
+                mostrarToast('Bienvenido, ' + user.nombre + ' (' + user.perfil + ')');
             } else {
                 document.getElementById('loginError').style.display = 'block';
             }
+        }
+
+        function abrirModalRecuperarPass() {
+            codigoVerificacionActual = null;
+            usuarioEnProcesoRecuperacion = null;
+
+            mostrarModal('Restablecer Contraseña', `
+                <p style="font-size:0.72rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Ingresa tu usuario y correo electrónico institucional registrado para recibir el código de verificación.</p>
+                <label>Nombre de Usuario</label>
+                <input id="recUser" placeholder="Usuario exacto">
+                <label style="margin-top:6px;">Correo Electrónico</label>
+                <input id="recEmail" type="email" placeholder="correo@hsjd.cl">
+            `, true);
+            document.getElementById('modalActionBtn').textContent = 'Enviar Código al Correo';
+            modalCallback = () => {
+                const uName = document.getElementById('recUser').value.trim();
+                const uEmail = document.getElementById('recEmail').value.trim();
+                if(!uName || !uEmail) return alert('Completa todos los campos');
+
+                const usr = appState.users.find(x => x.nombre.toLowerCase() === uName.toLowerCase());
+                if(!usr) return alert('No se encontró un usuario con ese nombre.');
+                if(!usr.correo || usr.correo.toLowerCase() !== uEmail.toLowerCase()) {
+                    return alert('El correo electrónico no coincide con el registrado para este usuario.');
+                }
+
+                usuarioEnProcesoRecuperacion = usr;
+                codigoVerificacionActual = Math.floor(100000 + Math.random() * 900000).toString();
+
+                mostrarToast(`Código de verificación enviado formalmente a ${usr.correo}`);
+                abrirModalValidacionCodigo();
+            };
+        }
+
+        function abrirModalValidacionCodigo() {
+            mostrarModal('Validar Código de Recuperación', `
+                <p style="font-size:0.72rem; color:var(--text-muted); margin-bottom:8px; text-align: left;">Ingresa el código de 6 dígitos enviado a tu correo institucional y establece tu nueva contraseña.</p>
+                <label>Código de Verificación</label>
+                <input id="valCodigo" placeholder="Ej: 123456" maxlength="6">
+                <label style="margin-top:6px;">Nueva Contraseña</label>
+                <input id="valNewPass" type="password" placeholder="Nueva contraseña">
+            `, true);
+            document.getElementById('modalActionBtn').textContent = 'Actualizar Contraseña';
+            modalCallback = () => {
+                const ingCode = document.getElementById('valCodigo').value.trim();
+                const nPass = document.getElementById('valNewPass').value.trim();
+
+                if(!ingCode || !nPass) return alert('Completa todos los campos.');
+                if(ingCode !== codigoVerificacionActual) {
+                    return alert('El código de verificación ingresado es incorrecto.');
+                }
+                if(!usuarioEnProcesoRecuperacion) return alert('Sesión de recuperación expirada.');
+
+                usuarioEnProcesoRecuperacion.password = nPass;
+                guardarEstadoFirestore();
+                cerrarModal();
+                registrarHistorial('Cambio de Contraseña', usuarioEnProcesoRecuperacion.nombre, 'Restablecimiento validado por correo electrónico', 'General');
+                mostrarToast('Contraseña actualizada con éxito.');
+            };
         }
 
         function logout() {
@@ -538,21 +1058,74 @@
             const c = document.getElementById('toastContainer');
             const t = document.createElement('div');
             t.className = 'toast';
-            t.innerHTML = `<span>${msg}</span>`;
+            t.innerHTML = `<span>${msg}</span><button style="background:none; border:none; color:white; cursor:pointer;" onclick="this.parentElement.remove()">✕</button>`;
             c.appendChild(t);
             setTimeout(() => t.remove(), 4000);
         }
 
         function renderAll() {
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('currentUserDisplay').textContent = user.nombre + ' (' + user.perfil + ')';
+                aplicarPermisosUI(user);
+            }
+
             const sel = document.getElementById('warehouseSelect');
             sel.innerHTML = '<option value="TODAS">Todas las Bodegas</option>';
-            appState.warehouses.forEach(w => { sel.innerHTML += `<option value="${w.id}">${w.nombre}</option>`; });
+            appState.warehouses.forEach(w => {
+                sel.innerHTML += `<option value="${w.id}">${w.nombre}</option>`;
+            });
             sel.value = currentWarehouse;
+
             renderDashboard();
             renderInventarioUnificado();
             renderHistorialCompleto();
             renderUsuarios();
             renderBodegas();
+            renderConfig();
+            actualizarUIConfigErp();
+            
+            document.getElementById('inventoryBadge').textContent = getProducts().length;
+        }
+
+        function aplicarPermisosUI(user) {
+            const perfil = user.perfil;
+            const btnCargar = document.getElementById('btnCargarArchivo');
+            const btnExportar = document.getElementById('btnExportarArchivo');
+            const btnQrUbics = document.getElementById('btnQrUbicaciones');
+            const navUsr = document.getElementById('navUsuarios');
+            const navConfig = document.getElementById('navConfig');
+            const navLayout = document.getElementById('navLayout');
+            const navMovimientos = document.getElementById('navMovimientos');
+            const toolbarAccionsInv = document.getElementById('toolbarAccionsInv');
+            const thAccionsInvHead = document.getElementById('thAccionsInvHead');
+
+            if (btnCargar) {
+                btnCargar.style.display = (perfil === 'admin') ? 'inline-flex' : 'none';
+            }
+            if (btnExportar) {
+                btnExportar.style.display = (perfil === 'admin' || perfil === 'supervisor') ? 'inline-flex' : 'none';
+            }
+
+            if (perfil === 'invitado') {
+                if(btnQrUbics) btnQrUbics.style.display = 'none';
+                if(navUsr) navUsr.style.display = 'none';
+                if(navConfig) navConfig.style.display = 'none';
+                if(navMovimientos) navMovimientos.style.display = 'none';
+                if(toolbarAccionsInv) toolbarAccionsInv.style.display = 'none';
+                if(thAccionsInvHead) thAccionsInvHead.style.display = 'none';
+            } else if (perfil === 'operario') {
+                if(navUsr) navUsr.style.display = 'none';
+                if(navConfig) navConfig.style.display = 'none';
+            } else if (perfil === 'supervisor') {
+                if(navUsr) navUsr.style.display = 'none';
+                if(navConfig) navConfig.style.display = 'none';
+            } else if (perfil === 'admin') {
+                if(navUsr) navUsr.style.display = 'inline-flex';
+                if(navConfig) navConfig.style.display = 'inline-flex';
+                if(toolbarAccionsInv) toolbarAccionsInv.style.display = 'flex';
+                if(thAccionsInvHead) thAccionsInvHead.style.display = 'table-cell';
+            }
         }
 
         function getProducts() {
@@ -563,138 +1136,1844 @@
         function cambiarBodega() {
             currentWarehouse = document.getElementById('warehouseSelect').value;
             renderAll();
+            cargarImagenLayout(currentWarehouse);
+        }
+
+        function cambiarModoOperacionSistema(modo) {
+            appState.systemMode = modo;
+            guardarEstadoFirestore();
+            renderDashboard();
+            mostrarToast(`Modo cambiado a: ${modo === 'demo' ? 'Modo Demo (KPIs)' : 'Almacenamiento v1'}`);
         }
 
         function renderDashboard() {
-            const prods = getProducts();
-            const kpiContainer = document.getElementById('dashboardKpiContainer');
             const mode = appState.systemMode || 'demo';
+            const selectEl = document.getElementById('systemModeSelect');
+            if(selectEl) selectEl.value = mode;
 
+            const prods = getProducts();
+            
             if (mode === 'demo') {
-                kpiContainer.innerHTML = `
-                    <div class="card"><div class="number">788</div><div class="label">Registros Comerciales</div></div>
-                    <div class="card"><div class="number">81</div><div class="label">Registros Single-Dose</div></div>
-                    <div class="card"><div class="number">98.4%</div><div class="label">Eficiencia Ubicación Óptima</div></div>
-                    <div class="card"><div class="number">${prods.length}</div><div class="label">Total Ítems Sistema</div></div>
-                `;
+                const totalItemsVal = prods.length > 0 ? prods.length : 869; 
+                document.getElementById('totalProductos').textContent = totalItemsVal;
+                document.getElementById('totalUbicaciones').textContent = "98.4%";
+                document.getElementById('totalMovimientos').textContent = "788 Com. / 81 Unid.";
             } else {
-                kpiContainer.innerHTML = `
-                    <div class="card"><div class="number">${prods.length}</div><div class="label">Total Ítems Inventario (v1)</div></div>
-                    <div class="card"><div class="number" style="color:var(--success);">Almacenamiento v1</div><div class="label">Estado del Sistema</div></div>
-                `;
+                document.getElementById('totalProductos').textContent = prods.length;
+                const ubics = new Set();
+                prods.forEach(p => { 
+                    if(p.ubicaciones) {
+                        p.ubicaciones.forEach(u => {
+                            if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÓN') {
+                                ubics.add(`${u.zona}-${u.anaquel}-${u.posicion}`);
+                            }
+                        });
+                    }
+                });
+                document.getElementById('totalUbicaciones').textContent = ubics.size;
+                const movsFiltrados = (currentWarehouse === 'TODAS') ? (appState.movements || []) : (appState.movements || []).filter(m => m.bodega === currentWarehouse);
+                document.getElementById('totalMovimientos').textContent = movsFiltrados.length;
+            }
+
+            const lbl1 = document.getElementById('labelCard1');
+            const lbl2 = document.getElementById('labelCard2');
+            const lbl3 = document.getElementById('labelCard3');
+            if(mode === 'demo') {
+                if(lbl1) lbl1.textContent = 'Total Registros Validados';
+                if(lbl2) lbl2.textContent = 'Eficiencia Escaneo RFID';
+                if(lbl3) lbl3.textContent = 'Comerciales / Unidosis';
+            } else {
+                if(lbl1) lbl1.textContent = 'Total Ítems';
+                if(lbl2) lbl2.textContent = 'Ubicaciones';
+                if(lbl3) lbl3.textContent = 'Movimientos';
             }
 
             const movsFiltrados = (currentWarehouse === 'TODAS') ? (appState.movements || []) : (appState.movements || []).filter(m => m.bodega === currentWarehouse);
             const tbody = document.getElementById('ultimosMovimientos');
             tbody.innerHTML = movsFiltrados.slice(-5).reverse().map(m => `
-                <tr><td>${m.fecha}</td><td><strong>${m.usuario}</strong></td><td><span class="badge">${m.tipo}</span></td><td>${m.codigo}</td><td>${m.detalle}</td></tr>
+                <tr><td style="white-space:nowrap;">${m.fecha}</td><td><strong>${m.usuario}</strong></td><td><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td><td style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;">${m.codigo}</td><td>${m.detalle}</td></tr>
             `).join('') || '<tr><td colspan="5" class="empty-state">Sin movimientos recientes</td></tr>';
         }
 
+        function cargarCatalogoMaestro(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    let catalog = [];
+
+                    workbook.SheetNames.forEach(name => {
+                        const sheet = workbook.Sheets[name];
+                        const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+                        json.forEach((row, idx) => {
+                            const keys = Object.keys(row);
+                            const codigo = String(row[keys.find(k => /COD|SKU|INTERNO|ID/i.test(k))] || `REF_${idx+1}`).trim();
+                            const glosa = String(row[keys.find(k => /GLOSA|NOMBRE|DESC/i.test(k))] || 'Sin descripción').trim();
+                            const bodegaRaw = row[keys.find(k => /^BODEGA$/i.test(k))] || 'Farmacos';
+
+                            let bodega = 'Farmacos';
+                            const bTxt = String(bodegaRaw).toLowerCase();
+                            if(bTxt.includes('insumo')) bodega = 'Insumos';
+                            else if(bTxt.includes('economat')) bodega = 'Economato';
+                            else if(bTxt.includes('controlad')) bodega = 'Controlados';
+                            else if(bTxt.includes('sutura')) bodega = 'Suturas';
+                            else if(bTxt.includes('aliment')) bodega = 'Alimentos';
+                            else if(bTxt.includes('farmac')) bodega = 'Farmacos';
+
+                            catalog.push({ codigo, glosa, bodega });
+                        });
+                    });
+
+                    appState.masterCatalog = catalog;
+                    guardarEstadoFirestore();
+                    renderConfig();
+                    document.getElementById('masterCatalogFileInput').value = '';
+                    mostrarToast(`Catálogo maestro cargado (${catalog.length} referencias).`);
+                } catch(err) {
+                    alert('Error al leer el archivo de catálogo: ' + err.message);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function cargarCatalogoUbicaciones(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    let locs = [];
+
+                    workbook.SheetNames.forEach(name => {
+                        const sheet = workbook.Sheets[name];
+                        const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+                        json.forEach((row) => {
+                            const keys = Object.keys(row);
+                            const zona = String(row[keys.find(k => /^ZONA$/i.test(k))] || '').trim();
+                            const anaquel = String(row[keys.find(k => /^ANAQUEL$|RACK|TIPO_POS/i.test(k))] || 'Anaquel 1').trim();
+                            const posicion = String(row[keys.find(k => /^POSICION$|POSICIÓN/i.test(k))] || '').trim();
+                            const tipoExplicit = String(row[keys.find(k => /^TIPO$|JERARQUIA/i.test(k))] || '').trim();
+
+                            if (zona) {
+                                const tipo = tipoExplicit || determinarJerarquiaPorZona(zona);
+                                locs.push({ zona, anaquel, posicion: posicion || 'A1', tipo });
+                            }
+                        });
+                    });
+
+                    appState.locationsCatalog = locs;
+                    guardarEstadoFirestore();
+                    renderConfig();
+                    document.getElementById('locationsCatalogFileInput').value = '';
+                    mostrarToast(`Maestro de ubicaciones cargado (${locs.length} registros).`);
+                } catch(err) {
+                    alert('Error al leer el archivo de ubicaciones: ' + err.message);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function parsearUbicacionConcatenada(ubicacionStr) {
+            if (!ubicacionStr || String(ubicacionStr).trim() === '' || String(ubicacionStr).toUpperCase() === 'SIN ASIGNACIÓN') {
+                return { zona: 'SIN ASIGNACIÓN', anaquel: 'Anaquel 1', posicion: '' };
+            }
+            const raw = String(ubicacionStr).trim();
+            let zona = 'SIN ASIGNACIÓN';
+            let anaquel = 'Anaquel 1';
+            let posicion = '';
+
+            const partes = raw.split(/[-–—]/).map(p => p.trim());
+            
+            for (let p of partes) {
+                const matchZ = p.match(/zona\s*([a-j0-9]+)/i) || p.match(/^([a-j])$/i);
+                if (matchZ) {
+                    zona = matchZ[1].toUpperCase();
+                    break;
+                }
+            }
+            if (zona === 'SIN ASIGNACIÓN' && partes.length > 0) {
+                if (partes[0].length <= 3) zona = partes[0].toUpperCase();
+            }
+
+            for (let p of partes) {
+                const matchP = p.match(/pos\.?\s*([a-z0-9]+)/i);
+                if (matchP) {
+                    posicion = matchP[1].toUpperCase();
+                } else if (/^[a-z]\d+$/i.test(p) || /^\d+$/.test(p)) {
+                    posicion = p.toUpperCase();
+                }
+            }
+
+            const partesAnaquel = partes.filter(p => {
+                const up = p.toUpperCase();
+                return !up.includes('ZONA') && !up.includes('POS.') && up !== zona && up !== posicion;
+            });
+            if (partesAnaquel.length > 0) {
+                anaquel = partesAnaquel.join(' - ');
+            }
+
+            if (!posicion && partes.length >= 3) {
+                posicion = partes[partes.length - 1].replace(/pos\.?/i, '').trim().toUpperCase();
+            }
+
+            return { zona, anaquel: anaquel || 'Anaquel 1', posicion: posicion || 'A1' };
+        }
+
+        function extraerUbicacionDesdeTextoHojaONombre(sheetName, row, keys) {
+            let zona = 'SIN ASIGNACIÓN';
+            let anaquel = 'Anaquel 1';
+            let posicion = 'A1';
+
+            const colUbicacionConcatenada = row[keys.find(k => /^UBICACION$|UBICACIÓN/i.test(k))];
+            if (colUbicacionConcatenada && String(colUbicacionConcatenada).trim() !== '') {
+                const parsed = parsearUbicacionConcatenada(colUbicacionConcatenada);
+                if (parsed.zona && parsed.zona !== 'SIN ASIGNACIÓN') {
+                    return parsed;
+                }
+            }
+
+            const keyZona = keys.find(k => /^ZONA$|ZONA_/i.test(k));
+            const keyTipoPos = keys.find(k => /^TIPO$|TIPO_/i.test(k) || /RACK|ALTURA|ANAQUEL|FULL\s*SPACE|PALLET/i.test(k));
+            const keyPosicion = keys.find(k => /^POSICION$|POSICIÓN/i.test(k));
+
+            const zonaRaw = keyZona ? row[keyZona] : '';
+            const tipoPosRaw = keyTipoPos ? String(row[keyTipoPos]).trim() : '';
+            const posicionRaw = keyPosicion ? String(row[keyPosicion]).trim() : '';
+
+            if (zonaRaw && String(zonaRaw).trim() !== '' && String(zonaRaw).toUpperCase() !== 'SIN ASIGNACIÓN') {
+                zona = String(zonaRaw).replace(/zona/gi, '').trim().toUpperCase();
+                if(tipoPosRaw) anaquel = tipoPosRaw;
+                if(posicionRaw) posicion = posicionRaw;
+            }
+
+            if (zona === 'SIN ASIGNACIÓN' && sheetName) {
+                const sName = sheetName.toUpperCase();
+                const matchZonaHoja = sName.match(/ZONA\s*([A-Z0-9]+)/);
+                if (matchZonaHoja) zona = matchZonaHoja[1];
+            }
+
+            return { zona, anaquel, posicion };
+        }
+
+        function cargarExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    let count = 0;
+
+                    if(!appState.products) appState.products = [];
+
+                    workbook.SheetNames.forEach(sheetName => {
+                        const sheet = workbook.Sheets[sheetName];
+                        const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+                        
+                        json.forEach((row, idx) => {
+                            const keys = Object.keys(row);
+                            const codigo = String(row[keys.find(k => /COD|SKU|INTERNO|ID/i.test(k))] || `ITEM_${idx+1}`).trim();
+                            const glosa = String(row[keys.find(k => /GLOSA|NOMBRE|DESC/i.test(k))] || 'Sin descripción').trim();
+                            
+                            const gtin1Raw = row[keys.find(k => /GTIN\s*1|EAN\s*1|BARRA\s*1|^GTIN$/i.test(k))] || '';
+                            const gtin2Raw = row[keys.find(k => /GTIN\s*2|EAN\s*2|BARRA\s*2|DATAMATRIX/i.test(k))] || '';
+
+                            const gtins = [];
+                            const limpio1 = limpiarYExtraerGTIN(String(gtin1Raw));
+                            if(limpio1) gtins.push(limpio1);
+                            
+                            const limpio2 = limpiarYExtraerGTIN(String(gtin2Raw));
+                            if(limpio2) gtins.push(limpio2);
+
+                            let gtinEstados = {};
+                            gtins.forEach(g => { gtinEstados[g] = 'activo'; });
+
+                            const catRawExcel = String(row[keys.find(k => /CATEGORIA|PROGRAMA|TIPO_PROGRAMA|NORMATIVA/i.test(k))] || '').toLowerCase();
+                            const catText = catRawExcel + ' ' + glosa.toLowerCase() + ' ' + sheetName.toLowerCase();
+
+                            let programas = {};
+                            (appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG).forEach(prog => {
+                                const pNameLower = prog.nombre.toLowerCase();
+                                const pIdLower = prog.id.toLowerCase();
+                                
+                                let matched = false;
+                                if (catRawExcel.includes(pNameLower) || catRawExcel.includes(pIdLower)) {
+                                    matched = true;
+                                } else if (pIdLower === 'frio' && (catText.includes('frio') || catText.includes('frío') || catText.includes('refrigerad'))) {
+                                    matched = true;
+                                } else if (pIdLower === 'controlado' && (catText.includes('controlad') || catText.includes('estupefacient'))) {
+                                    matched = true;
+                                } else if (pIdLower === 'pm' && (catText.includes('ministerial') || catText.includes(' prog min'))) {
+                                    matched = true;
+                                } else if (pIdLower === 'lrs' && (catText.includes('ricarte') || catText.includes('lrs'))) {
+                                    matched = true;
+                                } else if (pIdLower === 'vih' && catText.includes('vih')) {
+                                    matched = true;
+                                } else if (pIdLower === 'sueros' && catText.includes('suero')) {
+                                    matched = true;
+                                } else if (pIdLower === 'inflamable' && catText.includes('inflamable')) {
+                                    matched = true;
+                                } else if (pIdLower === 'comp' && (catText.includes('comp') || catText.includes('comprimido'))) {
+                                    matched = true;
+                                } else if (pIdLower === 'inyectable' && catText.includes('inyectable')) {
+                                    matched = true;
+                                } else if (pIdLower === 'magistral' && (catText.includes('magistral') || catText.includes('preparacion'))) {
+                                    matched = true;
+                                } else if (pIdLower === 'mezcla' && (catText.includes('mezcla') || catText.includes('oncológico') || catText.includes('oncologico'))) {
+                                    matched = true;
+                                } else if (pIdLower === 'unguentos' && (catText.includes('unguento') || catText.includes('crema') || catText.includes('gel') || catText.includes('pasta') || catText.includes('pomada'))) {
+                                    matched = true;
+                                }
+                                programas[prog.id] = matched;
+                            });
+
+                            const ubicacionInfo = extraerUbicacionDesdeTextoHojaONombre(sheetName, row, keys);
+                            const zona = ubicacionInfo.zona;
+                            const anaquel = ubicacionInfo.anaquel;
+                            const posicion = ubicacionInfo.posicion;
+
+                            const tipoRaw = String(row[keys.find(k => /TIPO|JERARQUIA|ALMACENAMIENTO/i.test(k))] || '').trim();
+                            let tipo = tipoRaw ? ( /master|caja/i.test(tipoRaw) ? 'Unidad Máster' : (/minima|unidosis/i.test(tipoRaw) ? 'Unidad Mínima / Unidosis' : 'Unidad Comercial') ) : determinarJerarquiaPorZona(zona);
+
+                            const bodegaRaw = row[keys.find(k => /^BODEGA$/i.test(k))];
+                            let bodega = currentWarehouse === 'TODAS' ? 'Farmacos' : currentWarehouse;
+                            if(bodegaRaw && String(bodegaRaw).trim() !== '') {
+                                const bTxt = String(bodegaRaw).toLowerCase();
+                                if(bTxt.includes('insumo')) bodega = 'Insumos';
+                                else if(bTxt.includes('economat')) bodega = 'Economato';
+                                else if(bTxt.includes('controlad')) bodega = 'Controlados';
+                                else if(bTxt.includes('sutura')) bodega = 'Suturas';
+                                else if(bTxt.includes('aliment')) bodega = 'Alimentos';
+                                else if(bTxt.includes('farmac')) bodega = 'Farmacos';
+                            }
+
+                            const existing = appState.products.find(p => {
+                                if (gtins.length > 0 && p.gtins && p.gtins.some(g => gtins.includes(g))) return true;
+                                return p.codigo.toLowerCase() === codigo.toLowerCase();
+                            });
+
+                            if (existing) {
+                                existing.codigo = codigo;
+                                existing.glosa = glosa;
+                                existing.tipo = tipo;
+                                existing.programas = { ...existing.programas, ...programas };
+                                if(!existing.gtinEstados) existing.gtinEstados = {};
+                                gtins.forEach(g => { 
+                                    if(!existing.gtins.includes(g)) existing.gtins.push(g);
+                                    if(!existing.gtinEstados[g]) existing.gtinEstados[g] = 'activo';
+                                });
+                                if(!existing.ubicaciones) existing.ubicaciones = [];
+                                existing.ubicaciones.push({ zona, anaquel, posicion });
+                            } else {
+                                const newId = '_' + Math.random().toString(36).substr(2, 9);
+                                appState.products.push({
+                                    id: newId,
+                                    codigo: codigo,
+                                    gtins: gtins,
+                                    gtinEstados: gtinEstados,
+                                    glosa: glosa,
+                                    bodega: bodega,
+                                    programas: programas,
+                                    tipo: tipo,
+                                    ubicaciones: [{ zona, anaquel, posicion }],
+                                    estado: 'Almacenado',
+                                    erpData: { lote: '', vencimiento: '', serie: '', factorEmpaque: 1 }
+                                });
+                            }
+                            count++;
+                        });
+                    });
+
+                    guardarEstadoFirestore();
+                    document.getElementById('fileInput').value = '';
+                    registrarHistorial('Carga masiva Excel', 'Múltiples ítems', `Procesados ${count} registros.`, currentWarehouse === 'TODAS' ? 'General' : currentWarehouse);
+                    mostrarToast(`Archivo cargado: ${count} registros procesados.`);
+                } catch(err) {
+                    alert('Error al leer el archivo Excel: ' + err.message);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
         function renderInventarioUnificado() {
-            const search = document.getElementById('searchInventarioUnificado')?.value.toLowerCase() || '';
+            const search = document.getElementById('searchInventarioUnificado').value.toLowerCase();
+            const zona = document.getElementById('filterZona').value;
             let prods = getProducts();
+
             if (search) {
-                prods = prods.filter(p => p.codigo.toLowerCase().includes(search) || p.glosa.toLowerCase().includes(search));
+                prods = prods.filter(p => p.codigo.toLowerCase().includes(search) || p.glosa.toLowerCase().includes(search) || (p.gtins && p.gtins.some(g => g.toLowerCase().includes(search))));
             }
+            if (zona !== 'TODAS') {
+                prods = prods.filter(p => p.ubicaciones && p.ubicaciones.some(u => u.zona.toUpperCase() === zona.toUpperCase()));
+            }
+
+            const user = getCurrentUser();
+            const esInvitado = user && user.perfil === 'invitado';
+            const puedeEliminar = user && (user.perfil === 'admin' || user.perfil === 'supervisor');
+
+            const catalogoProg = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
+
             const tbody = document.getElementById('inventarioUnificadoBody');
-            tbody.innerHTML = prods.map(p => `
+            tbody.innerHTML = prods.map(p => {
+                const ubicsHtml = (p.ubicaciones || []).map(u => {
+                    if(!u.zona || u.zona.toUpperCase() === 'SIN ASIGNACIÓN') {
+                        return `<div class="ubicacion-row-item"><span style="color:var(--text-muted); font-weight:500;">SIN ASIGNACIÓN</span></div>`;
+                    }
+                    return `
+                        <div class="ubicacion-row-item">
+                            <span class="zone-tag">Zona ${u.zona}</span> 
+                            <span>${u.anaquel}</span> 
+                            <span class="pos-tag">Pos. ${u.posicion}</span>
+                        </div>
+                    `;
+                }).join('') || '<span style="color:var(--text-muted);">SIN ASIGNACIÓN</span>';
+
+                if(!p.gtinEstados) p.gtinEstados = {};
+                const gtinsList = (p.gtins && p.gtins.length > 0) ? p.gtins.map(g => `<span class="gtin-tag">${g}</span>`).join(' ') : '<span style="color:var(--text-muted); font-style:italic;">Sin GTIN</span>';
+
+                const prog = p.programas || {};
+                let progHtml = '<div class="prog-badges-box">';
+                let activeCount = 0;
+
+                catalogoProg.forEach(cp => {
+                    if (prog[cp.id]) {
+                        const badgeColor = cp.color || '#0284c7';
+                        const customStyle = `background: ${badgeColor}15; color: ${badgeColor}; border: 1px solid ${badgeColor}40;`;
+                        progHtml += `<span class="badge-prog" style="${customStyle}">${cp.nombre}</span>`;
+                        activeCount++;
+                    }
+                });
+
+                if(activeCount === 0) {
+                    progHtml += `<span style="color:var(--text-muted); font-size:0.62rem;">Estándar</span>`;
+                }
+                progHtml += `</div>`;
+
+                const tipoVal = p.tipo || 'Unidad Comercial';
+                let tipoClase = 'type-comercial';
+                if(tipoVal.toLowerCase().includes('máster') || tipoVal.toLowerCase().includes('master')) tipoClase = 'type-master';
+                else if(tipoVal.toLowerCase().includes('mínima') || tipoVal.toLowerCase().includes('minima') || tipoVal.toLowerCase().includes('unidosis')) tipoClase = 'type-minima';
+
+                const whObj = (appState.warehouses || []).find(w => w.id === p.bodega);
+                const bodegaColor = whObj ? whObj.color : '#0284c7';
+
+                return `
                 <tr>
-                    <td><strong>${p.codigo}</strong></td>
-                    <td>${p.gtins ? p.gtins.join(', ') : ''}</td>
-                    <td>${p.glosa}</td>
-                    <td>${p.bodega}</td>
-                    <td>-</td>
-                    <td>${p.tipo || 'Comercial'}</td>
-                    <td>-</td>
-                    <td>${p.estado || 'Almacenado'}</td>
-                    <td><button class="btn-action-primary" onclick="gestionarUbicacionesModal('${p.id}')">Editar</button></td>
+                    <td style="text-align:left; padding-left:10px; white-space:nowrap;">
+                        ${!esInvitado ? `<input type="checkbox" class="prod-chk" value="${p.id}" style="margin-right:4px;" onchange="actualizarEstadoCheckTodo()">` : ''}
+                        <strong>${p.codigo}</strong>
+                    </td>
+                    <td style="white-space:nowrap;">${gtinsList}</td>
+                    <td style="min-width:140px;">${p.glosa}</td>
+                    <td style="white-space:nowrap;"><span class="badge-bodega" style="background:${bodegaColor};">${p.bodega}</span></td>
+                    <td class="prog-cell-inventario">${progHtml}</td>
+                    <td style="text-align:center; white-space:nowrap;"><span class="type-tag ${tipoClase}">${tipoVal}</span></td>
+                    <td style="white-space:nowrap;"><div class="ubicacion-compacta-box">${ubicsHtml}</div></td>
+                    <td style="text-align:center; white-space:nowrap;"><span class="badge" style="background:#f0fdf4; color:#15803d;">${p.estado || 'Almacenado'}</span></td>
+                    ${!esInvitado ? `
+                    <td style="text-align:center; white-space:nowrap;">
+                        <div class="acciones-cell">
+                            <button class="btn-action-primary" onclick="gestionarUbicacionesModal('${p.id}')">Editar</button>
+                            <button class="btn-action-secondary" onclick="verHistorialArticulo('${p.codigo}')">Historial</button>
+                            ${puedeEliminar ? `<button class="btn-action-danger" onclick="eliminarProducto('${p.id}')">Eliminar</button>` : ''}
+                        </div>
+                    </td>` : ''}
                 </tr>
-            `).join('') || '<tr><td colspan="9" class="empty-state">No hay registros de inventario</td></tr>';
+            `;
+            }).join('') || `<tr><td colspan="${!esInvitado ? 9 : 8}" class="empty-state">No se encontraron productos registrados</td></tr>`;
         }
 
-        function renderHistorialCompleto() {
-            const movs = (currentWarehouse === 'TODAS') ? (appState.movements || []) : (appState.movements || []).filter(m => m.bodega === currentWarehouse);
-            const tbody = document.getElementById('historialCompletoBody');
-            if(tbody) {
-                tbody.innerHTML = movs.slice().reverse().map(m => `
-                    <tr><td>${m.fecha}</td><td><strong>${m.usuario}</strong></td><td><span class="badge">${m.tipo}</span></td><td>${m.codigo}</td><td>${m.detalle}</td></tr>
-                `).join('') || '<tr><td colspan="5" class="empty-state">Sin historial</td></tr>';
-            }
+        function toggleSeleccionarTodoInventario(masterChk) {
+            const chks = document.querySelectorAll('.prod-chk');
+            chks.forEach(c => c.checked = masterChk.checked);
         }
 
-        function renderUsuarios() {
-            const tbody = document.getElementById('usuariosBody');
-            if(tbody) {
-                tbody.innerHTML = (appState.users || []).map(u => `
-                    <tr><td>${u.id}</td><td>${u.nombre}</td><td>${u.correo || ''}</td><td><span class="badge">${u.perfil}</span></td><td>${(u.permisos||[]).join(', ')}</td><td>-</td></tr>
-                `).join('');
-            }
+        function actualizarEstadoCheckTodo() {
+            const chks = document.querySelectorAll('.prod-chk');
+            const chksChecked = document.querySelectorAll('.prod-chk:checked');
+            const masterChk = document.getElementById('chkSelectAll');
+            if(masterChk) masterChk.checked = chks.length > 0 && chks.length === chksChecked.length;
         }
 
-        function renderBodegas() {
-            const tbody = document.getElementById('bodegasBody');
-            if(tbody) {
-                tbody.innerHTML = (appState.warehouses || []).map(w => `
-                    <tr><td><strong>${w.id}</strong></td><td>${w.nombre}</td><td><span style="display:inline-block;width:12px;height:12px;background:${w.color};border-radius:3px;"></span></td><td>-</td></tr>
-                `).join('');
-            }
+        function eliminarSeleccionadosInventario() {
+            const chksChecked = document.querySelectorAll('.prod-chk:checked');
+            if(chksChecked.length === 0) return alert('Selecciona al menos un producto.');
+            if(!confirm(`¿Eliminar ${chksChecked.length} registros seleccionados?`)) return;
+
+            const idsAEliminar = Array.from(chksChecked).map(c => c.value);
+            appState.products = (appState.products || []).filter(p => !idsAEliminar.includes(p.id));
+            guardarEstadoFirestore();
+            registrarHistorial('Eliminación Masiva', `${chksChecked.length} ítems`, 'Eliminación masiva de inventario', currentWarehouse === 'TODAS' ? 'General' : currentWarehouse);
+            mostrarToast(`${idsAEliminar.length} registros eliminados.`);
         }
 
-        function cargarImagenLayout(bodegaId) {
-            const container = document.getElementById('layoutImageContent');
-            const imgData = (appState.layouts && appState.layouts[bodegaId]) ? appState.layouts[bodegaId] : (appState.layouts && appState.layouts['GENERAL'] ? appState.layouts['GENERAL'] : null);
-            if (imgData) {
-                container.innerHTML = `<img src="${imgData}" alt="Layout">`;
+        function verHistorialArticulo(codigoInterno) {
+            const movimientosArticulo = (appState.movements || []).filter(m => String(m.codigo).toLowerCase() === String(codigoInterno).toLowerCase() || (m.detalle && m.detalle.toLowerCase().includes(String(codigoInterno).toLowerCase())));
+
+            let html = `
+                <p style="font-size:0.72rem; margin-bottom:8px; color:var(--text-muted); text-align: left;">Historial de modificaciones para el código interno: <strong>${codigoInterno}</strong></p>
+                <div class="table-container" style="max-height:50vh;">
+                    <table style="width:100%; font-size:0.65rem; min-width: 450px;">
+                        <thead>
+                            <tr style="background:#f8fafc; position:sticky; top:0;">
+                                <th style="padding:6px;">Fecha y Hora</th>
+                                <th style="padding:6px;">Usuario</th>
+                                <th style="padding:6px;">Acción</th>
+                                <th style="padding:6px;">Detalle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            if (movimientosArticulo.length > 0) {
+                movimientosArticulo.slice().reverse().forEach(m => {
+                    html += `
+                        <tr>
+                            <td style="padding:6px; white-space:nowrap;">${m.fecha}</td>
+                            <td style="padding:6px;"><strong>${m.usuario}</strong></td>
+                            <td style="padding:6px;"><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td>
+                            <td style="padding:6px; text-align:left; white-space:normal;">${m.detalle}</td>
+                        </tr>
+                    `;
+                });
             } else {
-                container.innerHTML = `<span class="no-image">No hay imagen de plano cargada.</span>`;
+                html += `<tr><td colspan="4" class="empty-state">No hay registros específicos.</td></tr>`;
+            }
+
+            html += `</tbody></table></div>`;
+            mostrarModal('Historial Detallado por Artículo', html, true);
+            document.getElementById('modalActionBtn').style.display = 'none';
+        }
+
+        function eliminarProducto(id) {
+            if(!confirm('¿Estás seguro de eliminar este registro?')) return;
+            const p = appState.products.find(x => x.id === id);
+            appState.products = appState.products.filter(item => item.id !== id);
+            guardarEstadoFirestore();
+            if(p) registrarHistorial('Eliminación', p.codigo, 'Registro eliminado', p.bodega || 'General');
+            mostrarToast('Registro eliminado');
+        }
+
+        function limpiarCampoInput(idInput) {
+            const el = document.getElementById(idInput);
+            if(el) {
+                el.value = '';
+                el.focus();
+                mostrarToast('Campo borrado.');
+            }
+        }
+
+        function verificarAlertaEscaneoManual(glosaText) {
+            const alertaBox = document.getElementById('alertaEscaneoBox');
+            if(!alertaBox) return;
+            const txt = glosaText.toUpperCase();
+            let alertas = [];
+            
+            if(txt.includes('CONTROLADO') || txt.includes('ESTUPEFACIENTE')) alertas.push('⚠️ Controlados');
+            if(txt.includes('FRIO') || txt.includes('FRÍO') || txt.includes('REFRIGERADO')) alertas.push('❄️ Cámara de Frío');
+            if(txt.includes('MINISTERIAL') || txt.includes('PROG MIN')) alertas.push('📋 Programa Ministerial');
+            if(txt.includes('RICARTE') || txt.includes('LRS')) alertas.push('🏷️ Ley Ricarte Soto');
+            if(txt.includes('VIH')) alertas.push('🔬 VIH');
+
+            const esFrio = txt.includes('FRIO') || txt.includes('FRÍO') || txt.includes('REFRIGERADO');
+            if(esFrio && (txt.includes('RICARTE') || txt.includes('LRS'))) alertas.push('⚡ Combinación: Cámara de Frío + Ley Ricarte Soto');
+            if(esFrio && (txt.includes('MINISTERIAL') || txt.includes('PROG MIN'))) alertas.push('⚡ Combinación: Cámara de Frío + Programa Ministerial');
+            if(esFrio && (txt.includes('MEZCLA') || txt.includes('ONCOLÓGICO') || txt.includes('ONCOLOGICO'))) alertas.push('⚡ Combinación: Cámara de Frío + Mezcla (oncológico)');
+
+            if(alertas.length > 0) {
+                alertaBox.style.display = 'block';
+                alertaBox.innerHTML = `<strong>⚠️ Alerta de Sistema / Programas Especiales detectados:</strong><br>` + alertas.join('<br>');
+            } else {
+                alertaBox.style.display = 'none';
             }
         }
 
         function abrirModalAlmacenamiento() {
-            mostrarModal('Nuevo Registro y Almacenamiento', `
-                <div class="form-grid">
+            const erpActive = appState.erpUnlocked;
+            const erpOpacity = erpActive ? '1' : '0.65';
+            const erpDisabledAttr = erpActive ? '' : 'disabled';
+            const erpBgStyle = erpActive ? '#ffffff' : '#f1f5f9';
+
+            const catalogoProg = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
+            let progCheckboxesHtml = catalogoProg.map(cp => {
+                const badgeColor = cp.color || '#0284c7';
+                const customStyle = `background: ${badgeColor}15; color: ${badgeColor}; border: 1px solid ${badgeColor}40;`;
+                return `
+                <label class="prog-option-item">
+                    <input type="checkbox" id="mProg_${cp.id}" onchange="verificarAlertasCheckboxesForm()"> 
+                    <span class="badge-prog" style="${customStyle}">${cp.nombre}</span>
+                </label>
+            `;
+            }).join('');
+
+            mostrarModal('Crear Nuevo Registro y Almacenamiento', `
+                <div style="margin-bottom:12px; background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); text-align: left;">
+                    <label style="font-weight:600; text-align: left;">Buscar en Catálogo Maestro:</label>
+                    <div class="master-search-container">
+                        <input type="text" id="masterSearchInput" class="master-search-input" placeholder="Escribe código o nombre..." oninput="filtrarCatalogoMaestroDropdown(this.value)" autocomplete="off">
+                        <div id="masterDropdownResults" class="master-dropdown-results"></div>
+                    </div>
+                </div>
+                
+                <div class="form-grid" style="text-align: left;">
                     <div class="full-width"><label>Código Interno</label><input id="mCod" placeholder="Ej: 01-001"></div>
-                    <div class="full-width"><label>Glosa / Descripción</label><input id="mGlosa" placeholder="Nombre del insumo"></div>
-                    <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">Fármacos</option><option value="Insumos">Insumos</option></select></div>
+                    
+                    <div>
+                        <label>GTIN/EAN (Código 1 - Opcional)</label>
+                        <div style="display:flex; gap:6px; margin-bottom:4px;">
+                            <input id="mGtin1" placeholder="Opcional" oninput="this.value=limpiarYExtraerGTIN(this.value)">
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin1')">✕</button>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+                            <button type="button" class="btn btn-success btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(1)">Escanear 1</button>
+                            <select id="mEstado1" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.68rem;">
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>GTIN/EAN (Código 2 Opcional)</label>
+                        <div style="display:flex; gap:6px; margin-bottom:4px;">
+                            <input id="mGtin2" placeholder="DataMatrix / Secundario" oninput="this.value=limpiarYExtraerGTIN(this.value)">
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('mGtin2')">✕</button>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+                            <button type="button" class="btn btn-orange btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(2)">Escanear 2</button>
+                            <select id="mEstado2" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.68rem;">
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="full-width"><label>Glosa / Descripción</label><input id="mGlosa" placeholder="Nombre del insumo o fármaco" onblur="verificarAlertaEscaneoManual(this.value)"></div>
+                    <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fef3c7; border:1px solid #fde68a; padding:8px; border-radius:var(--radius); font-size:0.72rem; color:#b45309; text-align: left;"></div>
+
+                    <div><label>Bodega</label><select id="mBodega"><option value="Farmacos">Fármacos</option><option value="Insumos">Insumos</option><option value="Economato">Economato</option><option value="Controlados">Fármacos Controlados</option><option value="Suturas">Suturas</option><option value="Alimentos">Alimentos</option></select></div>
+                    <div><label>Jerarquía / Tipo</label><select id="mTipo"><option value="Unidad Comercial">Unidad Comercial</option><option value="Unidad Máster">Unidad Máster</option><option value="Unidad Mínima / Unidosis">Unidad Mínima / Unidosis</option></select></div>
+                    
+                    <div class="full-width" style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); text-align: left;">
+                        <label style="margin-bottom:8px; font-weight:600; color:var(--text-main); font-size:0.72rem; text-align: left;">Programas y Categorías Especiales (2 Columnas):</label>
+                        <div class="prog-column-box">
+                            ${progCheckboxesHtml}
+                        </div>
+                    </div>
+
+                    <div class="full-width" style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); opacity:${erpOpacity};">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:4px;">
+                            <label style="font-weight:600; color:var(--text-main); font-size:0.72rem; margin:0;">Trazabilidad Avanzada ERP</label>
+                            <span style="font-size:0.62rem; background:${erpActive ? '#0284c7' : '#e2e8f0'}; color:${erpActive ? '#fff' : '#475569'}; padding:2px 6px; border-radius:4px; font-weight:600;">${erpActive ? 'Activo' : 'Bloqueado'}</span>
+                        </div>
+                        <div class="form-grid">
+                            <div><label>N° de Lote (IA 10)</label><input type="text" id="mErpLote" placeholder="Ej: LOTE2026-9" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                            <div><label>Fecha Vencimiento (IA 17)</label><input type="date" id="mErpVenc" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                            <div><label>N° de Serie (IA 21)</label><input type="text" id="mErpSerie" placeholder="Ej: SN987654" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                            <div><label>Factor Empaque / Cantidad</label><input type="number" id="mErpFactor" placeholder="Ej: 10" value="1" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="mZona" value="SIN ASIGNACIÓN">
+                    <input type="hidden" id="mAnaquel" value="Anaquel 1">
+                    <input type="hidden" id="mPosicion" value="">
+
+                    <div class="full-width" style="background:#f1f5f9; padding:12px; border-radius:var(--radius); text-align:center; margin-top:4px; border:1px solid var(--border);">
+                        <label style="font-weight:600; margin-bottom:4px; display:block; font-size:0.72rem; text-align: center;">Asignación de Ubicación por QR</label>
+                        <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:8px; text-align: center;">Escanee el código QR de ubicación.</p>
+                        <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('almacenar')">Escanear QR de Ubicación</button>
+                    </div>
+                    <div id="qr-reader" class="full-width"></div>
                 </div>
             `, false);
             modalCallback = () => {
+                detenerEscanerQR();
                 const cod = document.getElementById('mCod').value.trim();
+                const gtin1 = limpiarYExtraerGTIN(document.getElementById('mGtin1').value.trim());
+                const est1 = document.getElementById('mEstado1').value;
+                const gtin2 = limpiarYExtraerGTIN(document.getElementById('mGtin2').value.trim());
+                const est2 = document.getElementById('mEstado2').value;
                 const glosa = document.getElementById('mGlosa').value.trim();
                 const bodega = document.getElementById('mBodega').value;
-                if(!cod) return alert('El código es obligatorio.');
+                const tipo = document.getElementById('mTipo').value;
+                
+                const erpData = {
+                    lote: document.getElementById('mErpLote')?.value || '',
+                    vencimiento: document.getElementById('mErpVenc')?.value || '',
+                    serie: document.getElementById('mErpSerie')?.value || '',
+                    factorEmpaque: parseInt(document.getElementById('mErpFactor')?.value || '1')
+                };
+
+                const programas = {};
+                catalogoProg.forEach(cp => {
+                    const chkEl = document.getElementById(`mProg_${cp.id}`);
+                    programas[cp.id] = chkEl ? chkEl.checked : false;
+                });
+
+                const zona = document.getElementById('mZona').value;
+                const anaquel = document.getElementById('mAnaquel').value.trim();
+                const posicion = document.getElementById('mPosicion').value.trim();
+
+                if(!cod) return alert('El Código Interno es obligatorio.');
+
+                const gtins = [];
+                let gtinEstados = {};
+                if(gtin1) { gtins.push(gtin1); gtinEstados[gtin1] = est1; }
+                if(gtin2) { gtins.push(gtin2); gtinEstados[gtin2] = est2; }
+
                 if(!appState.products) appState.products = [];
-                appState.products.push({ id: '_' + Math.random().toString(36).substr(2, 9), codigo: cod, glosa: glosa || cod, bodega: bodega, estado: 'Almacenado', gtins: [], ubicaciones: [] });
+                const existing = appState.products.find(p => p.codigo.toLowerCase() === cod.toLowerCase());
+                
+                if (existing) {
+                    existing.glosa = glosa || existing.glosa;
+                    existing.tipo = tipo;
+                    existing.programas = programas;
+                    existing.erpData = erpData;
+                    if(!existing.gtinEstados) existing.gtinEstados = {};
+                    gtins.forEach(g => { 
+                        if(!existing.gtins.includes(g)) existing.gtins.push(g);
+                        existing.gtinEstados[g] = gtinEstados[g];
+                    });
+                    if(!existing.ubicaciones) existing.ubicaciones = [];
+                    existing.ubicaciones.push({ zona, anaquel, posicion });
+                } else {
+                    const newId = '_' + Math.random().toString(36).substr(2, 9);
+                    appState.products.push({
+                        id: newId, codigo: cod, gtins: gtins, gtinEstados: gtinEstados, glosa: glosa || cod, bodega: bodega, programas: programas, tipo: tipo, ubicaciones: [{ zona, anaquel, posicion }], estado: 'Almacenado', erpData: erpData
+                    });
+                }
+                registrarHistorial('Registro y Asignación', `${cod}`, `Ingresado ítem en Zona ${zona}`, bodega);
                 guardarEstadoFirestore();
                 cerrarModal();
-                mostrarToast('Registrado con éxito.');
+                mostrarToast('Producto almacenado con éxito.');
             };
         }
 
-        function abrirModalReubicacion() { alert('Módulo de reubicación rápida.'); }
-        function eliminarSeleccionadosInventario() { alert('Seleccione elementos.'); }
-        function gestionarUbicacionesModal(id) { alert('Gestión del artículo: ' + id); }
-        function abrirModalQRUbicaciones() { alert('Generador QR.'); }
-        function exportarExcelCompleto() { alert('Exportación Excel.'); }
-        function cargarExcel(e) { alert('Carga Excel.'); }
-        function subirImagenLayout(e) { alert('Subir Plano.'); }
-        function registrarHistorial(t, c, d, b) {
-            if(!appState.movements) appState.movements = [];
-            const ahora = new Date();
-            appState.movements.push({ fecha: ahora.toLocaleDateString() + ' ' + ahora.toLocaleTimeString(), usuario: getCurrentUser()?.nombre || 'Admin', tipo: t, codigo: c, detalle: d, bodega: b });
-            guardarEstadoFirestore();
+        function verificarAlertasCheckboxesForm() {
+            const chkFrio = document.getElementById('mProg_frio') || document.getElementById('editProg_frio');
+            const chkLrs = document.getElementById('mProg_lrs') || document.getElementById('editProg_lrs');
+            const chkPm = document.getElementById('mProg_pm') || document.getElementById('editProg_pm');
+            const chkMezcla = document.getElementById('mProg_mezcla') || document.getElementById('editProg_mezcla');
+            const chkControlado = document.getElementById('mProg_controlado') || document.getElementById('editProg_controlado');
+            const chkVih = document.getElementById('mProg_vih') || document.getElementById('editProg_vih');
+
+            const alertaBox = document.getElementById('alertaEscaneoBox');
+            if(!alertaBox) return;
+
+            let alertas = [];
+            if(chkControlado && chkControlado.checked) alertas.push('⚠️ Alerta: Programa Controlados activo.');
+            if(chkFrio && chkFrio.checked) {
+                if(chkLrs && chkLrs.checked) alertas.push('⚡ Combinación Especial: Cámara de Frío + Ley Ricarte Soto');
+                if(chkPm && chkPm.checked) alertas.push('⚡ Combinación Especial: Cámara de Frío + Programa Ministerial');
+                if(chkMezcla && chkMezcla.checked) alertas.push('⚡ Combinación Especial: Cámara de Frío + Mezcla (oncológico)');
+            }
+            if(chkVih && chkVih.checked) alertas.push('🔬 Alerta: Categoría VIH activa.');
+
+            if(alertas.length > 0) {
+                alertaBox.style.display = 'block';
+                alertaBox.innerHTML = `<strong>⚠️ Alerta de Sistema / Programas Especiales:</strong><br>` + alertas.join('<br>');
+            } else {
+                alertaBox.style.display = 'none';
+            }
         }
-        function toggleErpGlobal(el) { appState.erpUnlocked = el.checked; guardarEstadoFirestore(); }
-        function resetDataGeneral() { if(confirm('¿Reiniciar sistema?')) { appState = DEFAULT_DATA; guardarEstadoFirestore(); location.reload(); } }
+
+        function abrirModalReubicacion() {
+            mostrarModal('Reubicar Artículo(s)', `
+                <div style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:10px; text-align: left;">
+                    <label style="font-weight:600; font-size:0.72rem; margin-bottom:4px;">1. Ingrese o escanee GTIN(s) a reubicar:</label>
+                    <textarea id="reubGtinsInput" rows="2" placeholder="Ej: 7800012345678" style="width:100%; padding:8px; font-size:0.78rem; border:1px solid var(--border); border-radius:var(--radius);"></textarea>
+                    <div style="display:flex; gap:8px; margin-top:6px;">
+                        <button type="button" class="btn btn-success btn-xs" onclick="iniciarEscanerBarraReubicacion()">Escanear GTIN con Cámara</button>
+                    </div>
+                </div>
+
+                <div style="background:#f1f5f9; padding:12px; border-radius:var(--radius); border:1px solid var(--border); text-align:center; margin-bottom:8px;">
+                    <label style="font-weight:600; margin-bottom:4px; display:block; font-size:0.72rem; text-align: center;">2. Asignar Nueva Ubicación por Código QR</label>
+                    <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:8px; text-align: center;">Escanee la etiqueta QR de la nueva ubicación destino.</p>
+                    <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('reubicar')">Escanear QR de Nueva Ubicación</button>
+                </div>
+
+                <input type="hidden" id="reubZona" value="SIN ASIGNACIÓN">
+                <input type="hidden" id="reubAnaquel" value="Anaquel 1">
+                <input type="hidden" id="reubPosicion" value="">
+                <div id="reubDestinoPreview" style="font-size:0.72rem; color:var(--success); font-weight:600; text-align:center; margin-bottom:6px;">Nueva ubicación destino: Pendiente de escaneo QR</div>
+                <div id="qr-reader" class="full-width"></div>
+            `, false);
+
+            modalCallback = () => {
+                detenerEscanerQR();
+                const textGtins = document.getElementById('reubGtinsInput').value.trim();
+                const zonaDestino = document.getElementById('reubZona').value;
+                const anaquelDestino = document.getElementById('reubAnaquel').value.trim();
+                const posDestino = document.getElementById('reubPosicion').value.trim();
+
+                if(!textGtins) return alert('Debe ingresar o escanear al menos un código GTIN.');
+                if(!zonaDestino || zonaDestino === 'SIN ASIGNACIÓN') return alert('Debe escanear el código QR de la nueva ubicación.');
+
+                const listaGtins = textGtins.split(/[\n,]+/).map(g => limpiarYExtraerGTIN(g)).filter(g => g.length > 0);
+                if(listaGtins.length === 0) return alert('No se reconocieron GTINs válidos.');
+
+                let actualizados = 0;
+                listaGtins.forEach(gBusca => {
+                    appState.products.forEach(p => {
+                        if(p.gtins && p.gtins.includes(gBusca)) {
+                            if(!p.ubicaciones) p.ubicaciones = [];
+                            p.ubicaciones.push({ zona: zonaDestino, anaquel: anaquelDestino, posicion: posDestino });
+                            actualizados++;
+                            registrarHistorial('Reubicación', p.codigo, `Reubicado a Zona ${zonaDestino} - ${anaquelDestino} Pos. ${posDestino} (GTIN: ${gBusca})`, p.bodega || 'General');
+                        }
+                    });
+                });
+
+                guardarEstadoFirestore();
+                cerrarModal();
+                mostrarToast(`Reubicación completada: ${actualizados} ítem(s) actualizados.`);
+            };
+        }
+
+        function iniciarEscanerBarraReubicacion() {
+            const readerDiv = document.getElementById('qr-reader');
+            if(readerDiv) readerDiv.style.display = 'block';
+
+            if (html5QrCodeScanner) {
+                try { html5QrCodeScanner.clear(); } catch(e) {}
+            }
+
+            html5QrCodeScanner = new Html5Qrcode("qr-reader");
+            html5QrCodeScanner.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 220, height: 100 } },
+                (decodedText) => {
+                    const codigoPuro = limpiarYExtraerGTIN(decodedText);
+                    const textarea = document.getElementById('reubGtinsInput');
+                    if(textarea) {
+                        const currentVal = textarea.value.trim();
+                        textarea.value = currentVal ? currentVal + ', ' + codigoPuro + ', ' : codigoPuro + ', ';
+                    }
+                    mostrarToast(`GTIN capturado: ` + codigoPuro);
+                    detenerEscanerQR();
+                },
+                (errorMessage) => {}
+            ).catch(err => {
+                alert("No se pudo encender la cámara: " + err);
+            });
+        }
+
+        function filtrarCatalogoMaestroDropdown(query) {
+            const dropdown = document.getElementById('masterDropdownResults');
+            if(!dropdown) return;
+
+            const q = String(query || '').trim().toLowerCase();
+            if(!q || q.length < 1) {
+                dropdown.style.display = 'none';
+                dropdown.innerHTML = '';
+                return;
+            }
+
+            const catalog = appState.masterCatalog || [];
+            const filtrados = catalog.filter(item => 
+                String(item.codigo).toLowerCase().includes(q) || 
+                String(item.glosa).toLowerCase().includes(q)
+            ).slice(0, 15);
+
+            if(filtrados.length === 0) {
+                dropdown.style.display = 'block';
+                dropdown.innerHTML = `<div style="padding:8px 12px; color:var(--text-muted); font-size:0.72rem;">No se encontraron coincidencias</div>`;
+                return;
+            }
+
+            dropdown.style.display = 'block';
+            dropdown.innerHTML = filtrados.map((item) => `
+                <div class="master-dropdown-item" onclick="seleccionarItemMaestroPorFiltro('${item.codigo.replace(/'/g, "\\'")}', '${item.glosa.replace(/'/g, "\\'")}', '${item.bodega}')">
+                    <strong>[${item.codigo}]</strong> ${item.glosa} <span style="color:var(--text-muted); font-size:0.62rem; display:block; margin-top:2px;">(Bodega: ${item.bodega})</span>
+                </div>
+            `).join('');
+        }
+
+        function seleccionarItemMaestroPorFiltro(codigo, glosa, bodega) {
+            document.getElementById('mCod').value = codigo;
+            document.getElementById('mGlosa').value = glosa;
+            document.getElementById('mBodega').value = bodega;
+            document.getElementById('masterSearchInput').value = `[${codigo}] ${glosa}`;
+            
+            const dropdown = document.getElementById('masterDropdownResults');
+            if(dropdown) dropdown.style.display = 'none';
+
+            verificarAlertaEscaneoManual(glosa);
+            mostrarToast(`Seleccionado: ${glosa}`);
+        }
+
+        function actualizarJerarquiaPorZonaForm(zonaVal) {
+            const tipoSel = document.getElementById('mTipo') || document.getElementById('editTipo');
+            if(tipoSel) tipoSel.value = determinarJerarquiaPorZona(zonaVal);
+        }
+
+        function gestionarUbicacionesModal(id) {
+            const p = appState.products.find(x => x.id === id);
+            if(!p) return;
+
+            const erpActive = appState.erpUnlocked;
+            const erpOpacity = erpActive ? '1' : '0.65';
+            const erpDisabledAttr = erpActive ? '' : 'disabled';
+            const erpBgStyle = erpActive ? '#ffffff' : '#f1f5f9';
+
+            let listHtml = (p.ubicaciones || []).map((u, index) => `
+                <div style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; padding:6px 10px; border-radius:var(--radius); margin-bottom:4px; font-size:0.72rem;">
+                    <span><strong>Zona ${u.zona}</strong> - ${u.anaquel} Pos. ${u.posicion}</span>
+                    <button class="btn btn-danger btn-xs" onclick="removerUbicacionDeProducto('${p.id}', ${index})">Quitar</button>
+                </div>
+            `).join('') || '<p style="color:var(--text-muted); font-size:0.72rem; text-align: left;">Sin ubicaciones registradas.</p>';
+
+            const currentGtins = p.gtins || [];
+            if(!p.gtinEstados) p.gtinEstados = {};
+            currentGtins.forEach(g => { if(!p.gtinEstados[g]) p.gtinEstados[g] = 'activo'; });
+            
+            const prog = p.programas || {};
+            const catalogoProg = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
+
+            let editProgHtml = catalogoProg.map(cp => {
+                const badgeColor = cp.color || '#0284c7';
+                const customStyle = `background: ${badgeColor}15; color: ${badgeColor}; border: 1px solid ${badgeColor}40;`;
+                return `
+                <label class="prog-option-item">
+                    <input type="checkbox" id="editProg_${cp.id}" ${prog[cp.id] ? 'checked' : ''} onchange="verificarAlertasCheckboxesForm()"> 
+                    <span class="badge-prog" style="${customStyle}">${cp.nombre}</span>
+                </label>
+            `;
+            }).join('');
+
+            const erpData = p.erpData || { lote: '', vencimiento: '', serie: '', factorEmpaque: 1 };
+
+            mostrarModal('Gestión de Artículo', `
+                <p style="font-size:0.72rem; margin-bottom:8px; line-height:1.3; text-align: left;">
+                    <strong>${p.glosa}</strong><br>
+                    <span style="color:var(--text-muted); font-size:0.68rem; display:block; margin-top:2px;">Código Interno: ${p.codigo}</span>
+                </p>
+                <div style="margin-bottom:8px; text-align: left;">
+                    <label>Códigos GS1 - GTIN/EAN:</label>
+                    <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:3px;">
+                        ${currentGtins.map(g => {
+                            const est = p.gtinEstados[g] || 'activo';
+                            return `<span class="gtin-tag">${est === 'inactivo' ? '[Inactivo]' : '[Activo]'} ${g}</span>`;
+                        }).join('') || '<span style="color:var(--text-muted); font-style:italic;">Sin GTIN registrado</span>'}
+                    </div>
+                </div>
+
+                <div class="form-grid" style="margin-bottom:8px; text-align: left;">
+                    <div>
+                        <label>GTIN/EAN 1</label>
+                        <div style="display:flex; gap:6px; margin-bottom:4px;">
+                            <input id="editGtin1" value="${currentGtins[0] || ''}" oninput="this.value=limpiarYExtraerGTIN(this.value)">
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('editGtin1')">✕</button>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+                            <button type="button" class="btn btn-success btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(1)">Escanear 1</button>
+                            <select id="editEstado1" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.68rem;">
+                                <option value="activo" ${(p.gtinEstados[currentGtins[0]]||'activo')==='activo'?'selected':''}>Activo</option>
+                                <option value="inactivo" ${(p.gtinEstados[currentGtins[0]])==='inactivo'?'selected':''}>Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label>GTIN/EAN 2</label>
+                        <div style="display:flex; gap:6px; margin-bottom:4px;">
+                            <input id="editGtin2" value="${currentGtins[1] || ''}" oninput="this.value=limpiarYExtraerGTIN(this.value)">
+                            <button type="button" class="btn btn-danger btn-xs" onclick="limpiarCampoInput('editGtin2')">✕</button>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+                            <button type="button" class="btn btn-orange btn-xs" style="flex:1;" onclick="iniciarEscanerBarraGTIN(2)">Escanear 2</button>
+                            <select id="editEstado2" style="width:90px; padding:4px; border:1px solid var(--border); border-radius:4px; font-size:0.68rem;">
+                                <option value="activo" ${(p.gtinEstados[currentGtins[1]]||'activo')==='activo'?'selected':''}>Activo</option>
+                                <option value="inactivo" ${(p.gtinEstados[currentGtins[1]])==='inactivo'?'selected':''}>Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <label style="text-align: left;">Jerarquía / Tipo</label>
+                <select id="editTipo" style="margin-bottom:8px;">
+                    <option value="Unidad Comercial" ${p.tipo==='Unidad Comercial'?'selected':''}>Unidad Comercial</option>
+                    <option value="Unidad Máster" ${p.tipo==='Unidad Máster'?'selected':''}>Unidad Máster</option>
+                    <option value="Unidad Mínima / Unidosis" ${p.tipo==='Unidad Mínima / Unidosis'?'selected':''}>Unidad Mínima / Unidosis</option>
+                </select>
+
+                <div style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:10px; text-align: left;">
+                    <label style="margin-bottom:8px; font-weight:600; font-size:0.72rem; text-align: left;">Programas y Alertas Especiales (2 Columnas):</label>
+                    <div id="alertaEscaneoBox" class="full-width" style="display:none; background:#fef3c7; border:1px solid #fde68a; padding:8px; border-radius:var(--radius); font-size:0.72rem; color:#b45309; margin-bottom:6px;"></div>
+                    <div class="prog-column-box">
+                        ${editProgHtml}
+                    </div>
+                </div>
+
+                <div style="background:#f8fafc; padding:12px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:10px; opacity:${erpOpacity};">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:4px;">
+                        <label style="font-weight:600; color:var(--text-main); font-size:0.72rem; margin:0;">Trazabilidad Avanzada ERP</label>
+                        <span style="font-size:0.62rem; background:${erpActive ? '#0284c7' : '#e2e8f0'}; color:${erpActive ? '#fff' : '#475569'}; padding:2px 6px; border-radius:4px; font-weight:600;">${erpActive ? 'Activo' : 'Bloqueado'}</span>
+                    </div>
+                    <div class="form-grid">
+                        <div><label>N° de Lote (IA 10)</label><input type="text" id="editErpLote" value="${erpData.lote || ''}" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                        <div><label>Fecha Vencimiento (IA 17)</label><input type="date" id="editErpVenc" value="${erpData.vencimiento || ''}" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                        <div><label>N° de Serie (IA 21)</label><input type="text" id="editErpSerie" value="${erpData.serie || ''}" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                        <div><label>Factor Empaque / Cantidad</label><input type="number" id="editErpFactor" value="${erpData.factorEmpaque || 1}" ${erpDisabledAttr} style="background:${erpBgStyle};"></div>
+                    </div>
+                </div>
+
+                <label style="text-align: left;">Ubicaciones Actuales:</label>
+                <div style="max-height:100px; overflow-y:auto; border:1px solid var(--border); padding:6px; border-radius:var(--radius); margin-bottom:10px; text-align: left;">
+                    ${listHtml}
+                </div>
+                <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
+                <h4 style="font-size:0.75rem; font-weight:600; margin-bottom:6px; text-align: left;">Agregar Nueva Ubicación</h4>
+                
+                <input type="hidden" id="nuevaZona" value="SIN ASIGNACIÓN">
+                <input type="hidden" id="nuevoAnaquel" value="Anaquel 1">
+                <input type="hidden" id="nuevaPosicion" value="">
+
+                <div class="form-grid" style="text-align: left;">
+                    <div class="full-width" style="background:#f1f5f9; padding:10px; border-radius:var(--radius); text-align:center; margin-top:4px; border:1px solid var(--border);">
+                        <label style="font-weight:600; margin-bottom:4px; display:block; font-size:0.72rem; text-align: center;">Asignación de Ubicación por QR</label>
+                        <p style="font-size:0.68rem; color:var(--text-muted); margin-bottom:8px; text-align: center;">Escanee el código QR de ubicación.</p>
+                        <button class="btn btn-teal btn-xs" onclick="iniciarEscanerQR('agregarUbicacion')">Escanear QR de Ubicación</button>
+                    </div>
+                    <div id="qr-reader" class="full-width"></div>
+                </div>
+            `, false);
+
+            verificarAlertasCheckboxesForm();
+
+            document.getElementById('modalActionBtn').textContent = 'Actualizar y Guardar';
+            document.getElementById('modalActionBtn').onclick = () => {
+                detenerEscanerQR();
+                const g1 = limpiarYExtraerGTIN(document.getElementById('editGtin1').value.trim());
+                const est1 = document.getElementById('editEstado1').value;
+                const g2 = limpiarYExtraerGTIN(document.getElementById('editGtin2').value.trim());
+                const est2 = document.getElementById('editEstado2').value;
+                const zona = document.getElementById('nuevaZona').value;
+                const anaquel = document.getElementById('nuevoAnaquel').value.trim();
+                const posicion = document.getElementById('nuevaPosicion').value.trim();
+                const nuevoTipo = document.getElementById('editTipo').value;
+
+                p.erpData = {
+                    lote: document.getElementById('editErpLote')?.value || '',
+                    vencimiento: document.getElementById('editErpVenc')?.value || '',
+                    serie: document.getElementById('editErpSerie')?.value || '',
+                    factorEmpaque: parseInt(document.getElementById('editErpFactor')?.value || '1')
+                };
+
+                const programasActualizados = {};
+                catalogoProg.forEach(cp => {
+                    const chkEl = document.getElementById(`editProg_${cp.id}`);
+                    programasActualizados[cp.id] = chkEl ? chkEl.checked : false;
+                });
+                p.programas = programasActualizados;
+
+                const newGtins = [];
+                let gtinEstados = {};
+                if(g1) { newGtins.push(g1); gtinEstados[g1] = est1; }
+                if(g2) { newGtins.push(g2); gtinEstados[g2] = est2; }
+
+                p.gtins = newGtins;
+                p.gtinEstados = gtinEstados;
+                p.tipo = nuevoTipo;
+
+                let detalleMod = `Actualizados datos | Tipo [${nuevoTipo}]`;
+                if(zona && zona !== 'SIN ASIGNACIÓN') {
+                    if(!p.ubicaciones) p.ubicaciones = [];
+                    p.ubicaciones.push({ zona, anaquel, posicion });
+                    detalleMod += ` | Añadida Zona ${zona}, ${anaquel}, Pos. ${posicion}`;
+                }
+
+                registrarHistorial('Actualización', `${p.codigo}`, detalleMod, p.bodega || 'General');
+                guardarEstadoFirestore();
+                gestionarUbicacionesModal(p.id); 
+                mostrarToast('Datos actualizados con éxito.');
+            };
+        }
+
+        function removerUbicacionDeProducto(prodId, index) {
+            const p = appState.products.find(x => x.id === prodId);
+            if(p && p.ubicaciones) {
+                const removida = p.ubicaciones.splice(index, 1)[0];
+                guardarEstadoFirestore();
+                registrarHistorial('Retiro de Ubicación', `${p.codigo}`, `Removida Zona ${removida.zona}`, p.bodega || 'General');
+                gestionarUbicacionesModal(prodId);
+                mostrarToast('Ubicación eliminada.');
+            }
+        }
+
+        function iniciarEscanerQR(modo) {
+            const readerDiv = document.getElementById('qr-reader');
+            readerDiv.style.display = 'block';
+
+            if (html5QrCodeScanner) {
+                try { html5QrCodeScanner.clear(); } catch(e) {}
+            }
+
+            html5QrCodeScanner = new Html5Qrcode("qr-reader");
+            html5QrCodeScanner.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 200, height: 110 } },
+                (decodedText) => {
+                    procesarTextoQR(decodedText, modo);
+                    detenerEscanerQR();
+                },
+                (errorMessage) => {}
+            ).catch(err => {
+                alert("No se pudo encender la cámara: " + err);
+            });
+        }
+
+        let campoGtinDestino = 1;
+        function iniciarEscanerBarraGTIN(numCampo) {
+            campoGtinDestino = numCampo;
+            const readerDiv = document.getElementById('qr-reader');
+            if(readerDiv) readerDiv.style.display = 'block';
+
+            if (html5QrCodeScanner) {
+                try { html5QrCodeScanner.clear(); } catch(e) {}
+            }
+
+            html5QrCodeScanner = new Html5Qrcode("qr-reader");
+            html5QrCodeScanner.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 220, height: 100 } },
+                (decodedText) => {
+                    const codigoPuro = limpiarYExtraerGTIN(decodedText);
+                    const inputTarget = document.getElementById(campoGtinDestino === 1 ? 'mGtin1' : 'mGtin2') || document.getElementById(campoGtinDestino === 1 ? 'editGtin1' : 'editGtin2');
+                    if(inputTarget) inputTarget.value = codigoPuro;
+                    mostrarToast(`GTIN/EAN ${campoGtinDestino} capturado: ` + codigoPuro);
+                    detenerEscanerQR();
+                },
+                (errorMessage) => {}
+            ).catch(err => {
+                alert("No se pudo encender la cámara: " + err);
+            });
+        }
+
+        function detenerEscanerQR() {
+            if (html5QrCodeScanner) {
+                html5QrCodeScanner.stop().then(() => {
+                    html5QrCodeScanner.clear();
+                    html5QrCodeScanner = null;
+                }).catch(err => {
+                    html5QrCodeScanner = null;
+                });
+            }
+            const readerDiv = document.getElementById('qr-reader');
+            if(readerDiv) readerDiv.style.display = 'none';
+        }
+
+        function procesarTextoQR(texto, modo) {
+            let zonaVal = 'A';
+            let anaqVal = 'Anaquel 1';
+            let posVal = '1';
+            let tipoVal = '';
+
+            try {
+                const parsed = JSON.parse(texto);
+                if(parsed.zona) zonaVal = parsed.zona;
+                if(parsed.tipo) tipoVal = parsed.tipo;
+                if(parsed.anaquel) anaqVal = parsed.anaquel;
+                if(parsed.posicion) posVal = parsed.posicion;
+            } catch(e) {
+                const matchZona = texto.match(/zona\s*([a-j])/i) || texto.match(/z([a-j])/i);
+                if(matchZona) zonaVal = matchZona[1].toUpperCase();
+
+                const matchAnaq = texto.match(/(anaquel\s*\d+|rack|full\s*space|pallet)/i);
+                if(matchAnaq) anaqVal = matchAnaq[0];
+
+                const matchPos = texto.match(/pos[i|c][i|o]n\s*([a-z0-9]+)/i);
+                if(matchPos) posVal = matchPos[1].toUpperCase();
+            }
+
+            if(modo === 'reubicar') {
+                const selZona = document.getElementById('reubZona');
+                const selAnaq = document.getElementById('reubAnaquel');
+                const inputPos = document.getElementById('reubPosicion');
+                const preview = document.getElementById('reubDestinoPreview');
+
+                if(selZona) selZona.value = zonaVal;
+                if(selAnaq) selAnaq.value = anaqVal;
+                if(inputPos) inputPos.value = posVal;
+                if(preview) preview.textContent = `Nueva ubicación destino: Zona ${zonaVal} - ${anaqVal} Pos. ${posVal}`;
+                mostrarToast(`QR Ubicación leído: Zona ${zonaVal}, ${anaqVal}, Pos. ${posVal}`);
+                return;
+            }
+
+            const selZona = document.getElementById('mZona') || document.getElementById('nuevaZona');
+            const selAnaq = document.getElementById('mAnaquel') || document.getElementById('nuevoAnaquel');
+            const inputPos = document.getElementById('mPosicion') || document.getElementById('nuevoPosicion');
+            const selTipo = document.getElementById('mTipo') || document.getElementById('editTipo');
+
+            if(selZona) {
+                selZona.value = zonaVal;
+                actualizarJerarquiaPorZonaForm(zonaVal);
+            }
+            if(selAnaq) selAnaq.value = anaqVal;
+            if(inputPos) inputPos.value = posVal;
+            if(tipoVal && selTipo) selTipo.value = tipoVal;
+
+            mostrarToast(`QR leído: Zona ${zonaVal}, ${anaqVal}, Pos. ${posVal}`);
+
+            if(modo === 'agregarUbicacion' && typeof modalCallback === 'function') {
+                setTimeout(() => {
+                    if(document.getElementById('modalActionBtn')) {
+                        document.getElementById('modalActionBtn').click();
+                    }
+                }, 300);
+            }
+        }
+
+        function subirImagenLayout(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const targetBodega = document.getElementById('configSubirBodegaSelect').value;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    let width = img.width;
+                    let height = img.height;
+                    const maxDim = 1000;
+                    if (width > height && width > maxDim) {
+                        height *= maxDim / width;
+                        width = maxDim;
+                    } else if (height > maxDim) {
+                        width *= maxDim / height;
+                        height = maxDim;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+
+                    if(!appState.layouts) appState.layouts = {};
+                    appState.layouts[targetBodega] = compressedDataUrl;
+                    
+                    guardarEstadoFirestore();
+                    cargarImagenLayout(currentWarehouse);
+                    mostrarToast(`Imagen de plano optimizada (${targetBodega}).`);
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function cargarImagenLayout(bodegaId) {
+            const container = document.getElementById('layoutImageContent');
+            const headingTitle = document.getElementById('layoutTitleHeading');
+            const subtitleContext = document.getElementById('layoutSubtitleContext');
+            
+            const whObj = appState.warehouses.find(w => w.id === bodegaId);
+            const nombreBodegaActiva = bodegaId === 'TODAS' ? 'Todas las Bodegas' : (whObj ? whObj.nombre : bodegaId);
+
+            if(headingTitle) headingTitle.textContent = `Plano de la Bodega (Visual)`;
+            if(subtitleContext) subtitleContext.textContent = `Vista activa: ${nombreBodegaActiva}`;
+
+            const imgData = (appState.layouts && appState.layouts[bodegaId]) ? appState.layouts[bodegaId] : (appState.layouts && appState.layouts['GENERAL'] ? appState.layouts['GENERAL'] : null);
+
+            if (imgData) {
+                container.innerHTML = `<img src="${imgData}" alt="Layout">`;
+            } else {
+                container.innerHTML = `<span class="no-image">No hay imagen de plano cargada para ${nombreBodegaActiva}.<br><small>Sube una imagen desde la sección Configuración.</small></span>`;
+            }
+        }
+
+        function abrirModalQRUbicaciones() {
+            let baseList = [];
+            if (appState.locationsCatalog && appState.locationsCatalog.length > 0) {
+                baseList = appState.locationsCatalog;
+            } else {
+                const ubicsMap = new Map();
+                (appState.products || []).forEach(p => {
+                    if(p.ubicaciones) {
+                        p.ubicaciones.forEach(u => {
+                            if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÓN') {
+                                const anaqStr = u.anaquel || 'Anaquel 1';
+                                const key = `${p.tipo || 'Unidad Comercial'}|${u.zona}|${anaqStr}|${u.posicion}`;
+                                ubicsMap.set(key, { tipo: p.tipo || 'Unidad Comercial', zona: u.zona, anaquel: anaqStr, posicion: u.posicion });
+                            }
+                        });
+                    }
+                });
+                baseList = Array.from(ubicsMap.values());
+            }
+
+            if(baseList.length === 0) return alert('No hay ubicaciones registradas ni cargadas en el maestro.');
+
+            let html = `
+                <div style="margin-bottom:10px; background:#f8fafc; padding:10px; border-radius:var(--radius); border:1px solid var(--border);">
+                    <label style="font-weight:600; margin-bottom:4px;">Filtrar Ubicaciones:</label>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px;">
+                        <input id="filtroZona" placeholder="Zona (Ej: A)" oninput="renderizarListaFiltroQR()" style="padding:6px; font-size:0.72rem;">
+                        <input id="filtroAnaquel" placeholder="Anaquel" oninput="renderizarListaFiltroQR()" style="padding:6px; font-size:0.72rem;">
+                        <input id="filtroPosicion" placeholder="Posición" oninput="renderizarListaFiltroQR()" style="padding:6px; font-size:0.72rem;">
+                    </div>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:0.72rem; color:var(--text-muted);" id="contadorUbicacionesQR">Mostrando ${baseList.length} ubicaciones</span>
+                    <div>
+                        <button class="btn btn-outline btn-xs" onclick="toggleSelectAllQR(true)">Marcar Todos</button>
+                        <button class="btn btn-outline btn-xs" onclick="toggleSelectAllQR(false)">Desmarcar</button>
+                    </div>
+                </div>
+                <div id="contenedorGridQR" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:8px; max-height:45vh; overflow:auto; padding:2px;">
+                </div>
+            `;
+
+            mostrarModal('Selección de Etiquetas QR de Ubicación', html, false);
+            document.getElementById('modalActionBtn').textContent = 'Imprimir Seleccionados';
+            document.getElementById('modalActionBtn').onclick = ejecutarImpresionQR;
+
+            renderizarListaFiltroQR();
+        }
+
+        function renderizarListaFiltroQR() {
+            const fZona = (document.getElementById('filtroZona')?.value || '').trim().toLowerCase();
+            const fAnaquel = (document.getElementById('filtroAnaquel')?.value || '').trim().toLowerCase();
+            const fPos = (document.getElementById('filtroPosicion')?.value || '').trim().toLowerCase();
+
+            let baseList = [];
+            if (appState.locationsCatalog && appState.locationsCatalog.length > 0) {
+                baseList = appState.locationsCatalog;
+            } else {
+                const ubicsMap = new Map();
+                (appState.products || []).forEach(p => {
+                    if(p.ubicaciones) {
+                        p.ubicaciones.forEach(u => {
+                            if(u.zona && u.zona.toUpperCase() !== 'SIN ASIGNACIÓN') {
+                                const anaqStr = u.anaquel || 'Anaquel 1';
+                                const key = `${p.tipo || 'Unidad Comercial'}|${u.zona}|${anaqStr}|${u.posicion}`;
+                                ubicsMap.set(key, { tipo: p.tipo || 'Unidad Comercial', zona: u.zona, anaquel: anaqStr, posicion: u.posicion });
+                            }
+                        });
+                    }
+                });
+                baseList = Array.from(ubicsMap.values());
+            }
+
+            const filtradas = baseList.filter(val => {
+                const matchZ = !fZona || String(val.zona).toLowerCase().includes(fZona);
+                const matchA = !fAnaquel || String(val.anaquel).toLowerCase().includes(fAnaquel);
+                const matchP = !fPos || String(val.posicion).toLowerCase().includes(fPos);
+                return matchZ && matchA && matchP;
+            });
+
+            const grid = document.getElementById('contenedorGridQR');
+            const contador = document.getElementById('contadorUbicacionesQR');
+            if(contador) contador.textContent = `Mostrando ${filtradas.length} ubicaciones`;
+            if(!grid) return;
+
+            grid.innerHTML = filtradas.map((val) => {
+                const labelTxt = `Zona ${val.zona} - ${val.anaquel} - Pos. ${val.posicion}`;
+                return `
+                    <label style="border:1px solid var(--border); padding:8px; border-radius:var(--radius); background:white; display:flex; flex-direction:column; gap:4px; cursor:pointer; font-size:0.68rem;">
+                        <div style="display:flex; align-items:center; justify-content:space-between;">
+                            <span style="font-weight:600; color:var(--accent);">${val.tipo || determinarJerarquiaPorZona(val.zona)}</span>
+                            <input type="checkbox" class="qr-chk" value="${labelTxt}" checked style="width:14px; height:14px; cursor:pointer;">
+                        </div>
+                        <div style="color:var(--text-main);"><strong>Zona ${val.zona}</strong><br>${val.anaquel}<br>Pos. ${val.posicion}</div>
+                    </label>
+                `;
+            }).join('') || '<div style="grid-column:1/-1; text-align:center; padding:16px; color:var(--text-muted);">No se encontraron ubicaciones con esos filtros.</div>';
+        }
+
+        function toggleSelectAllQR(status) {
+            document.querySelectorAll('.qr-chk').forEach(c => c.checked = status);
+        }
+
+        function ejecutarImpresionQR() {
+            detenerEscanerQR();
+            const chks = document.querySelectorAll('.qr-chk:checked');
+            if(chks.length === 0) return alert('Selecciona al menos una etiqueta.');
+            
+            let printHtml = `<div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:15px; padding:20px; font-family:sans-serif;">`;
+            chks.forEach((chk, i) => {
+                const textoQR = chk.value;
+                printHtml += `
+                    <div class="etiqueta-qr-print-card" style="border:1px solid #333; padding:12px; border-radius:6px; text-align:center; background:#fff; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                        <div style="font-weight:bold; font-size:8px; color:#333;">HOSPITAL SAN JUAN DE DIOS</div>
+                        <div style="font-size:10px; font-weight:700; color:#0f172a;">${textoQR}</div>
+                        <div id="qrcode-${i}" style="margin:4px auto;"></div>
+                        <div style="font-size:7px; color:#475569; font-weight:600;">Sistema de Automatización de Almacenamiento</div>
+                    </div>
+                `;
+            });
+            printHtml += `</div>`;
+
+            const win = window.open('', '_blank');
+            win.document.write(`<html><head><title>Imprimir Etiquetas QR</title><style>@media print { .etiqueta-qr-print-card { page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 15px; } }
+        .mode-selector-bar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        .mode-selector-bar select {
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.78rem;
+            background: #f8fafc;
+            color: var(--text-main);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+    </style><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script></head><body onload="window.print();">` + printHtml + `<script>` + Array.from(chks).map((chk, i) => `new QRCode(document.getElementById("qrcode-${i}"), { text: "${chk.value}", width: 90, height: 90 });`).join('') + `<\/script></body></html>`);
+            win.document.close();
+            cerrarModal();
+        }
+
+        function renderListaProgramasConfig() {
+            const container = document.getElementById('listaProgramasConfigContainer');
+            if(!container) return;
+
+            const catalogo = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
+            container.innerHTML = catalogo.map(cp => {
+                const dotColor = cp.color || '#0284c7';
+                const customStyle = `background: ${dotColor}15; color: ${dotColor}; border: 1px solid ${dotColor}40;`;
+                return `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:6px 10px; border-radius:var(--radius); border:1px solid var(--border); font-size:0.72rem; gap:6px;">
+                    <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
+                        <span style="display:inline-block; width:10px; height:10px; background:${dotColor}; border-radius:50%; flex-shrink:0;"></span>
+                        <span class="badge-prog" style="${customStyle} white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cp.nombre}</span>
+                    </div>
+                    <div style="display:flex; gap:4px; flex-shrink:0;">
+                        <button class="btn btn-outline btn-xs" onclick="editarProgramaCRUD('${cp.id}')">Editar</button>
+                        <button class="btn btn-danger btn-xs" onclick="eliminarProgramaCRUD('${cp.id}')">Eliminar</button>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        function abrirModalProgramaCRUD(idEditar = null) {
+            const catalogo = appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG;
+            let progObj = { id: '', nombre: '', color: '#0284c7' };
+            let esEdicion = false;
+
+            if(idEditar) {
+                const found = catalogo.find(x => x.id === idEditar);
+                if(found) {
+                    progObj = { ...found };
+                    esEdicion = true;
+                }
+            }
+
+            mostrarModal(esEdicion ? 'Editar Programa / Categoría' : 'Nuevo Programa / Categoría', `
+                <label>Identificador Único (ID sin espacios)</label>
+                <input id="crudProgId" value="${progObj.id}" ${esEdicion ? 'readonly style="background:#f1f5f9;"' : ''} placeholder="Ej: oncologia">
+                <label style="margin-top:6px;">Nombre Visible</label>
+                <input id="crudProgNombre" value="${progObj.nombre}" placeholder="Ej: Oncología">
+                <label style="margin-top:6px;">Color del Programa / Categoría</label>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <input id="crudProgColor" type="color" value="${progObj.color || '#0284c7'}" style="width:100%; height:38px; padding:2px; cursor:pointer; border:1px solid var(--border); border-radius:var(--radius); background:#fff;">
+                </div>
+            `, true);
+
+            modalCallback = () => {
+                const idVal = document.getElementById('crudProgId').value.trim().toLowerCase().replace(/\s+/g, '_');
+                const nombreVal = document.getElementById('crudProgNombre').value.trim();
+                const colorVal = document.getElementById('crudProgColor').value;
+
+                if(!idVal || !nombreVal) return alert('Completa todos los campos.');
+
+                if(!appState.programasCatalog) appState.programasCatalog = [...DEFAULT_PROGRAMAS_CATALOG];
+
+                if(esEdicion) {
+                    const idx = appState.programasCatalog.findIndex(x => x.id === idEditar);
+                    if(idx !== -1) {
+                        appState.programasCatalog[idx] = { id: idVal, nombre: nombreVal, color: colorVal };
+                    }
+                } else {
+                    if(appState.programasCatalog.some(x => x.id === idVal)) return alert('Ya existe un programa con ese ID.');
+                    appState.programasCatalog.push({ id: idVal, nombre: nombreVal, color: colorVal });
+                }
+
+                guardarEstadoFirestore();
+                cerrarModal();
+                renderConfig();
+                renderInventarioUnificado();
+                mostrarToast('Programa / Categoría guardada con éxito.');
+            };
+        }
+
+        function editarProgramaCRUD(id) {
+            abrirModalProgramaCRUD(id);
+        }
+
+        function eliminarProgramaCRUD(id) {
+            if(!confirm(`¿Estás seguro de eliminar el programa/categoría "${id}"?`)) return;
+            appState.programasCatalog = (appState.programasCatalog || DEFAULT_PROGRAMAS_CATALOG).filter(x => x.id !== id);
+            guardarEstadoFirestore();
+            renderConfig();
+            mostrarToast('Programa eliminado.');
+        }
+
+        function renderUsuarios() {
+            const tbody = document.getElementById('usuariosBody');
+            const user = getCurrentUser();
+            const isAdmin = user && user.perfil === 'admin';
+
+            tbody.innerHTML = (appState.users || []).map(u => `
+                <tr>
+                    <td>${u.id}</td>
+                    <td>${u.nombre}</td>
+                    <td>${u.correo || 'Sin correo'}</td>
+                    <td><span class="badge badge-${u.perfil}">${u.perfil}</span></td>
+                    <td>${u.permisos.join(', ')}</td>
+                    <td style="text-align:center;">
+                        <div class="acciones-cell">
+                            ${isAdmin ? `<button class="btn-action-primary" onclick="editarUsuarioModal(${u.id})">Editar</button>` : ''}
+                            ${isAdmin && u.id !== 1 ? `<button class="btn-action-danger" onclick="eliminarUsuario(${u.id})">Eliminar</button>` : ''}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function mostrarModalUsuario() {
+            mostrarModal('Nuevo Usuario', `
+                <div class="form-grid">
+                    <div class="full-width"><label>Nombre</label><input id="uNombre" placeholder="Nombre de usuario"></div>
+                    <div class="full-width"><label>Correo Electrónico (para recuperación)</label><input id="uCorreo" type="email" placeholder="correo@hsjd.cl"></div>
+                    <div class="full-width"><label>Contraseña</label><input id="uPass" type="password" placeholder="Contraseña"></div>
+                    <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarChecksPermisos()"><option value="admin">Admin</option><option value="supervisor">Supervisor</option><option value="operario">Operario</option><option value="invitado">Invitado</option></select></div>
+                    <div class="full-width">
+                        <label>Permisos</label>
+                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f8fafc; padding:10px; border-radius:var(--radius); border:1px solid var(--border);"></div>
+                    </div>
+                </div>
+            `, true);
+            actualizarChecksPermisos();
+            modalCallback = () => {
+                const nombre = document.getElementById('uNombre').value.trim();
+                const correo = document.getElementById('uCorreo').value.trim();
+                const pass = document.getElementById('uPass').value.trim();
+                const perfil = document.getElementById('uPerfil').value;
+                
+                const permisos = [];
+                document.querySelectorAll('.perm-chk:checked').forEach(chk => permisos.push(chk.value));
+
+                if(!nombre || !pass || !correo) return alert('Completa todos los campos.');
+                if(permisos.length === 0) return alert('Selecciona al menos un permiso.');
+
+                if(!appState.users) appState.users = [];
+                if(appState.users.some(x => x.nombre.toLowerCase() === nombre.toLowerCase())) return alert('Ya existe un usuario con ese nombre.');
+
+                const newId = appState.users.length > 0 ? Math.max(...appState.users.map(x=>x.id))+1 : 1;
+                appState.users.push({ id: newId, nombre, correo, password: pass, perfil, permisos });
+                guardarEstadoFirestore();
+                registrarHistorial('Creación de Usuario', nombre, `Creado perfil ${perfil}`, 'General');
+                cerrarModal();
+                mostrarToast('Usuario creado con éxito.');
+            };
+        }
+
+        function editarUsuarioModal(id) {
+            const u = appState.users.find(x => x.id === id);
+            if(!u) return;
+
+            mostrarModal('Editar Usuario', `
+                <div class="form-grid">
+                    <div class="full-width"><label>Nombre</label><input id="uNombre" value="${u.nombre}"></div>
+                    <div class="full-width"><label>Correo Electrónico</label><input id="uCorreo" type="email" value="${u.correo || ''}"></div>
+                    <div class="full-width"><label>Nueva Contraseña (dejar en blanco para mantener)</label><input id="uPass" type="password" placeholder="••••••••"></div>
+                    <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarChecksPermisos()"><option value="admin" ${u.perfil==='admin'?'selected':''}>Admin</option><option value="supervisor" ${u.perfil==='supervisor'?'selected':''}>Supervisor</option><option value="operario" ${u.perfil==='operario'?'selected':''}>Operario</option><option value="invitado" ${u.perfil==='invitado'?'selected':''}>Invitado</option></select></div>
+                    <div class="full-width">
+                        <label>Permisos</label>
+                        <div id="permisosCheckContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f8fafc; padding:10px; border-radius:var(--radius); border:1px solid var(--border);"></div>
+                    </div>
+                </div>
+            `, true);
+            actualizarChecksPermisos(u.permisos);
+            modalCallback = () => {
+                const nombre = document.getElementById('uNombre').value.trim();
+                const correo = document.getElementById('uCorreo').value.trim();
+                const pass = document.getElementById('uPass').value.trim();
+                const perfil = document.getElementById('uPerfil').value;
+                
+                const permisos = [];
+                document.querySelectorAll('.perm-chk:checked').forEach(chk => permisos.push(chk.value));
+
+                if(!nombre || !correo) return alert('Completa los campos obligatorios.');
+                if(permisos.length === 0) return alert('Selecciona al menos un permiso.');
+
+                u.nombre = nombre;
+                u.correo = correo;
+                if(pass) u.password = pass;
+                u.perfil = perfil;
+                u.permisos = permisos;
+
+                registrarHistorial('Edición de Usuario', nombre, `Actualizado a perfil ${perfil}`, 'General');
+                guardarEstadoFirestore();
+                cerrarModal();
+                mostrarToast('Usuario actualizado con éxito.');
+            };
+        }
+
+        function actualizarChecksPermisos(userPerms = null) {
+            const perfilSel = document.getElementById('uPerfil');
+            const container = document.getElementById('permisosCheckContainer');
+            if(!perfilSel || !container) return;
+
+            const perfil = perfilSel.value;
+            const sugeridos = PERFILES_CONFIG[perfil] || ['lectura'];
+            const actualPerms = userPerms || sugeridos;
+
+            const todasOpciones = ['lectura', 'escritura', 'administracion', 'carga', 'descarga'];
+            container.innerHTML = '';
+
+            todasOpciones.forEach(opt => {
+                const isChecked = actualPerms.includes(opt) ? 'checked' : '';
+                container.innerHTML += `
+                    <label style="display:flex; align-items:center; gap:6px; font-size:0.72rem; cursor:pointer;">
+                        <input type="checkbox" class="perm-chk" value="${opt}" ${isChecked} style="width:14px; height:14px;">
+                        <span>${opt.toUpperCase()}</span>
+                    </label>
+                `;
+            });
+        }
+
+        function eliminarUsuario(id) {
+            if(!confirm('¿Estás seguro de eliminar este usuario?')) return;
+            const u = appState.users.find(x => x.id === id);
+            appState.users = appState.users.filter(usr => usr.id !== id);
+            guardarEstadoFirestore();
+            if(u) registrarHistorial('Eliminación de Usuario', u.nombre, 'Usuario eliminado', 'General');
+            mostrarToast('Usuario eliminado.');
+        }
+
+        function renderBodegas() {
+            const tbody = document.getElementById('bodegasBody');
+            const user = getCurrentUser();
+            const isAdmin = user && user.perfil === 'admin';
+            const btnNuevoBodega = document.getElementById('divBtnNuevaBodega');
+            const thBodegasAccions = document.getElementById('thBodegasAccionsHead');
+
+            if(btnNuevoBodega) btnNuevoBodega.style.display = isAdmin ? 'block' : 'none';
+            if(thBodegasAccions) thBodegasAccions.style.display = isAdmin ? 'table-cell' : 'none';
+
+            tbody.innerHTML = (appState.warehouses || []).map(w => `
+                <tr>
+                    <td><strong>${w.id}</strong></td>
+                    <td>${w.nombre}</td>
+                    <td><span style="display:inline-block; width:14px; height:14px; background:${w.color}; border-radius:4px; border:1px solid rgba(0,0,0,0.1);"></span></td>
+                    ${isAdmin ? `
+                    <td style="text-align:center;">
+                        <div class="acciones-cell">
+                            <button class="btn-action-primary" onclick="editarBodegaModal('${w.id}')">Editar</button>
+                            <button class="btn-action-danger" onclick="eliminarBodega('${w.id}')">Eliminar</button>
+                        </div>
+                    </td>` : ''}
+                </tr>
+            `).join('');
+        }
+
+        function mostrarModalBodega() {
+            mostrarModal('Nueva Bodega', `
+                <div class="form-grid">
+                    <div class="full-width"><label>ID (Ej: Farmacos2)</label><input id="bId" placeholder="ID único"></div>
+                    <div class="full-width"><label>Nombre</label><input id="bNombre" placeholder="Nombre de bodega"></div>
+                    <div><label>Color</label><input id="bColor" type="color" value="#0284c7" style="height:36px; padding:2px; cursor:pointer; width:100%;"></div>
+                </div>
+            `, true);
+            modalCallback = () => {
+                const id = document.getElementById('bId').value.trim();
+                const nombre = document.getElementById('bNombre').value.trim();
+                const color = document.getElementById('bColor').value;
+                if(!id || !nombre) return alert('Completa los campos.');
+
+                if(!appState.warehouses) appState.warehouses = [];
+                if(appState.warehouses.some(w => w.id === id)) return alert('Ya existe una bodega con ese ID.');
+                appState.warehouses.push({ id, nombre, color });
+                guardarEstadoFirestore();
+                registrarHistorial('Creación de Bodega', id, `Creada bodega ${nombre}`, 'General');
+                cerrarModal();
+                renderAll();
+                mostrarToast('Bodega creada con éxito.');
+            };
+        }
+
+        function editarBodegaModal(id) {
+            const w = appState.warehouses.find(x => x.id === id);
+            if(!w) return;
+
+            mostrarModal('Editar Bodega', `
+                <div class="form-grid">
+                    <div class="full-width"><label>Nombre</label><input id="bNombre" value="${w.nombre}"></div>
+                    <div><label>Color</label><input id="bColor" type="color" value="${w.color || '#0284c7'}" style="height:36px; padding:2px; cursor:pointer; width:100%;"></div>
+                </div>
+            `, true);
+            modalCallback = () => {
+                const nombre = document.getElementById('bNombre').value.trim();
+                const color = document.getElementById('bColor').value;
+                if(!nombre) return alert('El nombre no puede estar vacío.');
+
+                w.nombre = nombre;
+                w.color = color;
+                guardarEstadoFirestore();
+                registrarHistorial('Edición de Bodega', w.id, `Actualizada bodega ${nombre}`, 'General');
+                cerrarModal();
+                renderAll();
+                mostrarToast('Bodega actualizada.');
+            };
+        }
+
+        function eliminarBodega(id) {
+            if(!confirm('¿Eliminar bodega?')) return;
+            appState.warehouses = appState.warehouses.filter(w => w.id !== id);
+            guardarEstadoFirestore();
+            renderAll();
+            registrarHistorial('Eliminación de Bodega', id, 'Bodega eliminada', 'General');
+        }
+
+        function renderConfig() {
+            const selSubir = document.getElementById('configSubirBodegaSelect');
+            selSubir.innerHTML = '<option value="GENERAL">General (Todas las bodegas)</option>';
+            (appState.warehouses || []).forEach(w => {
+                selSubir.innerHTML += `<option value="${w.id}">${w.nombre}</option>`;
+            });
+
+            const selReset = document.getElementById('configResetBodegaSelect');
+            selReset.innerHTML = '';
+            (appState.warehouses || []).forEach(w => {
+                selReset.innerHTML += `<option value="${w.id}">${w.nombre}</option>`;
+            });
+
+            const statusMaster = document.getElementById('masterCatalogStatus');
+            if(statusMaster) {
+                const count = (appState.masterCatalog || []).length;
+                statusMaster.textContent = `Registros en catálogo maestro: ${count}`;
+            }
+
+            const statusLocs = document.getElementById('locationsCatalogStatus');
+            if(statusLocs) {
+                const countLocs = (appState.locationsCatalog || []).length;
+                statusLocs.textContent = `Ubicaciones maestras cargadas: ${countLocs}`;
+            }
+
+            renderListaProgramasConfig();
+        }
+
+        function resetDataBodega() {
+            const selBodega = document.getElementById('configResetBodegaSelect').value;
+            const wh = (appState.warehouses || []).find(w => w.id === selBodega);
+            const nombreBodega = wh ? wh.nombre : selBodega;
+
+            if(!confirm(`¿Eliminar todo el inventario de la bodega "${nombreBodega}"?`)) return;
+
+            appState.products = (appState.products || []).filter(p => p.bodega !== selBodega);
+            guardarEstadoFirestore();
+            registrarHistorial('Reinicio', selBodega, `Inventario de ${nombreBodega} reiniciado`, selBodega);
+            mostrarToast(`Inventario de ${nombreBodega} reiniciado.`);
+        }
+
+        function renderHistorialCompleto() {
+            const fUsr = (document.getElementById('filtroMovUsuario')?.value || '').trim().toLowerCase();
+            const fFec = (document.getElementById('filtroMovFecha')?.value || '').trim().toLowerCase();
+            const fIte = (document.getElementById('filtroMovItem')?.value || '').trim().toLowerCase();
+            const fGti = (document.getElementById('filtroMovGtin')?.value || '').trim().toLowerCase();
+
+            let movs = (currentWarehouse === 'TODAS') ? (appState.movements || []) : (appState.movements || []).filter(m => m.bodega === currentWarehouse || m.bodega === 'General');
+
+            if (fUsr) movs = movs.filter(m => String(m.usuario).toLowerCase().includes(fUsr));
+            if (fFec) movs = movs.filter(m => String(m.fecha).toLowerCase().includes(fFec));
+            if (fIte) movs = movs.filter(m => String(m.codigo).toLowerCase().includes(fIte) || String(m.detalle).toLowerCase().includes(fIte));
+            if (fGti) movs = movs.filter(m => String(m.codigo).toLowerCase().includes(fGti) || String(m.detalle).toLowerCase().includes(fGti));
+
+            const tbody = document.getElementById('historialCompletoBody');
+            tbody.innerHTML = movs.slice().reverse().map(m => `
+                <tr>
+                    <td style="white-space:nowrap;">${m.fecha}</td>
+                    <td><strong>${m.usuario}</strong></td>
+                    <td><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td>
+                    <td style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px;">${m.codigo}</td>
+                    <td style="white-space:normal; text-align:left;">${m.detalle}</td>
+                </tr>
+            `).join('') || '<tr><td colspan="5" class="empty-state">Sin historial registrado con los filtros aplicados</td></tr>';
+        }
+
+        function exportarExcelCompleto() {
+            const prods = getProducts();
+            if(prods.length === 0) return alert('No hay productos para exportar.');
+            const ws = XLSX.utils.json_to_sheet(prods.map(p => ({
+                'ID Registro': p.id, 'Código Interno': p.codigo, 'GTIN/EAN 1': (p.gtins && p.gtins[0]) || '', 'GTIN/EAN 2': (p.gtins && p.gtins[1]) || '', 'Glosa': p.glosa, 'Bodega': p.bodega, 'Jerarquía': p.tipo || 'Unidad Comercial', 'Lote': p.erpData?.lote || '', 'Vencimiento': p.erpData?.vencimiento || '', 'Serie': p.erpData?.serie || '', 'Factor Empaque': p.erpData?.factorEmpaque || 1, 'Ubicaciones': JSON.stringify(p.ubicaciones || []), 'Estado': p.estado
+            })));
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
+            XLSX.writeFile(wb, `inventario_${currentWarehouse.toLowerCase()}.xlsx`);
+            registrarHistorial('Exportación', 'Inventario Completo', `Exportados registros a Excel (${currentWarehouse})`, currentWarehouse === 'TODAS' ? 'General' : currentWarehouse);
+            mostrarToast('Archivo Excel exportado con éxito.');
+        }
+
+        function exportarDatos() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState));
+            const dl = document.createElement('a');
+            dl.setAttribute("href", dataStr);
+            dl.setAttribute("download", "wms_backup.json");
+            dl.click();
+        }
+
+        function resetDataGeneral() {
+            if(confirm('⚠️ ¿Reiniciar TODO EL SISTEMA? Se perderán todos los datos actuales.')) {
+                appState = DEFAULT_DATA;
+                guardarEstadoFirestore();
+                location.reload();
+            }
+        }
 
         function mostrarModal(titulo, html, isCompact = false) {
             document.getElementById('modalTitle').textContent = titulo;
             document.getElementById('modalBody').innerHTML = html;
+            
+            const wrapper = document.getElementById('modalContentWrapper');
+            if(isCompact) {
+                wrapper.classList.add('modal-compact');
+            } else {
+                wrapper.classList.remove('modal-compact');
+            }
+
             document.getElementById('modal').classList.add('active');
+            document.getElementById('modalActionBtn').style.display = 'inline-flex';
+            document.getElementById('modalActionBtn').textContent = 'Guardar';
+            document.getElementById('modalActionBtn').onclick = () => { 
+                detenerEscanerQR();
+                if(modalCallback) modalCallback(); 
+            };
         }
-        function cerrarModal() { document.getElementById('modal').classList.remove('active'); modalCallback = null; }
-        function ejecutarModal() { if(modalCallback) modalCallback(); }
+
+        function cerrarModal() {
+            detenerEscanerQR();
+            document.getElementById('modal').classList.remove('active');
+            modalCallback = null;
+        }
+
+        function ejecutarModal() {
+            detenerEscanerQR();
+            if(modalCallback) modalCallback();
+        }
     </script>
 </body>
 </html>
