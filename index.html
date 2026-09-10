@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sistema de Automatización de Almacenamiento - Hospital San Juan de Dios</title>
+    <title>Sistema de Gestión de Almacenamiento</title>
     <!-- Librerías QR y Excel -->
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -20,8 +20,8 @@
             --text-main: #0f172a;
             --text-muted: #475569;
             --border: #cbd5e1;
-            --primary: #01349b;
-            --accent: #0284c7; 
+            --primary: #0b3c5d;
+            --accent: #328cc1; 
             --success: #0d9488; 
             --warning: #d97706; 
             --danger: #e11d48; 
@@ -65,16 +65,6 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-        }
-        #loginModal .login-box .hospital-logo img { 
-            width: 100%; 
-            max-width: 100%;
-            height: auto;
-            max-height: 140px; 
-            object-fit: contain; 
-            display: block; 
-            margin: 0 auto; 
-            background: #fff; 
         }
         .login-content-pad { 
             padding: 20px 24px 32px 24px; 
@@ -140,8 +130,8 @@
         .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin-bottom:18px; width:100%; }
         .card { background:#ffffff; padding:16px; border-radius:var(--radius); text-align:left; border:1px solid var(--border); box-shadow:0 2px 4px rgba(0,0,0,0.02); position:relative; overflow:hidden; }
         .card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:#64748b; }
-        .card:nth-child(1)::before { background: #01349b; }
-        .card:nth-child(2)::before { background: #0284c7; }
+        .card:nth-child(1)::before { background: var(--primary); }
+        .card:nth-child(2)::before { background: var(--accent); }
         .card:nth-child(3)::before { background: #0369a1; }
         .card:nth-child(4)::before { background: #38bdf8; }
         .card .number { font-size:1.3rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; line-height: 1.2; word-break: break-word; }
@@ -297,12 +287,9 @@
     <!-- LOGIN -->
     <div id="loginModal">
         <div class="login-box">
-            <div class="hospital-logo" style="padding: 16px 20px 0 20px; background: #fff;">
-                <img src="./banner.png" alt="Banner Hospital San Juan de Dios" style="width: 100%; max-height: 140px; object-fit: contain; border-radius: 10px;" onerror="this.src='./1000166962_2.png';">
-            </div>
             <div class="login-content-pad">
                 <div class="divider"></div>
-                <h2>Sistema de Automatización de Almacenamiento</h2>
+                <h2>Sistema de Gestión de Almacenamiento</h2>
                 <p>Ingresa tus credenciales de acceso.</p>
                 <label>Usuario</label>
                 <input type="text" id="loginUser" placeholder="Nombre de usuario">
@@ -323,8 +310,8 @@
         <header>
             <div class="header-top-row">
                 <div class="header-left">
-                    <div class="header-title">Sistema de Automatización de Almacenamiento</div>
-                    <div class="header-sub">Hospital San Juan de Dios · <span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
+                    <div class="header-title">Sistema de Gestión de Almacenamiento</div>
+                    <div class="header-sub">Unidad de Abastecimiento · <span>"Diseñado por Mauricio Quiroz Ayala"</span></div>
                 </div>
                 <div class="user-status-pill">
                     <span class="online-indicator"></span>
@@ -660,10 +647,10 @@
 
         const DEFAULT_DATA = {
             users: [
-                { id: 1, nombre: 'Admin', correo: 'admin@hsjd.cl', perfil: 'admin', password: 'admin', permisos: ['lectura', 'escritura', 'administracion', 'carga', 'descarga'] },
-                { id: 2, nombre: 'Supervisor', correo: 'supervisor@hsjd.cl', perfil: 'supervisor', password: '1234', permisos: ['lectura', 'escritura', 'carga', 'descarga'] },
-                { id: 3, nombre: 'Operario', correo: 'operario@hsjd.cl', perfil: 'operario', password: '1234', permisos: ['lectura', 'escritura'] },
-                { id: 4, nombre: 'Invitado', correo: 'invitado@hsjd.cl', perfil: 'invitado', password: '1234', permisos: ['lectura'] }
+                { id: 1, nombre: 'Admin', correo: 'admin@almacenamiento.cl', perfil: 'admin', password: 'admin', permisos: ['lectura', 'escritura', 'administracion', 'carga', 'descarga'] },
+                { id: 2, nombre: 'Supervisor', correo: 'supervisor@almacenamiento.cl', perfil: 'supervisor', password: '1234', permisos: ['lectura', 'escritura', 'carga', 'descarga'] },
+                { id: 3, nombre: 'Operario', correo: 'operario@almacenamiento.cl', perfil: 'operario', password: '1234', permisos: ['lectura', 'escritura'] },
+                { id: 4, nombre: 'Invitado', correo: 'invitado@almacenamiento.cl', perfil: 'invitado', password: '1234', permisos: ['lectura'] }
             ],
             warehouses: [
                 { id: 'Farmacos', nombre: 'Bodega de Fármacos', color: '#0284c7' },
@@ -955,7 +942,7 @@
                 <label>Nombre de Usuario</label>
                 <input id="recUser" placeholder="Usuario exacto">
                 <label style="margin-top:6px;">Correo Electrónico</label>
-                <input id="recEmail" type="email" placeholder="correo@hsjd.cl">
+                <input id="recEmail" type="email" placeholder="correo@almacenamiento.cl">
             `, true);
             document.getElementById('modalActionBtn').textContent = 'Enviar Código al Correo';
             modalCallback = () => {
@@ -2437,10 +2424,10 @@
                 const textoQR = chk.value;
                 printHtml += `
                     <div class="etiqueta-qr-print-card" style="border:1px solid #333; padding:12px; border-radius:6px; text-align:center; background:#fff; display:flex; flex-direction:column; align-items:center; gap:6px;">
-                        <div style="font-weight:bold; font-size:8px; color:#333;">HOSPITAL SAN JUAN DE DIOS</div>
+                        <div style="font-weight:bold; font-size:8px; color:#333;">SISTEMA DE GESTIÓN DE ALMACENAMIENTO</div>
                         <div style="font-size:10px; font-weight:700; color:#0f172a;">${textoQR}</div>
                         <div id="qrcode-${i}" style="margin:4px auto;"></div>
-                        <div style="font-size:7px; color:#475569; font-weight:600;">Sistema de Automatización de Almacenamiento</div>
+                        <div style="font-size:7px; color:#475569; font-weight:600;">Control Logístico</div>
                     </div>
                 `;
             });
@@ -2564,7 +2551,7 @@
             mostrarModal('Nuevo Usuario', `
                 <div class="form-grid">
                     <div class="full-width"><label>Nombre</label><input id="uNombre" placeholder="Nombre de usuario"></div>
-                    <div class="full-width"><label>Correo Electrónico (para recuperación)</label><input id="uCorreo" type="email" placeholder="correo@hsjd.cl"></div>
+                    <div class="full-width"><label>Correo Electrónico (para recuperación)</label><input id="uCorreo" type="email" placeholder="correo@almacenamiento.cl"></div>
                     <div class="full-width"><label>Contraseña</label><input id="uPass" type="password" placeholder="Contraseña"></div>
                     <div class="full-width"><label>Perfil</label><select id="uPerfil" onchange="actualizarChecksPermisos()"><option value="admin">Admin</option><option value="supervisor">Supervisor</option><option value="operario">Operario</option><option value="invitado">Invitado</option></select></div>
                     <div class="full-width">
