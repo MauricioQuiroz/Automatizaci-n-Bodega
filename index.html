@@ -32,7 +32,7 @@
         
         .app { width:100%; min-height:100vh; background:var(--surface); display:flex; flex-direction:column; }
 
-        /* LOGIN ADAPTATIVO A LOS BORDES (PANTALLA COMPLETA EN MÓVIL Y TARJETA FLUIDA) */
+        /* LOGIN ADAPTATIVO A LOS BORDES */
         #loginModal { 
             position: fixed; 
             top: 0; 
@@ -147,7 +147,11 @@
         .card .number { font-size:1.3rem; font-weight:700; color:var(--text-main); letter-spacing:-0.02em; line-height: 1.2; word-break: break-word; }
         .card .label { color:var(--text-muted); font-size:0.68rem; margin-top:4px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
 
-        /* TABLAS Y CONTENEDORES RESPONSIVOS OPTIMIZADOS PARA PDA / MÓVIL / TABLET / ESCRITORIO */
+        /* DASHBOARD USUARIOS ACTIVOS */
+        .dashboard-users-list { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; max-height: 75px; overflow-y: auto; }
+        .dashboard-user-item { display: inline-flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--text-main); font-weight: 500; background: #f8fafc; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); width: fit-content; }
+
+        /* TABLAS Y CONTENEDORES RESPONSIVOS */
         .table-wrap { width:100%; overflow-x:auto; -webkit-overflow-scrolling: touch; }
         .table-container { max-height:62vh; overflow-y:auto; overflow-x:auto; background:transparent; width:100%; border: 1px solid var(--border); border-radius: var(--radius); }
         table { width:100%; border-collapse:collapse; font-size:0.72rem; min-width: 780px; }
@@ -228,7 +232,7 @@
         .master-dropdown-item { padding: 9px 12px; font-size: 0.72rem; cursor: pointer; border-bottom: 1px solid var(--bg-base); text-align: left; color: var(--text-main); line-height: 1.3; }
         .master-dropdown-item:hover { background: #f8fafc; color: var(--accent); }
 
-        /* MODALES ADAPTABLES A PANTALLAS TÁCTILES Y MÓVILES */
+        /* MODALES ADAPTABLES */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:2500; padding:10px; overflow-y:auto; }
         .modal.active { display:flex; }
         .modal-content { background:#ffffff; border-radius:12px; padding:18px; max-width:800px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.2); border:1px solid var(--border); text-align: left; margin:auto; }
@@ -262,9 +266,7 @@
             }
         }
 
-        /* MEDIA QUERIES ESPECÍFICAS PARA CADA DISPOSITIVO (Celular, PDA Zebra TC27, Tablet Zebra, Escritorio) */
-
-        /* 1. Celulares pequeños y PDAs Zebra TC27 (ancho <= 600px) */
+        /* MEDIA QUERIES */
         @media (max-width: 600px) {
             body { font-size: 11px; }
             .toolbar { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px; }
@@ -285,15 +287,9 @@
             .warehouse-select-wrapper select { width: 100%; }
         }
 
-        /* 2. Tablets Zebra y pantallas medianas (601px - 1024px) */
         @media (min-width: 601px) and (max-width: 1024px) {
             .card-grid { grid-template-columns: repeat(2, 1fr); }
             .modal-content { width: 90%; max-width: 720px; }
-        }
-
-        /* 3. Computador de escritorio (>= 1025px) */
-        @media (min-width: 1025px) {
-            .table-container { overflow-x: auto; }
         }
     </style>
 </head>
@@ -370,12 +366,16 @@
                 <div class="card"><div class="number" id="totalProductos">0</div><div class="label">Total Ítems</div></div>
                 <div class="card"><div class="number" id="totalUbicaciones">0</div><div class="label">Ubicaciones</div></div>
                 <div class="card"><div class="number" id="totalMovimientos">0</div><div class="label">Movimientos</div></div>
-                <div class="card"><div class="number" id="totalUsuariosConectados">0</div><div class="label">Usuarios Activos</div></div>
+                <div class="card">
+                    <div class="number" id="totalUsuariosConectadosNum">0 Activos</div>
+                    <div class="label">Usuarios Conectados</div>
+                    <div class="dashboard-users-list" id="dashboardUsersListContainer"></div>
+                </div>
             </div>
             <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:10px; color:var(--text-main); text-align: left;">Últimos movimientos registrados</h3>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Fecha y Hora</th><th>Usuario</th><th>Tipo</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
+                    <thead><tr><th>Fecha y Hora</th><th>Usuario</th><th>Tipo</th><th style="width: 25%; white-space: nowrap;">Ítem / GTIN</th><th>Detalle</th></tr></thead>
                     <tbody id="ultimosMovimientos"></tbody>
                 </table>
             </div>
@@ -447,12 +447,42 @@
 
         <!-- MOVIMIENTOS -->
         <div id="tab-movimientos" class="tab-content">
+            <div class="toolbar" style="margin-bottom: 12px;">
+                <div class="toolbar-left" style="width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px;">
+                    <div>
+                        <label style="font-size:0.65rem; color:var(--text-muted); margin-bottom:2px; display:block;">Filtrar Usuario</label>
+                        <input type="text" id="filtroMovUsuario" placeholder="Usuario..." oninput="renderHistorialCompleto()" style="width:100%; padding:6px 10px; font-size:0.72rem;">
+                    </div>
+                    <div>
+                        <label style="font-size:0.65rem; color:var(--text-muted); margin-bottom:2px; display:block;">Filtrar Fecha</label>
+                        <input type="text" id="filtroMovFecha" placeholder="DD/MM/AAAA..." oninput="renderHistorialCompleto()" style="width:100%; padding:6px 10px; font-size:0.72rem;">
+                    </div>
+                    <div>
+                        <label style="font-size:0.65rem; color:var(--text-muted); margin-bottom:2px; display:block;">Filtrar Ítem</label>
+                        <input type="text" id="filtroMovItem" placeholder="Código o glosa..." oninput="renderHistorialCompleto()" style="width:100%; padding:6px 10px; font-size:0.72rem;">
+                    </div>
+                    <div>
+                        <label style="font-size:0.65rem; color:var(--text-muted); margin-bottom:2px; display:block;">Filtrar GTIN</label>
+                        <input type="text" id="filtroMovGtin" placeholder="GTIN..." oninput="renderHistorialCompleto()" style="width:100%; padding:6px 10px; font-size:0.72rem;">
+                    </div>
+                </div>
+            </div>
             <h3 style="font-size:0.8rem; font-weight:600; margin-bottom:10px; text-align: left;">Historial completo de modificaciones</h3>
             <div class="table-wrap">
-                <table>
-                    <thead><tr><th>Fecha y Hora</th><th>Usuario</th><th>Tipo de Modificación</th><th>Ítem / GTIN</th><th>Detalle</th></tr></thead>
-                    <tbody id="historialCompletoBody"></tbody>
-                </table>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha y Hora</th>
+                                <th>Usuario</th>
+                                <th>Tipo de Modificación</th>
+                                <th style="width: 25%; white-space: nowrap;">Ítem / GTIN</th>
+                                <th>Detalle</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historialCompletoBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -723,23 +753,30 @@
             });
 
             dbFirestore.collection('wms_data').onSnapshot((snapshot) => {
-                let activos = 0;
+                let activosNombres = [];
                 const ahora = new Date().getTime();
                 snapshot.forEach(docSnap => {
                     if (docSnap.id.startsWith('presencia_')) {
                         const data = docSnap.data();
-                        if (data && data.ultimoAcceso) {
+                        if (data && data.ultimoAcceso && data.usuario) {
                             const timestampAcceso = data.ultimoAcceso.toDate().getTime();
                             if (ahora - timestampAcceso < 30000) {
-                                activos++;
+                                activosNombres.push(data.usuario);
                             }
                         }
                     }
                 });
-                const elem = document.getElementById('totalUsuariosConectados');
-                if (elem) {
-                    const totalCreados = (appState.users || []).length;
-                    elem.textContent = `${activos} Activos / ${totalCreados} Creados`;
+
+                const numElem = document.getElementById('totalUsuariosConectadosNum');
+                const listContainer = document.getElementById('dashboardUsersListContainer');
+                if (numElem && listContainer) {
+                    numElem.textContent = `${activosNombres.length} Activos`;
+                    listContainer.innerHTML = activosNombres.map(nombreUsr => `
+                        <div class="dashboard-user-item">
+                            <span class="online-indicator"></span>
+                            <span>${nombreUsr}</span>
+                        </div>
+                    `).join('') || '<span style="color:var(--text-muted); font-size:0.68rem; font-style:italic;">Sin usuarios activos</span>';
                 }
             });
         }
@@ -778,7 +815,7 @@
             }
         }
 
-        function registrarHistorial(tipoMod, codigoItem, detalle) {
+        function registrarHistorial(tipoMod, codigoItem, detalle, bodegaAsociada = 'Farmacos') {
             const usr = getCurrentUser();
             const ahora = new Date();
             const fechaStr = ahora.toLocaleDateString() + ' ' + ahora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -789,7 +826,8 @@
                 usuario: usr ? `${usr.nombre} (${usr.perfil})` : 'Sistema',
                 tipo: tipoMod,
                 codigo: codigoItem,
-                detalle: detalle
+                detalle: detalle,
+                bodega: bodegaAsociada
             });
             guardarEstadoFirestore();
         }
@@ -961,7 +999,7 @@
                 usuarioEnProcesoRecuperacion.password = nPass;
                 guardarEstadoFirestore();
                 cerrarModal();
-                registrarHistorial('Cambio de Contraseña', usuarioEnProcesoRecuperacion.nombre, 'Restablecimiento validado por correo electrónico');
+                registrarHistorial('Cambio de Contraseña', usuarioEnProcesoRecuperacion.nombre, 'Restablecimiento validado por correo electrónico', 'General');
                 mostrarToast('Contraseña actualizada con éxito.');
             };
         }
@@ -1077,11 +1115,13 @@
                 }
             });
             document.getElementById('totalUbicaciones').textContent = ubics.size;
-            document.getElementById('totalMovimientos').textContent = (appState.movements || []).length;
+            
+            const movsFiltrados = (currentWarehouse === 'TODAS') ? (appState.movements || []) : (appState.movements || []).filter(m => m.bodega === currentWarehouse);
+            document.getElementById('totalMovimientos').textContent = movsFiltrados.length;
 
             const tbody = document.getElementById('ultimosMovimientos');
-            tbody.innerHTML = (appState.movements || []).slice(-5).reverse().map(m => `
-                <tr><td style="white-space:nowrap;">${m.fecha}</td><td><strong>${m.usuario}</strong></td><td><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td><td>${m.codigo}</td><td>${m.detalle}</td></tr>
+            tbody.innerHTML = movsFiltrados.slice(-5).reverse().map(m => `
+                <tr><td style="white-space:nowrap;">${m.fecha}</td><td><strong>${m.usuario}</strong></td><td><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td><td style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;">${m.codigo}</td><td>${m.detalle}</td></tr>
             `).join('') || '<tr><td colspan="5" class="empty-state">Sin movimientos recientes</td></tr>';
         }
 
@@ -1385,7 +1425,7 @@
 
                     guardarEstadoFirestore();
                     document.getElementById('fileInput').value = '';
-                    registrarHistorial('Carga masiva Excel', 'Múltiples ítems', `Procesados ${count} registros.`);
+                    registrarHistorial('Carga masiva Excel', 'Múltiples ítems', `Procesados ${count} registros.`, currentWarehouse === 'TODAS' ? 'General' : currentWarehouse);
                     mostrarToast(`Archivo cargado: ${count} registros procesados.`);
                 } catch(err) {
                     alert('Error al leer el archivo Excel: ' + err.message);
@@ -1453,7 +1493,6 @@
                 if(tipoVal.toLowerCase().includes('máster') || tipoVal.toLowerCase().includes('master')) tipoClase = 'type-master';
                 else if(tipoVal.toLowerCase().includes('mínima') || tipoVal.toLowerCase().includes('minima') || tipoVal.toLowerCase().includes('unidosis')) tipoClase = 'type-minima';
 
-                // Obtener color dinámico para la bodega
                 const whObj = (appState.warehouses || []).find(w => w.id === p.bodega);
                 const bodegaColor = whObj ? whObj.color : '#0284c7';
 
@@ -1503,7 +1542,7 @@
             const idsAEliminar = Array.from(chksChecked).map(c => c.value);
             appState.products = (appState.products || []).filter(p => !idsAEliminar.includes(p.id));
             guardarEstadoFirestore();
-            registrarHistorial('Eliminación Masiva', `${chksChecked.length} ítems`, 'Eliminación masiva de inventario');
+            registrarHistorial('Eliminación Masiva', `${chksChecked.length} ítems`, 'Eliminación masiva de inventario', currentWarehouse === 'TODAS' ? 'General' : currentWarehouse);
             mostrarToast(`${idsAEliminar.length} registros eliminados.`);
         }
 
@@ -1550,7 +1589,7 @@
             const p = appState.products.find(x => x.id === id);
             appState.products = appState.products.filter(item => item.id !== id);
             guardarEstadoFirestore();
-            if(p) registrarHistorial('Eliminación', p.codigo, 'Registro eliminado');
+            if(p) registrarHistorial('Eliminación', p.codigo, 'Registro eliminado', p.bodega || 'General');
             mostrarToast('Registro eliminado');
         }
 
@@ -1742,7 +1781,7 @@
                         id: newId, codigo: cod, gtins: gtins, gtinEstados: gtinEstados, glosa: glosa || cod, bodega: bodega, programas: programas, tipo: tipo, ubicaciones: [{ zona, anaquel, posicion }], estado: 'Almacenado', erpData: erpData
                     });
                 }
-                registrarHistorial('Registro y Asignación', `${cod}`, `Ingresado ítem en Zona ${zona}`);
+                registrarHistorial('Registro y Asignación', `${cod}`, `Ingresado ítem en Zona ${zona}`, bodega);
                 guardarEstadoFirestore();
                 cerrarModal();
                 mostrarToast('Producto almacenado con éxito.');
@@ -1820,7 +1859,7 @@
                             if(!p.ubicaciones) p.ubicaciones = [];
                             p.ubicaciones.push({ zona: zonaDestino, anaquel: anaquelDestino, posicion: posDestino });
                             actualizados++;
-                            registrarHistorial('Reubicación', p.codigo, `Reubicado a Zona ${zonaDestino} - ${anaquelDestino} Pos. ${posDestino} (GTIN: ${gBusca})`);
+                            registrarHistorial('Reubicación', p.codigo, `Reubicado a Zona ${zonaDestino} - ${anaquelDestino} Pos. ${posDestino} (GTIN: ${gBusca})`, p.bodega || 'General');
                         }
                     });
                 });
@@ -2050,7 +2089,7 @@
                 const est2 = document.getElementById('editEstado2').value;
                 const zona = document.getElementById('nuevaZona').value;
                 const anaquel = document.getElementById('nuevoAnaquel').value.trim();
-                const posicion = document.getElementById('nuevoPosicion').value.trim();
+                const posicion = document.getElementById('nuevaPosicion').value.trim();
                 const nuevoTipo = document.getElementById('editTipo').value;
 
                 p.erpData = {
@@ -2083,7 +2122,7 @@
                     detalleMod += ` | Añadida Zona ${zona}, ${anaquel}, Pos. ${posicion}`;
                 }
 
-                registrarHistorial('Actualización', `${p.codigo}`, detalleMod);
+                registrarHistorial('Actualización', `${p.codigo}`, detalleMod, p.bodega || 'General');
                 guardarEstadoFirestore();
                 gestionarUbicacionesModal(p.id); 
                 mostrarToast('Datos actualizados con éxito.');
@@ -2095,7 +2134,7 @@
             if(p && p.ubicaciones) {
                 const removida = p.ubicaciones.splice(index, 1)[0];
                 guardarEstadoFirestore();
-                registrarHistorial('Retiro de Ubicación', `${p.codigo}`, `Removida Zona ${removida.zona}`);
+                registrarHistorial('Retiro de Ubicación', `${p.codigo}`, `Removida Zona ${removida.zona}`, p.bodega || 'General');
                 gestionarUbicacionesModal(prodId);
                 mostrarToast('Ubicación eliminada.');
             }
@@ -2285,8 +2324,6 @@
             }
         }
 
-        let locationsFiltradasCache = [];
-
         function abrirModalQRUbicaciones() {
             let baseList = [];
             if (appState.locationsCatalog && appState.locationsCatalog.length > 0) {
@@ -2308,8 +2345,6 @@
             }
 
             if(baseList.length === 0) return alert('No hay ubicaciones registradas ni cargadas en el maestro.');
-
-            locationsFiltradasCache = baseList;
 
             let html = `
                 <div style="margin-bottom:10px; background:#f8fafc; padding:10px; border-radius:var(--radius); border:1px solid var(--border);">
@@ -2430,7 +2465,6 @@
                     <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
                         <span style="display:inline-block; width:10px; height:10px; background:${dotColor}; border-radius:50%; flex-shrink:0;"></span>
                         <span class="badge-prog" style="${customStyle} white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cp.nombre}</span>
-                        <span style="color:var(--text-muted); font-size:0.62rem; white-space:nowrap;">(${cp.id})</span>
                     </div>
                     <div style="display:flex; gap:4px; flex-shrink:0;">
                         <button class="btn btn-outline btn-xs" onclick="editarProgramaCRUD('${cp.id}')">Editar</button>
@@ -2558,7 +2592,7 @@
                 const newId = appState.users.length > 0 ? Math.max(...appState.users.map(x=>x.id))+1 : 1;
                 appState.users.push({ id: newId, nombre, correo, password: pass, perfil, permisos });
                 guardarEstadoFirestore();
-                registrarHistorial('Creación de Usuario', nombre, `Creado perfil ${perfil}`);
+                registrarHistorial('Creación de Usuario', nombre, `Creado perfil ${perfil}`, 'General');
                 cerrarModal();
                 mostrarToast('Usuario creado con éxito.');
             };
@@ -2599,7 +2633,7 @@
                 u.perfil = perfil;
                 u.permisos = permisos;
 
-                registrarHistorial('Edición de Usuario', nombre, `Actualizado a perfil ${perfil}`);
+                registrarHistorial('Edición de Usuario', nombre, `Actualizado a perfil ${perfil}`, 'General');
                 guardarEstadoFirestore();
                 cerrarModal();
                 mostrarToast('Usuario actualizado con éxito.');
@@ -2634,7 +2668,7 @@
             const u = appState.users.find(x => x.id === id);
             appState.users = appState.users.filter(usr => usr.id !== id);
             guardarEstadoFirestore();
-            if(u) registrarHistorial('Eliminación de Usuario', u.nombre, 'Usuario eliminado');
+            if(u) registrarHistorial('Eliminación de Usuario', u.nombre, 'Usuario eliminado', 'General');
             mostrarToast('Usuario eliminado.');
         }
 
@@ -2682,7 +2716,7 @@
                 if(appState.warehouses.some(w => w.id === id)) return alert('Ya existe una bodega con ese ID.');
                 appState.warehouses.push({ id, nombre, color });
                 guardarEstadoFirestore();
-                registrarHistorial('Creación de Bodega', id, `Creada bodega ${nombre}`);
+                registrarHistorial('Creación de Bodega', id, `Creada bodega ${nombre}`, 'General');
                 cerrarModal();
                 renderAll();
                 mostrarToast('Bodega creada con éxito.');
@@ -2707,7 +2741,7 @@
                 w.nombre = nombre;
                 w.color = color;
                 guardarEstadoFirestore();
-                registrarHistorial('Edición de Bodega', w.id, `Actualizada bodega ${nombre}`);
+                registrarHistorial('Edición de Bodega', w.id, `Actualizada bodega ${nombre}`, 'General');
                 cerrarModal();
                 renderAll();
                 mostrarToast('Bodega actualizada.');
@@ -2719,7 +2753,7 @@
             appState.warehouses = appState.warehouses.filter(w => w.id !== id);
             guardarEstadoFirestore();
             renderAll();
-            registrarHistorial('Eliminación de Bodega', id, 'Bodega eliminada');
+            registrarHistorial('Eliminación de Bodega', id, 'Bodega eliminada', 'General');
         }
 
         function renderConfig() {
@@ -2759,21 +2793,33 @@
 
             appState.products = (appState.products || []).filter(p => p.bodega !== selBodega);
             guardarEstadoFirestore();
-            registrarHistorial('Reinicio', selBodega, `Inventario de ${nombreBodega} reiniciado`);
+            registrarHistorial('Reinicio', selBodega, `Inventario de ${nombreBodega} reiniciado`, selBodega);
             mostrarToast(`Inventario de ${nombreBodega} reiniciado.`);
         }
 
         function renderHistorialCompleto() {
+            const fUsr = (document.getElementById('filtroMovUsuario')?.value || '').trim().toLowerCase();
+            const fFec = (document.getElementById('filtroMovFecha')?.value || '').trim().toLowerCase();
+            const fIte = (document.getElementById('filtroMovItem')?.value || '').trim().toLowerCase();
+            const fGti = (document.getElementById('filtroMovGtin')?.value || '').trim().toLowerCase();
+
+            let movs = (currentWarehouse === 'TODAS') ? (appState.movements || []) : (appState.movements || []).filter(m => m.bodega === currentWarehouse || m.bodega === 'General');
+
+            if (fUsr) movs = movs.filter(m => String(m.usuario).toLowerCase().includes(fUsr));
+            if (fFec) movs = movs.filter(m => String(m.fecha).toLowerCase().includes(fFec));
+            if (fIte) movs = movs.filter(m => String(m.codigo).toLowerCase().includes(fIte) || String(m.detalle).toLowerCase().includes(fIte));
+            if (fGti) movs = movs.filter(m => String(m.codigo).toLowerCase().includes(fGti) || String(m.detalle).toLowerCase().includes(fGti));
+
             const tbody = document.getElementById('historialCompletoBody');
-            tbody.innerHTML = (appState.movements || []).slice().reverse().map(m => `
+            tbody.innerHTML = movs.slice().reverse().map(m => `
                 <tr>
                     <td style="white-space:nowrap;">${m.fecha}</td>
                     <td><strong>${m.usuario}</strong></td>
                     <td><span class="badge" style="background:#f1f5f9; color:#1e293b;">${m.tipo}</span></td>
-                    <td>${m.codigo}</td>
+                    <td style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px;">${m.codigo}</td>
                     <td style="white-space:normal; text-align:left;">${m.detalle}</td>
                 </tr>
-            `).join('') || '<tr><td colspan="5" class="empty-state">Sin historial registrado</td></tr>';
+            `).join('') || '<tr><td colspan="5" class="empty-state">Sin historial registrado con los filtros aplicados</td></tr>';
         }
 
         function exportarExcelCompleto() {
@@ -2784,8 +2830,8 @@
             })));
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
-            XLSX.writeFile(wb, 'inventario_bodega.xlsx');
-            registrarHistorial('Exportación', 'Inventario Completo', 'Exportados registros a Excel');
+            XLSX.writeFile(wb, `inventario_${currentWarehouse.toLowerCase()}.xlsx`);
+            registrarHistorial('Exportación', 'Inventario Completo', `Exportados registros a Excel (${currentWarehouse})`, currentWarehouse === 'TODAS' ? 'General' : currentWarehouse);
             mostrarToast('Archivo Excel exportado con éxito.');
         }
 
