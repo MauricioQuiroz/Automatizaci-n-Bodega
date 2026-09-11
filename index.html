@@ -896,12 +896,10 @@
                                 alert('Su perfil de invitado solo cuenta con permisos de visualización.'); return;
                             }
                         } else if (perfil === 'operario') {
-                            // El operario solo ve dashboard, inventario, layout, bodegas (sin reportes, sin movimientos, sin usuarios, sin config)
                             if (!['dashboard', 'inventario', 'layout', 'bodegas'].includes(tabId)) {
                                 alert('Acceso restringido para el perfil de operario.'); return;
                             }
                         } else if (perfil === 'supervisor') {
-                            // El supervisor ve dashboard, inventario, reportes, layout, movimientos, bodegas (sin usuarios, sin config)
                             if (!['dashboard', 'inventario', 'reportes', 'layout', 'movimientos', 'bodegas'].includes(tabId)) {
                                 alert('Acceso restringido para el perfil de supervisor.'); return;
                             }
@@ -1012,7 +1010,6 @@
             const toolbarAccionsInv = document.getElementById('toolbarAccionsInv');
             const thAccionsInvHead = document.getElementById('thAccionsInvHead');
 
-            // Visibilidad de pestañas de navegación según perfiles conversados:
             if (perfil === 'admin') {
                 if(navInventario) navInventario.style.display = 'inline-flex';
                 if(navReportes) navReportes.style.display = 'inline-flex';
@@ -1028,7 +1025,6 @@
                 if(toolbarAccionsInv) toolbarAccionsInv.style.display = 'flex';
                 if(thAccionsInvHead) thAccionsInvHead.style.display = 'table-cell';
             } else if (perfil === 'supervisor') {
-                // Supervisor: Dashboard, Inventario, Reportes (sin prompt), Layout, Movimientos, Bodegas. Sin usuarios, sin config.
                 if(navInventario) navInventario.style.display = 'inline-flex';
                 if(navReportes) navReportes.style.display = 'inline-flex';
                 if(navLayout) navLayout.style.display = 'inline-flex';
@@ -1043,7 +1039,6 @@
                 if(toolbarAccionsInv) toolbarAccionsInv.style.display = 'flex';
                 if(thAccionsInvHead) thAccionsInvHead.style.display = 'table-cell';
             } else if (perfil === 'operario') {
-                // Operario: Dashboard, Inventario, Layout, Bodegas. Sin reportes, sin movimientos, sin usuarios, sin config.
                 if(navInventario) navInventario.style.display = 'inline-flex';
                 if(navReportes) navReportes.style.display = 'none';
                 if(navLayout) navLayout.style.display = 'inline-flex';
@@ -1058,7 +1053,6 @@
                 if(toolbarAccionsInv) toolbarAccionsInv.style.display = 'flex';
                 if(thAccionsInvHead) thAccionsInvHead.style.display = 'table-cell';
             } else if (perfil === 'invitado') {
-                // Invitado: Dashboard, Inventario, Reportes (solo lectura), Layout.
                 if(navInventario) navInventario.style.display = 'inline-flex';
                 if(navReportes) navReportes.style.display = 'inline-flex';
                 if(navLayout) navLayout.style.display = 'inline-flex';
@@ -1210,7 +1204,6 @@
 
             renderListaPromptsReportes();
 
-            // Renderizar tabla de auditoría GS1 avanzada en reportes
             const tbodyGs1 = document.getElementById('reporteAuditoriaGs1Body');
             if(tbodyGs1) {
                 let htmlGs1 = '';
@@ -1266,7 +1259,6 @@
             const user = getCurrentUser();
             const isAdmin = user && user.perfil === 'admin';
 
-            // Ocultar sección o botón de prompts para supervisor, operario e invitado
             if (!isAdmin) {
                 container.innerHTML = '';
                 if(btnAgregar) btnAgregar.style.display = 'none';
