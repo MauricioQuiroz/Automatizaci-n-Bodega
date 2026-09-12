@@ -882,13 +882,11 @@ document.addEventListener('click',()=>{const d=document.getElementById('userDrop
 function iniciarLatidoPresencia(){setInterval(()=>{const u=getCurrentUser();if(u){dbFirestore.collection('wms_data').doc('presencia_'+u.nombre.toLowerCase()).set({usuario:u.nombre,ultimoAcceso:firebase.firestore.FieldValue.serverTimestamp()}).catch(e=>console.error(e))}},10000)}
 
 const MAPA_MIGRACION_SOPORTES={'RA':'RK','PA':'PL','AN':'AQ'};
-const MAPA_MIGRACION_SOPORTES={'RA':'RK','PA':'PL','AN':'AQ'};
 const MAPA_MIGRACION_BODEGAS={'B004':'B005','B005':'B006','B006':'B007'};
 function migrarCodigosSoportes(){
     localStorage.setItem('wms_migracion_v3', 'done');
     return false;
 }
-localStorage.setItem('wms_migracion_v3','done');return cambios}
 
 function inicializarListenersTiempoReal(){
 dbFirestore.collection('wms_data').doc('main').onSnapshot((doc)=>{
