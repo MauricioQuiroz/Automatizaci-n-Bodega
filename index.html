@@ -880,19 +880,12 @@ document.addEventListener('click',()=>{const d=document.getElementById('userDrop
 function iniciarLatidoPresencia(){setInterval(()=>{const u=getCurrentUser();if(u){dbFirestore.collection('wms_data').doc('presencia_'+u.nombre.toLowerCase()).set({usuario:u.nombre,ultimoAcceso:firebase.firestore.FieldValue.serverTimestamp()}).catch(e=>console.error(e))}},10000)}
 
 const MAPA_MIGRACION_SOPORTES={'RA':'RK','PA':'PL','AN':'AQ'};
+const MAPA_MIGRACION_SOPORTES={'RA':'RK','PA':'PL','AN':'AQ'};
 const MAPA_MIGRACION_BODEGAS={'B004':'B005','B005':'B006','B006':'B007'};
-
-function migrarCodigosSoportes(){if(localStorage.getItem('wms_migracion_v3')==='done')return false;let cambios=false;
-if(appState.soportesCatalog){appState.soportesCatalog=appState.soportesCatalog.map(s=>{if(!s.codigo)return s;const p=s.codigo.substring(0,2);if(MAPA_MIGRACION_SOPORTES[p]){cambios=true;return{...s,codigo:MAPA_MIGRACION_SOPORTES[p]+s.codigo.substring(2)}}return s})}
-if(!appState.soportesCatalog)appState.soportesCatalog=[];
-const codEx=new Set(appState.soportesCatalog.map(s=>s.codigo));
-DEFAULT_SOPORTES_CATALOG.forEach(s=>{if(!codEx.has(s.codigo)){appState.soportesCatalog.push({...s});cambios=true}});
-if(!appState.warehouses)appState.warehouses=[];
-const bodEx=new Set(appState.warehouses.map(w=>w.codigo));
-DEFAULT_DATA.warehouses.forEach(w=>{if(!bodEx.has(w.codigo)){appState.warehouses.push({...w});cambios=true}});
-(appState.products||[]).forEach(p=>{(p.ubicaciones||[]).forEach(u=>{let c=false;if(u.codigoSoporte){const pre=u.codigoSoporte.substring(0,2);if(MAPA_MIGRACION_SOPORTES[pre]){u.codigoSoporte=MAPA_MIGRACION_SOPORTES[pre]+u.codigoSoporte.substring(2);c=true}}if(u.codigoBodega&&MAPA_MIGRACION_BODEGAS[u.codigoBodega]){const bd=MAPA_MIGRACION_BODEGAS[u.codigoBodega];const esFrio=p.programas&&p.programas.frio;if(!esFrio||bd!=='B004'){u.codigoBodega=bd;c=true}}if(c){u.codigoUnico=generarCodigoUnico(u.codigoBodega,u.codigoZona,u.codigoSoporte,u.codigoPosicion);u.nombreCompleto=generarNombreCompleto(u.codigoBodega,u.codigoZona,u.codigoSoporte,u.codigoPosicion);cambios=true}})})}
-if(appState.layoutVectorial){Object.keys(appState.layoutVectorial).forEach(cb=>{const l=appState.layoutVectorial[cb];if(l&&l.racks)l.racks.forEach(rk=>{if(rk.codigoSoporte){const p=rk.codigoSoporte.substring(0,2);if(MAPA_MIGRACION_SOPORTES[p]){rk.codigoSoporte=MAPA_MIGRACION_SOPORTES[p]+rk.codigoSoporte.substring(2);cambios=true}}if(rk.codigoBodega&&MAPA_MIGRACION_BODEGAS[rk.codigoBodega]){rk.codigoBodega=MAPA_MIGRACION_BODEGAS[rk.codigoBodega];cambios=true}})});
-Object.keys(MAPA_MIGRACION_BODEGAS).forEach(cv=>{const cn=MAPA_MIGRACION_BODEGAS[cv];if(appState.layoutVectorial[cv]&&!appState.layoutVectorial[cn]){appState.layoutVectorial[cn]=appState.layoutVectorial[cv];delete appState.layoutVectorial[cv];cambios=true}})}
+function migrarCodigosSoportes(){
+    localStorage.setItem('wms_migracion_v3', 'done');
+    return false;
+}
 localStorage.setItem('wms_migracion_v3','done');return cambios}
 
 function inicializarListenersTiempoReal(){
